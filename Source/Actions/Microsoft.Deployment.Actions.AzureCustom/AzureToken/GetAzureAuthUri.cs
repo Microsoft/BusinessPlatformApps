@@ -20,13 +20,19 @@ namespace Microsoft.Deployment.Actions.AzureCustom.AzureToken
             var aadTenant = request.DataStore.GetValue("AADTenant");
             string authBase = string.Format(Constants.AzureAuthUri, aadTenant);
 
+            bool isDynamicsCRM = false;
+            bool.TryParse(request.DataStore.GetValue("AADClientId"), out isDynamicsCRM);
+            string clientId = isDynamicsCRM
+                ? Constants.DynamicsCRMClientId
+                : Constants.MicrosoftClientId;
+
             Dictionary<string, string> message = new Dictionary<string, string>
             {
-                {"client_id", Constants.MicrosoftClientId },
-                {"prompt", "consent" },
-                {"response_type", "code" },
-                {"redirect_uri", Uri.EscapeDataString(request.Info.WebsiteRootUrl + Constants.WebsiteRedirectPath) },
-                {"resource", Uri.EscapeDataString(Constants.AzureManagementApi) }
+                { "client_id", clientId },
+                { "prompt", "consent" },
+                { "response_type", "code" },
+                { "redirect_uri", Uri.EscapeDataString(request.Info.WebsiteRootUrl + Constants.WebsiteRedirectPath) },
+                { "resource", Uri.EscapeDataString(Constants.AzureManagementApi) }
             };
 
             StringBuilder builder = new StringBuilder();

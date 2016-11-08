@@ -156,6 +156,7 @@ export class ViewModelBase {
         this.showValidation = false;
         this.MS.ErrorService.Clear();
         this.isValidated = await this.executeActions(this.onValidate);
+        this.showValidation = true;
         return this.isValidated;
     }
 

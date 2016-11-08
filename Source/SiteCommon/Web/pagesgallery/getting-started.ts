@@ -8,7 +8,7 @@ export class Gettingstarted extends ViewModelBase {
     pricing: string[] = [];
     requirements: string[] = [];
     showPrivacy: boolean = true;
-    subtitle: string;
+    subtitle: string = '';
     templateName: string = '';
 
     constructor() {

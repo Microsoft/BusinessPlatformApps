@@ -7,17 +7,17 @@
                 "displayname": "Getting Started",
                 "features": [
                     "Full cloud solution with minimum set up and maintenance considerations",
-                    "Data pulled from Dynamics CRM into an Azure SQL Database using Azure Data Factory",
+                    "Data pulled from Dynamics CRM into an Azure SQL Database using the Dynamics CRM Export Service",
                     "Connect to Azure SQL and import data into Power BI"
                 ],
                 "name": "$SiteCommon$/pagesgallery/getting-started.html",
                 "templateName": "Sales Management for Dynamics CRM"
             },
             {
-                "name": "$SiteCommon$/pagesgallery/azure-login.html",
                 "displayname": "Login",
-                "pricingUrl": "SalesforcePricingURL",
-                "pricingCost": "$('By deploying the template you authorize the creation of Azure resources on your subscription. The base cost of these services is approximately $1.5 a day. The cost will vary with the amount of data that will be moved.')"
+                "name": "$SiteCommon$/pagesgallery/azure-login.html",
+                "pricingCost": "$('By deploying the template you authorize the creation of Azure resources on your subscription. The base cost of these services is approximately $1.50 a day. The cost will vary with the amount of data that will be moved.')",
+                "pricingUrl": "SalesforcePricingURL"
             },
             {
                 "name": "$SiteCommon$/pagesgallery/sql-server.html",
@@ -29,6 +29,13 @@
                 "title": "Connect to your SQL Database",
                 "sqlInstance": "DynamicsCRMDB",
                 "newSqlDatabase": "$(this.MS.UtilityService.GetUniqueId(10))"
+            },
+            {
+                "displayname": "Dynamics CRM Login",
+                "isDynamicsCRM": true,
+                "name": "$SiteCommon$/pagesgallery/azure-login.html",
+                "pricingCost": "$('By deploying the template you authorize the creation of Azure resources on your subscription. The base cost of these services is approximately $1.50 a day. The cost will vary with the amount of data that will be moved.')",
+                "pricingUrl": "SalesforcePricingURL"
             },
             {
                 "name": "$SiteCommon$/pagesgallery/progress.html",

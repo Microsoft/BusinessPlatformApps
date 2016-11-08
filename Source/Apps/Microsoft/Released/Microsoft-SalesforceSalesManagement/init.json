@@ -15,7 +15,7 @@
         "name": "$SiteCommon$/pagesgallery/azure-login.html",
         "displayname": "Login",
         "pricingUrl": "SalesforcePricingURL",
-        "pricingCost": "$('By deploying the template you authorize the creation of Azure resources on your subscription. The base cost of these services is approximately $1.5 a day. The cost will vary with the amount of data that will be moved.')"
+        "pricingCost": "$('By deploying the template you authorize the creation of Azure resources on your subscription. The base cost of these services is approximately $1.50 a day. The cost will vary with the amount of data that will be moved.')"
       },
       {
         "name": "$SiteCommon$/pagesgallery/salesforce-login.html",

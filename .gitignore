@@ -26,3 +26,5 @@
 /Source/Apps/Microsoft/Released/Microsoft-SCCMTemplate/Resources/SCCM_Sample.pbix
 *.dg
 *.wixpdb
+/Source/Apps/Microsoft/Released/Microsoft-SCCMTemplate/Microsoft-SCCMTemplate.exe
+/Source/Apps/Microsoft/Released/Microsoft-SCCMTemplate/Microsoft-SCCMTemplate.msi

@@ -1,21 +1,20 @@
-import {ViewModelBase} from "../services/viewmodelbase";
-import {DataStoreType} from "../services/datastore";
+import {ViewModelBase} from '../services/viewmodelbase';
+import {DataStoreType} from '../services/datastore';
 
 export class SearchTerms extends ViewModelBase {
     username: string = '';
     password: string = '';
 
+    discoveredUsername: string = '';
     enteredUsername: string = '';
-    discoveredUsername: string = ''
     logInAsCurrentUser: boolean = false;
 
     constructor() {
         super();
         this.isValidated = false;
     }
-    
 
-    async loginSelectionChanged() {
+    loginSelectionChanged() {
         this.Invalidate();
         if (this.logInAsCurrentUser) {
             this.enteredUsername = this.username;
@@ -29,7 +28,6 @@ export class SearchTerms extends ViewModelBase {
         }
     }
 
-
     async OnValidate(): Promise<boolean> {
         this.isValidated = false;
         let usernameError: string = this.MS.UtilityService.validateUsername(this.username);
@@ -41,9 +39,9 @@ export class SearchTerms extends ViewModelBase {
         let domain: string = this.MS.UtilityService.extractDomain(this.username);
         let usernameWithoutDomain: string = this.MS.UtilityService.extractUsername(this.username);
 
-        this.MS.DataStore.addToDataStore("ImpersonationDomain", domain, DataStoreType.Private);
-        this.MS.DataStore.addToDataStore("ImpersonationUsername", usernameWithoutDomain, DataStoreType.Private);
-        this.MS.DataStore.addToDataStore("ImpersonationPassword", this.password, DataStoreType.Private);
+        this.MS.DataStore.addToDataStore('ImpersonationDomain', domain, DataStoreType.Private);
+        this.MS.DataStore.addToDataStore('ImpersonationUsername', usernameWithoutDomain, DataStoreType.Private);
+        this.MS.DataStore.addToDataStore('ImpersonationPassword', this.password, DataStoreType.Private);
 
         let response = await this.MS.HttpService.executeAsync('Microsoft-ValidateNtCredential', {});
         if (!response.IsSuccess) {
@@ -59,9 +57,8 @@ export class SearchTerms extends ViewModelBase {
     }
 
    async OnLoaded(): Promise<void> {
-
        var response = await this.MS.HttpService.executeAsync('Microsoft-GetCurrentUserAndDomain', {});
        this.discoveredUsername = response.Body.Value;
-       await this.loginSelectionChanged();
+       this.loginSelectionChanged();
    }
 }

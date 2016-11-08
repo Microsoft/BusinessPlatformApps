@@ -36,7 +36,6 @@
   <PropertyGroup>
     <PreBuildEvent>
       cd $(ProjectDir)
-      call gulp.cmd Setup
       call gulp.cmd Pre-Build
     </PreBuildEvent>
   </PropertyGroup>

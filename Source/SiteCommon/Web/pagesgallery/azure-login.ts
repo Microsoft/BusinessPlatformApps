@@ -1,6 +1,6 @@
 ﻿import { ViewModelBase } from '../services/viewmodelbase';
-import { DataStoreType } from "../services/datastore";
-import { ActionResponse } from "../services/actionresponse";
+import { DataStoreType } from '../services/datastore';
+import { ActionResponse } from '../services/actionresponse';
 
 export class AzureLogin extends ViewModelBase {
     authToken: any = {};
@@ -12,6 +12,7 @@ export class AzureLogin extends ViewModelBase {
     showAdvanced: boolean = false;
     subscriptionsList: any[] = [];
     showPricingConfirmation: boolean = false;
+    isDynamicsCRM: boolean = false;
     isPricingChecked: boolean = false;
 
     // Variables to override
@@ -35,15 +36,23 @@ export class AzureLogin extends ViewModelBase {
                 var tokenObj = { code: token };
                 this.authToken = await this.MS.HttpService.executeAsync('Microsoft-GetAzureToken', tokenObj);
                 if (this.authToken.IsSuccess) {
-                    this.MS.DataStore.addToDataStore('AzureToken', this.authToken.Body.AzureToken, DataStoreType.Private);
+                    if (this.isDynamicsCRM) {
+                        this.MS.DataStore.addToDataStore('AzureToken', this.authToken.Body.AzureToken, DataStoreType.Private);
+                    } else {
+                        this.MS.DataStore.addToDataStore('DynamicsCRMToken', this.authToken.Body.AzureToken, DataStoreType.Private);
+                    }
                     let subscriptions: ActionResponse = await this.MS.HttpService.executeAsync('Microsoft-GetAzureSubscriptions', {});
                     if (subscriptions.IsSuccess) {
-                        this.showPricingConfirmation = true;
-                        //this.isValidated = false;
-                        //this.showValidation = false;
-                        this.subscriptionsList = subscriptions.Body.value;
-                        if (!this.subscriptionsList || (this.subscriptionsList && this.subscriptionsList.length === 0)) {
-                            this.MS.ErrorService.message = 'You do not have any Azure subscriptions linked to your account. You can get started with a free trial by clicking the link at the top of the page.';
+                        if (this.isDynamicsCRM) {
+                            this.isValidated = true;
+                        } else {
+                            this.showPricingConfirmation = true;
+                            //this.isValidated = false;
+                            //this.showValidation = false;
+                            this.subscriptionsList = subscriptions.Body.value;
+                            if (!this.subscriptionsList || (this.subscriptionsList && this.subscriptionsList.length === 0)) {
+                                this.MS.ErrorService.message = 'You do not have any Azure subscriptions linked to your account. You can get started with a free trial by clicking the link at the top of the page.';
+                            }
                         }
                     }
                 }
@@ -73,15 +82,20 @@ export class AzureLogin extends ViewModelBase {
             this.MS.DataStore.addToDataStore('AADTenant', 'common', DataStoreType.Public);
         }
 
+        this.MS.DataStore.addToDataStore('AADClientId', this.isDynamicsCRM, DataStoreType.Public);
+
         let response: ActionResponse = await this.MS.HttpService.executeAsync('Microsoft-GetAzureAuthUri', {});
         window.location.href = response.Body.value;
     }
 
     public async NavigatingNext(): Promise<boolean> {
+        if (this.isDynamicsCRM) {
+            return true;
+        }
+
         let subscriptionObject = this.subscriptionsList.find(x => x.SubscriptionId === this.selectedSubscriptionId);
         this.MS.DataStore.addToDataStore('SelectedSubscription', subscriptionObject, DataStoreType.Public);
         this.MS.DataStore.addToDataStore('SelectedResourceGroup', this.selectedResourceGroup, DataStoreType.Public);
-
 
         let locationsResponse: ActionResponse = await this.MS.HttpService.executeAsync('Microsoft-GetLocations', {});
         if (locationsResponse.IsSuccess) {
