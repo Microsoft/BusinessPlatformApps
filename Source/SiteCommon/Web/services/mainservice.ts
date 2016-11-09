@@ -73,6 +73,7 @@ export default class MainService {
                 case ExperienceType.uninstall: {
                     pages = 'UninstallPages';
                     actions = 'UninstallActions';
+                    this.DeploymentService.isUninstall = true;
                     break;
                 }
                 default: {

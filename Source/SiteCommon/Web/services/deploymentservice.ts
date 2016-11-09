@@ -11,13 +11,20 @@ export class DeploymentService {
     hasError: boolean = false;
     isFinished: boolean = false;
     message: string = '';
+    isUninstall: boolean = false;
 
     constructor(MainService) {
         this.MS = MainService;
     }
 
-    async ExecuteActions():Promise<boolean> {
-        this.MS.LoggerService.TrackDeploymentStart();
+    async ExecuteActions(): Promise<boolean> {
+        if (this.isUninstall) {
+            this.MS.LoggerService.TrackUninstallStart();
+        }
+        else {
+            this.MS.LoggerService.TrackDeploymentStart();
+        }
+
         let lastActionStatus: ActionStatus = ActionStatus.Success;
         this.MS.DataStore.DeploymentIndex = '';
 
@@ -61,7 +68,12 @@ export class DeploymentService {
             this.message = 'Error';
         }
 
-        this.MS.LoggerService.TrackDeploymentEnd(!this.hasError);
+        if (this.isUninstall) {
+            this.MS.LoggerService.TrackUninstallEnd(!this.hasError);
+        }
+        else {
+            this.MS.LoggerService.TrackDeploymentEnd(!this.hasError);
+        }
         this.isFinished = true;
 
         return !this.hasError;
