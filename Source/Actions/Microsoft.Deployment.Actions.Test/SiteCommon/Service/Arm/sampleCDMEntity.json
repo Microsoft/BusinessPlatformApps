@@ -1,0 +1,58 @@
+{
+  "properties": {
+    "displayName": "test43t",
+    "description": "etwertwe",
+    "titleField": "Title",
+    "primaryKey": "PrimaryKey",
+    "fields": [
+      {
+        "name": "Title",
+        "displayName": "Title",
+        "description": "Title of the field",
+        "isCustomizable": true,
+        "isMandatory": true,
+        "isSystemField": false,
+        "isUnique": true,
+        "type": "Text"
+      }
+    ],
+    "fieldGroups": [
+      {
+        "name": "DefaultList",
+        "displayName": "Default List",
+        "description": "Auto generated default list field group",
+        "fields": []
+      },
+      {
+        "name": "DefaultDetails",
+        "displayName": "Default Details",
+        "description": "Auto generated default details field group",
+        "fields": []
+      },
+      {
+        "name": "DefaultCard",
+        "displayName": "Default Card",
+        "description": "Auto generated default card field group",
+        "fields": []
+      },
+      {
+        "name": "DefaultLookup",
+        "displayName": "Default Lookup",
+        "description": "Auto generated default lookup field group",
+        "fields": []
+      },
+      {
+        "name": "DefaultReport",
+        "displayName": "Default Report",
+        "description": "Auto generated default report field group",
+        "fields": []
+      },
+      {
+        "name": "DefaultIdentification",
+        "displayName": "Default Identification",
+        "description": "Auto generated default identification field group",
+        "fields": []
+      }
+    ]
+  }
+}

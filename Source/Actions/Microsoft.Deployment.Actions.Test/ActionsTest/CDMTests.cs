@@ -18,6 +18,13 @@ namespace Microsoft.Deployment.Actions.Test.ActionsTest
     {
 
         [TestMethod]
+        public async Task GetAllEnvironments()
+        {
+            var dataStore = await AAD.GetUserTokenFromPopup();
+            var environIdResponse = TestHarness.ExecuteAction("Microsoft-GetAllEnvironments", dataStore);
+        }
+
+        [TestMethod]
         public async Task CreateEnvironment()
         {
             //Create Environment
@@ -65,51 +72,6 @@ namespace Microsoft.Deployment.Actions.Test.ActionsTest
             Assert.IsTrue(environmentResponse.Status == ActionStatus.Success);
         }
 
-
-        [TestMethod]
-        public async Task GetCDMNamespaces()
-        {
-            //Get Token
-            var datastore = await AAD.GetTokenWithDataStore();
-            var result = await TestHarness.ExecuteActionAsync("Microsoft-GetAzureSubscriptions", datastore);
-            Assert.IsTrue(result.IsSuccess);
-            var responseBody = JObject.FromObject(result.Body);
-        }
-
-        [TestMethod]
-        public async Task GetObjID()
-        {
-            //Get Token
-            var dataStore = await AAD.GetUserTokenFromPopup();
-            var result = await TestHarness.ExecuteActionAsync("Microsoft-GetAzureSubscriptions", dataStore);
-            Assert.IsTrue(result.IsSuccess);
-            var responseBody = JObject.FromObject(result.Body);
-            var subscriptionId = responseBody["value"][0]["SubscriptionId"].ToString();
-
-            dataStore.AddToDataStore("SubscriptionId", subscriptionId, DataStoreType.Private);
-            var res = TestHarness.ExecuteAction("Microsoft-GetObjID", dataStore);
-            Assert.IsTrue(res.Status == ActionStatus.Success);
-        }
-
-        [TestMethod]
-        public async Task GetEnvironID()
-        {
-            //Get Token
-            var dataStore = await AAD.GetUserTokenFromPopup();
-            var result = await TestHarness.ExecuteActionAsync("Microsoft-GetAzureSubscriptions", dataStore);
-            Assert.IsTrue(result.IsSuccess);
-            var responseBody = JObject.FromObject(result.Body);
-            var subscriptionId = responseBody["value"][0]["SubscriptionId"].ToString();
-
-            dataStore.AddToDataStore("SubscriptionId", subscriptionId, DataStoreType.Private);
-            var objIdResponse = TestHarness.ExecuteAction("Microsoft-GetObjID", dataStore);
-
-            var environIdResponse = TestHarness.ExecuteAction("Microsoft-GetEnvironID", dataStore);
-
-
-            Assert.IsTrue(environIdResponse.Status == ActionStatus.Success);
-        }
-
         [TestMethod]
         public async Task CheckCDMEntities()
         {
@@ -119,34 +81,95 @@ namespace Microsoft.Deployment.Actions.Test.ActionsTest
             Assert.IsTrue(result.IsSuccess);
             var responseBody = JObject.FromObject(result.Body);
 
-            //var objIdResponse = TestHarness.ExecuteAction("Microsoft-GetObjID", dataStore);
-            var environIdResponse = TestHarness.ExecuteAction("Microsoft-GetEnvironID", dataStore);
-            var getCDMEntityResponse = TestHarness.ExecuteAction("Microsoft-CheckCDMEntities", dataStore);
+            dataStore.AddToDataStore("EnvironmentID", "Legacy-1806a3cb-4a99-4491-aa5f-ac186fd73f10", DataStoreType.Private);
+            //dataStore.AddToDataStore("ObjectID", "63439178-643b-4b6d-92ed-db2e1f2f5b14", DataStoreType.Private);
+            dataStore.AddToDataStore("EntityName", "TestEntity", DataStoreType.Private);
 
+            var getCDMEntityResponse = TestHarness.ExecuteAction("Microsoft-CheckCDMEntities", dataStore);
 
             Assert.IsTrue(getCDMEntityResponse.Status == ActionStatus.Success);
         }
 
         [TestMethod]
-        public async Task GetAllEnvironments()
+        public async Task CreateCDMEntity()
         {
             var dataStore = await AAD.GetUserTokenFromPopup();
-            var environIdResponse = TestHarness.ExecuteAction("Microsoft-GetAllEnvironments", dataStore);
+            var result = await TestHarness.ExecuteActionAsync("Microsoft-GetAzureSubscriptions", dataStore);
+            Assert.IsTrue(result.IsSuccess);
+            var responseBody = JObject.FromObject(result.Body);
+
+            dataStore.AddToDataStore("EnvironmentID", "Legacy-1806a3cb-4a99-4491-aa5f-ac186fd73f10", DataStoreType.Private);
+            dataStore.AddToDataStore("EntityName", "TestEntity20", DataStoreType.Private);
+
+            var CreateCDMEntity = TestHarness.ExecuteAction("Microsoft-CreateCDMEntity", dataStore);
+
+            Assert.IsTrue(CreateCDMEntity.Status == ActionStatus.Success);
         }
 
-        [TestMethod]
-        public async Task GetAllAndDeleteEnvironments()
-        {
-            var dataStore = await AAD.GetUserTokenFromPopup();
-            var environIdResponse = await TestHarness.ExecuteActionAsync("Microsoft-GetAllEnvironments", dataStore);
-            var environments = JObject.FromObject(environIdResponse.Body);
+        //[TestMethod]
+        //public async Task ValidateCDMEntity()
+        //{
+        //    //Get Token
+        //    var dataStore = await AAD.GetUserTokenFromPopup();
+        //    var result = await TestHarness.ExecuteActionAsync("Microsoft-GetAzureSubscriptions", dataStore);
+        //    Assert.IsTrue(result.IsSuccess);
+        //    var responseBody = JObject.FromObject(result.Body);
 
-            foreach (var environment in environments["value"])
-            {
-                dataStore.AddToDataStore(environment["name"].ToString(), "EnvironmentIds", environment["name"].ToString());
-            }
+        //    dataStore.AddToDataStore("EnvironmentID", "Legacy-1806a3cb-4a99-4491-aa5f-ac186fd73f10", DataStoreType.Private);
+        //    dataStore.AddToDataStore("EntityName", "TestEntity", DataStoreType.Private);
 
-            var response = await TestHarness.ExecuteActionAsync("Microsoft-DeleteEnvironment", dataStore);
-        }
+        //    var validateCDMEntityResponse = TestHarness.ExecuteAction("Microsoft-ValidateCDMEntity", dataStore);
+
+        //    Assert.IsTrue(validateCDMEntityResponse.Status == ActionStatus.Success);
+        //}
+
+        //[TestMethod]
+        //public async Task GetObjID()
+        //{
+        //    //Get Token
+        //    var dataStore = await AAD.GetUserTokenFromPopup();
+        //    var result = await TestHarness.ExecuteActionAsync("Microsoft-GetAzureSubscriptions", dataStore);
+        //    Assert.IsTrue(result.IsSuccess);
+        //    var responseBody = JObject.FromObject(result.Body);
+        //    var subscriptionId = responseBody["value"][0]["SubscriptionId"].ToString();
+
+        //    dataStore.AddToDataStore("SubscriptionId", subscriptionId, DataStoreType.Private);
+        //    var res = TestHarness.ExecuteAction("Microsoft-GetObjID", dataStore);
+        //    Assert.IsTrue(res.Status == ActionStatus.Success);
+        //}
+
+        //[TestMethod]
+        //public async Task GetEnvironID()
+        //{
+        //    //Get Token
+        //    var dataStore = await AAD.GetUserTokenFromPopup();
+        //    var result = await TestHarness.ExecuteActionAsync("Microsoft-GetAzureSubscriptions", dataStore);
+        //    Assert.IsTrue(result.IsSuccess);
+        //    var responseBody = JObject.FromObject(result.Body);
+        //    var subscriptionId = responseBody["value"][0]["SubscriptionId"].ToString();
+
+        //    dataStore.AddToDataStore("SubscriptionId", subscriptionId, DataStoreType.Private);
+        //    var objIdResponse = TestHarness.ExecuteAction("Microsoft-GetObjID", dataStore);
+
+        //    var environIdResponse = TestHarness.ExecuteAction("Microsoft-GetEnvironID", dataStore);
+
+
+        //    Assert.IsTrue(environIdResponse.Status == ActionStatus.Success);
+        //}
+
+        //[TestMethod]
+        //public async Task GetAllAndDeleteEnvironments()
+        //{
+        //    var dataStore = await AAD.GetUserTokenFromPopup();
+        //    var environIdResponse = await TestHarness.ExecuteActionAsync("Microsoft-GetAllEnvironments", dataStore);
+        //    var environments = JObject.FromObject(environIdResponse.Body);
+
+        //    foreach (var environment in environments["value"])
+        //    {
+        //        dataStore.AddToDataStore(environment["name"].ToString(), "EnvironmentIds", environment["name"].ToString());
+        //    }
+
+        //    var response = await TestHarness.ExecuteActionAsync("Microsoft-DeleteEnvironment", dataStore);
+        //}
     }
 }

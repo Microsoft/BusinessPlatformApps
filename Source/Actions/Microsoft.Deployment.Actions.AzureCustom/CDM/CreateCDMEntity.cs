@@ -25,20 +25,31 @@ namespace Microsoft.Deployment.Actions.AzureCustom.CDM
         public override async Task<ActionResponse> ExecuteActionAsync(ActionRequest request)
         {
             var azureToken = request.DataStore.GetJson("AzureToken")["access_token"].ToString();
-            var objectIds = request.DataStore.GetValue("objectIds").ToString();
-            var userEntity = request.DataStore.GetValue("userEntity").ToString();
+            var environId = request.DataStore.GetValue("EnvironmentID").ToString();
+            var entityName = request.DataStore.GetValue("EntityName").ToString();
+            var namespaceID = environId;
 
-            var cdmEntity = JsonUtility.GetJObjectFromJsonString(System.IO.File.ReadAllText(System.IO.Path.Combine(request.ControllerModel.SiteCommonFilePath, "Service/Arm/sampleCDMEntity.json")));
+            var cdmEntity = System.IO.File.ReadAllText(System.IO.Path.Combine(request.ControllerModel.SiteCommonFilePath, "Service/Arm/sampleCDMEntity.json"));
+            //var cdmEntity = JsonUtility.GetJObjectFromJsonString(System.IO.File.ReadAllText(System.IO.Path.Combine(request.ControllerModel.SiteCommonFilePath, "Service/Arm/sampleCDMEntity.json")));
+            if (environId.Contains("Legacy"))
+            {
+                int indexFrom = environId.IndexOf("Legacy-") + "Legacy-".Length;
+                int indexTo = environId.Length;
 
+                namespaceID = environId.Substring(indexFrom, indexTo - indexFrom);
+            }
 
             AzureHttpClient client = new AzureHttpClient(azureToken);
 
-            var response = await client.ExecuteGenericRequestWithHeaderAsync(HttpMethod.Put, $"https://management.azure.com/providers/Microsoft.PowerApps/objectIds/{objectIds}/userSettings/environment?api-version=2016-11-01", "{}");
-            var responseString = await response.Content.ReadAsStringAsync();
-            var responseParsed = JsonUtility.GetJsonObjectFromJsonString(responseString);
-            var environId = responseParsed["properties"]["settings"]["portalCurrentEnvironmentName"].ToString();
+            var checkEntities = await RequestUtility.CallAction(request, "Microsoft-CheckCDMEntities");
+            if (!checkEntities.IsSuccess)
+            {
+                return new ActionResponse(ActionStatus.FailureExpected);
+            }
 
-            request.DataStore.AddToDataStore("environId", environId, DataStoreType.Public);
+            var response = await client.ExecuteGenericRequestWithHeaderAsync(HttpMethod.Put, $"https://management.azure.com/providers/Microsoft.CommonDataModel/environments/{environId}/namespaces/{namespaceID}/entities/{entityName}_?api-version=2016-11-01", cdmEntity);
+            var responseString = await response.Content.ReadAsStringAsync();
+
 
             return new ActionResponse(ActionStatus.Success);
         }

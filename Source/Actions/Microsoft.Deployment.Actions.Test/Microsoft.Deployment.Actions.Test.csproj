@@ -455,6 +455,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="Service References\SalesforceSOAP\partner.wsdl" />
+    <None Include="SiteCommon\Service\Arm\sampleCDMEntity.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="SiteCommon\Web\pagesgallery\navbar.html">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

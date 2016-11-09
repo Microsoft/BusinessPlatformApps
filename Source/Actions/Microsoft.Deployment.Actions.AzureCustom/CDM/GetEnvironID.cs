@@ -34,7 +34,7 @@ namespace Microsoft.Deployment.Actions.AzureCustom.CDM
             var responseParsed = JsonUtility.GetJsonObjectFromJsonString(responseString);
             var environId = responseParsed["properties"]["settings"]["portalCurrentEnvironmentName"].ToString();
 
-            request.DataStore.AddToDataStore("environId", environId, DataStoreType.Public);
+            request.DataStore.AddToDataStore("EnvironmentID", environId, DataStoreType.Public);
 
             return new ActionResponse(ActionStatus.Success);
         }

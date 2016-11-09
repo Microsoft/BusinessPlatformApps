@@ -16,32 +16,25 @@ namespace Microsoft.Deployment.Actions.OnPremise.TaskScheduler
     {
         public override async Task<ActionResponse> ExecuteActionAsync(ActionRequest request)
         {
-            var admin = await RequestUtility.CallAction(request, "Microsoft-ValidateAdminPrivileges");
-
-            if (admin.IsSuccess)
+            var taskName = request.DataStore.GetValue("TaskName");
+            using (TaskService ts = new TaskService())
             {
-                var taskName = request.DataStore.GetValue("TaskName");
-                using (TaskService ts = new TaskService())
+                TaskCollection tasks = ts.RootFolder.GetTasks(new Regex(taskName));
+
+                if (tasks.Exists(taskName))
                 {
-                    TaskCollection tasks = ts.RootFolder.GetTasks(new Regex(taskName));
-
-                    if (tasks.Exists(taskName))
+                    foreach (Task task in tasks)
                     {
-                        foreach (Task task in tasks)
+                        if (task.Name.EqualsIgnoreCase(taskName))
                         {
-                            if (task.Name.EqualsIgnoreCase(taskName))
-                            {
-                                ts.RootFolder.DeleteTask(taskName);
-                            }
+                            ts.RootFolder.DeleteTask(taskName);
                         }
-                        return new ActionResponse(ActionStatus.Success);
                     }
-
-                    return new ActionResponse(ActionStatus.FailureExpected, "Task \"" + taskName + "\" not found.");
+                    return new ActionResponse(ActionStatus.Success);
                 }
-            }
 
-            return new ActionResponse(ActionStatus.FailureExpected, "User is does not have admin privileges.");
+                return new ActionResponse(ActionStatus.FailureExpected, "Task \"" + taskName + "\" not found.");
+            }
         }
     }
 }

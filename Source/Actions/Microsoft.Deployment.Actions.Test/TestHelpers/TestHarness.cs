@@ -25,7 +25,8 @@ namespace Microsoft.Deployment.Actions.Test
                 AppFactory = factory,
                 AppRootFilePath = factory.AppPath,
                 SiteCommonFilePath = factory.SiteCommonPath,
-                ServiceRootFilePath = factory.SiteCommonPath + "../"
+                ServiceRootFilePath = factory.SiteCommonPath + "../",
+                Source = "TEST",
             };
 
             Controller = new CommonController(model);
@@ -47,5 +48,6 @@ namespace Microsoft.Deployment.Actions.Test
             info.AppName = "TestApp";
             return await Controller.ExecuteAction(info, new ActionRequest() { DataStore = datastore });
         }
+
     }
 }

@@ -25,19 +25,18 @@ namespace Microsoft.Deployment.Actions.AzureCustom.CDM
         public override async Task<ActionResponse> ExecuteActionAsync(ActionRequest request)
         {
             var azureToken = request.DataStore.GetJson("AzureToken")["access_token"].ToString();
-            //AzureHttpClient client = new AzureHttpClient(azureToken);
             AzureHttpClient client = new AzureHttpClient(azureToken);
 
             var response = await client.ExecuteGenericRequestWithHeaderAsync(HttpMethod.Post, "https://management.azure.com/providers/Microsoft.PowerApps/enroll?api-version=2016-11-01&id=@id", "{}");
             var responseString = await response.Content.ReadAsStringAsync();
             var responseParsed = JsonUtility.GetJsonObjectFromJsonString(responseString);
-            var objectIds = responseParsed["featuresEnabled"][0]["id"].ToString();
+            var objectId = responseParsed["featuresEnabled"][0]["id"].ToString();
 
-            int indexFrom = objectIds.IndexOf("objectIds/") + "objectIds/".Length;
-            int indexTo = objectIds.LastIndexOf("/features");
+            int indexFrom = objectId.IndexOf("objectIds/") + "objectIds/".Length;
+            int indexTo = objectId.LastIndexOf("/features");
 
-            objectIds = objectIds.Substring(indexFrom, indexTo - indexFrom);
-            request.DataStore.AddToDataStore("objectIds", objectIds, DataStoreType.Public);
+            objectId = objectId.Substring(indexFrom, indexTo - indexFrom);
+            request.DataStore.AddToDataStore("ObjectID", objectId, DataStoreType.Public);
 
             return new ActionResponse(ActionStatus.Success);
         }

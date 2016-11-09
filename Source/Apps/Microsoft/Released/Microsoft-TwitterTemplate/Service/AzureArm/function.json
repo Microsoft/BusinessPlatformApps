@@ -52,10 +52,6 @@
               "value": "~0.8"
             },
             {
-              "name": "AZUREJOBS_EXTENSION_VERSION",
-              "value": "beta"
-            },
-            {
               "name": "WEBSITE_CONTENTAZUREFILECONNECTIONSTRING",
               "value": "[concat('DefaultEndpointsProtocol=https;AccountName=',parameters('storageaccountname'),';AccountKey=',listKeys(resourceId('Microsoft.Storage/storageAccounts', parameters('storageaccountname')), '2015-05-01-preview').key1)]"
             },

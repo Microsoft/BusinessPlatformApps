@@ -25,13 +25,17 @@ namespace Microsoft.Deployment.Actions.AzureCustom.CDM
         public override async Task<ActionResponse> ExecuteActionAsync(ActionRequest request)
         {
             var azureToken = request.DataStore.GetJson("AzureToken")["access_token"].ToString();
-            var environId = request.DataStore.GetValue("environId").ToString();
-            //var userEntity = request.DataStore.GetValue("userEntity").ToString();
+            var environId = request.DataStore.GetValue("EnvironmentID").ToString();
+            var entityName = request.DataStore.GetValue("EntityName").ToString();
+            var namespaceID = environId;
 
-            int indexFrom = environId.IndexOf("Legacy-") + "Legacy-".Length;
-            int indexTo = environId.Length;
+            if (environId.Contains("Legacy"))
+            {
+                int indexFrom = environId.IndexOf("Legacy-") + "Legacy-".Length;
+                int indexTo = environId.Length;
 
-            var namespaceID = environId.Substring(indexFrom, indexTo - indexFrom);
+                namespaceID = environId.Substring(indexFrom, indexTo - indexFrom);
+            }
 
             AzureHttpClient client = new AzureHttpClient(azureToken);
 
@@ -41,10 +45,10 @@ namespace Microsoft.Deployment.Actions.AzureCustom.CDM
 
             foreach (var obj in responseParsed["value"])
             {
-                //if(userEntity == obj["name"].ToString())
-                //{
-                //    return new ActionResponse(ActionStatus.FailureExpected);
-                //}
+                if (entityName == obj["name"].ToString())
+                {
+                    return new ActionResponse(ActionStatus.FailureExpected);
+                }
             }
             return new ActionResponse(ActionStatus.Success);
         }
