@@ -103,6 +103,30 @@ export class LoggerService {
         this.appInsights.flush();
     }
 
+    TrackUninstallStart() {
+        let properties: any = this.GetPropertiesForTelemtry();
+        properties.UserGenId = this.UserGenId;
+        properties.SessionId = this.SessionId;
+        properties.UserId = this.UserId;
+        properties.OperationId = this.OperationId;
+
+        properties.TemplateName = this.MS.NavigationService.appName;
+        this.appInsights.trackEvent('UI-UninstallStart', properties);
+        this.appInsights.flush();
+    }
+
+    TrackUninstallEnd(isSuccess) {
+        let properties: any = this.GetPropertiesForTelemtry();
+        properties.UserGenId = this.UserGenId;
+        properties.SessionId = this.SessionId;
+        properties.UserId = this.UserId;
+        properties.OperationId = this.OperationId;
+        properties.TemplateName = this.MS.NavigationService.appName;
+        properties.Sucess = isSuccess;
+        this.appInsights.trackEvent('UI-UninstallEnd', properties);
+        this.appInsights.flush();
+    }
+
     TrackDeploymentEnd(isSucess) {
         let properties: any = this.GetPropertiesForTelemtry();
         properties.UserGenId = this.UserGenId;
