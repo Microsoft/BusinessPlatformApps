@@ -22,7 +22,7 @@ namespace Microsoft.Deployment.Common.ActionModel
             get { return this.Status != ActionStatus.Failure && this.Status != ActionStatus.FailureExpected; }
         }
 
-        public DataStore DataStore;
+        public DataStore DataStore { get; set; }
 
         public ActionResponseExceptionDetail ExceptionDetail = new ActionResponseExceptionDetail();
 

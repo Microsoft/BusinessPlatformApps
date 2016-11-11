@@ -1,29 +1,15 @@
 ﻿<template>
     <h1 class="st-title">Connect to Dynamics CRM</h1>
-    <p class="st-subtitle">
-        We now need to set up a connection to Dynamics CRM.
-    </p>
+    <p class="st-subtitle">We now need to set up a connection to Dynamics CRM.</p>
 
-    <div if.bind="isActivated && !hasToken">
-        <p class="st-text">Would you like to connect to Dynamics CRM through an organizational account or a Microsoft account?</p>
-        <div class="st-float">
-            <select class="btn btn-default dropdown-toggle st-input" disabled.bind="MS.HttpService.isServiceBusy" value.bind="connectionType">
-                <option value.bind="azureConnection.Organizational">Organizational Account (Work or School)</option>
-                <option value.bind="azureConnection.Microsoft">Microsoft Account (Hotmail, Outlook, etc.)</option>
-            </select>
-        </div>
+    <div class="st-float" if.bind="!hasToken">
+        <button class="primary" click.delegate="connect()" disabled.bind="MS.HttpService.isServiceBusy">Connect</button>
+    </div>
 
-        <div class="st-float" if.bind="connectionType == azureConnection.Microsoft">
-            <p class="st-text">
-                In order to connect to your Microsoft account we will need to know your Azure directory.
-                To figure this out please refer to our <a href="http://community.powerbi.com/t5/Power-BI-Solution-Templates/Guide-for-using-Microsoft-accounts-with-Twitter-template/m-p/60088#M31" target="_blank">guide</a>.
-            </p>
-            <p class="st-text">Azure Directory:</p>
-            <input class="st-input" placeholder="directoryname.onmicrosoft.com" type="text" change.delegate="Invalidate()" disabled.bind="MS.HttpService.isServiceBusy" value.bind="azureDirectory" />
-        </div>
-
-        <div class="st-float">
-            <button class="primary" click.delegate="connect()" disabled.bind="MS.HttpService.isServiceBusy">Connect</button>
-        </div>
+    <div class="st-float" if.bind="msCrmOrganizations && msCrmOrganizations.length > 0">
+        <p class="st-text">Dynamics CRM Organization:</p>
+        <select class="btn btn-default dropdown-toggle st-input" disabled.bind="MS.HttpService.isServiceBusy" value.bind="msCrmOrganizationId">
+            <option repeat.for="msCrmOrganization of msCrmOrganizations" value.bind="msCrmOrganization.OrganizationId">${msCrmOrganization.OrganizationName}</option>
+        </select>
     </div>
 </template>

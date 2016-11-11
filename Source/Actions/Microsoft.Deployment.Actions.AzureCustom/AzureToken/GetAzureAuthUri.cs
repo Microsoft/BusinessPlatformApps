@@ -18,11 +18,22 @@ namespace Microsoft.Deployment.Actions.AzureCustom.AzureToken
 #pragma warning restore CS1998 // Async method lacks 'await' operators and will run synchronously
         {
             var aadTenant = request.DataStore.GetValue("AADTenant");
-            string authBase = string.Format(Constants.AzureAuthUri, aadTenant);
 
-            string clientId = !string.IsNullOrEmpty(request.DataStore.GetValue("IsMsCrm"))
-                ? Constants.DynamicsCRMClientId
-                : Constants.MicrosoftClientId;
+            string authBase;
+            string clientId;
+            string resource;
+            if (!string.IsNullOrEmpty(request.DataStore.GetValue("IsMsCrm")))
+            {
+                authBase = Constants.MsCrmAuthority;
+                clientId = Constants.MsCrmClientId;
+                resource = Constants.MsCrmResource;
+            }
+            else
+            {
+                authBase = string.Format(Constants.AzureAuthUri, aadTenant);
+                clientId = Constants.MicrosoftClientId;
+                resource = Constants.AzureManagementApi;
+            }
 
             Dictionary<string, string> message = new Dictionary<string, string>
             {
@@ -30,7 +41,7 @@ namespace Microsoft.Deployment.Actions.AzureCustom.AzureToken
                 { "prompt", "consent" },
                 { "response_type", "code" },
                 { "redirect_uri", Uri.EscapeDataString(request.Info.WebsiteRootUrl + Constants.WebsiteRedirectPath) },
-                { "resource", Uri.EscapeDataString(Constants.AzureManagementApi) }
+                { "resource", Uri.EscapeDataString(resource) }
             };
 
             StringBuilder builder = new StringBuilder();

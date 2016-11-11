@@ -13,25 +13,26 @@
                 "name": "$SiteCommon$/pagesgallery/getting-started.html",
                 "templateName": "Sales Management for Dynamics CRM"
             },
-            {
-                "displayname": "Login",
-                "name": "$SiteCommon$/pagesgallery/azure-login.html",
-                "pricingCost": "$('By deploying the template you authorize the creation of Azure resources on your subscription. The base cost of these services is approximately $1.50 a day. The cost will vary with the amount of data that will be moved.')",
-                "pricingUrl": "SalesforcePricingURL"
-            },
-            {
-                "name": "$SiteCommon$/pagesgallery/sql-server.html",
-                "displayname": "Target",
-                "isAzureSql": true,
-                "newSqlDatabase": "$(this.MS.UtilityService.GetUniqueId(10))",
-                "showAzureSql": true,
-                "showNewSqlOption": true,
-                "sqlInstance": "NewSql",
-                "subtitle": "Set up a connection to SQL so we can bring in your Dynamics CRM data.",
-                "title": "Connect to your SQL Database"
-            },
+            //{
+            //    "displayname": "Login",
+            //    "name": "$SiteCommon$/pagesgallery/azure-login.html",
+            //    "pricingCost": "$('By deploying the template you authorize the creation of Azure resources on your subscription. The base cost of these services is approximately $1.50 a day. The cost will vary with the amount of data that will be moved.')",
+            //    "pricingUrl": "SalesforcePricingURL"
+            //},
+            //{
+            //    "name": "$SiteCommon$/pagesgallery/sql-server.html",
+            //    "displayname": "Target",
+            //    "isAzureSql": true,
+            //    "newSqlDatabase": "$(this.MS.UtilityService.GetUniqueId(10))",
+            //    "showAzureSql": true,
+            //    "showNewSqlOption": true,
+            //    "sqlInstance": "NewSql",
+            //    "subtitle": "Set up a connection to SQL so we can bring in your Dynamics CRM data.",
+            //    "title": "Connect to your SQL Database"
+            //},
             {
                 "displayname": "Dynamics CRM Login",
+                "entities": "account,businessunit,lead,opportunity,opportunityproduct,product,systemuser,systemusermanagermap,territory",
                 "name": "$SiteCommon$/pagesgallery/mscrm-login.html",
                 "pricingCost": "$('By deploying the template you authorize the creation of Azure resources on your subscription. The base cost of these services is approximately $1.50 a day. The cost will vary with the amount of data that will be moved.')",
                 "pricingUrl": "SalesforcePricingURL"

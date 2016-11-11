@@ -10,7 +10,6 @@
     using System.Net.Http.Headers;
     using System.Threading.Tasks;
 
-
     [Export(typeof(IAction))]
     public class CrmGetProfileStatus : BaseAction
     {

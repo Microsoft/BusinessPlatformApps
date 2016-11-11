@@ -22,6 +22,9 @@
         public const string WebsiteRedirectPath = "/redirect.html";
         public const string AppInsightsKey = "74bc59f2-6526-41b1-ab84-370532ec5d42";
 
-        public const string DynamicsCRMClientId = "fb430120-4027-46b2-8499-95e0e8a3e646";
+        public const string MsCrmAuthority = "https://login.windows.net/common/oauth2/authorize?";
+        public const string MsCrmClientId = "fb430120-4027-46b2-8499-95e0e8a3e646";
+        public const string MsCrmResource = "b861dbcc-a7ef-4219-a005-0e4de4ea7dcf";
+        public const string MsCrmToken = "https://login.windows.net/common/oauth2/token";
     }
 }

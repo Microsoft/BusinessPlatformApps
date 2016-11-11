@@ -22,14 +22,25 @@ namespace Microsoft.Deployment.Actions.AzureCustom.AzureToken
             string code = request.DataStore.GetValue("code");
             var aadTenant = request.DataStore.GetValue("AADTenant");
 
-            string tokenUrl = string.Format(Constants.AzureTokenUri, aadTenant);
+            string api;
+            string clientId;
+            string tokenUrl;
+            if (!string.IsNullOrEmpty(request.DataStore.GetValue("IsMsCrm")))
+            {
+                api = Constants.MsCrmResource;
+                clientId = Constants.MsCrmClientId;
+                tokenUrl = Constants.MsCrmToken;
+            }
+            else
+            {
+                api = Constants.AzureManagementCoreApi;
+                clientId = Constants.MicrosoftClientId;
+                tokenUrl = string.Format(Constants.AzureTokenUri, aadTenant);
+            }
+
             HttpClient client = new HttpClient();
 
-            string clientId = !string.IsNullOrEmpty(request.DataStore.GetValue("IsMsCrm"))
-                ? Constants.DynamicsCRMClientId
-                : Constants.MicrosoftClientId;
-
-            var builder = GetTokenUri(code, Constants.AzureManagementCoreApi, request.Info.WebsiteRootUrl, clientId);
+            var builder = GetTokenUri(code, api, request.Info.WebsiteRootUrl, clientId);
             var content = new StringContent(builder.ToString());
             content.Headers.ContentType = new MediaTypeHeaderValue("application/x-www-form-urlencoded");
             var response = await client.PostAsync(new Uri(tokenUrl), content).Result.Content.ReadAsStringAsync();
