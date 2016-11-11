@@ -21,10 +21,10 @@ namespace Microsoft.Deployment.Actions.Common.PBI
             var filename = request.DataStore.GetValue("FileName");
             string connectionString = request.DataStore.GetAllValues("SqlConnectionString")[sqlIndex];
 
-            var templateFullPath = request.Info.App.AppFilePath.Replace("\\", "/") + $"/service/PowerBI/{filename}";
+            var templateFullPath = request.Info.App.AppFilePath + $"/service/PowerBI/{filename}";
             var tempfileName = Path.GetRandomFileName();
-            var templateTempFullPath = request.ControllerModel.ServiceRootFilePath.Replace("\\","/") + $"/Temp/{tempfileName}/{filename}";
-            Directory.CreateDirectory(request.ControllerModel.ServiceRootFilePath + $"/Temp/{tempfileName}");
+            var templateTempFullPath = request.Info.App.AppFilePath + $"/Temp/{tempfileName}/{filename}";
+            Directory.CreateDirectory(request.Info.App.AppFilePath + $"/Temp/{tempfileName}");
 
             var creds = SqlUtility.GetSqlCredentialsFromConnectionString(connectionString);
 
@@ -34,7 +34,7 @@ namespace Microsoft.Deployment.Actions.Common.PBI
                 wrangler.ReplaceKnownVariableinMashup("STSqlDatabase", creds.Database);
             }
 
-            string serverPath = request.ControllerModel.ServiceRootFilePath + $"/Temp/{tempfileName}/{filename}";
+            string serverPath = request.Info.SerivceRootUrl + "/bin"+request.Info.App.AppRelativeFilePath + $"/Temp/{tempfileName}/{filename}";
             return new ActionResponse(ActionStatus.Success, JsonUtility.GetJObjectFromStringValue(serverPath));
         }
     }

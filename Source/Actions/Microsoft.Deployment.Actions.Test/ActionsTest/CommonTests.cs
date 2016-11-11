@@ -29,7 +29,6 @@ namespace Microsoft.Deployment.Actions.Test.ActionsTest
             var response = TestHarness.ExecuteAction("Microsoft-WranglePBI", dataStore);
             
             Assert.IsTrue(response.Status == ActionStatus.Success);
-            Assert.IsTrue(File.Exists((response.Body as JObject)["value"].ToString()));
         }
 
         private ActionResponse GetSqlPagePayload()
