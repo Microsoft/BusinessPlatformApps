@@ -8,7 +8,7 @@ System Center Configuration Manager Solution Template Documentation
 4. [How to Install](#how-to-install)
 5. [Reports Walkthrough](#report-walkthrough)
 6. [Technical Description](#technical-description)
-7. [Customizing the Template]()
+7. 
 
 
 # Introduction
@@ -30,7 +30,7 @@ The following document provides a walkthrough of installation steps as well as i
 
 The flow of the SCCM solution template is as follows:
 
--   Windows task scheduler launches a process that pulls data from your SCCM database each day.
+-   Windows task scheduler daily pulls data from your SCCM database
 
 -   The task copies data into Azure SQL (or SQL server)
 
@@ -53,13 +53,13 @@ The flow of the SCCM solution template is as follows:
 # How to Install
 
 
-![Image2](Resources/Images/GetStarted.png)
+![Image2](Resources/Images/image2.png)
 
 **Step 1: Connect to SCCM database**
 
 Enter a server name for your SCCM database, provide a credential to the server, validate a connection to the server, and choose your SCCM database. Note that the template supports System Center 2012 Configuration Manager R2 SP1 (5.00.8239.1000) or later. The credential used to connect to SCCM will be used to create a scheduled task to pull data from SCCM.
 
-![Image3](Resources/Images/ConnectSCCM.png)
+![Image3](Resources/Images/image3.png)
 
 **Step 2: Connect to your destination database**
 
@@ -71,7 +71,7 @@ Enter a server name for your destination database, validate a connection to the 
 
 Note that database owner role is required to create tables and execute stored procedures.
 
-![Image4](Resources/Images/ConnectSQL.png)
+![Image4](Resources/Images/image4.png)
 
 **Step 3: Customize your settings**
 
@@ -87,25 +87,25 @@ Configure the following parameters and click “Validate”.
 
 Note that the scheduled task will not be triggered if a machine goes to sleep. The task will be restarted as soon as possible when the machine is out of sleep mode.
 
-![Image5](Resources/Images/Config.png)
+![Image5](Resources/Images/image5.png)
 
-**Step 4: Verify and run**
+**Step 4: Verify and run **
 
 Verify the information and click “Run”.
 
-![Image6](Resources/Images/Verify.png)
+![Image6](Resources/Images/image6.png)
 
-**Step 5: Track your progress**
+**Step 5: Track your progress **
 
 The setup will create new tables, views, stored procedures in destination database, install required SQL tools if not found, create/run a new task.
 
-![Image7](Resources/Images/Track.png)
+![Image7](Resources/Images/image7.png)
 
-**Step 6: Start pulling data**
+**Step 6: Start pulling data **
 
 We'll show you progress while you wait. Please don't close the browser until all the steps are completed. This might take a while, depending on the size of your SCCM database.
 
-![Image8](Resources/Images/Track2.png)
+![Image8](Resources/Images/image8.png)
 
 **Step 7: Download PBIX**
 
@@ -117,7 +117,7 @@ Please click “Refresh” to import data from your destination database and ent
 
 ![Image10](Resources/Images/image10.png)
 
-**Step 8: Publish the report to PowerBI.com**
+**Step 8: Publish the report to PowerBI.com **
 
 At this point, you should be able to see your SCCM data. If you are interested in publishing the report to [Power BI](https://powerbi.microsoft.com/en-us/) and share it with colleagues, click “Publish” to Power BI.
 
@@ -167,27 +167,15 @@ The report allows users to select a machine to show installed programs or select
 # Technical Description
 This section describes each component of the solution template in detail.
 
-## Client Data Extraction and Load
+## Data Extraction and Load
 
-A powershell script dataload.ps1 found in the folder C:\ProgramData\Business Platform Solution Templates\Microsoft-SCCMTemplate 
+The powershell script dataload.ps1 found in the folder C:\ProgramData\Business Platform Solution Templates\Microsoft-SCCMTemplate 
 executes a collection of scripts to pull data from the source SCCM datatbase into a flat file, bcp it to the
 destination database, and executes stored procedures in the destination database to merge this data with the results from 
 prior loads.
 
-The script is executed from Task Scheduler. To change or pause the schedule, open Task Scheduler and locate the Task "Power BI Solution Template - SCCM". 
-
 The same data is pulled with each load. Destination database stored procedures merge the results.
 
-## Understanding Credentials for Accessing the SCCM and Target Databases
-
-The task requires credentials to be able to access the SCCM and for the target databases. These credentials are securely stored with
-Credential Manager.
-
-You can manually manage the credentials for both the SCCM and target database after the solution template
-is provisioned. To change the windows credentials used to access the SCCM DB and target database, open task
-scheduler, find the task "Power BI Solution Template - SCCM" and change the task's credentials.
-
-To change the credentials used to access the target database when SQL Authentication was used, open Credential Manager (open Control Panel and search for Credential Manager), and edit the credential "pbi_sccm".
 
 ## SQL Server DB - SQL Server or Azure SQL Database 
 ### Tables
@@ -1039,77 +1027,7 @@ than daily, that day's record is updated. A merge statement inserts new records 
 is renamed as the destination table, and a new staging table is created.
 
 
-### Power BI
-#### Tables and Relationships
-
-The relationships between the tables are shown in the diagram below:
-![Tables](Resources/Images/SCCMTblsRlns.png)
-
-
-#### Power BI Measures
-The table below lists the measures in the Power BI file:
-
-<sub>
-
-|Measure | Description |
-|--------|-------------|
-| Installation Count | Count of currently installed software |
-| Last Malware Check | The date the computer or device scanned for malware |
-| Malware Count | Malware count by day |
-| Unresolved Malware Count | Count of active malware by day |
-| Computer Software Update Count | Count of software updates |
-| Computers with Missing Updates | Count of computers missing distributed updates |
-| Missing Updates | Count of missing updates (where one computer or device can be missing more than one update) |
-| endpointtarget | Target value for end point compliance (a configured value) |
-| healthevaluationtarget | Target value for health evaluation (a configured value) |
-| Last data load date | the last successful date the data was read from SCCM |
-| Last Date | the last date in the date table |
-| Program Count | The number of distinct software programs installed across the SCCM instance |
-| Antispyware Enabled % | The percentage of computers equipped with anti-spyware software |
-| Antivirus Enabled % | The percentage of computers equipped with anti-virus software |
-| Behavior Monitor Enabled % | The percentage of computers equipped with behavior monitoring software |
-| Client Not Healthy Count | the number of computers or devices evaluated as not healthy 
-| Computer Count | Number of computers on a given day (note that this includes computers active at a point in time that were since deleted) |
-| Endpoint Compliance % | Percentage of devices the satisfy endpint compliance policy |
-| Endpoint NonCompliance Count | Count of devices out of endpoint compliance |
-| Health Evaluation Success % | Percentage of devices evaluated as healthy. Note that devices that have not been scanned are not considered |
-| I/O Protection Enabled % | Percentage of devices with I/O protection enabled. Note that devices that have not been scanned are not considered |
-| AV Compliance % | Percentage of site servers in AV compliance |
-| MP Success Percentage | Percentage of site servers comunicating with management server |
-| Site Availability % | Percentage of site servers that are available |
-| Site Count | Number of site servers |
-| Site Server Client Health % | NUmber of site servers that are healthy (when site server considered a client ) |
-| SQL Replication % | Number of site servers with active link status |
-| User Count | Number of users as of the latest SCCM scan |
-
-</sub>
-
-## Power BI Calculated Columns
-<sub>
-
-| Table | Column | Description |
-|-------|--------|-------------|
-| Computer | Antivirus | Contains one of three valid values indicating whether the computer is within antivirus policy :  "Not compliant", "Compliant", or "Unknown" |
-| Computer |  Behavior Monitor | Contains one of three valid values indicating whether the computer is within antivirus policy :  "Not compliant", "Compliant", or "Unknown" |
-| Computer |  Current Antispyware  | Contains one of three valid values indicating whether the computer has the latest antispyware software:  "Not compliant", "Compliant", or "Unknown" |
-| Computer | Endpoint Protection  | Contains one of three valid values indicating whether the computer has the latest endpoint protection software:  "Not compliant", "Compliant", or "Unknown" |
-| Computer | Input/Output Protection  | Contains one of three valid values indicating whether the computer has the latest I/O protection:  "Not compliant", "Compliant", or "Unknown" |
-| Computer | Is On Access Protection Compliant | Contains one of three valid values indicating whether the computer has the latest On Access Protection:  "Not compliant", "Compliant", or "Unknown" |
-| Computer | Real Time Protection | Contains one of three valid values indicating whether the computer has real time access enabled. Valid values:  "Not compliant", "Compliant", or "Unknown" |
-| ComputerMalware | IsMostRecentMalwareCheck | Whether or not the computer was checked for malware on the most recent scan |
-| ComputerUpdate | last status change date | the last date the computer's check for updates changed |
-| Date | IsWithinLast2Months | Whether the current date is within the last two months  |
-| Date | IsWithinLast6Months | Whether the current date is within the last six months  |
-| Scan History | Client State Description | Sttae of the device, valid values: "Active/Pass", "Active/Fail", "Active/Unknown", "Inactive/Pass", "Inactive/Fail", "Inactive/Unknown", or "Unknown" |
-| Scan History | Endpoint Compliance | Whether or not the machine meets all endpoint criteria (antispyware, antivirus, behavior monitor, I/O protection, NIS enabled, On Access protection and realtime protection) |
-| Scan History | Health Evaluation Description | Most recent health evaluation. One of "Not yet evaluated", "Not applicable", "Evaluation failed", "Evaluated, remediation failed", "Not evaluated, dependency failed" ,"Evaluated, remediation succeeded", Evaluated, succeeded: All tests passed", or "Unknown" |
-| Scan History | Is Most Recent | Set to true for the most recent scan, otherwise false |
-| Scan History | Last Health Evaluation Summary | Results of most recent health evaluation. One of "Failed", "Failed", "Failed", "Failed", "Failed", "Success", "Success", or "Unknown" |
-| Scan History | Signature Age (days) within Compliance | Whether or note the signature age is within the last seven days |
-
-</sub>
-
-# Customizing the Template
+# Customizing Template
 ## Configuration Table
 
 Once you set up the solution template you may want to modify your settings. In order to do this,

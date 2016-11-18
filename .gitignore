@@ -28,3 +28,6 @@
 *.wixpdb
 /Source/Apps/Microsoft/Released/Microsoft-SCCMTemplate/Microsoft-SCCMTemplate.exe
 /Source/Apps/Microsoft/Released/Microsoft-SCCMTemplate/Microsoft-SCCMTemplate.msi
+*.sqlite
+/.vs/slnx.sqlite
+/.vs/slnx.sqlite

@@ -94,7 +94,7 @@ _Complete this step when an Azure SQL DB is used to host the Salesforce data; ot
 No software need be installed when the data is moved to a SQL Azure DB. There are three providers available for Azure SQL Destination:
 - Microsoft Azure Data Factory or ADF - a cloud-based data integration service that automates the movement and transformation of data.
 - Informatica - Leverages the Informatica Cloud Integration Platform to move data from Salesforce to Azure SQL
-- Scribe -  Uses Scribe’s cloud-based platform for Salesforce connectivity
+- Scribe -  Uses Scribeâ€™s cloud-based platform for Salesforce connectivity
 
 For ADF, simply connect to Azure and the necessary services are automatically created and configured for you:
 ![AzureConnect](../Common/Resources/Images/ConnectAzure.png)

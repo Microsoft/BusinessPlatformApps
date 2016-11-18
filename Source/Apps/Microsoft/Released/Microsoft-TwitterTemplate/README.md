@@ -1,8 +1,20 @@
 Brand & Campaign Management Solution Template Documentation
 ===========================================================
 
-Introduction
-============
+# Table of Contents
+1. [Introduction](#introduction)
+2. [Architecture](#architecture)
+3. [System Requirements](#system-requirements)
+4. [How to Install](#how-to-install)
+5. [Architecture Deep Dive] (#architecture-deep-dive)
+6. [Model Schema] (#model-schema)
+7. [Reports Walkthrough](#report-walkthrough)
+8. [Customizations](#customizations)
+9. [Pricing] (#pricing)
+
+
+
+#Introduction
 
 The Twitter template spins up a complete brand/campaign solution. It stands up an end-to-end solution that pulls data from Twitter, enriches the data using machine learning and stores it in Azure SQL. Users can then use pre-built Power BI reports that leverage Microsoft research technology to start analyzing their Twitter data and augmenting it with additional data sources.
 
@@ -18,10 +30,9 @@ The template lets you do things like:
 
 The following document provides a walkthrough of the architecture, a deep dive into every component, comments on customizability as well as information on additional topics like pricing. For any questions not covered in this document, please contact the team at <PBISolnTemplates@microsoft.com>
 
-Architecture
-------------
+#Architecture
 
-![Image](Resources/media/image1.png)
+![Image](Resources/media/image46.png)
 
 The flow of the Twitter solution template is as follows:
 
@@ -31,10 +42,11 @@ The flow of the Twitter solution template is as follows:
 
 -   Azure Function enriches tweet and writes it to Azure SQL
 
+-   Azure Function also calls textual analytics cognitive service to work out sentiment of tweet
+
 -   Power BI imports data into it from Azure SQL and renders pre-defined reports
 
-System Requirements
-===================
+#System Requirements
 
 Setting up the template requires the following:
 
@@ -46,8 +58,7 @@ Setting up the template requires the following:
 
 -   Twitter Account
 
-How to Install
-==============
+#How to Install
 
 Before diving into the components of the solution, we will go through how to set things up. To get started with the solution, navigate to the [Twitter template page](https://powerbi.microsoft.com/en-us/solution-templates/brand-management-twitter) and click **Install Now**.
 
@@ -72,6 +83,10 @@ Logging into Azure gives the application access to your Azure subscription and p
 **Target:** Connect to an existing SQL Server or provide details which the application will use to spin up an Azure SQL on your behalf. Only Azure SQL is supported for this template. If a user chooses to spin up a new Azure SQL, this will get deployed in their Azure subscription inside the newly created resource group.
 
 ![Image](Resources/media/image6.png)
+
+**Cognitive Services:** Congitive services are an Azure service that does textual analytics incuding sentiment analysis. Choose between spinning up a new cognitive service on your subscription or selecting an existing one. If you want to use an existing service you can log into your Azure account, find they key for the cognitive service and copy paste it into the installer.
+
+![Image](Resources/media/image47.PNG)
 
 **Twitter:** Use OAuth to sign into a Twitter account. The application will sign into this Twitter account inside the Logic App and use it to pull tweets (this will not have any impact on your Twitter account). We will never post tweets on behalf of a user.
 
@@ -131,47 +146,119 @@ Whatever tweets are found in the 3-minute interval, are batched up and sent sequ
 
 ![Image](Resources/media/image16.png)
 
+### Cognitive Services:
+
+The Azure Cogntivie Service for Textual Analytics is used inside the Azure Function (covered in the next section). There are many services available but we use it for the sentiment API. With regards to the Cognitive Service resource itself, there are a few configurations that can be done inside the Azure portal. 
+
+Most importantly, a user is able to change the SKU they want to use for the Cognitive Service. As a default, we set it to S1 (100K calls) which costs $150 per month. Depending on the anticipated traffic you can change the SKU to meet your needs.
+
+![Image](Resources/media/image48.PNG)
+
 ### Azure Function: 
 
-A JSON payload of the tweet gets sent into the newly created Azure Function which consists of a Python script. When the function was spun up the run file was updated to the specific script below. FTP was also used to upload all the required python packages for the script to run (you cannot install Python packages/modules from scratch inside the Azure function environment without using FTP).
+A JSON payload of the tweet gets sent into the newly created Azure Function which consists of a C# script. When the function was spun up the run file was updated to the specific script below. 
 
-The first part of the script imports all the required packages for the solution:
+The Run method reads the tweet + all of it's metadata in from the request and parses this information. It also saves the connection string needed for connecting to SQL.
 
-![Image](Resources/media/image17.png)
+```C#
+public static async Task<object> Run(HttpRequestMessage req, TraceWriter log)
+{
+    // Read all connectionstrings and keys for SQL
+    string connectionString = System.Configuration.ConfigurationManager.ConnectionStrings["connectionString"].ConnectionString;
+    TweetHandler tweetHandler = new TweetHandler(connectionString);
+    
+    // Read json string from request and parse tweets
+    string jsonContent = await req.Content.ReadAsStringAsync();
+    var tweets = JsonConvert.DeserializeObject(jsonContent);
+    if (tweets is JArray)
+    {
+        foreach (var item in (JArray)tweets)
+        {
+            var individualtweet = item.ToString();
+            tweetHandler.ParseTweet(individualtweet);
+        }
+    }
+    else
+    {
+        tweetHandler.ParseTweet(jsonContent);
+    }
 
-The sentence tokenizer and lexicon dictionaries also get imported:
+    // log.Info($"{data}");
 
-![Image](Resources/media/image18.png)
+    //Return status ok if no exception encountered
+    return req.CreateResponse(HttpStatusCode.OK, "");
+}
 
-The following line is important - this is where the Azure Function reads in the output from the Logic App (JSON tweet). It saves it as ‘input’:
+```
 
-![Image](Resources/media/image19.png)
+Inside the ParseTweet method we parse the tweet +metadata and read in the Twitter handles and Twitter handle IDs that the user wants to track (this was defined on the Twitter Handles page). The Twitter handles and IDs come from the SQL ‘Configuration table’. The handles and IDs are saved into a  dictionary.
 
-The following deserializes the tweet and saves it into a Python dictionary:
+```C#
+    public async Task<bool> ParseTweet(string entireTweet)
+    {
+        // Convert JSON to dynamic C# object
+        tweetObj = JObject.Parse(entireTweet);
+        tweet = tweetObj;
 
-![Image](Resources/media/image20.png)
+        //Connect to Azure SQL Database & bring in Twitter Handles & IDs
+        string twitterHandles =
+            ExecuteSqlQuery("select value FROM pbist_twitter.configuration where name = \'twitterHandle\'", "value");
+        string twitterHandleId =
+            ExecuteSqlQuery("select value FROM pbist_twitter.configuration where name = \'twitterHandleId\'",
+                "value");
 
-The application then creates a connection to your SQL Server (the SQL defined during the setup). The SQL details are never shown in clear text –parameters are used that get passed into the Azure function:
+        // Split out all the handles & create dictionary
+        String[] handle = null;
+        String[] handleId = null;
+        var dictionary = new Dictionary<string, string>();
 
-![Image](Resources/media/image21.png)
+        if (twitterHandles != String.Empty)
+        {
+            handle = SplitHandles(twitterHandles, ',');
+            handleId = SplitHandles(twitterHandleId, ',');
+            for (int index = 0; index < handle.Length; index++)
+            {
+                dictionary.Add(handle[index], handleId[index]);
+            }
+        }
+```        
+We currently support English, Spanish, French and Portugese for sentiment detection. Assuming the tweet is in one of those languages the sentiment is worked out. We do this by calling the sentiment Cognitive API (MakeSentimentRequest method). The score gets discretized and a categorical variable is defined which indicates whether the tweet is positive, negative or neutral.
 
-The next step is to read in all the twitter handles the user wants to track (this was defined on the Twitter Handles page). The twitter handles are written into a SQL ‘Configuration table’ and are then referenced here. Both twitter handles and twitter handle IDs are saved (IDs are programmatically worked out and also stored in SQL). The handles and IDs are saved into a Python dictionary.
 
-![Image](Resources/media/image22.png)
+```
+        // Check if language of tweet is supported for sentiment analysis
+        originalTweets["lang"] = tweet.TweetLanguageCode.ToString();
+        if (originalTweets["lang"] == "en" || originalTweets["lang"] == "fr" || originalTweets["lang"] == "es" || originalTweets["lang"] == "pt")
+        {
+            //Sentiment analysis - Cognitive APIs 
+            string sentiment = await MakeSentimentRequest(tweet);
+            sentiment = (double.Parse(sentiment) * 2 - 1).ToString(CultureInfo.InvariantCulture);
+            string sentimentBin = (Math.Floor(double.Parse(sentiment) * 10) / 10).ToString(CultureInfo.InvariantCulture);
+            string sentimentPosNeg = String.Empty;
+            if (double.Parse(sentimentBin) > 0)
+            {
+                sentimentPosNeg = "Positive";
+            }
+            else if (double.Parse(sentimentBin) < 0)
+            {
+                sentimentPosNeg = "Negative";
+            }
+            else
+            {
+                sentimentPosNeg = "Neutral";
+            }
 
-Only English is currently supported so the first step is to check the language. Assuming the tweet is in English the sentiment is worked out. The tweet gets split into individual words, each word gets assigned a sentiment and the sentiment score gets averaged out across all the words. The score gets discretized and a categorical variable is defined which indicates whether the tweet is positive, negative or neutral.
-
-![Image](Resources/media/image23.png)
-
-![Image](Resources/media/image24.png)
-
-The next step is to work out the ‘direction’ of the tweet. The script looks at the twitter handles brought in between steps 44-55 (previous page) and checks whether a match is found in the JSON body of the tweet. Since there could be a discrepancy between the tweets brought in and the twitter handles followed, it isn’t a given that a direction will be found. For this reason, the account is initialized to ‘unknown’ (line 83). The account gets overwritten and the tweet direction populated if a match is found.
-
-![Image](Resources/media/image25.png)
-
-![Image](Resources/media/image26.png)
-
-The first check we do is if the tweet is a retweet or not – if it is, it goes into the block above. We then run all the specific checks to figure out where the account ID/account name is present (e.g. if the account ID we are tracking is present in the ‘tweetinreplytouserid’ property inside the JSON body of the tweet, we know the tweet is an ‘InboundReplyRT’.
+            //Save sentiment and language metadata into dictionary
+            originalTweets["sentiment"] = sentiment;
+            originalTweets["sentimentBin"] = sentimentBin;
+            originalTweets["sentimentPosNeg"] = sentimentPosNeg;
+        }
+        else
+        {
+            originalTweets["sentimentPosNeg"] = "Undefined";
+        }
+```
+The next step is to work out the ‘direction’ of the tweet. The script looks at the twitter handles brought in and checks whether a match is found in the JSON body of the tweet + metadata. Since there could be a discrepancy between the tweets brought in and the twitter handles followed, it isn’t a given that a direction will be found. For this reason, the account is initialized to ‘unknown’.  The account gets overwritten and the tweet direction populated if a match is found.
 
 Before continuing with the script, here are details about what each tweet ‘direction’ means (the example we go through is of someone following the Microsoft twitter handle):
 
@@ -199,66 +286,138 @@ Text: I am tweeting with Microsoft mentioned in the tweet text (not @Microsoft 
 
 RTText: I am retweeting a tweet that mentions Microsoft in the tweet text (not @Microsoft or \#Microsoft)
 
-Lines 109-118 check if the tweet already exists as an entry in our tweets\_normalized table. This table stores the raw tweets along with attributes like the original author and sentiment. Since both tweets and retweets are brought in, it is possible that the tweets have been written into this table before (we don’t want to duplicate these entries – things like tweet text, **original** author and sentiment will not vary from retweet to retweet – we only want one single entry for the tweet).
+Once we work out the tweet direction we save the tweet text + metadata like author information, sentiment into the originalTweets table.
 
-The script therefore checks if the tweet exists, if it doesn’t the tweet gets written it into SQL, otherwise it gets skipped.
+```C#
+        // Work out account and tweet direction for retweets
+        if (tweet.OriginalTweet != null)
+        {
+            processedTweets["direction"] = "Text Retweet";
+            originalTweets["twitterhandle"] = tweet.OriginalTweet.UserDetails.UserName;
+            if (dictionary.Count > 0)
+            {
+                foreach (var entry in dictionary)
+                {
+                    HashtagDirectionCheck(entry, " Retweet");
+                    MessageDirectionCheck(entry, tweetObj.SelectToken("OriginalTweet.UserMentions"), " Retweet");
+                }
+            }
+            // Save retweets into SQL table
+            saveTweets(tweet.OriginalTweet);
+        }
+        // Works out the tweet direction for original tweets (not retweets)
+        else
+        {
+            originalTweets["twitterhandle"] = tweet.UserDetails.UserName;
+            if (dictionary.Count > 0)
+            {
+                foreach (var entry in dictionary)
+                {
+                    HashtagDirectionCheck(entry);
+                    MessageDirectionCheck(entry, tweetObj.SelectToken("UserMentions"));
+                }
+            }
+            
+            // Save original tweets into SQL Table
+            saveTweets(tweet);
+        }
+            
+ ```
+ We then pull out more metadata from the tweet such as timestamps, image links, how many times a tweet was retweet and how many followers the author has:
+ 
+```C#
+        processedTweets["tweetid"] = tweet.TweetId;
 
-![Image](Resources/media/image27.png)
+        //Save time metadata about processed tweets
+        string createdat = tweet.CreatedAt.ToString();
+        DateTime ts = DateTime.ParseExact(createdat, "ddd MMM dd HH:mm:ss +ffff yyyy", CultureInfo.CurrentCulture);
+        processedTweets["dateorig"] = DateTime.Parse(ts.Year.ToString() + " " + ts.Month.ToString() + " " + ts.Day.ToString() + " " + ts.Hour.ToString() + ":" + ts.Minute.ToString() + ":" + ts.Second.ToString()).ToString(CultureInfo.InvariantCulture);
+        processedTweets["minuteofdate"] = DateTime.Parse(ts.Year.ToString() + " " + ts.Month.ToString() + " " + ts.Day.ToString() + " " + ts.Hour.ToString() + ":" + ts.Minute.ToString() + ":00").ToString(CultureInfo.InvariantCulture);
+        processedTweets["hourofdate"] = DateTime.Parse(ts.Year.ToString() + " " + ts.Month.ToString() + " " + ts.Day.ToString() + " " + ts.Hour.ToString() + ":00:00").ToString(CultureInfo.InvariantCulture);
+        
 
-The next block of code is very similar to the previous in that it figures out the direction of a tweet but for non-retweets:
+        //Save media and follower metadata about processed tweets
+        processedTweets["authorimage_url"] = tweet.UserDetails.ProfileImageUrl;
+        processedTweets["username"] = tweet.UserDetails.UserName;
+        processedTweets["user_followers"] = tweet.UserDetails.FollowersCount;
+        processedTweets["user_friends"] = tweet.UserDetails.FavouritesCount;
+        processedTweets["user_favorites"] = tweet.UserDetails.FriendsCount;
+        processedTweets["user_totaltweets"] = tweet.UserDetails.StatusesCount;
+        
+                string firstUrl = String.Empty;
 
-![Image](Resources/media/image28.png)
+        if (tweetObj.SelectToken("MediaUrls") != null && tweetObj.SelectToken("MediaUrls").HasValues)
+        {
+            firstUrl = tweet.MediaUrls[0];
+            if (firstUrl != String.Empty)
+            {
+                processedTweets["image_url"] = firstUrl;
+            }
+        }
 
-A similar check is done to see if the tweet already exists (due to RACE conditions it is theoretically possible to process a retweet before the original tweet, or process the same tweet twice). Assuming the tweet doesn’t exist, it gets saved into SQL.
+        if (tweet.favorited != "true")
+        {
+            processedTweets["favorited"] = "1";
+        }
 
-![Image](Resources/media/image29.png)
+        if (tweet.OriginalTweet != null)
+        {
+            processedTweets["retweet"] = "True";
+        }
+```
 
-The script then pulls out additional information about the tweet. This includes timestamps of the tweet, user details like the author’s profile image URL, their username, how many followers they have, how many things they favorited, how many friends they have and how any tweets they have tweeted.
+At this point we have collected all the information we need. We just need to write the information into the right SQL table. To learn more about the schema please go to the data model section:
 
-![Image](Resources/media/image30.png)
+```C#
+        //Save processed tweets into SQL
+        int response = 0;
+        response = ExecuteSqlScalar(
+            $"Select count(1) FROM pbist_twitter.tweets_processed WHERE tweetid = '{processedTweets["tweetid"]}'");
+        if (response == 0)
+        {
+            try
+            {
+                ExecuteSqlNonQuery(generateSQLQuery("pbist_twitter.tweets_processed", processedTweets));
+            }
+            catch (Exception e) { }
+        }
 
-If there are any pictures associated with the tweet the script pulls out the first image URL it finds.
+        string text = tweet.TweetText.ToString();
+        //Populate hashtag slicer table
+        if (text.Contains("#"))
+        {
+            hashtagSlicer["tweetid"] = tweet.TweetId;
+            hashtagmentions(text, '#', "facet", "pbist_twitter.hashtag_slicer", hashtagSlicer);
+        }
 
-![Image](Resources/media/image31.png)
+        //Populate author hashtag network table
+        if (text.Contains("#"))
+        {
+            authorHashtagGraph["tweetid"] = tweet.TweetId;
+            authorHashtagGraph["author"] = tweet.UserDetails.UserName;
+            hashtagmentions(text, '#', "hashtag", "pbist_twitter.authorhashtag_graph", authorHashtagGraph);
+        }
 
-We store all of this additional user, image, and timestamp information in a second table called tweets\_processed. This is joined onto the original tweet table by the tweet master id.
+        //Populate mention slicer table
+        if (text.Contains("@"))
+        {
+            mentionSlicer["tweetid"] = tweet.TweetId;
+            hashtagmentions(text, '@', "facet", "pbist_twitter.mention_slicer", mentionSlicer);
+        }
 
-![Image](Resources/media/image32.png)
+        //Populate author mention network table
+        if (text.Contains("@"))
+        {
+            authorMentionGraph["tweetid"] = tweet.TweetId;
+            authorMentionGraph["author"] = tweet.UserDetails.UserName;
+            hashtagmentions(text, '@', "mention", "pbist_twitter.authormention_graph", authorMentionGraph);
+        }
+```
 
-Hashtags and mentions from the tweet get split out and saved into separate tables. This allows you to slice the Power BI report by the hashtags and mentions that are found.
 
-![Image](Resources/media/image33.png)
 
-The hashtags and mentions are split out again and written into two new tables (authorhashtag\_graph and authormention\_graph). These tables save additional information like the author associated with the hashtag/mention as well as hex colors for authors and hashtags. This structures the data for the creation of network graphs which you see inside the reports.
+#Model Schema
 
-![Image](Resources/media/image34.png)
-
-### ![Image](Resources/media/image35.png)Storage Account
-
-Azure Functions have a dependency on an Azure storage account and so one gets spun up as part of the automation. The storage account can be used for things like storing additional logging.
-
-![Image](Resources/media/image36.png)
-
-### Twitter API Connection
-
-The Twitter API Connection is used to connect Logic Apps to your Twitter account. It contains the information you inputted to on the Twitter page in the set up process. This is what allows the application to search Twitter for your search terms via the Logic App.
-
-![Image](Resources/media/image37.png)
-
-### App Service Plan
-
-Every Azure Function that gets created comes with a special hosting plan. For the Twitter template a dynamic hosting plan gets created. This means functions will be run on demand and billed per execution with no standing resource commitment. A user therefore only pays for what he or she consumes.
-
-![Image](Resources/media/image38.png)
-
-Azure SQL Server/Database
-
-The final Azure resource used is Azure SQL. Azure SQL is a bit special in that you have a choice whether you want to use an existing SQL or if you would like to get a new one spun up. If you opt in for your own, you will not see this resource in the Resource Group. Alternatively, the application spins up a Standard (S0) SQL Server and database (more on pricing in the Pricing section).
-
-The next section goes into more depth on the SQL tables and views created as part of the solution.
-
-Model Schema
-------------
 
 Here is an overview of the tables found in the model:
 
@@ -450,8 +609,7 @@ Clicking on a tweet will cross filter the ‘influence’ stats on the left hand
 
 ![Image](Resources/media/image44.png)
 
-Customizations
-==============
+#Customizations
 
 Updating the Solution
 ---------------------
@@ -493,18 +651,17 @@ The Python script inside the Azure Function is completely customizable. You can 
 
 Other examples could be to add [Cognitive APIs](https://azure.microsoft.com/en-us/services/cognitive-services/text-analytics/) to do things like topic or keyword extraction on top of the twitter data.
 
-Pricing
-=======
+#Pricing
 
-Here is an estimate of the Azure costs (Logic App, Azure Function, Azure SQL, App Service Plan) based on the number of tweets processed:
+Here is an estimate of the Azure costs (Logic App, Azure Function, Azure SQL, Cognitive Services) based on the number of tweets processed:
 
-Processing 10K tweets a month will cost approximately $60
+Processing 10K tweets a month will cost approximately $210
 
-Processing 50K tweets a month will cost approximately $165
+Processing 50K tweets a month will cost approximately $315
 
-Processing 100K tweets a month will cost approximately $235
+Processing 100K tweets a month will cost approximately $385
 
-Please keep in mind these are **estimated costs.** For a more detailed breakdown of the various components please refer to the [Azure calculator](https://azure.microsoft.com/en-us/pricing/calculator/) and select Logic App, Azure Function, Azure SQL and App Service. You can tweak all the options to see what the costs will look like and what modifications may suit your needs best.
+Please keep in mind these are **estimated costs.** For a more detailed breakdown of the various components please refer to the [Azure calculator](https://azure.microsoft.com/en-us/pricing/calculator/) and select Logic App, Azure Function, Azure SQL and Congitive Services. You can tweak all the options to see what the costs will look like and what modifications may suit your needs best.
 
 The following defaults are set for you in the template (you can modify any of these after things get set up):
 
@@ -514,10 +671,10 @@ The following defaults are set for you in the template (you can modify any of th
 
 -   Logic Apps (trigger set for every 3 minutes)
 
--   Azure Functions (1536MB memory size)
+-   Azure Functions
 
-For example, if you know you will be processing very few tweets a month, you could change the SQL Server from S1 to Basic. In that case you could bring down the costs of processing 10K tweets a month from about $60 to about $30.
+-   Cognitive Services (Text Analytics API)
 
-Similarly, if you know you will be processing more than 100K tweets a month you may want to upgrade your App Service Plan from Standard to Premium which lets you process more Logic App actions each month.
+For example, if you know you will be processing very few tweets a month, you could change the SQL Server from S1 to Basic. In that case you could bring down the costs of processing 10K tweets a month from about $210 to about $180.
 
 Whilst the default setting should cater to most twitter template requirements, we encourage you to familiarize yourself with the various pricing options and tweak things to suit your needs.
