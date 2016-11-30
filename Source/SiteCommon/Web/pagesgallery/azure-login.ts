@@ -17,11 +17,13 @@ export class AzureLogin extends ViewModelBase {
     isPricingChecked: boolean = false;
 
     // Variables to override
-    pricingUrl: string='';
+    pricingUrl: string = '';
     pricingCost: string = '';
 
     constructor() {
         super();
+        this.MS.DataStore.addToDataStore('oauthType', 'keyvault', DataStoreType.Public);
+
     }
 
     async OnLoaded() {

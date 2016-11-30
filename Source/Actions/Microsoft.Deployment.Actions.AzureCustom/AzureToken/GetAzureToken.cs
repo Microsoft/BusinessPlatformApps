@@ -20,23 +20,39 @@ namespace Microsoft.Deployment.Actions.AzureCustom.AzureToken
         public override async Task<ActionResponse> ExecuteActionAsync(ActionRequest request)
         {
             string code = request.DataStore.GetValue("code");
-            var aadTenant = request.DataStore.GetValue("AADTenant");
-
+            string aadTenant = request.DataStore.GetValue("AADTenant");
+            string oauthType = request.DataStore.GetValue("oauthType").ToLowerInvariant();
             string api;
             string clientId;
             string tokenUrl;
-            if (!string.IsNullOrEmpty(request.DataStore.GetValue("IsMsCrm")))
+
+            /*
+                 var builder = GetTokenUri(refreshToken, Constants.AzureManagementCoreApi, request.Info.WebsiteRootUrl);
+            var content = new StringContent(builder.ToString());
+            content.Headers.ContentType = new MediaTypeHeaderValue("application/x-www-form-urlencoded");
+            var response = await client.PostAsync(new Uri(tokenUrl), content).Result.Content.ReadAsStringAsync();
+
+             */
+
+            switch (oauthType)
             {
-                api = Constants.MsCrmResource;
-                clientId = Constants.MsCrmClientId;
-                tokenUrl = Constants.MsCrmToken;
+                case "mscrm":
+                    api = Constants.MsCrmResource;
+                    clientId = Constants.MsCrmClientId;
+                    tokenUrl = Constants.MsCrmToken;
+                    break;
+                case "keyvault":
+                    api = Constants.AzureManagementCoreApi;
+                    clientId = Constants.MicrosoftClientIdCrm;
+                    tokenUrl = string.Format(Constants.AzureTokenUri, aadTenant);
+                    break;
+                default:
+                    api = Constants.AzureManagementCoreApi;
+                    clientId = Constants.MicrosoftClientId;
+                    tokenUrl = string.Format(Constants.AzureTokenUri, aadTenant);
+                    break;
             }
-            else
-            {
-                api = Constants.AzureManagementCoreApi;
-                clientId = Constants.MicrosoftClientId;
-                tokenUrl = string.Format(Constants.AzureTokenUri, aadTenant);
-            }
+
 
             HttpClient client = new HttpClient();
 
@@ -46,13 +62,25 @@ namespace Microsoft.Deployment.Actions.AzureCustom.AzureToken
             var response = await client.PostAsync(new Uri(tokenUrl), content).Result.Content.ReadAsStringAsync();
 
             var primaryResponse = JsonUtility.GetJsonObjectFromJsonString(response);
-
             var obj = new JObject(new JProperty("AzureToken", primaryResponse));
+
+            if (oauthType.EqualsIgnoreCase("keyvault"))
+            {
+                builder = GetTokenUri2(primaryResponse["refresh_token"].ToString(), Constants.AzureKeyVaultApi, request.Info.WebsiteRootUrl, clientId);
+                content = new StringContent(builder.ToString());
+                content.Headers.ContentType = new MediaTypeHeaderValue("application/x-www-form-urlencoded");
+                response = await client.PostAsync(new Uri(tokenUrl), content).Result.Content.ReadAsStringAsync();
+
+                var secondaryResponse = JsonUtility.GetJsonObjectFromJsonString(response);
+
+                request.DataStore.AddToDataStore("kvToken", secondaryResponse);
+            }
+
 
             if (primaryResponse.SelectToken("error") != null)
             {
-                return new ActionResponse(ActionStatus.Failure, obj, null, 
-                    DefaultErrorCodes.DefaultLoginFailed, 
+                return new ActionResponse(ActionStatus.Failure, obj, null,
+                    DefaultErrorCodes.DefaultLoginFailed,
                     primaryResponse.SelectToken("error_description")?.ToString());
             }
 
@@ -71,6 +99,27 @@ namespace Microsoft.Deployment.Actions.AzureCustom.AzureToken
                 {"resource", Uri.EscapeDataString(uri)},
                 {"redirect_uri", Uri.EscapeDataString(rootUrl + Constants.WebsiteRedirectPath)},
                 {"grant_type", "authorization_code"}
+            };
+
+            StringBuilder builder = new StringBuilder();
+            foreach (KeyValuePair<string, string> keyValuePair in message)
+            {
+                builder.Append(keyValuePair.Key + "=" + keyValuePair.Value);
+                builder.Append("&");
+            }
+            return builder;
+        }
+
+        private static StringBuilder GetTokenUri2(string code, string uri, string rootUrl, string clientId)
+        {
+            Dictionary<string, string> message = new Dictionary<string, string>
+            {
+                { "refresh_token", code},
+                {"client_id", clientId},
+                {"client_secret", Uri.EscapeDataString(Constants.MicrosoftClientSecret)},
+                {"resource", Uri.EscapeDataString(uri)},
+                {"redirect_uri", Uri.EscapeDataString(rootUrl + Constants.WebsiteRedirectPath)},
+                {"grant_type", "refresh_token"}
             };
 
             StringBuilder builder = new StringBuilder();

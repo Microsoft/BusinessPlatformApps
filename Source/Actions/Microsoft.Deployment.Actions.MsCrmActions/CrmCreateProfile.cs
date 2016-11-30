@@ -5,7 +5,6 @@
     using Microsoft.Deployment.Common.Helpers;
     using Model;
     using Newtonsoft.Json;
-    using Newtonsoft.Json.Linq;
     using System;
     using System.Collections.Generic;
     using System.ComponentModel.Composition;

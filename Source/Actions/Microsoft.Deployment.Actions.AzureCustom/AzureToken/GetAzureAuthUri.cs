@@ -21,18 +21,27 @@ namespace Microsoft.Deployment.Actions.AzureCustom.AzureToken
             string authBase;
             string clientId;
             string resource;
-            if (!string.IsNullOrEmpty(request.DataStore.GetValue("IsMsCrm")))
+
+            string oauthType = request.DataStore.GetValue("oauthType").ToLowerInvariant();
+            switch (oauthType)
             {
-                authBase = Constants.MsCrmAuthority;
-                clientId = Constants.MsCrmClientId;
-                resource = Constants.MsCrmResource;
+                case "mscrm":
+                    authBase = Constants.MsCrmAuthority;
+                    clientId = Constants.MsCrmClientId;
+                    resource = Constants.MsCrmResource;
+                    break;
+                case "keyvault":
+                    authBase = string.Format(Constants.AzureAuthUri, aadTenant);
+                    clientId = Constants.MicrosoftClientIdCrm;
+                    resource = Constants.AzureManagementApi;
+                    break;
+                default:
+                    authBase = string.Format(Constants.AzureAuthUri, aadTenant);
+                    clientId = Constants.MicrosoftClientId;
+                    resource = Constants.AzureManagementApi;
+                    break;
             }
-            else
-            {
-                authBase = string.Format(Constants.AzureAuthUri, aadTenant);
-                clientId = Constants.MicrosoftClientId;
-                resource = Constants.AzureManagementApi;
-            }
+
 
             Dictionary<string, string> message = new Dictionary<string, string>
             {
