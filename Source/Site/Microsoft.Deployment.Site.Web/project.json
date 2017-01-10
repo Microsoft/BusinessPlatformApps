@@ -6,7 +6,7 @@
 
   "dependencies": {
     "Microsoft.NETCore.App": {
-      "version": "1.0.1",
+      "version": "1.1.0",
       "type": "platform"
     },
 
@@ -30,7 +30,6 @@
     "es6-promise.TypeScript.DefinitelyTyped": "0.7.7",
     "Microsoft.ApplicationInsights.JavaScript": "1.0.0-build00159",
     "Microsoft.ApplicationInsights.TypeScript": "1.0.0-build00159",
-    "applicationinsights-js.TypeScript.DefinitelyTyped": "0.0.5",
     "aurelia-http-client.TypeScript.DefinitelyTyped": "1.0.0-beta",
     "Microsoft.AspNetCore.Authentication.Cookies": "1.1.0",
     "Microsoft.AspNetCore.Diagnostics": "1.1.0",
@@ -47,8 +46,8 @@
     "Microsoft.Extensions.Logging": "1.1.0",
     "Microsoft.Extensions.Logging.Console": "1.1.0",
     "Microsoft.Extensions.Logging.Debug": "1.1.0",
-  
-    "Microsoft.VisualStudio.Web.BrowserLink.Loader": "14.1.0"
+    "Microsoft.VisualStudio.Web.BrowserLink.Loader": "14.1.0",
+    "applicationinsights-js.TypeScript.DefinitelyTyped": "0.1.1"
   },
 
     "tools": {

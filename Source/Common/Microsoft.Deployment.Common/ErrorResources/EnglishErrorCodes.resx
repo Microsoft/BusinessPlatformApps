@@ -225,4 +225,10 @@
   <data name="MsCrm_ErrorRegisterKv" xml:space="preserve">
     <value>Cannot register the KeyVault as a provider in this subscription</value>
   </data>
+  <data name="SQL_CannotRetrieveCollations" xml:space="preserve">
+    <value>Cannot retrieve source or target database collations</value>
+  </data>
+  <data name="SQL_TargetCollationDoesntMatch" xml:space="preserve">
+    <value>The target database must have the same collation as the source database</value>
+  </data>
 </root>

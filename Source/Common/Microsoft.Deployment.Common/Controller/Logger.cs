@@ -1,9 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using Microsoft.ApplicationInsights;
+﻿using Microsoft.ApplicationInsights;
 using Microsoft.Deployment.Common.ActionModel;
 using Microsoft.Deployment.Common.Helpers;
-using Newtonsoft.Json.Linq;
+
+using System;
+using System.Collections.Generic;
 
 namespace Microsoft.Deployment.Common.Controller
 {
