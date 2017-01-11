@@ -1,0 +1,105 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{4F1FEEED-4C6D-47FA-9451-6CF2EA2AFDB6}</ProjectGuid>
+    <OutputType>Exe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>AzureFunctionSolution</RootNamespace>
+    <AssemblyName>AzureFunctionSolution</AssemblyName>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+    <None Include="appsettings.json" />
+    <None Include="ASCIICleanerWebhook\function.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="ASCIICleanerWebhook\project.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="ASCIICleanerWebhook\project.lock.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="ASCIICleanerWebhook\run.csx">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="ASCIICleanerWebhook\sample.dat">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="host.json" />
+    <None Include="HTMLCleanerWebhook\function.json" />
+    <None Include="HTMLCleanerWebhook\project.json" />
+    <None Include="HTMLCleanerWebhook\project.lock.json" />
+    <None Include="HTMLCleanerWebhook\run.csx" />
+    <None Include="HTMLCleanerWebhook\sample.dat" />
+    <None Include="Shared\HtmlCleaner.csx" />
+    <None Include="Shared\HtmlCleanerResult.csx" />
+    <None Include="Shared\rftrtr.env.parameters.json" />
+    <None Include="Shared\rftrtr.json" />
+    <None Include="Shared\StringExtensions.csx" />
+    <None Include="Shared\StringUtilities.csx" />
+    <None Include="TimeUtilsWebhook\DocumentTime.csx" />
+    <None Include="TimeUtilsWebhook\DocumentTimeFactory.csx" />
+    <None Include="TimeUtilsWebhook\function.json" />
+    <None Include="TimeUtilsWebhook\project.json" />
+    <None Include="TimeUtilsWebhook\project.lock.json" />
+    <None Include="TimeUtilsWebhook\run.csx" />
+    <None Include="TimeUtilsWebhook\sample.dat" />
+    <None Include="TimeUtilsWebhook\TimeExtensions.csx" />
+    <None Include="UrlDomainWebhook\function.json" />
+    <None Include="UrlDomainWebhook\project.json" />
+    <None Include="UrlDomainWebhook\project.lock.json" />
+    <None Include="UrlDomainWebhook\readme.md" />
+    <None Include="UrlDomainWebhook\run.csx" />
+    <None Include="UrlDomainWebhook\sample.dat" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Project_Readme.html" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel.Composition;
 using System.Dynamic;
 using System.IO;
+using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Microsoft.Deployment.Common.ActionModel;
@@ -23,7 +24,7 @@ namespace Microsoft.Deployment.Actions.AzureCustom.Twitter
 
             var sitename = request.DataStore.GetValue("SiteName");
             var sqlConnectionString = request.DataStore.GetValue("SqlConnectionString");
-            var cognitiveServiceKey = request.DataStore.GetValue("CognitiveServiceKey");
+            var cognitiveServiceKey = request.DataStore.GetAllValues("CognitiveServiceKey").Last();
 
             AzureHttpClient client = new AzureHttpClient(azureToken, subscription, resourceGroup);
 

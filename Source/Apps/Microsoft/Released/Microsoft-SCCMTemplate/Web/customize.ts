@@ -1,5 +1,5 @@
-﻿import { ViewModelBase } from '../../../../../SiteCommon/Web/services/viewmodelbase';
-import {DataStoreType} from '../../../../../SiteCommon/Web/services/datastore';
+﻿import { DataStoreType } from '../../../../../SiteCommon/Web/services/datastore';
+import { ViewModelBase } from '../../../../../SiteCommon/Web/services/viewmodelbase';
 
 export class Customize extends ViewModelBase {
     dailyTrigger: string = '2:00';

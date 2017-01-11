@@ -3,7 +3,6 @@ using Microsoft.Deployment.Common;
 using Microsoft.Deployment.Common.ActionModel;
 using Microsoft.IdentityModel.Clients.ActiveDirectory;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Dynamic;
@@ -17,7 +16,9 @@ using Microsoft.Azure.Management.Resources;
 using Microsoft.Azure.Management.Resources.Models;
 using Microsoft.Azure.Subscriptions;
 using Microsoft.Azure.Subscriptions.Models;
+using Microsoft.Deployment.Actions.AzureCustom;
 using Microsoft.Deployment.Common.Helpers;
+using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Deployment.Actions.Test.ActionsTest
 {
@@ -28,24 +29,31 @@ namespace Microsoft.Deployment.Actions.Test.ActionsTest
         public async Task GetAzureToken()
         {
             DataStore dataStore = new DataStore();
-            var datastore = await AAD.GetTokenWithDataStore();
-            var result = await TestHarness.ExecuteActionAsync("Microsoft-GetAzureSubscriptions", datastore);
+            dataStore = await TestHarness.GetCommonDataStore();
+            dataStore = await TestHarness.GetCommonDataStoreWithUserToken();
+            var result = await TestHarness.ExecuteActionAsync("Microsoft-GetAzureSubscriptions", dataStore);
             Assert.IsTrue(result.IsSuccess);
             var responseBody = JObject.FromObject(result.Body);
         }
 
         [Ignore]
         [TestMethod]
+        public async Task GetAzureEmail()
+        {
+            DataStore dataStore = new DataStore();
+            var datastore = await AAD.GetUserTokenFromPopup();
+            var emailAddress = AzureUtility.GetEmailFromToken(datastore.GetJson("AzureToken"));
+        }
+
+        [TestMethod]
         public async Task GetAzureTokenAndRefresh()
         {
-            string ticks = "1480723773";
-            dynamic tokenObj = new ExpandoObject();
-            tokenObj.access_token = "FAKE";
-            tokenObj.expires_on = ticks;
-            DataStore datastore = new DataStore();
-            datastore.AddToDataStore("AzureToken", JObject.FromObject(tokenObj), DataStoreType.Private);
+            DataStore datastore = await TestHarness.GetCommonDataStoreWithUserToken();
+            datastore.GetJson("AzureToken")["expires_on"] = "1480723773";
 
+            // Hack - call the subscriptions twice to ensure new token is used
             var result = await TestHarness.ExecuteActionAsync("Microsoft-GetAzureSubscriptions", datastore);
+            result = await TestHarness.ExecuteActionAsync("Microsoft-GetAzureSubscriptions", datastore);
         }
 
         [Ignore]
@@ -59,6 +67,23 @@ namespace Microsoft.Deployment.Actions.Test.ActionsTest
             datastore.AddToDataStore("AzureArmParameters", paramFile["AzureArmParameters"]);
             var armResult = await TestHarness.ExecuteActionAsync("Microsoft-DeployAzureArmTemplate", datastore);
             Assert.IsTrue(armResult.IsSuccess);
+        }
+
+        [TestMethod]
+        public async Task DeployAzureSqlDatabase()
+        {
+            var datastore = await TestHarness.GetCommonDataStore();
+
+            dynamic obj = new ExpandoObject();
+            obj.Server = "motestserver12345678";
+            obj.User = "MoTestUser";
+            obj.Password = "Passw0rd12343";
+            obj.Database = "MoTestDatabase";
+            datastore.AddToDataStore("SqlCredentials", JsonUtility.GetJObjectFromObject(obj));
+            datastore.AddToDataStore("SqlLocation", "West US");
+            datastore.AddToDataStore("SqlSku", "P1");
+            var response = await TestHarness.ExecuteActionAsync("Microsoft-CreateAzureSql", datastore);
+            Assert.IsTrue(response.IsSuccess);
         }
 
         [TestMethod]

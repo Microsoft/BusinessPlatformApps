@@ -23,7 +23,7 @@
                     "Data pulled daily from System Center Configuration Manager & stored in a SQL database optimized for reporting",
                     "Import data into powerful Power BI reports"
                 ],
-                "subtitle": "Welcome to the public preview of the System Center Configuration Manager solution template.",
+                "subtitle": "Welcome to the System Center Configuration Manager solution template.",
                 "templateName": "System Center Configuration Manager",
                 "isDownload": "$(!this.MS.HttpService.isOnPremise)"
             },
@@ -73,7 +73,12 @@
                 "useImpersonation": true,
                 "title": "Connect to your SQL database",
                 "subtitle": "Set up a connection to your target database so we can transfer your data.",
-
+                "onNext": [
+                    {
+                        "name": "Microsoft-CompareSqlCollations",
+                        "useImpersonation": true
+                    }
+                ]
             },
 
             // Customize
@@ -102,14 +107,14 @@
                 "displayname": "Deploy DB scripts",
                 "SqlServerIndex": "1",
                 "SqlScriptsFolder": "Service/Database/NoETL",
-                "UseImpersonation": true
+                "useImpersonation": true
             },
             {
                 "name": "Microsoft-SetConfigValueInSql",
                 "displayname": "Deploy DB Configuration",
                 "SqlServerIndex": "1",
                 "SqlConfigTable": "pbist_sccm.[configuration]",
-                "UseImpersonation": true
+                "useImpersonation": true
             },
             {
                 "name": "Microsoft-InstallSqlTools",
@@ -138,7 +143,7 @@
                 "IsWaiting": true,
                 "SqlServerIndex": 1,
                 "TargetSchema": "pbist_sccm",
-                "UseImpersonation": true
+                "useImpersonation": true
             }
         ]
     },

@@ -62,7 +62,7 @@ AS
          CONVERT(UNIQUEIDENTIFIER, o.parentaccountid)                         AS [Account ID],
          CONVERT(UNIQUEIDENTIFIER, op.productid)                              AS [Product ID]
   FROM   dbo.opportunity AS o INNER JOIN dbo.opportunityproduct AS op ON o.opportunityid = op.opportunityid
-                              LEFT OUTER JOIN dbo.StatusMetadata sm ON o.statuscode=sm.[State] AND
+                              LEFT OUTER JOIN dbo.StatusMetadata sm ON o.statecode=sm.[State] AND
                                               sm.IsUserLocalizedLabel=0 AND sm.LocalizedLabelLanguageCode=1033 AND
                                               sm.EntityName='opportunity' COLLATE Latin1_General_100_CI_AS 
   WHERE  sm.LocalizedLabel = 'Won' AND
@@ -78,7 +78,7 @@ AS
          CONVERT(DATE, o.actualclosedate)             AS [Invoice Date],
          CONVERT(UNIQUEIDENTIFIER, o.parentaccountid) AS [Account ID],
          NULL                                         AS [Product ID]
-  FROM   dbo.opportunity AS o LEFT OUTER JOIN dbo.StatusMetadata sm ON o.statuscode=sm.[State] AND
+  FROM   dbo.opportunity AS o LEFT OUTER JOIN dbo.StatusMetadata sm ON o.statecode=sm.[State] AND
                                               sm.IsUserLocalizedLabel=0 AND sm.LocalizedLabelLanguageCode=1033 AND
                                               sm.EntityName='opportunity' COLLATE Latin1_General_100_CI_AS
   WHERE  sm.LocalizedLabel = 'Won' AND

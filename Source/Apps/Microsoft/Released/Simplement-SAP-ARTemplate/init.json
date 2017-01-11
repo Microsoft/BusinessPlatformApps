@@ -10,7 +10,7 @@
                 "displayname": "Deploy DB scripts",
                 "SqlServerIndex": "0",
                 "SqlScriptsFolder": "Service/Database/NoETL",
-                "UseImpersonation": true
+                "useImpersonation": true
             },
             {
                 "name": "Microsoft-AddLogonAsBatchPermission",
@@ -31,7 +31,7 @@
                 "IsWaiting": true,
                 "SqlServerIndex": 0,
                 "TargetSchema": "sap",
-                "UseImpersonation": true
+                "useImpersonation": true
             }
         ],
         "Pages": [
@@ -59,7 +59,7 @@
                 "registrationPrivacy": "By using this Simplement trial account, you agree to the",
                 "registrationPrivacyTitle": "Simplement Privacy Statement",
                 "registrationValidation": "Yes, I want to hear from Simplement on how I can extend this trial account or new offers",
-                "subtitle": "Welcome to the public preview of the Accounts Receivable Reporting for SAP solution template. During the public preview, the solution template is for evaluation purposes only and is not intended for production use.",
+                "subtitle": "Welcome to the Accounts Receivable Reporting for SAP solution template.",
                 "templateName": "Accounts Receivable Reporting for SAP"
             },
             {

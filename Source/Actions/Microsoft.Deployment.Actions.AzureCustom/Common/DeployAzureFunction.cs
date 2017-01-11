@@ -24,16 +24,16 @@ namespace Microsoft.Deployment.Actions.AzureCustom.Common
 
             var deploymentName = request.DataStore.GetValue("DeploymentName");
             var functionAppHostingPlan = request.DataStore.GetValue("FunctionAppHostingPlan");
-            var sitename = request.DataStore.GetValue("SiteName");
+            var name = request.DataStore.GetValue("Name");
 
             var param = new AzureArmParameterGenerator();
             param.AddStringParam("storageaccountname", "solutiontemplate" + Path.GetRandomFileName().Replace(".", "").Substring(0, 8));
-            param.AddStringParam("sitename", sitename);
+            param.AddStringParam("name", name);
             param.AddStringParam("AppHostingPlan", functionAppHostingPlan);
             param.AddStringParam("resourcegroup", resourceGroup);
             param.AddStringParam("subscription", subscription);
 
-            var armTemplate = JsonUtility.GetJObjectFromJsonString(System.IO.File.ReadAllText(Path.Combine(request.Info.App.AppFilePath, "Service/AzureArm/function.json")));
+            var armTemplate = JsonUtility.GetJObjectFromJsonString(System.IO.File.ReadAllText(Path.Combine(request.Info.App.AppFilePath, "Service/AzureArm/AzureFunctions.json")));
             var armParamTemplate = JsonUtility.GetJObjectFromObject(param.GetDynamicObject());
             armTemplate.Remove("parameters");
             armTemplate.Add("parameters", armParamTemplate["parameters"]);

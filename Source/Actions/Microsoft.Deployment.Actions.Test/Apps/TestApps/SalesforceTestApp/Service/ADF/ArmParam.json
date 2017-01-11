@@ -1,0 +1,8 @@
+﻿{
+  "AzureArmParameters": {
+    "SqlServerName": "serveruniquetest12345",
+    "SqlDatabaseName": "database",
+    "Username": "testuser",
+    "Password": "P@ssw0rd123"
+  }
+}

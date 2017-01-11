@@ -85,7 +85,7 @@
       "name": "web",
       "type": "sourcecontrols",
       "dependsOn": [
-        "[resourceId('Microsoft.Web/sites/', parameters('name'))]"
+        "[resourceId('Microsoft.Web/sites/', parameters('storageaccountname'))]"
       ],
       "properties": {
         "RepoUrl": "https://github.com/Microsoft/BusinessPlatformApps/tree/NewsTemplate/Source/Apps/Microsoft/Released/Microsoft-NewsTemplate/Service/NewsFunction",

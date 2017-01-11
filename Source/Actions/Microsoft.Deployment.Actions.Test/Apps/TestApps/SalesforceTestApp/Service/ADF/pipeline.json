@@ -1,0 +1,181 @@
+{
+  "contentVersion": "1.0.0.0",
+  "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "parameters": {
+    "dataFactoryName": {
+      "type": "string",
+      "metadata": {
+        "description": "Data Factory Account name"
+      }
+    },
+    "sqlServerName": {
+      "type": "string",
+      "metadata": {
+        "description": "Existing Azure SQL Database Server name"
+      }
+    },
+    "sqlServerUsername": {
+      "type": "string",
+      "metadata": {
+        "description": "Existing Azure SQL Database Server user name"
+      }
+    },
+    "sqlServerPassword": {
+      "type": "securestring",
+      "metadata": {
+        "description": "Existing Azure SQL Database Server password"
+      }
+    },
+    "targetDatabaseName": {
+      "type": "string",
+      "metadata": {
+        "description": "Existing taget Azure SQL Database name"
+      }
+    },
+    "targetSqlSchema": {
+      "type": "string",
+      "metadata": {
+        "description": "Existing taget Azure SQL schema"
+      }
+    },
+    "targetSqlTable": {
+      "type": "string",
+      "metadata": {
+        "description": "Existing target table in Azure SQL Database"
+      }
+    },
+    "salesforceUsername": {
+      "type": "string",
+      "metadata": {
+        "description": "Salesforce login username"
+      }
+    },
+    "salesforcePassword": {
+      "type": "securestring",
+      "metadata": {
+        "description": "Salesforce login password"
+      }
+    },
+    "salesforceSecurityToken": {
+      "type": "securestring",
+      "metadata": {
+        "description": "Salesforce secure token"
+      }
+    },
+    "targetSalesforceTable": {
+      "type": "string",
+      "metadata": {
+        "description": "Existing target table in Salesforce"
+      }
+    },
+    "pipelineName": {
+      "type": "string",
+      "metadata": {
+        "description": "Name of the copy pipeline"
+      }
+    },
+    "sqlWritableTypeName": {
+      "type": "string",
+      "metadata": {
+        "description": "Sql table type name"
+      }
+    },
+    "sqlWriterStoredProcedureName": {
+      "type": "string",
+      "metadata": {
+        "description": "Sql stored procedure name"
+      }
+    },
+    "pipelineStartDate": {
+      "type": "string",
+      "metadata": {
+        "description": "Start date for the pipeline"
+      }
+    },
+    "pipelineEndDate": {
+      "type": "string",
+      "metadata": {
+        "description": "End date for the pipeline"
+      }
+    },
+    "sliceFrequency": {
+      "type": "string",
+      "metadata": {
+        "description": "Minute,Hour,Day,Week,Month"
+      }
+    },
+    "sliceInterval": {
+      "type": "integer",
+      "metadata": {
+        "description": "Minimum 15 if frequency is set to Minute"
+      }
+    },
+    "pipelineType": {
+      "type": "string",
+      "metadata": {
+        "description": "PreDeployment or PostDeployment"
+      }
+    }
+  },
+  "variables": {
+    "apiVersion": "2015-10-01",
+    "storageApiVersion": "2015-05-01-preview",
+    "sqlLinkedServiceName": "AzureSqlLinkedService",
+    "salesforceLinkedServiceName": "SalesforceLinkedService"
+  },
+  "resources": [
+    {
+      "dependsOn": [],
+      "type": "Microsoft.DataFactory/datafactories/datapipelines",
+      "name": "[concat(parameters('dataFactoryName'),'/',parameters('pipelineType'),'_',parameters('pipelineName'))]",
+      "apiVersion": "[variables('apiVersion')]",
+      "properties": {
+        "description": "Copy data from Salesforce to Sql Azure",
+        "activities": [
+          {
+            "type": "Copy",
+            "typeProperties": {
+              "source": {
+                "type": "RelationalSource",
+                "query": "SALESFORCEQUERY"
+              },
+              "sink": {
+                "type": "SqlSink",
+                "sqlWriterStoredProcedureName": "[concat(parameters('targetSqlSchema'),'.',parameters('sqlWriterStoredProcedureName'))]",
+                "sqlWriterTableType": "[concat(parameters('targetSqlSchema'),'.',parameters('sqlWritableTypeName'))]",
+                "writeBatchSize": 500,
+                "writeBatchTimeout": "00:00:00"
+              }
+            },
+            "inputs": [
+              {
+                "name": "[concat(parameters('pipelineType'),'_',parameters('targetSalesforceTable'),'_Input')]"
+              }
+            ],
+            "outputs": [
+              {
+                "name": "[concat(parameters('pipelineType'),'_',parameters('targetSqlTable'),'_Output')]"
+              }
+            ],
+            "policy": {
+              "timeout": "02:00:00",
+              "concurrency": 1,
+              "executionPriorityOrder": "NewestFirst",
+              "style": "StartOfInterval",
+              "retry": 2,
+              "longRetry": 5,
+              "longRetryInterval": "01:00:00"
+            },
+            "scheduler": {
+              "frequency": "[parameters('sliceFrequency')]",
+              "interval": "[parameters('sliceInterval')]"
+            },
+            "name": "[concat(parameters('pipelineType'),'_Copy')]"
+          }
+        ],
+        "start": "[parameters('pipelineStartDate')]",
+        "end": "[parameters('pipelineEndDate')]"
+      }
+    }
+  ]
+}

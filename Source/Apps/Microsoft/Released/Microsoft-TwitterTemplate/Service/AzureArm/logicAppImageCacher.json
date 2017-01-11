@@ -1,0 +1,114 @@
+﻿{
+  "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "storageaccountname": {
+      "defaultValue": "ststorage",
+      "type": "string"
+    },
+
+    "sitename": {
+      "defaultValue": "stsite",
+      "type": "string"
+    },
+
+    "AppHostingPlan": {
+      "defaultValue": "STHostingPlan",
+      "type": "string"
+    },
+
+    "resourcegroup": {
+      "defaultValue": "stresourcegroup",
+      "type": "string"
+    },
+
+    "subscription": {
+      "defaultValue": "idrequired",
+      "type": "string"
+    },
+    "search": {
+      "defaultValue": "Microsoft",
+      "type": "string"
+    },
+    "LogicAppName": {
+      "defaultValue": "LogicApp",
+      "type": "string"
+    }
+  },
+  "variables": { },
+  "resources": [
+    {
+      "type": "Microsoft.Logic/workflows",
+      "name": "[parameters('LogicAppName')]",
+      "apiVersion": "2016-06-01",
+      "location": "[resourceGroup().location]",
+      "properties": {
+        "state": "Enabled",
+
+        "definition": {
+          "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-04-01-preview/workflowdefinition.json#",
+          "contentVersion": "1.0.0.0",
+          "parameters": {
+            "$connections": {
+              "defaultValue": { },
+              "type": "Object"
+            }
+          },
+          "triggers": {
+            "When_a_new_tweet_appears": {
+              "recurrence": {
+                "frequency": "Minute",
+                "interval": 3
+              },
+              "splitOn": "@triggerBody()?.value",
+              "type": "ApiConnection",
+              "inputs": {
+                "host": {
+                  "api": {
+                    "runtimeUrl": "[concat('https://logic-apis-', resourceGroup().location ,'.azure-apim.net/apim/twitter')]"
+                  },
+                  "connection": {
+                    "name": "@parameters('$connections')['twitter']['connectionId']"
+                  }
+                },
+                "method": "get",
+                "path": "/onnewtweet",
+                "queries": {
+                  "searchQuery": "[parameters('search')]"
+                }
+              }
+            }
+          },
+          "actions": {
+            "Python": {
+              "runAfter": { },
+              "type": "Function",
+              "inputs": {
+                "body": "@triggerBody()",
+                "function": {
+                  "id": "[concat('/subscriptions/', parameters('subscription'), '/resourceGroups/',parameters('resourcegroup'),'/providers/Microsoft.Web/sites/', parameters('sitename'), '/Functions/TweetProcessingFunction')]"
+                }
+              }
+            }
+          },
+          "outputs": { }
+        },
+        "parameters": {
+          "$connections": {
+            "value": {
+              "twitter": {
+                "connectionId": "[concat('/subscriptions/', parameters('subscription'), '/resourceGroups/' ,parameters('resourceGroup'),'/providers/Microsoft.Web/connections/twitter')]",
+                "connectionName": "twitter",
+                "id": "[concat('/subscriptions/' , parameters('subscription'), '/providers/Microsoft.Web/locations/',resourceGroup().location , '/managedApis/twitter')]"
+              }
+            }
+          }
+        }
+      },
+      "resources": [ ],
+      "dependsOn": [
+      ]
+    }
+  ],
+  "outputs": { }
+}

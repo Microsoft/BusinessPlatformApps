@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.Composition;
+using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Microsoft.Deployment.Common.ActionModel;
@@ -14,9 +15,9 @@ namespace Microsoft.Deployment.Actions.AzureCustom.Twitter
         public override async Task<ActionResponse> ExecuteActionAsync(ActionRequest request)
         {
 
-            var cognitiveServiceKey = request.DataStore.GetValue("CognitiveServiceKey");
-
-            if (cognitiveServiceKey != string.Empty)
+            var cognitiveServiceKey = request.DataStore.GetAllValues("CognitiveServiceKey").LastOrDefault();
+            
+            if (!string.IsNullOrEmpty(cognitiveServiceKey))
             {
                 return new ActionResponse(ActionStatus.Success);
             }

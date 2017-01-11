@@ -1,0 +1,166 @@
+{
+  "contentVersion": "1.0.0.0",
+  "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "parameters": {
+    "dataFactoryName": {
+      "type": "string",
+      "metadata": {
+        "description": "Data Factory Account name"
+      }
+    },
+    "sqlServerName": {
+      "type": "string",
+      "metadata": {
+        "description": "Existing Azure SQL Database Server name"
+      }
+    },
+    "sqlServerUsername": {
+      "type": "string",
+      "metadata": {
+        "description": "Existing Azure SQL Database Server user name"
+      }
+    },
+    "sqlServerPassword": {
+      "type": "securestring",
+      "metadata": {
+        "description": "Existing Azure SQL Database Server password"
+      }
+    },
+    "targetDatabaseName": {
+      "type": "string",
+      "metadata": {
+        "description": "Existing taget Azure SQL Database name"
+      }
+    },
+    "targetSqlSchema": {
+      "type": "string",
+      "metadata": {
+        "description": "Existing taget Azure SQL schema"
+      }
+    },
+    "targetSqlTable": {
+      "type": "string",
+      "metadata": {
+        "description": "Existing target table in Azure SQL Database"
+      }
+    },
+    "salesforceUsername": {
+      "type": "string",
+      "metadata": {
+        "description": "Salesforce login username"
+      }
+    },
+    "salesforcePassword": {
+      "type": "securestring",
+      "metadata": {
+        "description": "Salesforce login password"
+      }
+    },
+    "salesforceSecurityToken": {
+      "type": "securestring",
+      "metadata": {
+        "description": "Salesforce secure token"
+      }
+    },
+    "targetSalesforceTable": {
+      "type": "string",
+      "metadata": {
+        "description": "Existing target table in Salesforce"
+      }
+    },
+    "pipelineName": {
+      "type": "string",
+      "metadata": {
+        "description": "Name of the copy pipeline"
+      }
+    },
+    "sqlWritableTypeName": {
+      "type": "string",
+      "metadata": {
+        "description": "Sql table type name"
+      }
+    },
+    "sqlWriterStoredProcedureName": {
+      "type": "string",
+      "metadata": {
+        "description": "Sql stored procedure name"
+      }
+    },
+    "pipelineStartDate": {
+      "type": "string",
+      "metadata": {
+        "description": "Start date for the pipeline"
+      }
+    },
+    "pipelineEndDate": {
+      "type": "string",
+      "metadata": {
+        "description": "End date for the pipeline"
+      }
+    },
+    "sliceFrequency": {
+      "type": "string",
+      "metadata": {
+        "description": "Minute,Hour,Day,Week,Month"
+      }
+    },
+    "sliceInterval": {
+      "type": "integer",
+      "metadata": {
+        "description": "Minimum 15 if frequency is set to Minute"
+      }
+    },
+    "pipelineType": {
+      "type": "string",
+      "metadata": {
+        "description": "PreDeployment or PostDeployment"
+      }
+    }
+  },
+  "variables": {
+    "apiVersion": "2015-10-01",
+    "storageApiVersion": "2015-05-01-preview",
+    "sqlLinkedServiceName": "AzureSqlLinkedService",
+    "salesforceLinkedServiceName": "SalesforceLinkedService"
+  },
+  "resources": [
+    {
+      "dependsOn": [],
+      "type": "Microsoft.DataFactory/datafactories/datasets",
+      "name": "[concat(parameters('dataFactoryName'),'/',parameters('pipelineType'),'_',parameters('targetSqlTable'),'_Output')]",
+      "apiVersion": "[variables('apiVersion')]",
+      "properties": {
+        "type": "AzureSqlTable",
+        "structure": "SQLTABLEDEFINITION",
+        "typeProperties": {
+          "tableName": "[parameters('targetSqlTable')]"
+        },
+        "linkedServiceName": "[variables('sqlLinkedServiceName')]",
+        "availability": {
+          "frequency": "[parameters('sliceFrequency')]",
+          "interval": "[parameters('sliceInterval')]"
+        },
+        "external": false
+      }
+    },
+    {
+      "dependsOn": [ ],
+      "type": "Microsoft.DataFactory/datafactories/datasets",
+      "name": "[concat(parameters('dataFactoryName'),'/',parameters('pipelineType'),'_',parameters('targetSqlTable'),'_Input')]",
+      "apiVersion": "[variables('apiVersion')]",
+      "properties": {
+        "structure": "SALESFORCETABLEDEFINITION",
+        "type": "RelationalTable",
+        "typeProperties": {
+          "tableName": "[parameters('targetSalesforceTable')]"
+        },
+        "linkedServiceName": "[variables('salesforceLinkedServiceName')]",
+        "availability": {
+          "frequency": "[parameters('sliceFrequency')]",
+          "interval": "[parameters('sliceInterval')]"
+        },
+        "external": true
+      }
+    }
+  ]
+}

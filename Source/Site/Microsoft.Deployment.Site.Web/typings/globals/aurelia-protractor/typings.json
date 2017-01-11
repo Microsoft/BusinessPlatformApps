@@ -1,8 +1,0 @@
-{
-  "resolution": "main",
-  "tree": {
-    "src": "https://raw.githubusercontent.com/aurelia/typings/master/dist/aurelia-protractor.d.ts",
-    "raw": "github:aurelia/typings/dist/aurelia-protractor.d.ts",
-    "typings": "https://raw.githubusercontent.com/aurelia/typings/master/dist/aurelia-protractor.d.ts"
-  }
-}

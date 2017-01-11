@@ -32,9 +32,10 @@ namespace Microsoft.Deployment.Actions.AzureCustom.AzureToken
             content.Headers.ContentType = new MediaTypeHeaderValue("application/x-www-form-urlencoded");
             var response = await client.PostAsync(new Uri(tokenUrl), content).Result.Content.ReadAsStringAsync();
 
+            var primaryResponse = JsonUtility.GetJsonObjectFromJsonString(response);
+            var obj = new JObject(new JProperty("AzureToken", primaryResponse));
 
-            var obj = new JObject(new JProperty("AzureToken", response));
-            return new ActionResponse(ActionStatus.Success, obj);
+            return new ActionResponse(ActionStatus.Success, obj, true);
         }
 
         private static StringBuilder GetTokenUri(string refresh_token, string uri, string rootUrl)

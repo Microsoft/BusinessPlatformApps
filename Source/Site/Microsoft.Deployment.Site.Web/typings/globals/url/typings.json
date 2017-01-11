@@ -1,8 +1,0 @@
-{
-  "resolution": "main",
-  "tree": {
-    "src": "https://raw.githubusercontent.com/aurelia/fetch-client/bbe0777ef710d889a05759a65fa2c9c3865fc618/doc/url.d.ts",
-    "raw": "github:aurelia/fetch-client/doc/url.d.ts#bbe0777ef710d889a05759a65fa2c9c3865fc618",
-    "typings": "https://raw.githubusercontent.com/aurelia/fetch-client/bbe0777ef710d889a05759a65fa2c9c3865fc618/doc/url.d.ts"
-  }
-}

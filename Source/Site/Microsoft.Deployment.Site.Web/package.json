@@ -1,5 +1,10 @@
 {
   "name": "bpst",
+  "description": "Business Platform Solution Templates",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/Microsoft/BusinessPlatformApps.git"
+  },
   "version": "1.0.0",
   "license": "CC0-1.0",
   "author": "Microsoft",
@@ -22,7 +27,6 @@
     "babel-plugin-es6-promise": "1.0.0",
     "reflect-metadata": "0.1.8",
     "babelify": "^7.3.0",
-    "browser-sync": "^2.13.0",
     "browserify": "^13.1.0",
     "conventional-changelog": "1.1.0",
     "core-js": "2.4.1",
@@ -41,10 +45,6 @@
     "isparta": "^4.0.0",
     "jasmine-core": "^2.4.1",
     "jspm": "^0.16.41",
-    "karma": "^1.1.2",
-    "karma-chrome-launcher": "^1.0.1",
-    "karma-jasmine": "^1.0.2",
-    "karma-systemjs": "^0.14.0",
     "object.assign": "^4.0.4",
     "require-dir": "^0.3.0",
     "run-sequence": "^1.2.2",

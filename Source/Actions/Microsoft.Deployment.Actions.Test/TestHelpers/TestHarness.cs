@@ -1,34 +1,31 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Dynamic;
-using System.IO;
 using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Deployment.Common.ActionModel;
 using Microsoft.Deployment.Common.AppLoad;
 using Microsoft.Deployment.Common.Controller;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Microsoft.Deployment.Actions.Test.TestHelpers;
 using Microsoft.Deployment.Common.Enums;
 using Microsoft.Deployment.Common.Helpers;
 using Microsoft.Deployment.Common.Model;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
-namespace Microsoft.Deployment.Actions.Test
+namespace Microsoft.Deployment.Actions.Test.TestHelpers
 {
     [TestClass]
     public class TestHarness
     {
+        public static string RandomCharacters = RandomGenerator.GetRandomLowerCaseCharacters(5);
         private static CommonController Controller { get; set; }
         public static string TemplateName = "TestApp";
         private static DataStore CommonDataStoreServicePrincipal = null;
         private static DataStore CommonDataStoreUserToken = null;
         private static string ResourceGroup = "UnitTest" + RandomGenerator.GetRandomLowerCaseCharacters(5);
-        private static string CurrentDatabase = string.Empty;
+        public static string CurrentDatabase = string.Empty;
 
 
         [AssemblyInitialize()]
@@ -50,16 +47,26 @@ namespace Microsoft.Deployment.Actions.Test
 
         [AssemblyCleanup()]
         public static async void AssemblyCleanup()
-        { 
-            var deleteResourceGroupResult = await TestHarness.ExecuteActionAsync("Microsoft-DeleteResourceGroup", GetCommonDataStore().Result);
-            RemoveTempDB();
+        {
+            if (!System.Diagnostics.Debugger.IsAttached)
+            {
+                var deleteResourceGroupResult =
+                    await TestHarness.ExecuteActionAsync("Microsoft-DeleteResourceGroup", GetCommonDataStore().Result);
+            }
+
+            if (!string.IsNullOrWhiteSpace(CurrentDatabase))
+            {
+                RemoveTempDB();
+            }
         }
+
 
         public static ActionResponse ExecuteAction(string actionName, DataStore datastore)
         {
             UserInfo info = new UserInfo();
             info.ActionName = actionName;
             info.AppName = TemplateName;
+            info.WebsiteRootUrl = "https://unittest";
             return Controller.ExecuteAction(info, new ActionRequest() { DataStore = datastore }).Result;
         }
 
@@ -68,6 +75,7 @@ namespace Microsoft.Deployment.Actions.Test
             UserInfo info = new UserInfo();
             info.ActionName = actionName;
             info.AppName = TemplateName;
+            info.WebsiteRootUrl = "https://unittest";
             return await Controller.ExecuteAction(info, new ActionRequest() { DataStore = datastore });
         }
 
@@ -100,23 +108,42 @@ namespace Microsoft.Deployment.Actions.Test
             DataStore dataStore = null;
             if (getUserToken)
             {
-                dataStore = await AAD.GetUserTokenFromPopup();
+                tempDataStore = null;
+                Thread newThread = new Thread(GetUserTokenThreadSafe);
+                newThread.SetApartmentState(ApartmentState.STA);
+                newThread.Start();
+                while (newThread.ThreadState != ThreadState.Stopped)
+                {
+                    await Task.Delay(3000);
+                }
+                dataStore = tempDataStore;
             }
             else
             {
-                dataStore = await AAD.GetTokenWithDataStore();
+                dataStore = AAD.GetTokenWithDataStore().Result;
             }
             
             dataStore = await SetupDatastore(dataStore);
             return dataStore;
         }
 
+        private static DataStore tempDataStore = null;
+
+        public static void GetUserTokenThreadSafe()
+        {
+            tempDataStore = AAD.GetUserTokenFromPopup().Result;
+        }
+
         public static async Task<DataStore> GetCommonDataStoreWithSql()
         {
             var dataStore = await GetCommonDataStore();
 
-            CreateTempDB();
-            var connString = (GetSqlPagePayload(CurrentDatabase).Body as JObject)["value"].ToString();
+            if (string.IsNullOrWhiteSpace(CurrentDatabase))
+            {
+                CreateTempDB();
+            }
+
+            var connString = GetSqlPagePayload(CurrentDatabase);
             dataStore.AddToDataStore("SqlConnectionString", connString);
             return dataStore;
         }
@@ -127,7 +154,7 @@ namespace Microsoft.Deployment.Actions.Test
             Assert.IsTrue(subscriptionResult.IsSuccess);
             var subscriptionId =
                 subscriptionResult.Body.GetJObject()["value"].SingleOrDefault(
-                    p => p["DisplayName"].ToString() == "Power BI Solution Template Development");
+                    p => p["DisplayName"].ToString() == "PBI_ECO (Paas) Richard's team");
             dataStore.AddToDataStore("SelectedSubscription", subscriptionId, DataStoreType.Public);
 
             var locationResult = await TestHarness.ExecuteActionAsync("Microsoft-GetLocations", dataStore);
@@ -135,7 +162,14 @@ namespace Microsoft.Deployment.Actions.Test
             var location = locationResult.Body.GetJObject()["value"][5];
             dataStore.AddToDataStore("SelectedLocation", location, DataStoreType.Public);
 
+
+            if (System.Diagnostics.Debugger.IsAttached)
+            {
+                ResourceGroup = Environment.MachineName;
+            }
+
             dataStore.AddToDataStore("SelectedResourceGroup", ResourceGroup);
+
 
             if (!System.Diagnostics.Debugger.IsAttached)
             {
@@ -186,7 +220,7 @@ namespace Microsoft.Deployment.Actions.Test
             RunSqlCommandWithoutTransaction(creds, command);
         }
 
-        private static ActionResponse GetSqlPagePayload(string database)
+        public  static string GetSqlPagePayload(string database)
         {
             var dataStore = new DataStore();
 
@@ -202,10 +236,11 @@ namespace Microsoft.Deployment.Actions.Test
 
             ActionResponse sqlResponse = TestHarness.ExecuteAction("Microsoft-GetSqlConnectionString", dataStore);
             Assert.IsTrue(sqlResponse.Status == ActionStatus.Success);
-            return sqlResponse;
+
+            return (sqlResponse.Body as JObject)["value"].ToString();
         }
 
-        private static void RunSqlCommandWithoutTransaction(SqlCredentials creds, string commandText)
+        public static void RunSqlCommandWithoutTransaction(SqlCredentials creds, string commandText)
         {
             var connString = SqlUtility.GetConnectionString(creds).Replace("Connect Timeout=15", "Connect Timeout=60");
             using (var cn = new SqlConnection(connString))

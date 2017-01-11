@@ -1,0 +1,33 @@
+﻿<template>
+    <h1 class="st-title">${MS.Translate.COMMON_CUSTOMIZE}</h1>
+    <h4 class="st-subtitle">${MS.Translate.CUSTOMIZE_SPECIFIC}</h4>
+
+    <p class="st-text">${MS.Translate.CUSTOMIZE_START_FISCAL_YEAR}</p>
+    <select class="btn btn-default dropdown-toggle st-input" value.bind="fiscalMonth">
+        <option value="0">${MS.Translate.COMMON_MONTH_0}</option>
+        <option value="1">${MS.Translate.COMMON_MONTH_1}</option>
+        <option value="2">${MS.Translate.COMMON_MONTH_2}</option>
+        <option value="3">${MS.Translate.COMMON_MONTH_3}</option>
+        <option value="4">${MS.Translate.COMMON_MONTH_4}</option>
+        <option value="5">${MS.Translate.COMMON_MONTH_5}</option>
+        <option value="6">${MS.Translate.COMMON_MONTH_6}</option>
+        <option value="7">${MS.Translate.COMMON_MONTH_7}</option>
+        <option value="8">${MS.Translate.COMMON_MONTH_8}</option>
+        <option value="9">${MS.Translate.COMMON_MONTH_9}</option>
+        <option value="10">${MS.Translate.COMMON_MONTH_10}</option>
+        <option value="11">${MS.Translate.COMMON_MONTH_11}</option>
+    </select>
+
+    <p class="st-text" title="${MS.Translate.CUSTOMIZE_ACTUAL_REVENUE_DESCRIPTION}">${MS.Translate.CUSTOMIZE_ACTUAL_REVENUE}</p>
+    <label class="st-text">
+        <input type="radio" value="Closed opportunities" checked.bind="actuals">
+        <span>${MS.Translate.CUSTOMIZE_CLOSED_OPPORTUNITIES}</span>
+    </label>
+    <label class="st-text">
+        <input type="radio" value="Keep blank" checked.bind="actuals">
+        <span>${MS.Translate.CUSTOMIZE_KEEP_BLANK}</span>
+    </label>
+
+    <p class="st-text" title="${MS.Translate.CUSTOMIZE_BASE_URL_DESCRIPTION}">${MS.Translate.CUSTOMIZE_BASE_URL} ${MS.Translate.COMMON_OPTIONAL}</p>
+    <input class="st-input" type="text" value.bind="baseUrl">
+</template>

@@ -4,7 +4,7 @@
       {
         "name": "$SiteCommon$/pagesgallery/getting-started.html",
         "templateName": "Salesforce Sales Management",
-        "subtitle": "Welcome to the public preview of the Salesforce Sales Management solution template.",
+        "subtitle": "Welcome to the Salesforce Sales Management solution template.",
         "displayname": "Getting Started",
         "architectureDiagram": "dist/Apps/Microsoft/Released/Microsoft-SalesforceSalesManagement/Web/Images/salesforceArchitectureDiagram.png",
         "list1": [

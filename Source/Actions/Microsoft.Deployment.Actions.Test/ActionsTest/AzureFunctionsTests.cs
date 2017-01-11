@@ -25,13 +25,13 @@ namespace Microsoft.Deployment.Actions.Test.ActionsTest
 
             dataStore.AddToDataStore("DeploymentName", "FunctionDeploymentTest");
             dataStore.AddToDataStore("FunctionAppHostingPlan", "FunctionPlanName");
-            dataStore.AddToDataStore("SiteName", "UnitTestTrialbpst" + randomString);
+            dataStore.AddToDataStore("Name", "unituestrialbpst" + randomString);
 
             var response = TestHarness.ExecuteAction("Microsoft-DeployAzureFunction", dataStore);
             Assert.IsTrue(response.IsSuccess);
 
             response = TestHarness.ExecuteAction("Microsoft-WaitForArmDeploymentStatus", dataStore);
-           Assert.IsTrue(response.IsSuccess);
+            Assert.IsTrue(response.IsSuccess);
         }
 
         [TestMethod]

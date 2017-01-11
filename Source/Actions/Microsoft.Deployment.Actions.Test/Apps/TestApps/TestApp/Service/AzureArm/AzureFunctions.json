@@ -7,7 +7,7 @@
       "type": "string"
     },
 
-    "sitename": {
+    "name": {
       "defaultValue": "stsite",
       "type": "string"
     },
@@ -27,71 +27,71 @@
       "type": "string"
     }
   },
-  "variables": {},
-  "resources": [
-    {
-      "type": "Microsoft.Web/sites",
-      "kind": "functionapp",
-      "name": "[parameters('sitename')]",
-      "apiVersion": "2016-03-01",
-      "location": "[resourceGroup().location]",
-      "properties": {
-        "name": "[parameters('sitename')]",
-        "siteConfig": {
-          "appSettings": [
-            {
-              "name": "AzureWebJobsDashboard",
-              "value": "[concat('DefaultEndpointsProtocol=https;AccountName=',parameters('storageaccountname'),';AccountKey=',listKeys(resourceId('Microsoft.Storage/storageAccounts', parameters('storageaccountname')), '2015-05-01-preview').key1)]"
-            },
-            {
-              "name": "AzureWebJobsStorage",
-              "value": "[concat('DefaultEndpointsProtocol=https;AccountName=',parameters('storageaccountname'),';AccountKey=',listKeys(resourceId('Microsoft.Storage/storageAccounts', parameters('storageaccountname')), '2015-05-01-preview').key1)]"
-            },
-            {
-              "name": "FUNCTIONS_EXTENSION_VERSION",
-              "value": "~0.8"
-            },
-            {
-              "name": "WEBSITE_CONTENTAZUREFILECONNECTIONSTRING",
-              "value": "[concat('DefaultEndpointsProtocol=https;AccountName=',parameters('storageaccountname'),';AccountKey=',listKeys(resourceId('Microsoft.Storage/storageAccounts', parameters('storageaccountname')), '2015-05-01-preview').key1)]"
-            },
-            {
-              "name": "WEBSITE_CONTENTSHARE",
-              "value": "[toLower(parameters('sitename'))]"
-            },
-            {
-              "name": "WEBSITE_NODE_DEFAULT_VERSION",
-              "value": "4.1.2"
-            }
-          ]
+    "resources": [
+      {
+        "apiVersion": "2015-08-01",
+        "name": "[parameters('name')]",
+        "type": "Microsoft.Web/sites",
+        "properties": {
+          "name": "[parameters('name')]",
+          "siteConfig": {
+            "appSettings": [
+              {
+                "name": "AzureWebJobsDashboard",
+                "value": "[concat('DefaultEndpointsProtocol=https;AccountName=',parameters('name'),';AccountKey=',listKeys(resourceId('Microsoft.Storage/storageAccounts', parameters('name')), '2015-05-01-preview').key1)]"
+              },
+              {
+                "name": "AzureWebJobsStorage",
+                "value": "[concat('DefaultEndpointsProtocol=https;AccountName=',parameters('name'),';AccountKey=',listKeys(resourceId('Microsoft.Storage/storageAccounts', parameters('name')), '2015-05-01-preview').key1)]"
+              },
+              {
+                "name": "FUNCTIONS_EXTENSION_VERSION",
+                "value": "~1"
+              },
+              {
+                "name": "WEBSITE_CONTENTAZUREFILECONNECTIONSTRING",
+                "value": "[concat('DefaultEndpointsProtocol=https;AccountName=',parameters('name'),';AccountKey=',listKeys(resourceId('Microsoft.Storage/storageAccounts', parameters('name')), '2015-05-01-preview').key1)]"
+              },
+              {
+                "name": "WEBSITE_CONTENTSHARE",
+                "value": "[toLower(parameters('name'))]"
+              },
+              {
+                "name": "WEBSITE_NODE_DEFAULT_VERSION",
+                "value": "6.5.0"
+              }
+            ]
+          }
         },
-        "containerSize": 512
+        "dependsOn": [
+          "[resourceId('Microsoft.Storage/storageAccounts', parameters('name'))]"
+        ],
+        "resources": [
+          {
+            "apiVersion": "2015-08-01",
+            "name": "web",
+            "type": "sourcecontrols",
+            "dependsOn": [
+              "[resourceId('Microsoft.Web/sites/', parameters('name'))]"
+            ],
+            "properties": {
+              "RepoUrl": "https://github.com/juluczni/AzureFunctionsNewsTemplate",
+              "branch": "master",
+              "IsManualIntegration": "true"
+            }
+          }
+        ],
+        "location": "[resourceGroup().location]",
+        "kind": "functionapp"
       },
-      "dependsOn": [
-        "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageaccountname'))]"
-      ]
-    },
-    {
-      "type": "Microsoft.Storage/storageAccounts",
-      "name": "[parameters('storageaccountname')]",
-      "apiVersion": "2015-05-01-preview",
-      "location": "[resourceGroup().location]",
-      "properties": {
-        "accountType": "Standard_LRS"
-      }
-    },
-    {
-      "apiVersion": "2015-08-01",
-      "name": "web",
-      "type": "sourcecontrols",
-      "dependsOn": [
-        "[resourceId('Microsoft.Web/sites/', parameters('name'))]"
-      ],
-      "properties": {
-        "RepoUrl": "https://github.com/Microsoft/BusinessPlatformApps/tree/NewsTemplate/Source/Apps/Microsoft/Released/Microsoft-NewsTemplate/Service/NewsFunction",
-        "branch": "master",
-        "IsManualIntegration": "true"
-      }
-    }
-  ]
+        {
+            "apiVersion": "2015-05-01-preview",
+            "type": "Microsoft.Storage/storageAccounts",
+            "name": "[parameters('name')]",
+            "location": "[resourceGroup().location]",
+            "properties": {
+                "accountType": "Standard_LRS"
+            }
+        }
+    ]
 }

@@ -3,6 +3,12 @@
     <h1 class="st-title">${MS.Translate.GETTING_STARTED_TITLE} ${templateName}</h1>
     <p class="st-subtitle">${subtitle}</p>
 
+    <!-- Prerequisites -->
+    <div if.bind="prerequisitesDescription">
+        <span>${prerequisitesDescription}</span>
+        <a href="${prerequisitesLink}">${prerequisiteLinkText}</a>
+    </div>
+
     <!-- Set Up -->
     <div if.bind="list1.length > 0">
         <p class="st-subtitle">${list1Title}</p>

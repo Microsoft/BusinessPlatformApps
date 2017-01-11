@@ -1,8 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using Microsoft.ApplicationInsights;
+﻿using Microsoft.ApplicationInsights;
 using Microsoft.Deployment.Common.ActionModel;
-using Newtonsoft.Json.Linq;
+using Microsoft.Deployment.Common.Helpers;
+
+using System;
+using System.Collections.Generic;
 
 namespace Microsoft.Deployment.Common.Controller
 {
@@ -89,19 +90,28 @@ namespace Microsoft.Deployment.Common.Controller
 
         public void LogTrace(string objectString, ActionRequest obj, string traceId)
         {
-           
+            var objToLog  = JsonUtility.GetJObjectFromObject(obj);
+            objToLog["DataStore"]["PrivateDataStore"] = null;
+            LogTraceInAppInsights(objectString, objToLog, traceId);
         }
 
         public void LogTrace(string objectString, ActionResponse obj, string traceId)
         {
-
+            var objToLog = JsonUtility.GetJObjectFromObject(obj);
+            
+            if (obj.IsResponseSensitive)
+            {
+                objToLog["Body"] = null;
+            }
+            objToLog["DataStore"]["PrivateDataStore"] = null;
+            LogTraceInAppInsights(objectString, objToLog, traceId);
         }
 
         public void LogTraceInAppInsights(string objectString, object obj, string traceId)
         {
             Dictionary<string, object> container = new Dictionary<string, object>();
             container.Add("TraceId", traceId);
-            //container.Add(objectString, RemovePrivateInformation(obj));
+            container.Add(objectString, obj);
 
             foreach (var globParam in this.globalParams)
             {
@@ -110,7 +120,7 @@ namespace Microsoft.Deployment.Common.Controller
 
             this.AddTraceId(traceId);
 
-            //this.telemetryClient.TrackTrace(JsonUtility.GetJsonStringFromObject(container));
+            this.telemetryClient.TrackTrace(JsonUtility.GetJsonStringFromObject(container));
 
             this.Flush();
             this.ClearTraceId();

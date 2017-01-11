@@ -1,0 +1,9 @@
+﻿{
+  "frameworks": {
+    "net46": {
+      "dependencies": {
+        "NSoup": "0.8.0"
+      }
+    }
+  }
+}

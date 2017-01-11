@@ -1,0 +1,201 @@
+{
+  "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "dataFactoryName": {
+      "type": "string",
+      "metadata": {
+        "description": "Data Factory Account name"
+      }
+    },
+    "sqlServerName": {
+      "type": "string",
+      "metadata": {
+        "description": "Existing Azure SQL Database Server name"
+      }
+    },
+    "sqlServerUsername": {
+      "type": "string",
+      "metadata": {
+        "description": "Existing Azure SQL Database Server user name"
+      }
+    },
+    "sqlServerPassword": {
+      "type": "securestring",
+      "metadata": {
+        "description": "Existing Azure SQL Database Server password"
+      }
+    },
+    "targetDatabaseName": {
+      "type": "string",
+      "metadata": {
+        "description": "Existing taget Azure SQL Database name"
+      }
+    },
+    "targetSqlSchema": {
+      "type": "string",
+      "metadata": {
+        "description": "Existing taget Azure SQL schema"
+      }
+    },
+    "targetSqlTable": {
+      "type": "string",
+      "metadata": {
+        "description": "Existing target table in Azure SQL Database"
+      }
+    },
+    "salesforceUsername": {
+      "type": "string",
+      "metadata": {
+        "description": "Salesforce login username"
+      }
+    },
+    "environmentUrl": {
+      "type": "string",
+      "metadata": {
+        "description": "Salesforce environment url"
+      }
+    },
+    "salesforcePassword": {
+      "type": "securestring",
+      "metadata": {
+        "description": "Salesforce login password"
+      }
+    },
+    "salesforceSecurityToken": {
+      "type": "securestring",
+      "metadata": {
+        "description": "Salesforce secure token"
+      }
+    },
+    "targetSalesforceTable": {
+      "type": "string",
+      "metadata": {
+        "description": "Existing target table in Salesforce"
+      }
+    },
+    "pipelineName": {
+      "type": "string",
+      "metadata": {
+        "description": "Name of the copy pipeline"
+      }
+    },
+    "sqlWritableTypeName": {
+      "type": "string",
+      "metadata": {
+        "description": "Sql table type name"
+      }
+    },
+    "sqlWriterStoredProcedureName": {
+      "type": "string",
+      "metadata": {
+        "description": "Sql stored procedure name"
+      }
+    },
+    "pipelineStartDate": {
+      "type": "string",
+      "metadata": {
+        "description": "Start date for the pipeline"
+      }
+    },
+    "pipelineEndDate": {
+      "type": "string",
+      "metadata": {
+        "description": "End date for the pipeline"
+      }
+    },
+    "sliceFrequency": {
+      "type": "string",
+      "metadata": {
+        "description": "Minute,Hour,Day,Week,Month"
+      }
+    },
+    "sliceInterval": {
+      "type": "integer",
+      "metadata": {
+        "description": "Minimum 15 if frequency is set to Minute"
+      }
+    },
+    "pipelineType": {
+      "type": "string",
+      "metadata": {
+        "description": "PreDeployment or PostDeployment"
+      }
+    },
+    "subscriptionId": {
+      "type": "string",
+      "metadata": {
+        "description": "Subscription Id"
+      }
+    }
+  },
+  "variables": {
+    "apiVersion": "2015-10-01",
+    "storageApiVersion": "2015-05-01-preview",
+    "sqlLinkedServiceName": "AzureSqlLinkedService",
+    "salesforceLinkedServiceName": "SalesforceLinkedService"
+  },
+  "resources": [
+    {
+      "type": "Microsoft.DataFactory/datafactories",
+      "name": "[parameters('dataFactoryName')]",
+      "apiVersion": "[variables('apiVersion')]",
+      "location": "[resourceGroup().location]",
+      "resources": [
+        {
+          "dependsOn": [ "[concat('Microsoft.DataFactory/dataFactories/', parameters('dataFactoryName'))]" ],
+          "type": "linkedservices",
+          "name": "AzureSqlLinkedService",
+          "apiVersion": "[variables('apiVersion')]",
+          "properties": {
+            "type": "AzureSqlDatabase",
+            "typeProperties": {
+              "connectionString": "[concat('Data Source=tcp:',parameters('sqlServerName'),'.database.windows.net,1433;Initial Catalog=',parameters('targetDatabaseName'),';Integrated Security=False;User ID=',parameters('sqlServerUsername'),';Password=',parameters('sqlServerPassword'),';Encrypt=True;Connection Timeout=30')]"
+            }
+          }
+        },
+        {
+          "dependsOn": [ "[concat('Microsoft.DataFactory/dataFactories/', parameters('dataFactoryName'))]" ],
+          "type": "linkedservices",
+          "name": "SalesforceLinkedService",
+          "apiVersion": "[variables('apiVersion')]",
+          "properties": {
+            "type": "Salesforce",
+            "typeProperties": {
+              "username": "[parameters('salesforceUsername')]",
+              "password": "[parameters('salesforcePassword')]",
+              "securityToken": "[parameters('salesforceSecurityToken')]",
+              "environmentUrl": "[parameters('environmentUrl')]"
+            }
+          }
+        },
+        {
+          "dependsOn": [ "[concat('Microsoft.DataFactory/dataFactories/', parameters('dataFactoryName'))]" ],
+          "name": "ADFAlertsSlice",
+          "type": "microsoft.insights/alertrules",
+          "apiVersion": "2014-04-01",
+          "location": "East US",
+          "properties": {
+            "name": "ADFAlertsSlice",
+            "description": "One or more of the data slices for the Azure Data Factory has failed processing.",
+            "isEnabled": true,
+            "condition": {
+              "odata.type": "Microsoft.Azure.Management.Insights.Models.ManagementEventRuleCondition",
+              "dataSource": {
+                "odata.type": "Microsoft.Azure.Management.Insights.Models.RuleManagementEventDataSource",
+                "operationName": "RunFinished",
+                "status": "Failed",
+                "subStatus": "FailedExecution",
+                "resourceUri": "[concat('/SUBSCRIPTIONS/',parameters('subscriptionId'),'/RESOURCEGROUPS/',resourceGroup().name,'/PROVIDERS/MICROSOFT.DATAFACTORY/DATAFACTORIES/',parameters('dataFactoryName'))]"
+              }
+            },
+            "action": {
+              "odata.type": "Microsoft.Azure.Management.Insights.Models.RuleEmailAction",
+              "customEmails": "EMAILS"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,42 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "storageaccountname": {
+            "defaultValue": "ststorage",
+            "type": "String"
+        },
+	
+		"resourcegroup": {
+		"defaultValue": "stresourcegroup",
+		"type": "string"
+		},	
+		
+		"subscription": {
+		"defaultValue": "idrequired",
+		"type": "string"
+		},
+		
+	    "CognitiveServiceName": {
+		"defaultValue": "CognitiveService",
+		"type": "string"
+		}
+    },
+    "variables": {},
+    "resources": [
+        {
+            "comments": "",
+            "type": "Microsoft.CognitiveServices/accounts",
+            "sku": {
+                "name": "[parameters('skuName')]"
+            },
+            "kind": "[parameters('cognitiveServiceType')]",
+            "name": "[parameters('CognitiveServiceName')]",
+            "apiVersion": "2016-02-01-preview",
+          "location": "[parameters('location')]",
+            "properties": {},
+            "resources": [],
+            "dependsOn": []
+        }
+    ]
+}

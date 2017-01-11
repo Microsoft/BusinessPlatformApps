@@ -1,0 +1,70 @@
+<apex:page showHeader="true" controller="PowerBIController" action="{!redirectOnCallback}">
+
+<html>
+
+<head>
+
+</head>
+
+<apex:includeScript value="{!$Resource.PBIJS}"/>
+
+    <apex:outputPanel rendered="{!NOT(hasToken)}"><a href='{!authUrl}'>Login</a></apex:outputPanel>
+
+    <apex:outputPanel rendered="{!hasToken}">Already has token</apex:outputPanel>
+
+
+<div id="myReport" style="height: 800px;"/>
+
+<script>
+
+let accessToken = '{!PBIaccess_token}';
+let refreshToken = '{!PBIrefresh_token}';
+let expires_on = '{!PBIexpires_on}';
+
+window.onload = function() {
+    
+    if(!refreshToken)
+    {
+       window.location.href = '{!authUrl}';
+    }
+    else if(new Date(expires_on) < Date.now())
+    {
+        refreshAccessToken();
+    }
+ }
+
+    var filter = {
+
+      $schema: "http://powerbi.com/product/schema#basic"
+
+    };
+
+
+var embedConfiguration = {
+
+    type: 'report',
+
+    id: 'YOURREPORTID',
+
+    embedUrl: 'https://app.powerbi.com/reportEmbed',
+
+    settings: {
+
+            filterPaneEnabled: true,
+
+            navContentPaneEnabled: true
+
+        }
+};
+
+powerbi.accessToken = '{!PBIaccess_token}';
+
+var element = document.getElementById('myReport');
+
+var report = powerbi.embed(element, embedConfiguration);
+</script>
+</html>
+<apex:form >
+<apex:actionFunction name="refreshAccessToken" action="{!refreshAccessToken}" onComplete="alert('After apex method') ;"/>
+</apex:form>
+</apex:page>

@@ -34,7 +34,8 @@ input[type=text] {
 }
 
 ul {
-    list-style-position: inside;
+    list-style-position: outside;
+    margin-left: 2em;
     padding-left: 0;
 }
 

@@ -8,6 +8,9 @@ export class Gettingstarted extends ViewModelBase {
     list2: string[] = [];
     list1Title: string = this.MS.Translate.GETTING_STARTED_LIST_1;
     list2Title: string = this.MS.Translate.GETTING_STARTED_LIST_2;
+    prerequisiteDescription: string = '';
+    prerequisiteLink: string = '';
+    prerequisiteLinkText: string = '';
     registration: string = '';
     registrationAccepted: boolean = false;
     registrationAction: string = '';

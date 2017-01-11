@@ -16,8 +16,8 @@
                     "Connect to Azure SQL and import data into Power BI"
                 ],
                 "name": "$SiteCommon$/pagesgallery/getting-started.html",
-                "subtitle": "Welcome to the public preview of the brand and campaign management solution template.",
-                "templateName": "'Brand and Campaign Management for Twitter"
+                "subtitle": "Welcome to the brand and campaign management solution template.",
+                "templateName": "Brand and Campaign Management for Twitter"
             },
           {
             "displayname": "Login",

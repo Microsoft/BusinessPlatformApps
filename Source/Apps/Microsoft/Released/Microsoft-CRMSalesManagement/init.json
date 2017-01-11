@@ -8,6 +8,12 @@
                 "SqlScriptsFolder": "Database"
             },
             {
+                "name": "Microsoft-SetConfigValueInSql",
+                "displayname": "Deploy DB Configuration",
+                "SqlServerIndex": "0",
+                "SqlConfigTable": "[smgt].[configuration]"
+            },
+            {
                 "displayname": "Configuring Azure Key Vault",
                 "name": "Microsoft-CrmCreateVaultSecret"
             },
@@ -61,7 +67,7 @@
                 "entities": "account,lead,opportunity,opportunityproduct,product,systemuser,systemusermanagermap,territory",
                 "name": "$SiteCommon$/pagesgallery/mscrm-login.html",
                 "oauthType": "mscrm",
-                "pricingCost": "By deploying the template you authorize the creation of Azure resources in your subscription. The estimated cost for the Azure SQL Database and Azure Key Vault required are approximately $30 per month (this is an estimate only).",
+                "pricingCost": "By deploying the template you authorize the creation of Azure resources in your subscription. The estimated cost for the Azure SQL Database and Azure Key Vault required are approximately $75 per month (this is an estimate only). Note that Azure premium tier Azure SQL Database is recommended during initial data export and can be moved to a less expensive service tier after this step is completed.",
                 "pricingUrl": "https://azure.microsoft.com/en-us/pricing/details/sql-database"
             },
             {
@@ -74,13 +80,18 @@
                 "displayname": "Target",
                 "isAzureSql": true,
                 "newSqlDatabase": "$(this.MS.UtilityService.GetUniqueId(10))",
-                "showAzureSql": true,
+                "showAzureSql": false,
                 "showNewSqlOption": true,
+                "showSkuS1": false,
                 "sqlInstance": "NewSql",
+                "sqlSku": "S2",
                 "subtitle": "Set up a connection to SQL so we can bring in your Dynamics 365 data.",
                 "title": "Connect to your SQL Database"
             },
-
+            {
+                "displayname": "Customize",
+                "name": "customize.html"
+            },
             {
                 "displayname": "Progress",
                 "name": "$SiteCommon$/pagesgallery/progress.html",

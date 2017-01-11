@@ -4,6 +4,7 @@
     using Azure.Management.KeyVault.Models;
     using Azure.Management.Resources;
     using Microsoft.Azure;
+    using Microsoft.Azure.ActiveDirectory.GraphClient;
     using Microsoft.Azure.KeyVault;
     using Microsoft.Azure.Management.KeyVault;
     using Microsoft.Deployment.Common.ActionModel;
@@ -13,14 +14,11 @@
     using System;
     using System.Collections.Generic;
     using System.ComponentModel.Composition;
-    using System.Threading.Tasks;
     using System.IdentityModel.Tokens.Jwt;
-    using Microsoft.Azure.ActiveDirectory.GraphClient;
-    using Azure.Management.Resources.Models;
     using System.Net.Http;
     using System.Net.Http.Headers;
-    using Newtonsoft.Json.Linq;
     using System.Threading;
+    using System.Threading.Tasks;
 
     [Export(typeof(IAction))]
     public class CrmCreateVaultSecret : BaseAction
@@ -175,14 +173,14 @@
                         AccessPolicyEntry apeOwner = new AccessPolicyEntry();
                         apeOwner.Permissions = new Permissions(new[] { "get", "create", "delete", "list", "update", "import", "backup", "restore" }, new[] { "all" }, new[] { "all" });
                         apeOwner.TenantId = p.TenantId;
-                        apeOwner.ObjectId = new Guid(oid);
+                        apeOwner.ObjectId = oid;
                         p.AccessPolicies.Add(apeOwner);
 
                         // Access policy for the CRM exporter
                         AccessPolicyEntry ape = new AccessPolicyEntry();
                         ape.Permissions = new Permissions(null, new[] { "get" });
                         ape.TenantId = p.TenantId;
-                        ape.ObjectId = new Guid(GetCrmConnectorObjectID(_graphToken, _tenantId).Result);
+                        ape.ObjectId = GetCrmConnectorObjectID(_graphToken, _tenantId).Result;
                         p.AccessPolicies.Add(ape);
 
                         VaultCreateOrUpdateParameters vaultParams = new VaultCreateOrUpdateParameters()

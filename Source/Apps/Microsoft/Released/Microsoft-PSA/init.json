@@ -1,0 +1,102 @@
+﻿{
+    "Install": {
+        "Actions": [
+            {
+                "name": "Microsoft-DeploySQLScripts",
+                "displayname": "Deploy DB Scripts",
+                "SqlServerIndex": "0",
+                "SqlScriptsFolder": "Database"
+            },
+            {
+                "displayname": "Configuring Azure Key Vault",
+                "name": "Microsoft-CrmCreateVaultSecret"
+            },
+            {
+                "displayname": "Cleaning Dynamics 365 Environment",
+                "name": "Microsoft-CrmDeleteProfile"
+            },
+            {
+                "displayname": "Validating Dynamics 365 Profile",
+                "name": "Microsoft-CrmValidateProfile"
+            },
+            {
+                "displayname": "Creating Dynamics 365 Profile",
+                "name": "Microsoft-CrmCreateProfile"
+            },
+            {
+                "displayname": "Starting Dynamics 365 Profile",
+                "name": "Microsoft-CrmStartProfile"
+            },
+            {
+                "name": "Microsoft-GetDataPullStatus",
+                "displayname": "Waiting for data to appear in the destination",
+                "SqlServerIndex": 0,
+                "TargetSchema": "dbo",
+                "IsWaiting": true,
+                "FinishedActionName": "Microsoft-CrmGetProfileStatus"
+            }
+        ],
+        "Pages": [
+            {
+                "architectureDiagram": "dist/Apps/Microsoft/Released/Microsoft-CRMSalesManagement/Web/Images/crm-sales-management.png",
+                "displayname": "Getting Started",
+                "list1": [
+                    "December 2016 update for Microsoft Dynamics 365 (online) or a later instance",
+                    "You must be a Dynamics 365 Administrator",
+                    "A valid Azure subscription in the same Azure tenant as the Dynamics 365 instance",
+                    "The target Azure Database must support the volume of data being replicated from your Dynamics 365 instance",
+                    "Power BI Desktop (latest version)",
+                    "Power BI Pro (to share the template with your organization)"
+                ],
+                "list2": [
+                    "Full cloud solution with minimum set up and maintenance considerations",
+                    "Data pulled from Dynamics 365 into an Azure SQL Database using the Dynamics 365 Export Service",
+                    "Connect to Azure SQL and import data into Power BI"
+                ],
+                "name": "$SiteCommon$/pagesgallery/getting-started.html",
+                "prerequisiteDescription": "Lorem ipsum",
+                "prerequisiteLink": "https://www.bing.com",
+                "prerequisiteLinkText": "link",
+                "templateName": "Professional Services for Dynamics 365"
+            },
+            {
+                "displayname": "Dynamics 365 Login",
+                "entities": "account,lead,opportunity,opportunityproduct,product,systemuser,systemusermanagermap,territory",
+                "name": "$SiteCommon$/pagesgallery/mscrm-login.html",
+                "oauthType": "mscrm",
+                "pricingCost": "By deploying the template you authorize the creation of Azure resources in your subscription. The estimated cost for the Azure SQL Database and Azure Key Vault required are approximately $75 per month (this is an estimate only). Note that Azure premium tier Azure SQL Database is recommended during initial data export and can be moved to a less expensive service tier after this step is completed.",
+                "pricingUrl": "https://azure.microsoft.com/en-us/pricing/details/sql-database"
+            },
+            {
+                "displayname": "Login to the Key Vault",
+                "name": "$SiteCommon$/pagesgallery/keyvault-login.html",
+                "oauthType": "keyvault"
+            },
+            {
+                "name": "$SiteCommon$/pagesgallery/sql-server.html",
+                "displayname": "Target",
+                "isAzureSql": true,
+                "newSqlDatabase": "$(this.MS.UtilityService.GetUniqueId(10))",
+                "showAzureSql": false,
+                "showNewSqlOption": true,
+                "showSkuS1": false,
+                "sqlInstance": "NewSql",
+                "sqlSku": "S2",
+                "subtitle": "Set up a connection to SQL so we can bring in your Dynamics 365 data.",
+                "title": "Connect to your SQL Database"
+            },
+
+            {
+                "displayname": "Progress",
+                "name": "$SiteCommon$/pagesgallery/progress.html",
+                "filename": "$('SalesManagementReport.pbix', isSaved=true)",
+                "showCounts": true,
+                "finishedActionName": "Microsoft-CrmGetProfileStatus"
+            }
+        ]
+    },
+    "Uninstall": {
+        "Pages": [],
+        "Actions": []
+    }
+}

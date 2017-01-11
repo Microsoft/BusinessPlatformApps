@@ -37,15 +37,16 @@ export class TwitterHandles extends ViewModelBase {
     }
 
     async NavigatingNext(): Promise<boolean> {
-        this.MS.DataStore.addToDataStore( 'SqlSubGroup', 'Twitter', DataStoreType.Public);
-        this.MS.DataStore.addToDataStore('SqlGroup', 'SolutionTemplate', DataStoreType.Public);
-        this.MS.DataStore.addToDataStore('SqlEntryName', 'twitterHandle', DataStoreType.Public);
-        this.MS.DataStore.addToDataStore('SqlEntryValue', this.twitterHandleName, DataStoreType.Public);
 
-        this.MS.DataStore.addToDataStore('SqlGroup', 'SolutionTemplate', DataStoreType.Public);
-        this.MS.DataStore.addToDataStore('SqlSubGroup', 'Twitter', DataStoreType.Public);
-        this.MS.DataStore.addToDataStore('SqlEntryName', 'twitterHandleId', DataStoreType.Public);
-        this.MS.DataStore.addToDataStore('SqlEntryValue', this.twitterHandleId, DataStoreType.Public);
+        this.MS.DataStore.addToDataStoreWithCustomRoute('c1','SqlGroup', 'SolutionTemplate', DataStoreType.Public);
+        this.MS.DataStore.addToDataStoreWithCustomRoute('c1', 'SqlSubGroup', 'Twitter', DataStoreType.Public);
+        this.MS.DataStore.addToDataStoreWithCustomRoute('c1','SqlEntryName', 'twitterHandle', DataStoreType.Public);
+        this.MS.DataStore.addToDataStoreWithCustomRoute('c1', 'SqlEntryValue', this.twitterHandleName, DataStoreType.Public);
+
+        this.MS.DataStore.addToDataStoreWithCustomRoute('c2', 'SqlGroup', 'SolutionTemplate', DataStoreType.Public);
+        this.MS.DataStore.addToDataStoreWithCustomRoute('c2','SqlSubGroup', 'Twitter', DataStoreType.Public);
+        this.MS.DataStore.addToDataStoreWithCustomRoute('c2','SqlEntryName', 'twitterHandleId', DataStoreType.Public);
+        this.MS.DataStore.addToDataStoreWithCustomRoute('c2','SqlEntryValue', this.twitterHandleId, DataStoreType.Public);
         return super.NavigatingNext();
     }
 }

@@ -4,6 +4,7 @@ using System.Linq;
 using Microsoft.Deployment.Common.ActionModel;
 using Microsoft.Deployment.Common.AppLoad;
 using Microsoft.Deployment.Common.Controller;
+using Microsoft.Deployment.Common.Helpers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Newtonsoft.Json.Linq;
 
@@ -88,6 +89,15 @@ namespace Microsoft.Deployment.Common.Test
             info.AppName = "TestApp";
             var result = commonController.ExecuteAction(info, new ActionRequest() { DataStore = new DataStore() }).Result;
             Assert.IsTrue(result.Status == ActionStatus.Success);
+        }
+
+        [TestMethod]
+        public void TestAzureParam()
+        {
+          AzureArmParameterGenerator param = new AzureArmParameterGenerator();
+            param.AddStringParam("test", "test2");
+            param.AddStringParam("test2", "test2");
+            var val = param.GetDynamicObject();
         }
     }
 }

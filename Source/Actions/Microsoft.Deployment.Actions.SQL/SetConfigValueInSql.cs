@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.Composition;
+﻿using System.Collections.Generic;
+using System.ComponentModel.Composition;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Deployment.Common.ActionModel;
@@ -24,10 +25,10 @@ namespace Microsoft.Deployment.Actions.SQL
                 // Must specify Initial Catalog
 
             // Get list of settings to deploy;
-            JToken listGroup = request.DataStore.GetJson("SqlGroup");
-            JToken listSubgroup = request.DataStore.GetJson("SqlSubGroup");
-            JToken listConfigEntryName = request.DataStore.GetJson("SqlEntryName");
-            JToken listConfigEntryValue = request.DataStore.GetJson("SqlEntryValue");
+            var listGroup = request.DataStore.GetAllJson("SqlGroup");
+            var listSubgroup = request.DataStore.GetAllJson("SqlSubGroup");
+            var listConfigEntryName = request.DataStore.GetAllJson("SqlEntryName");
+            var listConfigEntryValue = request.DataStore.GetAllJson("SqlEntryValue");
 
             if (listGroup == null || listSubgroup == null || listConfigEntryName == null || listConfigEntryValue == null)
             {
@@ -35,19 +36,12 @@ namespace Microsoft.Deployment.Actions.SQL
                     "Configuration value properties not found");
             }
 
-            if (listGroup.Type != JTokenType.Array || listSubgroup.Type != JTokenType.Array ||
-                listConfigEntryName.Type != JTokenType.Array || listConfigEntryValue.Type != JTokenType.Array)
-            {
-                return new ActionResponse(ActionStatus.Success, JsonUtility.GetEmptyJObject(), null, DefaultErrorCodes.DefaultErrorCode, "Configuration is invalid");
-            }
-
-
             for (int i = 0; i < listGroup.Count(); i++)
             {
-                string group = request.DataStore.GetJson("SqlGroup")[i].ToString();
-                string subgroup = request.DataStore.GetJson("SqlSubGroup")[i].ToString();
-                string configEntryName = request.DataStore.GetJson("SqlEntryName")[i].ToString();
-                string configEntryValue = request.DataStore.GetJson("SqlEntryValue")[i].ToString();
+                string group = request.DataStore.GetAllJson("SqlGroup")[i].ToString();
+                string subgroup = request.DataStore.GetAllJson("SqlSubGroup")[i].ToString();
+                string configEntryName = request.DataStore.GetAllJson("SqlEntryName")[i].ToString();
+                string configEntryValue = request.DataStore.GetAllJson("SqlEntryValue")[i].ToString();
 
                 string query = string.Format(queryTemplate, configTable, group, subgroup, configEntryName,
                     configEntryValue);

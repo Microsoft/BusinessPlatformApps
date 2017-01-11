@@ -35,7 +35,7 @@ namespace Microsoft.Deployment.Actions.Custom
                 {
                     //If the directory is not found return success. Either it's been deleted manually or customer installed in a different directory.
                 }
-                catch (Exception ex)
+                catch //(Exception ex)
                 {
                     //response = new ActionResponse(ActionStatus.Failure, JsonUtility.GetEmptyJObject(), ex, string.Empty);
                 }

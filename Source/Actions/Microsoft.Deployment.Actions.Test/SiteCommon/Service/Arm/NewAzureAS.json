@@ -1,0 +1,47 @@
+﻿{
+  "$schema": "http://schema.management.azure.com/schemas/2014-04-01-preview/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "name": {
+      "type": "string",
+      "defaultValue": "server"
+    },
+
+    "sku": {
+      "type": "string",
+      "allowedValues": [
+        "D1",
+        "S1",
+        "S2",
+        "S4"
+      ],
+      "defaultValue": "D1"
+    },
+    "admin": {
+      "type": "string",
+      "defaultValue": "admin@admin.com"
+    },
+    "location": {
+      "type": "string",
+      "defaultValue": "westcentralus"
+    }
+  },
+  "resources": [
+    {
+      "apiVersion": "2016-05-16",
+      "name": "[parameters('name')]",
+      "location": "[parameters('location')]",
+      "type": "Microsoft.AnalysisServices/servers",
+      "sku": {
+        "name": "[parameters('sku')]"
+      },
+      "properties": {
+        "asAdministrators": {
+          "members": [
+            "[parameters('admin')]"
+          ]
+        }
+      }
+    }
+  ]
+}

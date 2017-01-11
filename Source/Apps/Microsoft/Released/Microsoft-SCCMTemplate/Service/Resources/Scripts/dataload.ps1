@@ -9,8 +9,8 @@ $sql_uid=""
 $sql_pwd=""
 
 # Make sure we execute the newest (or at least the ones installed by us)
-$bcp = "$env:ProgramFiles\Microsoft SQL Server\Client SDK\ODBC\130\Tools\Binn\bcp.exe"
-$sqlcmd = "$env:ProgramFiles\Microsoft SQL Server\Client SDK\ODBC\130\Tools\Binn\sqlcmd.exe"
+$bcp = ".\bcp.exe"
+$sqlcmd = ".\sqlcmd.exe"
 
 
 #region Win32 credential manager

@@ -24,6 +24,9 @@ namespace Microsoft.Deployment.Actions.AzureCustom.AzureSql
             var subscription = request.DataStore.GetJson("SelectedSubscription")["SubscriptionId"].ToString();
             var resourceGroup = request.DataStore.GetValue("SelectedResourceGroup");
 
+            var location = request.DataStore.GetValue("SqlLocation") ?? "westus";
+            var databaseTier = request.DataStore.GetValue("SqlSku") ?? "S1";
+
             string server = request.DataStore.GetJson("SqlCredentials").SelectToken("Server")?.ToString();
             string user = request.DataStore.GetJson("SqlCredentials").SelectToken("User")?.ToString();
             string password = request.DataStore.GetJson("SqlCredentials").SelectToken("Password")?.ToString();
@@ -35,7 +38,9 @@ namespace Microsoft.Deployment.Actions.AzureCustom.AzureSql
             param.AddStringParam("SqlServerName", serverWithoutExtension);
             param.AddStringParam("SqlDatabaseName", database);
             param.AddStringParam("Username", user);
-            param.AddParameter("Password", "securestring", password);            
+            param.AddParameter("Password", "securestring", password);
+            param.AddStringParam("Sku", databaseTier);
+            param.AddStringParam("SqlLocation", location);
 
             var armTemplate = JsonUtility.GetJObjectFromJsonString(System.IO.File.ReadAllText(Path.Combine(request.ControllerModel.SiteCommonFilePath, "Service/Arm/sqlserveranddatabase.json")));
             var armParamTemplate = JsonUtility.GetJObjectFromObject(param.GetDynamicObject());
@@ -99,7 +104,7 @@ namespace Microsoft.Deployment.Actions.AzureCustom.AzureSql
             };
 
             var connectionStringResponse = SqlUtility.GetConnectionString(credentials);
-            return new ActionResponse(ActionStatus.Success, JsonUtility.CreateJObjectWithValueFromObject(connectionStringResponse));
+            return new ActionResponse(ActionStatus.Success, JsonUtility.CreateJObjectWithValueFromObject(connectionStringResponse), true);
         }
     }
 }

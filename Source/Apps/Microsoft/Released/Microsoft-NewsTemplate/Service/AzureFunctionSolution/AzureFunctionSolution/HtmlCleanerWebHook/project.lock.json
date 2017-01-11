@@ -1,0 +1,39 @@
+{
+  "version": 2,
+  "targets": {
+    ".NETFramework,Version=v4.6": {
+      "NSoup/0.8.0": {
+        "type": "package",
+        "compile": {
+          "lib/net40/NSoup.dll": {}
+        },
+        "runtime": {
+          "lib/net40/NSoup.dll": {}
+        }
+      }
+    }
+  },
+  "libraries": {
+    "NSoup/0.8.0": {
+      "sha512": "prlsDPRtYQBrkTwDtf0EOKK1L8+OFfRqkH6UN3wW0fAErLRQCCHQZ/Y80bQrcCing+rLH/AUWXXrLGR/KR6F0Q==",
+      "type": "package",
+      "path": "nsoup/0.8.0",
+      "files": [
+        "lib/net40/NSoup.dll",
+        "nsoup.0.8.0.nupkg.sha512",
+        "nsoup.nuspec"
+      ]
+    }
+  },
+  "projectFileDependencyGroups": {
+    "": [],
+    ".NETFramework,Version=v4.6": [
+      "NSoup >= 0.8.0"
+    ]
+  },
+  "tools": {},
+  "projectFileToolGroups": {},
+  "packageFolders": {
+    "D:\\home\\data\\Functions\\packages\\nuget": {}
+  }
+}

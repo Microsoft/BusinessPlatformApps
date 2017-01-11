@@ -73,6 +73,27 @@
             <input class="st-input" type="password" change.delegate="Invalidate()" disabled.bind="MS.HttpService.isServiceBusy" value.bind="passwordConfirmation" />
         </div>
 
+        <p class="st-float st-text" click.trigger="viewmodel.showAdvanced = !viewmodel.showAdvanced" if.bind="!MS.HttpService.isServiceBusy">
+            <span class="glyphicon pbi-glyph-circlering glyph-small st-toggle" if.bind="viewmodel.showAdvanced"></span>
+            <span class="st-toggle-collapse" if.bind="viewmodel.showAdvanced">-</span>
+            <span class="glyphicon pbi-glyph-addcircle glyph-small st-toggle" if.bind="!viewmodel.showAdvanced"></span>
+            <span>${MS.Translate.COMMON_ADVANCED_OPTIONAL}</span>
+        </p>
+
+        <div class="st-float" if.bind="viewmodel.showAdvanced">
+            <p class="st-text">${MS.Translate.SQL_SERVER_SKU}</p>
+            <select class="btn btn-default dropdown-toggle st-input" disabled.bind="MS.HttpService.isServiceBusy" value.bind="sqlSku">
+                <option value="P1">${MS.Translate.SQL_SERVER_SKU_P1}</option>
+                <option value="S1" if.bind="showSkuS1">${MS.Translate.SQL_SERVER_SKU_S1}</option>
+                <option value="S2">${MS.Translate.SQL_SERVER_SKU_S2}</option>
+                <option value="S3">${MS.Translate.SQL_SERVER_SKU_S3}</option>
+            </select>
+            <p class="st-text">
+                <span>${MS.Translate.SQL_SERVER_SKU_DESCRIPTION}</span>
+                <a href="${MS.Translate.SQL_SERVER_SKU_LINK}" target="_blank">${MS.Translate.COMMON_HERE}</a>
+            </p>
+        </div>
+
         <p class="st-float">
             <button class="primary" click.delegate="OnValidate()" if.bind="!MS.HttpService.isServiceBusy">${MS.Translate.SQL_SERVER_CHECK_AVAILABILITY}</button>
         </p>
