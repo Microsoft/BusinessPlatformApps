@@ -36,7 +36,7 @@ namespace Microsoft.Deployment.Actions.AzureCustom.Common
             param.AddStringParam("location", location);
             param.AddStringParam("name", name);
 
-            var armTemplate = JsonUtility.GetJObjectFromJsonString(System.IO.File.ReadAllText(Path.Combine(request.Info.App.AppFilePath, "Service/AzureArm/storageAccount.json")));
+            var armTemplate = JsonUtility.GetJObjectFromJsonString(System.IO.File.ReadAllText(Path.Combine(request.ControllerModel.SiteCommonFilePath, "Service/Arm/storageAccount.json")));
             var armParamTemplate = JsonUtility.GetJObjectFromObject(param.GetDynamicObject());
             armTemplate.Remove("parameters");
             armTemplate.Add("parameters", armParamTemplate["parameters"]);

@@ -1,0 +1,628 @@
+{
+	"ExperimentId": "376fe7d2d5804f23a7691de3ebfb2c96.f-id.9ea922d97ae548a48715bec016864033",
+	"RunId": null,
+	"ParentExperimentId": null,
+	"OriginalExperimentDocumentationLink": null,
+	"Summary": "Solution Template",
+	"Description": "entity9",
+	"Graph": {
+		"ModuleNodes": [{
+				"Id": "357d6fd3-7ec8-4a70-ba34-8d794c1258a3-184",
+				"ModuleId": "506153734175476c4f62416c57734963.50b91b4f9c9840d698142d945c0bb3f1.v1-default-1611",
+				"Comment": "",
+				"CommentCollapsed": true,
+				"Language": "DotNet",
+				"Version": "4.5.0",
+				"UsePreviousResults": false,
+				"ModuleParameters": [{
+						"ValueType": "Literal",
+						"LinkedGlobalParameter": null,
+						"Name": "Please Specify Data Source",
+						"Value": "SqlAzure"
+					}, {
+						"ValueType": "Literal",
+						"LinkedGlobalParameter": "Database server name",
+						"Name": "Database Server Name",
+						"Value": "mcleantest-brazilsouth.database.windows.net"
+					}, {
+						"ValueType": "Literal",
+						"LinkedGlobalParameter": "Database name",
+						"Name": "Database Name",
+						"Value": "PokemonGoBrazilSouth"
+					}, {
+						"ValueType": "Literal",
+						"LinkedGlobalParameter": "User name",
+						"Name": "Server User Account Name",
+						"Value": "sqluser"
+					}, {
+						"ValueType": "Literal",
+						"LinkedGlobalParameter": "Password",
+						"Name": "Server User Account Password",
+						"Value": null
+					}, {
+						"ValueType": "Literal",
+						"LinkedGlobalParameter": null,
+						"Name": "Trust Server Certificate",
+						"Value": "False"
+					}, {
+						"ValueType": "Literal",
+						"LinkedGlobalParameter": null,
+						"Name": "Database Query",
+						"Value": "select \n    cleanedText as text, \n    id as DocumentId, \n    DATALENGTH(text) AS DocumentTextLength,\n    \n    -- ROW_NUMBER is 1 based but the NER module returns 0 based index\n    -- This is needed because the NER module returns an index into the original set \n    -- as the document ID instead of the actual document ID column   \n    (ROW_NUMBER() OVER(ORDER BY id) - 1) AS RowNumber \nFROM bpst_news.documents"
+					}
+				],
+				"IsPartOfPartialRun": false,
+				"InputPortsInternal": [],
+				"OutputPortsInternal": [{
+						"Name": "Entities",
+						"NodeId": "357d6fd3-7ec8-4a70-ba34-8d794c1258a3-184",
+						"OutputType": null
+					}
+				]
+			}, {
+				"Id": "357d6fd3-7ec8-4a70-ba34-8d794c1258a3-58552",
+				"ModuleId": "506153734175476c4f62416c57734963.cdb56f957f4c404dbde75bb972e6f232.v1-default-1735",
+				"Comment": "Calculate percentage and drop unused columns",
+				"CommentCollapsed": false,
+				"Language": "DotNet",
+				"Version": "4.5.0",
+				"UsePreviousResults": false,
+				"ModuleParameters": [{
+						"ValueType": "Literal",
+						"LinkedGlobalParameter": null,
+						"Name": "R Script",
+						"Value": "# The script MUST contain a function named azureml_main\n# which is the entry point for this module.\n\n# imports up here can be used to \nimport pandas as pd\nimport numpy as np\n\n# The entry point function can contain up to two input arguments:\n#   Param<dataframe1>: a pandas.DataFrame\n#   Param<dataframe2>: a pandas.DataFrame\ndef azureml_main(dataframe1 = None, dataframe2 = None):\n    \n    frame = dataframe1\n    \n    frame = frame.drop('text', axis=1).drop('Article', axis=1).drop('RowNumber', axis=1)\n    \n    frame['offsetDocumentPercentage'] = np.maximum(frame['Offset'] / frame['DocumentTextLength'], 0.000001)\n\n    frame = frame.rename(columns = {'Mention': 'entityValue', 'Offset': 'offset', 'Length': 'length', 'Type': 'entityType', 'DocumentId': 'documentId'})\n\n    frame = frame.drop('DocumentTextLength', axis=1)\n    \n    return frame"
+					}, {
+						"ValueType": "Literal",
+						"LinkedGlobalParameter": null,
+						"Name": "Python Version",
+						"Value": "Anaconda 4.0/Python 2.7.11"
+					}
+				],
+				"IsPartOfPartialRun": false,
+				"InputPortsInternal": [
+				],
+				"OutputPortsInternal": [{
+						"Name": "Result Dataset",
+						"NodeId": "357d6fd3-7ec8-4a70-ba34-8d794c1258a3-58552",
+						"OutputType": null
+					}, {
+						"Name": "Python Device",
+						"NodeId": "357d6fd3-7ec8-4a70-ba34-8d794c1258a3-58552",
+						"OutputType": null
+					}
+				]
+			}, {
+				"Id": "357d6fd3-7ec8-4a70-ba34-8d794c1258a3-141932",
+				"ModuleId": "506153734175476c4f62416c57734963.124865f7e9014656adacf4cb08248099.v1-default-1712",
+				"Comment": "",
+				"CommentCollapsed": true,
+				"Language": "DotNet",
+				"Version": "4.5.0",
+				"UsePreviousResults": false,
+				"ModuleParameters": [{
+						"ValueType": "Literal",
+						"LinkedGlobalParameter": null,
+						"Name": "Comma-separated case-sensitive names of join key columns for L",
+						"Value": "%7B%22isFilter%22%3Atrue%2C%22rules%22%3A%5B%7B%22ruleType%22%3A%22ColumnNames%22%2C%22columns%22%3A%5B%22Article%22%5D%2C%22exclude%22%3Afalse%7D%5D%7D"
+					}, {
+						"ValueType": "Literal",
+						"LinkedGlobalParameter": null,
+						"Name": "Comma-separated case-sensitive names of join key columns for R",
+						"Value": "%7B%22isFilter%22%3Atrue%2C%22rules%22%3A%5B%7B%22ruleType%22%3A%22ColumnNames%22%2C%22columns%22%3A%5B%22RowNumber%22%5D%2C%22exclude%22%3Afalse%7D%5D%7D"
+					}, {
+						"ValueType": "Literal",
+						"LinkedGlobalParameter": null,
+						"Name": "Match case",
+						"Value": "True"
+					}, {
+						"ValueType": "Literal",
+						"LinkedGlobalParameter": null,
+						"Name": "Join type",
+						"Value": "Inner Join"
+					}, {
+						"ValueType": "Literal",
+						"LinkedGlobalParameter": null,
+						"Name": "Keep right key columns in joined table",
+						"Value": "True"
+					}
+				],
+				"IsPartOfPartialRun": false,
+				"InputPortsInternal": [{
+						"Name": "Dataset1",
+						"DataSourceId": null,
+						"TrainedModelId": null,
+						"TransformModuleId": null,
+						"Language": "DotNet",
+						"Version": "4.5.0",
+						"PortIndex": null,
+						"NodeId": "357d6fd3-7ec8-4a70-ba34-8d794c1258a3-141932"
+					}, {
+						"Name": "Dataset2",
+						"DataSourceId": null,
+						"TrainedModelId": null,
+						"TransformModuleId": null,
+						"Language": "DotNet",
+						"Version": "4.5.0",
+						"PortIndex": null,
+						"NodeId": "357d6fd3-7ec8-4a70-ba34-8d794c1258a3-141932"
+					}
+				],
+				"OutputPortsInternal": [{
+						"Name": "Results dataset",
+						"NodeId": "357d6fd3-7ec8-4a70-ba34-8d794c1258a3-141932",
+						"OutputType": null
+					}
+				]
+			}, {
+				"Id": "12c8fb8f-0534-455c-b1f3-5b273a047c33-58579",
+				"ModuleId": "506153734175476c4f62416c57734963.cdb56f957f4c404dbde75bb972e6f232.v1-default-1735",
+				"Comment": "Compressed Entities",
+				"CommentCollapsed": false,
+				"Language": "DotNet",
+				"Version": "4.5.0",
+				"UsePreviousResults": false,
+				"ModuleParameters": [{
+						"ValueType": "Literal",
+						"LinkedGlobalParameter": null,
+						"Name": "R Script",
+						"Value": "# The script MUST contain a function named azureml_main\n# which is the entry point for this module.\n\n# imports up here can be used to \nimport pandas as pd\nimport json\n\n# The entry point function can contain up to two input arguments:\n#   Param<dataframe1>: a pandas.DataFrame\n#   Param<dataframe2>: a pandas.DataFrame\ndef azureml_main(dataframe1 = None, dataframe2 = None):\n\n    def getCssClass(x):\n        return {\n            'Title': 'fa fa-certificate',\n            'Person': 'fa fa-male',\n            'Organization': 'fa fa-sitemap',\n            'Location': 'fa fa-globe'\n        }.get(x, 'fa fa-question')\n\n    def getColor(x):\n        return {\n            'Title': '#FFFFFF',\n            'Person': '#1BBB6A',\n            'Organization': '#FF001F',\n            'Location': '#FF8000'\n        }.get(x, '#000000')\n\n    def func(row):\n        result = json.dumps({'entityValue': row.entityValue, 'offset': row.offset, 'length': row.length, 'entityType': row.entityType, 'cssClass': getCssClass(row.entityType), 'cssColor': getColor(row.entityType), 'offsetPercentage': row.offsetDocumentPercentage})\n        return pd.Series({'documentId': row.documentId, 'compressedEntitiesJson': result})\n\n    if dataframe1.empty:\n        columns = ['documentId','compressedEntitiesJson']\n        return pd.DataFrame(columns=columns)\n    else:\n        # Create a JSON version of each entity\n        jsonDataframe = dataframe1.apply(func, axis=1)\n\n        # Create a column with all JSON entities in an array    \n        return jsonDataframe.groupby(['documentId'])['compressedEntitiesJson'].apply(lambda x: '[' + ','.join(x) + ']').reset_index()\n"
+					}, {
+						"ValueType": "Literal",
+						"LinkedGlobalParameter": null,
+						"Name": "Python Version",
+						"Value": "Anaconda 4.0/Python 2.7.11"
+					}
+				],
+				"IsPartOfPartialRun": false,
+				"InputPortsInternal": [{
+						"Name": "Dataset1",
+						"DataSourceId": null,
+						"TrainedModelId": null,
+						"TransformModuleId": null,
+						"Language": "DotNet",
+						"Version": "4.5.0",
+						"PortIndex": null,
+						"NodeId": "12c8fb8f-0534-455c-b1f3-5b273a047c33-58579"
+					}, {
+						"Name": "Dataset2",
+						"DataSourceId": null,
+						"TrainedModelId": null,
+						"TransformModuleId": null,
+						"Language": "DotNet",
+						"Version": "4.5.0",
+						"PortIndex": null,
+						"NodeId": "12c8fb8f-0534-455c-b1f3-5b273a047c33-58579"
+					}, {
+						"Name": "Script Bundle",
+						"DataSourceId": null,
+						"TrainedModelId": null,
+						"TransformModuleId": null,
+						"Language": "DotNet",
+						"Version": "4.5.0",
+						"PortIndex": null,
+						"NodeId": "12c8fb8f-0534-455c-b1f3-5b273a047c33-58579"
+					}
+				],
+				"OutputPortsInternal": [{
+						"Name": "Result Dataset",
+						"NodeId": "12c8fb8f-0534-455c-b1f3-5b273a047c33-58579",
+						"OutputType": null
+					}, {
+						"Name": "Python Device",
+						"NodeId": "12c8fb8f-0534-455c-b1f3-5b273a047c33-58579",
+						"OutputType": null
+					}
+				]
+			}, {
+				"Id": "2adb4147-9d51-4c72-9b8e-fb8e9b448538-3450",
+				"ModuleId": "506153734175476c4f62416c57734963.4e1b0fe6aded4b3fa36f39b8862b9004.v1-default-1742",
+				"Comment": "",
+				"CommentCollapsed": true,
+				"Language": "DotNet",
+				"Version": "4.5.0",
+				"UsePreviousResults": false,
+				"ModuleParameters": [{
+						"ValueType": "Literal",
+						"LinkedGlobalParameter": null,
+						"Name": "Please Specify Data Source",
+						"Value": "SqlAzure"
+					}, {
+						"ValueType": "Literal",
+						"LinkedGlobalParameter": "Database server name",
+						"Name": "Database Server Name",
+						"Value": "mcleantest-brazilsouth.database.windows.net"
+					}, {
+						"ValueType": "Literal",
+						"LinkedGlobalParameter": "Database name",
+						"Name": "Database Name",
+						"Value": "PokemonGoBrazilSouth"
+					}, {
+						"ValueType": "Literal",
+						"LinkedGlobalParameter": "User name",
+						"Name": "Server User Account Name",
+						"Value": "sqluser"
+					}, {
+						"ValueType": "PlaceHolder",
+						"LinkedGlobalParameter": null,
+						"Name": "Server User Account Password",
+						"Value": "{\"RecordKey\":\"de84d9d8f20745ef933e259a85203fa5\",\"IndexInRecord\":\"7928653e-9a84-4166-8b1a-633dd3cdd1b5\"}"
+					}, {
+						"ValueType": "Literal",
+						"LinkedGlobalParameter": null,
+						"Name": "Trust Server Certificate",
+						"Value": "False"
+					}, {
+						"ValueType": "Literal",
+						"LinkedGlobalParameter": null,
+						"Name": "Database Query",
+						"Value": "select \n    cleanedText as text, \n    id as DocumentId, \n    DATALENGTH(text) AS DocumentTextLength,\n    \n    -- ROW_NUMBER is 1 based but the NER module returns 0 based index\n    -- This is needed because the NER module returns an index into the original set \n    -- as the document ID instead of the actual document ID column   \n    (ROW_NUMBER() OVER(ORDER BY id) - 1) AS RowNumber \nFROM bpst_news.documents"
+					}
+				],
+				"IsPartOfPartialRun": false,
+				"InputPortsInternal": [],
+				"OutputPortsInternal": [{
+						"Name": "Results dataset",
+						"NodeId": "2adb4147-9d51-4c72-9b8e-fb8e9b448538-3450",
+						"OutputType": null
+					}
+				]
+			}, {
+				"Id": "2adb4147-9d51-4c72-9b8e-fb8e9b448538-3511",
+				"ModuleId": "506153734175476c4f62416c57734963.7a391181b6a74ad4b82de419c0d6522c.v1-default-1742",
+				"Comment": "",
+				"CommentCollapsed": true,
+				"Language": "DotNet",
+				"Version": "4.5.0",
+				"UsePreviousResults": false,
+				"ModuleParameters": [{
+						"ValueType": "Literal",
+						"LinkedGlobalParameter": null,
+						"Name": "Please Specify Data Destination",
+						"Value": "SqlAzure"
+					}, {
+						"ValueType": "Literal",
+						"LinkedGlobalParameter": "Database server name",
+						"Name": "Database Server Name",
+						"Value": "mcleantest-brazilsouth.database.windows.net"
+					}, {
+						"ValueType": "Literal",
+						"LinkedGlobalParameter": "Database name",
+						"Name": "Database Name",
+						"Value": "PokemonGoBrazilSouth"
+					}, {
+						"ValueType": "Literal",
+						"LinkedGlobalParameter": "User name",
+						"Name": "Server User Account Name",
+						"Value": "sqluser"
+					}, {
+						"ValueType": "PlaceHolder",
+						"LinkedGlobalParameter": null,
+						"Name": "Server User Account Password",
+						"Value": "{\"RecordKey\":\"de84d9d8f20745ef933e259a85203fa5\",\"IndexInRecord\":\"31ce4111-5709-4c9f-be2f-5eaa53c88443\"}"
+					}, {
+						"ValueType": "Literal",
+						"LinkedGlobalParameter": null,
+						"Name": "Trust Server Certificate",
+						"Value": "False"
+					}, {
+						"ValueType": "Literal",
+						"LinkedGlobalParameter": null,
+						"Name": "Comma separated list of columns to be saved",
+						"Value": "documentId,entityType,entityValue,offset,offsetDocumentPercentage,length"
+					}, {
+						"ValueType": "Literal",
+						"LinkedGlobalParameter": null,
+						"Name": "Data Table Name",
+						"Value": "bpst_news.stg_entities"
+					}, {
+						"ValueType": "Literal",
+						"LinkedGlobalParameter": null,
+						"Name": "Comma separated list of datatable columns",
+						"Value": "documentId,entityType,entityValue,offset,offsetDocumentPercentage,length"
+					}, {
+						"ValueType": "Literal",
+						"LinkedGlobalParameter": null,
+						"Name": "SQL Azure Number Of Rows To Write",
+						"Value": "200"
+					}, {
+						"ValueType": "Literal",
+						"LinkedGlobalParameter": null,
+						"Name": "Treat Errors as Warnings",
+						"Value": "False"
+					}
+				],
+				"IsPartOfPartialRun": false,
+				"InputPortsInternal": [{
+						"Name": "Dataset",
+						"DataSourceId": null,
+						"TrainedModelId": null,
+						"TransformModuleId": null,
+						"Language": "DotNet",
+						"Version": "4.5.0",
+						"PortIndex": null,
+						"NodeId": "2adb4147-9d51-4c72-9b8e-fb8e9b448538-3511"
+					}
+				],
+				"OutputPortsInternal": []
+			}, {
+				"Id": "2adb4147-9d51-4c72-9b8e-fb8e9b448538-3555",
+				"ModuleId": "506153734175476c4f62416c57734963.7a391181b6a74ad4b82de419c0d6522c.v1-default-1742",
+				"Comment": "",
+				"CommentCollapsed": true,
+				"Language": "DotNet",
+				"Version": "4.5.0",
+				"UsePreviousResults": false,
+                "ModuleParameters": [
+                    {
+                        "ValueType": "Literal",
+                        "LinkedGlobalParameter": null,
+                        "Name": "Please Specify Data Destination",
+                        "Value": "SqlAzure"
+                    },
+                    {
+                        "ValueType": "Literal",
+                        "LinkedGlobalParameter": "Database server name",
+                        "Name": "Database Server Name",
+                        "Value": "mcleantest-brazilsouth.database.windows.net"
+                    },
+                    {
+                        "ValueType": "Literal",
+                        "LinkedGlobalParameter": "Database name",
+                        "Name": "Database Name",
+                        "Value": "PokemonGoBrazilSouth"
+                    },
+                    {
+                        "ValueType": "Literal",
+                        "LinkedGlobalParameter": "User name",
+                        "Name": "Server User Account Name",
+                        "Value": "sqluser"
+                    },
+                    {
+                        "ValueType": "PlaceHolder",
+                        "LinkedGlobalParameter": null,
+                        "Name": "Server User Account Password",
+                        "Value": "{\"RecordKey\":\"de84d9d8f20745ef933e259a85203fa5\",\"IndexInRecord\":\"05a5db71-9c71-4568-8d54-4868296f97a6\"}"
+                    },
+                    {
+                        "ValueType": "Literal",
+                        "LinkedGlobalParameter": null,
+                        "Name": "Trust Server Certificate",
+                        "Value": "False"
+                    },
+                    {
+                        "ValueType": "Literal",
+                        "LinkedGlobalParameter": null,
+                        "Name": "Comma separated list of columns to be saved",
+                        "Value": "documentId,compressedEntitiesJson"
+                    },
+                    {
+                        "ValueType": "Literal",
+                        "LinkedGlobalParameter": null,
+                        "Name": "Data Table Name",
+                        "Value": "bpst_news.stg_documentcompressedentities"
+                    },
+                    {
+                        "ValueType": "Literal",
+                        "LinkedGlobalParameter": null,
+                        "Name": "Comma separated list of datatable columns",
+                        "Value": "documentId,compressedEntitiesJson"
+                    },
+                    {
+                        "ValueType": "Literal",
+                        "LinkedGlobalParameter": null,
+                        "Name": "SQL Azure Number Of Rows To Write",
+                        "Value": "200"
+                    },
+                    {
+                        "ValueType": "Literal",
+                        "LinkedGlobalParameter": null,
+                        "Name": "Treat Errors as Warnings",
+                        "Value": "False"
+                    }
+                ],
+				"IsPartOfPartialRun": false,
+				"InputPortsInternal": [{
+						"Name": "Dataset",
+						"DataSourceId": null,
+						"TrainedModelId": null,
+						"TransformModuleId": null,
+						"Language": "DotNet",
+						"Version": "4.5.0",
+						"PortIndex": null,
+						"NodeId": "2adb4147-9d51-4c72-9b8e-fb8e9b448538-3555"
+					}
+				],
+				"OutputPortsInternal": []
+			}, {
+				"Id": "2adb4147-9d51-4c72-9b8e-fb8e9b448538-3602",
+				"ModuleId": "506153734175476c4f62416c57734963.90381e8067c34d9987541db785b7ea37.v1-default-1742",
+				"Comment": "Remove TIL entities since they are not very useful",
+				"CommentCollapsed": false,
+				"Language": "DotNet",
+				"Version": "4.5.0",
+				"UsePreviousResults": false,
+				"ModuleParameters": [{
+						"ValueType": "Literal",
+						"LinkedGlobalParameter": null,
+						"Name": "SQL Query Script",
+						"Value": "select * from t1\nWHERE type != 'TIL'"
+					}
+				],
+				"IsPartOfPartialRun": false,
+				"InputPortsInternal": [{
+						"Name": "Table1",
+						"DataSourceId": null,
+						"TrainedModelId": null,
+						"TransformModuleId": null,
+						"Language": "DotNet",
+						"Version": "4.5.0",
+						"PortIndex": null,
+						"NodeId": "2adb4147-9d51-4c72-9b8e-fb8e9b448538-3602"
+					}, {
+						"Name": "Table2",
+						"DataSourceId": null,
+						"TrainedModelId": null,
+						"TransformModuleId": null,
+						"Language": "DotNet",
+						"Version": "4.5.0",
+						"PortIndex": null,
+						"NodeId": "2adb4147-9d51-4c72-9b8e-fb8e9b448538-3602"
+					}, {
+						"Name": "Table3",
+						"DataSourceId": null,
+						"TrainedModelId": null,
+						"TransformModuleId": null,
+						"Language": "DotNet",
+						"Version": "4.5.0",
+						"PortIndex": null,
+						"NodeId": "2adb4147-9d51-4c72-9b8e-fb8e9b448538-3602"
+					}
+				],
+				"OutputPortsInternal": [{
+						"Name": "Results dataset",
+						"NodeId": "2adb4147-9d51-4c72-9b8e-fb8e9b448538-3602",
+						"OutputType": null
+					}
+				]
+			}
+		],
+		"SerializedClientData": "<?xml version='1.0' encoding='utf-16'?><DataV1 xmlns:xsd='http://www.w3.org/2001/XMLSchema' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'><Meta /><NodePositions><NodePosition Node='357d6fd3-7ec8-4a70-ba34-8d794c1258a3-184' Position='197,283,200,200'/><NodePosition Node='357d6fd3-7ec8-4a70-ba34-8d794c1258a3-58552' Position='413,646,200,200'/><NodePosition Node='357d6fd3-7ec8-4a70-ba34-8d794c1258a3-141932' Position='383,514,200,200'/><NodePosition Node='12c8fb8f-0534-455c-b1f3-5b273a047c33-58579' Position='748,788,200,200'/><NodePosition Node='2adb4147-9d51-4c72-9b8e-fb8e9b448538-3450' Position='312,96,200,200'/><NodePosition Node='2adb4147-9d51-4c72-9b8e-fb8e9b448538-3511' Position='336,858,200,200'/><NodePosition Node='2adb4147-9d51-4c72-9b8e-fb8e9b448538-3555' Position='770,914,200,200'/><NodePosition Node='2adb4147-9d51-4c72-9b8e-fb8e9b448538-3602' Position='205,382,200,200'/></NodePositions><NodeGroups /></DataV1>",
+		"PublishInfo": null,
+		"Parameters": null,
+		"EdgesInternal": [{
+				"SourceOutputPortId": "357d6fd3-7ec8-4a70-ba34-8d794c1258a3-184:Entities",
+				"DestinationInputPortId": "2adb4147-9d51-4c72-9b8e-fb8e9b448538-3602:Table1",
+				"DestinationInputPortIndex": null
+			}, {
+				"SourceOutputPortId": "357d6fd3-7ec8-4a70-ba34-8d794c1258a3-58552:Result Dataset",
+				"DestinationInputPortId": "12c8fb8f-0534-455c-b1f3-5b273a047c33-58579:Dataset1",
+				"DestinationInputPortIndex": null
+			}, {
+				"SourceOutputPortId": "357d6fd3-7ec8-4a70-ba34-8d794c1258a3-58552:Result Dataset",
+				"DestinationInputPortId": "2adb4147-9d51-4c72-9b8e-fb8e9b448538-3511:Dataset",
+				"DestinationInputPortIndex": null
+			}, {
+				"SourceOutputPortId": "357d6fd3-7ec8-4a70-ba34-8d794c1258a3-141932:Results dataset",
+				"DestinationInputPortId": "357d6fd3-7ec8-4a70-ba34-8d794c1258a3-58552:Dataset1",
+				"DestinationInputPortIndex": null
+			}, {
+				"SourceOutputPortId": "12c8fb8f-0534-455c-b1f3-5b273a047c33-58579:Result Dataset",
+				"DestinationInputPortId": "2adb4147-9d51-4c72-9b8e-fb8e9b448538-3555:Dataset",
+				"DestinationInputPortIndex": null
+			}, {
+				"SourceOutputPortId": "2adb4147-9d51-4c72-9b8e-fb8e9b448538-3450:Results dataset",
+				"DestinationInputPortId": "357d6fd3-7ec8-4a70-ba34-8d794c1258a3-184:Story",
+				"DestinationInputPortIndex": null
+			}, {
+				"SourceOutputPortId": "2adb4147-9d51-4c72-9b8e-fb8e9b448538-3450:Results dataset",
+				"DestinationInputPortId": "357d6fd3-7ec8-4a70-ba34-8d794c1258a3-141932:Dataset2",
+				"DestinationInputPortIndex": null
+			}, {
+				"SourceOutputPortId": "2adb4147-9d51-4c72-9b8e-fb8e9b448538-3602:Results dataset",
+				"DestinationInputPortId": "357d6fd3-7ec8-4a70-ba34-8d794c1258a3-141932:Dataset1",
+				"DestinationInputPortIndex": null
+			}
+		]
+	},
+	"Status": {
+		"StatusCode": "InDraft",
+		"StatusDetail": "None",
+		"CreationTime": "\/Date(1483743739820)\/",
+		"StartTime": "\/Date(-62135596800000)\/",
+		"EndTime": "\/Date(-62135596800000)\/",
+		"Metadata": null
+	},
+	"Etag": "W/\"datetime'2017-01-06T23%3A02%3A20.8882838Z'\"",
+	"NodeStatuses": [],
+	"Creator": "apiTestUser",
+	"IsLeaf": true,
+	"DisableNodesUpdate": null,
+	"WebService": {
+		"IsWebServiceExperiment": true,
+		"Inputs": [],
+		"Outputs": [],
+		"Parameters": [{
+				"Name": "Database server name",
+				"Value": "mydbserver",
+				"ParameterDefinition": {
+					"HasRules": false,
+					"Name": "Database server name",
+					"IsOptional": false,
+					"ParameterType": "String",
+					"ParameterRules": [],
+					"MarkupType": "Parameter",
+					"HasDefaultValue": true,
+					"DefaultValue": "mydbserver",
+					"ScriptName": null,
+					"ModeValuesInfo": null,
+					"CredentialDescriptor": null,
+					"Description": "Database server name",
+					"FriendlyName": "Database server name"
+				}
+			}, {
+				"Name": "Database name",
+				"Value": "mydatabase",
+				"ParameterDefinition": {
+					"HasRules": false,
+					"Name": "Database name",
+					"IsOptional": false,
+					"ParameterType": "String",
+					"ParameterRules": [],
+					"MarkupType": "Parameter",
+					"HasDefaultValue": true,
+					"DefaultValue": "mydatabase",
+					"ScriptName": null,
+					"ModeValuesInfo": null,
+					"CredentialDescriptor": null,
+					"Description": "Database name",
+					"FriendlyName": "Database name"
+				}
+			}, {
+				"Name": "User name",
+				"Value": "myuser",
+				"ParameterDefinition": {
+					"HasRules": false,
+					"Name": "User name",
+					"IsOptional": false,
+					"ParameterType": "String",
+					"ParameterRules": [],
+					"MarkupType": "Parameter",
+					"HasDefaultValue": true,
+					"DefaultValue": "myuser",
+					"ScriptName": null,
+					"ModeValuesInfo": null,
+					"CredentialDescriptor": null,
+					"Description": "User name",
+					"FriendlyName": "User name"
+				}
+			}, {
+				"Name": "Password",
+				"Value": "",
+				"ParameterDefinition": {
+					"HasRules": false,
+					"Name": "Password",
+					"IsOptional": false,
+					"ParameterType": "Credential",
+					"ParameterRules": [],
+					"MarkupType": "Parameter",
+					"HasDefaultValue": false,
+					"DefaultValue": "",
+					"ScriptName": null,
+					"ModeValuesInfo": null,
+					"CredentialDescriptor": null,
+					"Description": "Password",
+					"FriendlyName": "Password"
+				}
+			}
+		],
+		"WebServiceGroupId": null,
+		"ModelPackageId": null,
+		"RunId": null,
+		"SerializedClientData": "<?xml version='1.0' encoding='utf-16'?><DataV1 xmlns:xsd='http://www.w3.org/2001/XMLSchema' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'><Meta /><NodePositions></NodePositions><NodeGroups /></DataV1>",
+		"ArmWebServiceId": null
+	},
+	"Category": null,
+	"Tags": [],
+	"IsPartialRun": false
+}
