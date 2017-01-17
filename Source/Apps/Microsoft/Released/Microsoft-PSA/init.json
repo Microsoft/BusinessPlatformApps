@@ -61,7 +61,7 @@
             },
             {
                 "displayname": "Dynamics 365 Login",
-                "entities": "account,lead,opportunity,opportunityproduct,product,systemuser,systemusermanagermap,territory",
+                "entities": "systemuser, salesorderdetail, salesorder, quotedetail, quote, opportunity, msdyn_transactioncategory, msdyn_timeentry, msdyn_resourcerequirementdetail, msdyn_resourcerequirement, msdyn_resourcerequest, msdyn_project, msdyn_organizationalunit, msdyn_orderlineresourcecategory, msdyn_estimateline, msdyn_actual, bookingstatus, bookableresourcecategoryassn, bookableresourcecategory, bookableresourcebooking, bookableresource, account",
                 "name": "$SiteCommon$/pagesgallery/mscrm-login.html",
                 "oauthType": "mscrm",
                 "pricingCost": "By deploying the template you authorize the creation of Azure resources in your subscription. The estimated cost for the Azure SQL Database and Azure Key Vault required are approximately $75 per month (this is an estimate only). Note that Azure premium tier Azure SQL Database is recommended during initial data export and can be moved to a less expensive service tier after this step is completed.",
@@ -89,7 +89,7 @@
             {
                 "displayname": "Progress",
                 "name": "$SiteCommon$/pagesgallery/progress.html",
-                "filename": "$('SalesManagementReport.pbix', isSaved=true)",
+                "filename": "$('PSA_AccountManager_IM.pbix|PSA_PracticeManager_IM.pbix|PSA_ResourceManager_IM.pbix', isSaved=true)",
                 "showCounts": true,
                 "finishedActionName": "Microsoft-CrmGetProfileStatus"
             }

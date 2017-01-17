@@ -20,29 +20,28 @@ namespace Microsoft.Deployment.Actions.AzureCustom.Common
             var azureToken = request.DataStore.GetJson("AzureToken")["access_token"].ToString();
             var subscription = request.DataStore.GetJson("SelectedSubscription")["SubscriptionId"].ToString();
             var resourceGroup = request.DataStore.GetValue("SelectedResourceGroup");
-            var location = request.DataStore.GetJson("SelectedLocation")["Name"].ToString();
 
             var deploymentName = request.DataStore.GetValue("DeploymentName");
-            var functionAppHostingPlan = request.DataStore.GetValue("FunctionAppHostingPlan");
-            var name = request.DataStore.GetValue("Name");
+            var repoUrl = request.DataStore.GetValue("RepoUrl");
+            var name = request.DataStore.GetValue("FunctionName");
 
             var param = new AzureArmParameterGenerator();
             param.AddStringParam("storageaccountname", "solutiontemplate" + Path.GetRandomFileName().Replace(".", "").Substring(0, 8));
             param.AddStringParam("name", name);
-            param.AddStringParam("AppHostingPlan", functionAppHostingPlan);
+            param.AddStringParam("repoUrl", repoUrl);
             param.AddStringParam("resourcegroup", resourceGroup);
             param.AddStringParam("subscription", subscription);
 
-            var armTemplate = JsonUtility.GetJObjectFromJsonString(System.IO.File.ReadAllText(Path.Combine(request.Info.App.AppFilePath, "Service/AzureArm/AzureFunctions.json")));
+            var armTemplate = JsonUtility.GetJObjectFromJsonString(System.IO.File.ReadAllText(Path.Combine(request.ControllerModel.SiteCommonFilePath, "Service/Arm/AzureFunctions.json")));
             var armParamTemplate = JsonUtility.GetJObjectFromObject(param.GetDynamicObject());
             armTemplate.Remove("parameters");
             armTemplate.Add("parameters", armParamTemplate["parameters"]);
 
             SubscriptionCloudCredentials creds = new TokenCloudCredentials(subscription, azureToken);
-            Microsoft.Azure.Management.Resources.ResourceManagementClient client = new ResourceManagementClient(creds);
+            ResourceManagementClient client = new ResourceManagementClient(creds);
 
 
-            var deployment = new Microsoft.Azure.Management.Resources.Models.Deployment()
+            var deployment = new Azure.Management.Resources.Models.Deployment()
             {
                 Properties = new DeploymentPropertiesExtended()
                 {

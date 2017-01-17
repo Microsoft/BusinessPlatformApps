@@ -45,7 +45,7 @@ namespace Microsoft.Deployment.Actions.AzureCustom.Common
             }
             else
             {
-                param.AddStringParam("Location", location);
+                param.AddStringParam("Location", "West US");
             }
 
             param.AddStringParam("skuName", skuName);
