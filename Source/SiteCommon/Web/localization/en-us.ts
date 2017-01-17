@@ -125,6 +125,7 @@
     SQL_SERVER_CHECK_AVAILABILITY: `Check Availability`,
     SQL_SERVER_CREATING_NEW: `Creating a new SQL database, this may take 2-3 minutes`,
     SQL_SERVER_DATABASE: `Database:`,
+    SQL_SERVER_DATABASE_RECOVERY: `(Simple/bulk recovery mode is recommended)`,
     SQL_SERVER_EXISTING: `Existing SQL Instance`,
     SQL_SERVER_IMPERSONATION: `This option will impersonate the previously chosen Windows user`,
     SQL_SERVER_NEW: `New Azure SQL Instance`,

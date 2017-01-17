@@ -76,10 +76,11 @@ AS
 go
 
 
-CREATE VIEW pbist_twitter.vw_tweets_processed
+CREATE VIEW [pbist_twitter].[vw_tweets_processed]
 AS
     SELECT tweetid					AS [Tweet Id],
            dateorig					AS [Original Date],
+           Convert(date,[dateorig]) AS [Date],
            hourofdate				AS [Hours],
            minuteofdate				AS [Minutes],
            latitude					AS [Latitude],
@@ -97,4 +98,10 @@ AS
            user_favorites			As [User Favourites],
            user_totaltweets			AS [User Total Tweets]
     FROM   pbist_twitter.tweets_processed;
+GO
+
+create view [pbist_twitter].[vw_minimum_tweets] as
+select [MinimumTweets] as [Minimum Tweets] from [pbist_twitter].[minimum_tweets]
 go
+
+

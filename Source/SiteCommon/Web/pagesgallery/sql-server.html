@@ -100,7 +100,10 @@
     </div>
 
     <div class="st-float" if.bind="showDatabases">
-        <p>${MS.Translate.SQL_SERVER_DATABASE}</p>
+        <p>
+            <span>${MS.Translate.SQL_SERVER_DATABASE}</span>
+            <span if.bind="showSqlRecoveryModeHint">${MS.Translate.SQL_SERVER_DATABASE_RECOVERY}</span>
+        </p>
         <select class="btn btn-default dropdown-toggle st-input" disabled.bind="MS.HttpService.isServiceBusy" value.bind="database">
             <option repeat.for="database of databases">${database}</option>
         </select>

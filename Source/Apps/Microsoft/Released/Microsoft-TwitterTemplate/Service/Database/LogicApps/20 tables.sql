@@ -94,3 +94,8 @@ CREATE TABLE pbist_twitter.authormention_graph
 );
 ALTER TABLE pbist_twitter.authormention_graph ADD CONSTRAINT ck_tweetmentiongraph FOREIGN KEY(tweetid) REFERENCES pbist_twitter.tweets_processed(tweetid);
 
+CREATE TABLE [pbist_twitter].[minimum_tweets](
+	[MinimumTweets] [smallint] NOT NULL
+)
+
+

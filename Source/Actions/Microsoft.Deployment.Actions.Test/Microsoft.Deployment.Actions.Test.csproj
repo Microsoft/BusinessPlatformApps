@@ -45,13 +45,17 @@
       <HintPath>..\packages\Hyak.Common.1.1.0\lib\net45\Hyak.Common.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Microsoft.AnalysisServices, Version=13.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\Shared\Assemblies\Microsoft.AnalysisServices.DLL</HintPath>
+    </Reference>
     <Reference Include="Microsoft.AnalysisServices.Core, Version=13.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\..\..\Windows\Microsoft.NET\assembly\GAC_MSIL\Microsoft.AnalysisServices.Core\v4.0_13.0.0.0__89845dcd8080cc91\Microsoft.AnalysisServices.Core.DLL</HintPath>
+      <HintPath>..\..\Shared\Assemblies\Microsoft.AnalysisServices.Core.DLL</HintPath>
     </Reference>
     <Reference Include="Microsoft.AnalysisServices.Tabular, Version=13.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\..\..\Windows\Microsoft.NET\assembly\GAC_MSIL\Microsoft.AnalysisServices.Tabular\v4.0_13.0.0.0__89845dcd8080cc91\Microsoft.AnalysisServices.Tabular.DLL</HintPath>
+      <HintPath>..\..\Shared\Assemblies\Microsoft.AnalysisServices.Tabular.DLL</HintPath>
     </Reference>
     <Reference Include="Microsoft.ApplicationInsights">
       <HintPath>..\packages\Microsoft.ApplicationInsights.2.2.0\lib\net45\Microsoft.ApplicationInsights.dll</HintPath>
@@ -65,7 +69,19 @@
       <HintPath>..\packages\Microsoft.Azure.Common.2.1.0\lib\net45\Microsoft.Azure.Common.NetFramework.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Microsoft.Azure.ResourceManager">
+    <Reference Include="Microsoft.Azure.MachineLearning, Version=0.9.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Azure.MachineLearning.0.9.2\lib\net45\Microsoft.Azure.MachineLearning.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.Azure.MachineLearning.Management, Version=0.9.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Azure.MachineLearning.Management.0.9.2\lib\net45\Microsoft.Azure.MachineLearning.Management.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.Azure.Management.MachineLearning, Version=0.9.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Azure.Management.MachineLearning.0.9.6-preview\lib\net45\Microsoft.Azure.Management.MachineLearning.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.Azure.ResourceManager, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Azure.Management.Resources.2.20.1-preview\lib\net40\Microsoft.Azure.ResourceManager.dll</HintPath>
       <Private>True</Private>
     </Reference>
@@ -102,7 +118,15 @@
       <HintPath>..\packages\Microsoft.IdentityModel.Tokens.5.1.2\lib\net451\Microsoft.IdentityModel.Tokens.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Microsoft.Threading.Tasks">
+    <Reference Include="Microsoft.Rest.ClientRuntime, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Rest.ClientRuntime.2.1.0\lib\net45\Microsoft.Rest.ClientRuntime.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.Rest.ClientRuntime.Azure, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Rest.ClientRuntime.Azure.3.1.0\lib\net45\Microsoft.Rest.ClientRuntime.Azure.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.Threading.Tasks, Version=1.0.12.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Bcl.Async.1.0.168\lib\net40\Microsoft.Threading.Tasks.dll</HintPath>
       <Private>True</Private>
     </Reference>
@@ -127,6 +151,7 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Data" />
     <Reference Include="System.Net" />
     <Reference Include="System.Net.Http" />
@@ -164,25 +189,11 @@
     <Compile Include="ActionsTest\CognitiveServiceTests.cs" />
     <Compile Include="ActionsTest\CommonTests.cs" />
     <Compile Include="ActionsTest\LogicAppTests.cs" />
+    <Compile Include="ActionsTest\NewsTests.cs" />
     <Compile Include="ActionsTest\OnPremiseTests.cs" />
     <Compile Include="ActionsTest\SalesforceTests.cs" />
     <Compile Include="ActionsTest\StorageAccountTests.cs" />
     <Compile Include="ActionsTest\TestActions.cs" />
-    <None Include="Apps\TestApps\TestApp\Service\AzureArm\AzureFunctions.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Apps\TestApps\TestApp\Service\AzureArm\LogicAppImageCacher.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Apps\TestApps\TestApp\Service\AzureArm\sentimentCognitiveService.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Apps\TestApps\TestApp\Service\AzureArm\storageAccount.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Apps\TestApps\TestApp\Service\Data\TweetFunctionCSharp.cs">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Service References\SalesforceSOAP\Reference.cs">
       <AutoGen>True</AutoGen>
@@ -200,51 +211,10 @@
     <None Include="app.config">
       <SubType>Designer</SubType>
     </None>
-    <None Include="Apps\TestApps\SalesforceTestApp\init.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    <None Include="packages.config">
+      <SubType>Designer</SubType>
     </None>
-    <None Include="Apps\TestApps\SalesforceTestApp\Service\ADF\ArmParam.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Apps\TestApps\SalesforceTestApp\Service\ADF\armtemplate.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Apps\TestApps\SalesforceTestApp\Service\ADF\datasets.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Apps\TestApps\SalesforceTestApp\Service\ADF\linkedServices.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Apps\TestApps\SalesforceTestApp\Service\ADF\pipeline.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Apps\TestApps\SalesforceTestApp\Service\PowerBI\SCCMSolutionTemplate.pbix">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Apps\TestApps\TestApp2\init.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Apps\TestApps\TestApp\init.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Apps\TestApps\TestApp\Service\Arm\ArmParam.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Apps\TestApps\TestApp\Service\Arm\armtemplate.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Apps\TestApps\TestApp\Service\AzureArm\azureml.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Apps\TestApps\TestApp\Service\AzureArm\cognitiveServices.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Apps\TestApps\TestApp\Service\AzureArm\function.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Apps\TestApps\TestApp\Service\PowerBI\SCCMSolutionTemplate.pbix">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
+    <None Include="Template.proj" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -575,61 +545,7 @@
     </None>
     <None Include="Service References\SalesforceSOAP\configuration.svcinfo" />
     <None Include="Service References\SalesforceSOAP\configuration91.svcinfo" />
-    <None Include="Apps\TestApps\TestApp2\Web\azure.html">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Apps\TestApps\TestApp2\Web\gettingStarted.html">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Apps\TestApps\TestApp2\Web\Images\twitterArchitectureDiagram.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Apps\TestApps\TestApp2\Web\progress.html">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
     <None Include="Service References\SalesforceSOAP\partner.wsdl" />
-    <None Include="SiteCommon\Service\Arm\azureml.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="SiteCommon\Service\Arm\cognitiveServices.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="SiteCommon\Service\Arm\NewAzureAS.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="SiteCommon\Service\Arm\sampleCDMEntity.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Apps\TestApps\TestApp\Service\AzureML\Experiments\Entity Recognition.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Apps\TestApps\TestApp\Service\AzureML\Experiments\Topic Images.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Apps\TestApps\TestApp\Service\AzureML\Experiments\Topics.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="SiteCommon\Service\Arm\sqlserveranddatabase.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="SiteCommon\Web\pagesgallery\navbar.html">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="SiteCommon\Web\pagesgallery\navbuttons.html">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="SiteCommon\Web\pagesgallery\nested\gettingstartedtemplate.html">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="SiteCommon\Web\pagesgallery\progresstemplate.html">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="SiteCommon\Web\pagesgallery\sqlservertemplate.html">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="SiteCommon\Web\pagesgallery\summarytemplate.html">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Microsoft.Deployment.Actions.AzureCustom\Microsoft.Deployment.Actions.AzureCustom.csproj">
@@ -662,77 +578,12 @@
       <Properties>SkipValidatePackageReferences=true</Properties>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <None Include="Apps\TestApps\TestApp2\Web\azure.ts">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Apps\TestApps\TestApp2\Web\gettingStarted.ts">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Apps\TestApps\TestApp2\Web\progress.ts">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="SiteCommon\Web\pagesgallery\navbar.ts">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="SiteCommon\Web\pagesgallery\navbuttons.ts">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="SiteCommon\Web\pagesgallery\nested\gettingstartedtemplate.ts">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="SiteCommon\Web\pagesgallery\progresstemplate.ts">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="SiteCommon\Web\pagesgallery\sqlservertemplate.ts">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="SiteCommon\Web\pagesgallery\summarytemplate.ts">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Apps\TestApps\TestApp2\Resources\" />
-    <Folder Include="Apps\TestApps\TestApp2\Service\" />
-    <Folder Include="Apps\TestApps\TestApp\Service\Database\ADF\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <WCFMetadata Include="Service References\" />
   </ItemGroup>
   <ItemGroup>
     <WCFMetadataStorage Include="Service References\SalesforceSOAP\" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Apps\TestApps\SalesforceTestApp\Service\Database\ADF\20 tables.sql">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Apps\TestApps\SalesforceTestApp\Service\Database\ADF\30 views.sql">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Apps\TestApps\SalesforceTestApp\Service\Database\ADF\40 programmability.sql">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Apps\TestApps\SalesforceTestApp\Service\Database\ADF\60 data.sql">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Apps\TestApps\SalesforceTestApp\Service\Database\Cleanup\00 content check.sql">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Apps\TestApps\SalesforceTestApp\Service\Database\Cleanup\10 pre.sql">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Apps\TestApps\SalesforceTestApp\Service\Resources\Scripts\testScript.txt">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Apps\TestApps\TestApp\Service\Database\Cleanup\00 content check.sql">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Apps\TestApps\TestApp\Service\Database\Cleanup\10 pre.sql">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Apps\TestApps\TestApp\Service\Resources\Scripts\testScript.txt">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
   </ItemGroup>
   <Choose>
     <When Condition="('$(VisualStudioVersion)' == '10.0' or '$(VisualStudioVersion)' == '') and '$(TargetFrameworkVersion)' == 'v3.5'">
@@ -766,6 +617,7 @@
   </Choose>
   <Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets" Condition="Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Import Project="template.proj" />
   <PropertyGroup>
     <PreBuildEvent>
     </PreBuildEvent>

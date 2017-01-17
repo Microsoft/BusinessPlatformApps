@@ -1,0 +1,161 @@
+﻿{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "logicappname": {
+      "defaultValue": "LogicApp",
+      "type": "string"
+    },
+    "resourcegroup": {
+      "defaultValue": "stresourcegroup",
+      "type": "string"
+    },
+    "subscription": {
+      "defaultValue": "idrequired",
+      "type": "string"
+    },
+    "storageaccountname": {
+      "defaultValue": "ststorage",
+      "type": "string"
+    }
+  },
+  "variables": {},
+  "resources": [
+    {
+      "type": "Microsoft.Logic/workflows",
+      "name": "[parameters('logicappname')]",
+      "apiVersion": "2016-06-01",
+      "location": "[resourceGroup().location]",
+      "properties": {
+        "state": "Enabled",
+        "definition": {
+          "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+          "contentVersion": "1.0.0.0",
+          "parameters": {
+            "$connections": {
+              "defaultValue": {},
+              "type": "Object"
+            }
+          },
+          "triggers": {
+            "Recurrence": {
+              "recurrence": {
+                "frequency": "Day",
+                "interval": 1,
+                "startTime": "26 Oct 2016 01:00:00",
+                "timeZone": "Pacific Standard Time"
+              },
+              "type": "Recurrence"
+            }
+          },
+          "actions": {
+            "Clean_Bulk_Tables": {
+              "inputs": {
+                "host": {
+                  "connection": {
+                    "name": "@parameters('$connections')['sql_1']['connectionId']"
+                  }
+                },
+                "method": "post",
+                "path": "/datasets/default/procedures/@{encodeURIComponent(encodeURIComponent('[dbo].[CleanBatchTables]'))}"
+              },
+              "runAfter": {},
+              "type": "ApiConnection"
+            },
+            "Entity_AzureML": {
+              "inputs": {
+                "host": {
+                  "api": {
+                    "runtimeUrl": "https://logic-apis-westus.azure-apim.net/apim/azureml"
+                  },
+                  "connection": {
+                    "name": "@parameters('$connections')['azureml']['connectionId']"
+                  }
+                },
+                "method": "post",
+                "path": "/api/None",
+                "queries": {
+                  "API_Key": "[parameters('apikeyentities')]",
+                  "API_URL": "[parameters('apiurlentities')]"
+                }
+              },
+              "runAfter": {
+                "Clean_Bulk_Tables": [
+                  "Succeeded"
+                ]
+              },
+              "type": "ApiConnection"
+            },
+            "Topic_AzureML": {
+              "inputs": {
+                "host": {
+                  "api": {
+                    "runtimeUrl": "https://logic-apis-westus.azure-apim.net/apim/azureml"
+                  },
+                  "connection": {
+                    "name": "@parameters('$connections')['azureml']['connectionId']"
+                  }
+                },
+                "method": "post",
+                "path": "/api/None",
+                "queries": {
+                  "API_Key": "[parameters('apikeytopics')]",
+                  "API_URL": "[parameters('apiurltopics')]"
+                }
+              },
+              "runAfter": {
+                "Clean_Bulk_Tables": [
+                  "Succeeded"
+                ]
+              },
+              "type": "ApiConnection"
+            },
+            "Topic_Images_AzureML": {
+              "inputs": {
+                "host": {
+                  "api": {
+                    "runtimeUrl": "https://logic-apis-westus.azure-apim.net/apim/azureml"
+                  },
+                  "connection": {
+                    "name": "@parameters('$connections')['azureml']['connectionId']"
+                  }
+                },
+                "method": "post",
+                "path": "/api/None",
+                "queries": {
+                  "API_Key": "[parameters('apikeyimages')]",
+                  "API_URL": "[parameters('apiurlimages')]"
+                }
+              },
+              "runAfter": {
+                "Topic_AzureML": [
+                  "Succeeded"
+                ]
+              },
+              "type": "ApiConnection"
+            }
+          },
+          "outputs": {}
+        },
+        "parameters": {
+          "$connections": {
+            "value": {
+              "azureml": {
+                "connectionId": "[concat('/subscriptions/', parameters('subscription'), '/resourceGroups/',parameters('resourcegroup'),'/providers/Microsoft.Web/connections/azureml')]",
+                "connectionName": "AzureMLConnector",
+                "id": "[concat('/subscriptions/', parameters('subscription'), '/providers/Microsoft.Web/locations/', resourceGroup().location, '/managedApis/azureml')]"
+              },
+              "sql_1": {
+                "connectionId": "[concat('/subscriptions/', parameters('subscription'), '/resourceGroups/',parameters('resourcegroup'),'/providers/Microsoft.Web/connections/sql')]",
+                "connectionName": "MySqlConnector",
+                "id": "[concat('/subscriptions/', parameters('subscription'), '/providers/Microsoft.Web/locations/', resourceGroup().location, '/managedApis/sql')]"
+              }
+            }
+          }
+        }
+      },
+      "resources": []
+    }
+  ],
+  "outputs": {}
+}
