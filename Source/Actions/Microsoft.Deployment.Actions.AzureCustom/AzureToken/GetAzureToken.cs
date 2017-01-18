@@ -12,6 +12,8 @@ using Microsoft.Deployment.Common.ErrorCode;
 using Microsoft.Deployment.Common.Helpers;
 using Newtonsoft.Json.Linq;
 using Microsoft.Rest;
+using System.IdentityModel.Tokens.Jwt;
+using System.Linq;
 
 namespace Microsoft.Deployment.Actions.AzureCustom.AzureToken
 {
@@ -29,6 +31,11 @@ namespace Microsoft.Deployment.Actions.AzureCustom.AzureToken
 
             switch (oauthType)
             {
+                case "powerbi":
+                    tokenUrl = string.Format(Constants.AzureTokenUri, aadTenant);
+                    clientId = Constants.MicrosoftClientIdPowerBI;
+                    api = Constants.PowerBIService;
+                    break;
                 case "mscrm":
                     api = Constants.AzureManagementCoreApi;
                     clientId = Constants.MsCrmClientId;
@@ -70,10 +77,18 @@ namespace Microsoft.Deployment.Actions.AzureCustom.AzureToken
             }
 
 
-
             switch (oauthType)
             {
-
+                case "powerbi":
+                    var tenantId = new JwtSecurityToken(primaryResponse["id_token"].ToString())
+                                                       .Claims.First(e => e.Type.ToLowerInvariant() == "tid")
+                                                       .Value;
+                    var directoryName = new JwtSecurityToken(primaryResponse["id_token"].ToString())
+                                                       .Claims.First(e => e.Type.ToLowerInvariant() == "unique_name")
+                                                       .Value.Split('@').Last();
+                    request.DataStore.AddToDataStore("DirectoryName", directoryName);
+                    request.DataStore.AddToDataStore("PowerBITenantId", tenantId);
+                    break;
                 case "keyvault":
                     request.DataStore.AddToDataStore("AzureTokenKV", primaryResponse);
                     break;
@@ -86,7 +101,7 @@ namespace Microsoft.Deployment.Actions.AzureCustom.AzureToken
                     request.DataStore.AddToDataStore("AzureToken", primaryResponse);
                     break;
             }
-            
+
 
 
             return new ActionResponse(ActionStatus.Success, obj, true);
@@ -136,7 +151,7 @@ namespace Microsoft.Deployment.Actions.AzureCustom.AzureToken
                    $"client_id={clientId}&" +
                    $"client_secret={Uri.EscapeDataString(Constants.MicrosoftClientSecret)}&" +
                    $"resource={Uri.EscapeDataString(uri)}&" +
-                   $"redirect_uri={Uri.EscapeDataString(rootUrl +Constants.WebsiteRedirectPath)}&" +
+                   $"redirect_uri={Uri.EscapeDataString(rootUrl + Constants.WebsiteRedirectPath)}&" +
                    "grant_type=refresh_token";
         }
     }

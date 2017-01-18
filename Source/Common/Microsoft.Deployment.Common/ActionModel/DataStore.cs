@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using Newtonsoft.Json.Linq;
 
@@ -16,9 +15,9 @@ namespace Microsoft.Deployment.Common.ActionModel
 
         public string CurrentRoute => CurrentRoutePage + "-" + DeploymentIndex;
 
-        public Dictionary<string,Dictionary<string,JToken>> PublicDataStore { get; set; } = new Dictionary<string, Dictionary<string, JToken>>();
+        public DictionaryIgnoreCase< DictionaryIgnoreCase<JToken>> PublicDataStore { get; set; } = new DictionaryIgnoreCase<DictionaryIgnoreCase< JToken>>();
 
-        public Dictionary<string, Dictionary<string, JToken>> PrivateDataStore { get; set; } = new Dictionary<string, Dictionary<string, JToken>>();
+        public DictionaryIgnoreCase< DictionaryIgnoreCase< JToken>> PrivateDataStore { get; set; } = new DictionaryIgnoreCase<DictionaryIgnoreCase< JToken>>();
 
         // Removed for the time being to force usage of getfirst and getall
         //public JToken this[string route, string key]
@@ -94,7 +93,7 @@ namespace Microsoft.Deployment.Common.ActionModel
             var listOfKeys = this.GetValueAndRoutesFromDataStore(dataStoreType, key).ToList();
             if (listOfKeys.Any())
             {
-                return listOfKeys.Any(p => p.Route.Equals(route));
+                return listOfKeys.Any(p => p.Route.ToLowerInvariant().Equals(route.ToLowerInvariant()));
             }
 
             return false;
@@ -192,8 +191,8 @@ namespace Microsoft.Deployment.Common.ActionModel
 
             if (itemsList != null)
             {
-                itemToReturn = itemsList.Any(p => p.Route == "RequestParameters") 
-                    ? itemsList.Single(p => p.Route == "RequestParameters").Value 
+                itemToReturn = itemsList.Any(p => p.Route.ToLowerInvariant() == "requestparameters") 
+                    ? itemsList.Single(p => p.Route.ToLowerInvariant() == "requestparameters").Value 
                     : itemsList.First().Value;
             }
 
@@ -273,7 +272,7 @@ namespace Microsoft.Deployment.Common.ActionModel
             }
         }
 
-        private static List<DataStoreItem> GetValueAndRoutesFromDataStore(Dictionary<string, Dictionary<string, JToken>> store,
+        private static List<DataStoreItem> GetValueAndRoutesFromDataStore(DictionaryIgnoreCase<DictionaryIgnoreCase<JToken>> store,
             string key, DataStoreType dataStoreType)
         {
             List<DataStoreItem> itemsMatching = new List<DataStoreItem>();
@@ -295,7 +294,7 @@ namespace Microsoft.Deployment.Common.ActionModel
             return itemsMatching;
         }
 
-        private static bool UpdateItemIntoDataStore(Dictionary<string, Dictionary<string, JToken>> store,
+        private static bool UpdateItemIntoDataStore(DictionaryIgnoreCase<DictionaryIgnoreCase< JToken>> store,
             string route, string key, JToken value)
         {
             bool found = false;
@@ -321,12 +320,12 @@ namespace Microsoft.Deployment.Common.ActionModel
             return found;
         }
 
-        private static void AddModifyItemToDataStore(Dictionary<string, Dictionary<string, JToken>> store,
+        private static void AddModifyItemToDataStore(DictionaryIgnoreCase<DictionaryIgnoreCase<JToken>> store,
             string route, string key, JToken value)
         {
             if (!store.ContainsKey(route))
             {
-                store.Add(route, new Dictionary<string, JToken>());
+                store.Add(route, new DictionaryIgnoreCase<JToken>());
             }
 
             if (!store[route].ContainsKey(key))

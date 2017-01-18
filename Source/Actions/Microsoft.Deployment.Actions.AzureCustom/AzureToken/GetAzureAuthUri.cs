@@ -54,6 +54,11 @@ namespace Microsoft.Deployment.Actions.AzureCustom.AzureToken
             string oauthType = (request.DataStore.GetValue("oauthType") ?? string.Empty).ToLowerInvariant();
             switch (oauthType)
             {
+                case "powerbi":
+                    authBase = string.Format(Constants.AzureAuthUri, aadTenant);
+                    clientId = Constants.MicrosoftClientIdPowerBI;
+                    resource = Constants.PowerBIService;
+                    break;
                 case "mscrm":
                     authBase = string.Format(Constants.AzureAuthUri, aadTenant);
                     clientId = Constants.MsCrmClientId;

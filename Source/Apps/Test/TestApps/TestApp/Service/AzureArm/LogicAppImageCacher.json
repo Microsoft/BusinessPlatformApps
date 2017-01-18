@@ -1,0 +1,158 @@
+﻿{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "logicappname": {
+      "defaultValue": "LogicApp",
+      "type": "string"
+    },
+    "resourcegroup": {
+      "defaultValue": "stresourcegroup",
+      "type": "string"
+    },
+    "subscription": {
+      "defaultValue": "idrequired",
+      "type": "string"
+    },
+    "storageaccountname": {
+      "defaultValue": "ststorage",
+      "type": "string"
+    }
+  },
+  "variables": {},
+  "resources": [
+    {
+      "type": "Microsoft.Logic/workflows",
+      "name": "[parameters('logicappname')]",
+      "apiVersion": "2016-06-01",
+      "location": "[resourceGroup().location]",
+      "properties": {
+        "state": "Enabled",
+        "definition": {
+          "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+          "contentVersion": "1.0.0.0",
+          "parameters": {
+            "$connections": {
+              "defaultValue": {},
+              "type": "Object"
+            }
+          },
+          "triggers": {
+            "manual": {
+              "type": "Request",
+              "kind": "Http",
+              "inputs": {
+                "schema": {
+                  "$schema": "http://json-schema.org/draft-04/schema#",
+                  "properties": {
+                    "Request": {
+                      "properties": {
+                        "DocumentID": {
+                          "type": "string"
+                        },
+                        "imgUrl": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "imgUrl",
+                        "DocumentID"
+                      ],
+                      "type": "object"
+                    }
+                  },
+                  "required": [
+                    "Request"
+                  ],
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "actions": {
+            "Condition": {
+              "actions": {
+                "Response": {
+                  "runAfter": {},
+                  "type": "Response",
+                  "inputs": {
+                    "statusCode": 200
+                  }
+                }
+              },
+              "runAfter": {},
+              "else": {
+                "actions": {
+                  "Create_blob": {
+                    "runAfter": {
+                      "HTTP": [
+                        "Succeeded"
+                      ]
+                    },
+                    "type": "ApiConnection",
+                    "inputs": {
+                      "body": "@body('HTTP')",
+                      "host": {
+                        "api": {
+                          "runtimeUrl": "https://logic-apis-df.azure-apim.net/apim/azureblob"
+                        },
+                        "connection": {
+                          "name": "@parameters('$connections')['azureblob']['connectionId']"
+                        }
+                      },
+                      "method": "post",
+                      "path": "/datasets/default/files",
+                      "queries": {
+                        "folderPath": "/newsimages/imgs",
+                        "name": "@{triggerBody()['Request']['DocumentID']}.jpg"
+                      }
+                    }
+                  },
+                  "HTTP": {
+                    "runAfter": {},
+                    "type": "Http",
+                    "inputs": {
+                      "method": "Get",
+                      "uri": "@{triggerBody()['Request']['imgUrl']}"
+                    }
+                  },
+                  "Response_2": {
+                    "runAfter": {
+                      "Create_blob": [
+                        "Succeeded"
+                      ]
+                    },
+                    "type": "Response",
+                    "inputs": {
+                      "body": "[concat('https://', parameters('storageaccountname'), '.blob.core.windows.net/newsimages/imgs/@{triggerBody()[''Request''][''DocumentID'']}.jpg')]",
+                      "headers": {
+                        "newImageURL": "[concat('https://', parameters('storageaccountname'), '.blob.core.windows.net/newsimages/imgs/@{triggerBody()[''Request''][''DocumentID'']}.jpg')]"
+                      },
+                      "statusCode": 200
+                    }
+                  }
+                }
+              },
+              "expression": "@not(startsWith(coalesce(triggerBody()['Request']['imgUrl'], ''), 'http'))",
+              "type": "If"
+            }
+          },
+          "outputs": {}
+        },
+        "parameters": {
+          "$connections": {
+            "value": {
+              "azureblob": {
+                "connectionId": "[concat('/subscriptions/', parameters('subscription'), '/resourceGroups/',parameters('resourcegroup'),'/providers/Microsoft.Web/connections/azureblob')]",
+                "connectionName": "azureblob",
+                "id": "[concat('/subscriptions/', parameters('subscription'),'/providers/Microsoft.Web/locations/', resourceGroup().location, '/managedApis/azureblob')]"
+              }
+            }
+          }
+        }
+      },
+      "resources": []
+    }
+  ],
+  "outputs": { }
+}

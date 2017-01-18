@@ -31,7 +31,7 @@ namespace Microsoft.Deployment.Actions.Test.TestHelpers
         [AssemblyInitialize()]
         public static void AssemblyInit(TestContext context)
         {
-            AppFactory factory = new AppFactory();
+            AppFactory factory = new AppFactory(true);
             CommonControllerModel model = new CommonControllerModel()
             {
                 AppFactory = factory,
@@ -60,7 +60,6 @@ namespace Microsoft.Deployment.Actions.Test.TestHelpers
             }
         }
 
-
         public static ActionResponse ExecuteAction(string actionName, DataStore datastore)
         {
             UserInfo info = new UserInfo();
@@ -70,14 +69,15 @@ namespace Microsoft.Deployment.Actions.Test.TestHelpers
             return Controller.ExecuteAction(info, new ActionRequest() { DataStore = datastore }).Result;
         }
 
-        public static async Task<ActionResponse> ExecuteActionAsync(string actionName, DataStore datastore)
+        public static async Task<ActionResponse> ExecuteActionAsync(string actionName, DataStore datastore, string templateName = "TestApp")
         {
             UserInfo info = new UserInfo();
             info.ActionName = actionName;
-            info.AppName = TemplateName;
+            info.AppName = templateName;
             info.WebsiteRootUrl = "https://unittest";
             return await Controller.ExecuteAction(info, new ActionRequest() { DataStore = datastore });
         }
+
 
         public static async Task<DataStore> GetCommonDataStore()
         {

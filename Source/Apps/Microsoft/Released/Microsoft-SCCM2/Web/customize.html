@@ -1,0 +1,16 @@
+﻿<template>
+    <h1 class="st-title">${MS.Translate.COMMON_CUSTOMIZE}</h1>
+
+    <div class="st-float">
+        <p class="st-text">${MS.Translate.CUSTOMIZE_DAILY_TRIGGER_TIME}</p>
+        <select class="btn btn-default dropdown-toggle st-input" disabled.bind="MS.HttpService.isServiceBusy" value.bind="dailyTrigger">
+            <option repeat.for="dailyTriggerOption of dailyTriggers">${dailyTriggerOption}</option>
+        </select>
+        <p class="st-text">${MS.Translate.CUSTOMIZE_DATA_RETENTION_DAYS}</p>
+        <input class="st-input" type="text" change.delegate="Invalidate()" disabled.bind="MS.HttpService.isServiceBusy" value.bind="dataRetentionDays" />
+        <p class="st-text">${MS.Translate.CUSTOMIZE_ENDPOINT_COMPLIANCE_TARGET}</p>
+        <input class="st-input" type="text" change.delegate="Invalidate()" disabled.bind="MS.HttpService.isServiceBusy" value.bind="endpointComplianceTarget" />
+        <p class="st-text">${MS.Translate.CUSTOMIZE_HEALTH_EVALUATION_TARGET}</p>
+        <input class="st-input" type="text" change.delegate="Invalidate()" disabled.bind="MS.HttpService.isServiceBusy" value.bind="healthEvaluationTarget" />
+    </div>
+</template>

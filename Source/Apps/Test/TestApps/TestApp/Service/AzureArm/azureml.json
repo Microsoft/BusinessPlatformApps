@@ -1,0 +1,98 @@
+﻿{
+  "$schema": "https://schema.management.azure.com/schemas/2014-04-01-preview/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "name": {
+      "defaultValue": "stworkspacename",
+      "type": "string"
+    },
+    "location": {
+      "defaultValue": "location",
+      "type": "string"
+    },
+    "userStorageAccountId": {
+      "defaultValue": "idrequired",
+      "type": "string"
+    },
+    "newStorageAccountName": {
+      "defaultValue": "ststorageaccountname",
+      "type": "string"
+    },
+    "newStorageAccountTier": {
+      "defaultValue": "accounttier",
+      "type": "string"
+    },
+    "keyVaultIdentifierId": {
+      "defaultValue": "",
+      "type": "string"
+    },
+    "ownerEmail": {
+      "defaultValue": "",
+      "type": "string"
+    },
+    "planName": {
+      "defaultValue": "workspaceplanname",
+      "type": "string"
+    },
+    "skuName": {
+      "defaultValue": "skuname",
+      "type": "string"
+    },
+    "skuTier": {
+      "defaultValue": "skutier",
+      "type": "string"
+    },
+    "skuCapacity": {
+      "defaultValue": "skucapacity",
+      "type": "int"
+    },
+    "workspaceApiVersion": {
+      "defaultValue": "apiversionworkspace",
+      "type": "string"
+    },
+    "commitmentPlanApiVersion": {
+      "defaultValue": "apiversioncommitmentplan",
+      "type": "string"
+    },
+    "storageApiVersion": {
+      "defaultValue": "apiversionstorage",
+      "type": "string"
+    }
+  },
+  "resources": [
+    {
+      "apiVersion": "2016-04-01",
+      "name": "[parameters('name')]",
+      "location": "southcentralus",
+      "type": "Microsoft.MachineLearning/workspaces",
+      "properties": {
+        "userStorageAccountId": "[concat('/subscriptions/', parameters('subscription'), '/resourceGroups/',parameters('resourcegroup'),'/providers/Microsoft.Storage/storageAccounts/', parameters('newStorageAccountName'))]",
+		"ownerEmail": "pbisolntemplates@microsoft.com"
+      },
+      "dependsOn": [
+        "[concat('/subscriptions/', parameters('subscription'), '/resourceGroups/',parameters('resourcegroup'),'/providers/Microsoft.Storage/storageAccounts/', parameters('newStorageAccountName'))]"
+      ]
+    },
+    {
+      "apiVersion": "2016-01-01",
+      "name": "[parameters('newStorageAccountName')]",
+      "location": "southcentralus",
+      "type": "Microsoft.Storage/storageAccounts",
+      "sku": {
+        "name": "Standard_LRS"
+      },
+      "kind": "Storage"
+    },
+    {
+      "apiVersion": "2016-05-01-preview",
+      "name": "[parameters('planName')]",
+      "type": "Microsoft.MachineLearning/commitmentPlans",
+      "location": "southcentralus",
+      "sku": {
+        "name": "[parameters('skuName')]",
+        "tier": "[parameters('skuTier')]",
+        "capacity": "[parameters('skuCapacity')]"
+      }
+    }
+  ]
+}

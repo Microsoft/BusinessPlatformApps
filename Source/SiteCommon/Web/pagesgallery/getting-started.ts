@@ -1,3 +1,7 @@
+import { QueryParameter } from '../base/query-parameter';
+
+import { ActionResponse } from '../services/actionresponse';
+import { DataStoreType } from '../services/datastore';
 import { ViewModelBase } from '../services/viewmodelbase';
 
 export class Gettingstarted extends ViewModelBase {
@@ -44,11 +48,46 @@ export class Gettingstarted extends ViewModelBase {
     }
 
     async OnLoaded() {
-        this.isValidated = true;
         if (this.isDownload) {
-            this.GetDownloadLink();
+            if (this.isAuthenticated) {
+                this.GetDownloadLink();
+            } else {
+                this.downloadLink = 'Pending authentication'
+            }
         } else {
             this.registration = '';
+        }
+
+        if (this.MS.HttpService.isOnPremise) {
+            this.isValidated = true;
+            this.isAuthenticated = true;
+        } else {
+            this.isValidated = false;
+
+            if (this.isAuthenticated) {
+                this.isValidated = true;
+            } else {
+                let queryParam = this.MS.UtilityService.GetItem('queryUrl');
+                if (queryParam) {
+                    let token = this.MS.UtilityService.GetQueryParameterFromUrl(QueryParameter.CODE, queryParam);
+                    if (token === '') {
+                        this.MS.ErrorService.message = this.MS.Translate.AZURE_LOGIN_UNKNOWN_ERROR;
+                        this.MS.ErrorService.details = this.MS.UtilityService.GetQueryParameterFromUrl(QueryParameter.ERRORDESCRIPTION, queryParam);
+                        this.MS.ErrorService.showContactUs = true;
+                        return;
+                    }
+                    var tokenObj = { code: token };
+                    let authToken = await this.MS.HttpService.executeAsync('Microsoft-GetAzureToken', tokenObj);
+
+                    if (authToken.IsSuccess) {
+                        this.isAuthenticated = true;
+                        if (!this.registration) {
+                            this.isValidated = true;
+                        }
+                        await this.MS.HttpService.executeAsync('Microsoft-PowerBiLogin');
+                    }
+                }
+            }
         }
     }
 
@@ -85,6 +124,16 @@ export class Gettingstarted extends ViewModelBase {
             await this.MS.HttpService.executeAsync(this.registrationAction, { isInvisible: true });
             this.registration = '';
             this.downloadLink = this.registrationDownload;
+            this.isValidated = true;
         }
+    }
+
+    async connect() {
+        this.MS.DataStore.addToDataStore('oauthType', 'powerbi', DataStoreType.Public);
+
+        this.MS.DataStore.addToDataStore('AADTenant', 'common', DataStoreType.Public);
+
+        let response: ActionResponse = await this.MS.HttpService.executeAsync('Microsoft-GetAzureAuthUri', {});
+        window.location.href = response.Body.value;
     }
 }
