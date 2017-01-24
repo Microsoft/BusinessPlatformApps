@@ -17,7 +17,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Microsoft.Deployment.Action
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Microsoft.Deployment.Actions.Salesforce", "Microsoft.Deployment.Actions.Salesforce\Microsoft.Deployment.Actions.Salesforce.csproj", "{5BD9A308-4DF3-4402-99B6-BDA9945E025E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Microsoft.Deployment.Actions.MsCrm", "Microsoft.Deployment.Actions.MsCrmActions\Microsoft.Deployment.Actions.MsCrm.csproj", "{5951A918-2234-4963-80B6-66F27962B41F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Microsoft.Deployment.Actions.MsCrm", "Microsoft.Deployment.Actions.MsCrm\Microsoft.Deployment.Actions.MsCrm.csproj", "{5951A918-2234-4963-80B6-66F27962B41F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

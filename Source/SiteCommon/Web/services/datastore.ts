@@ -151,7 +151,12 @@ export class DataStore {
     }
 
     public getValue(key: string, dataStoreType: DataStoreType = DataStoreType.Any): string {
-        return this.getFirstValueFromDataStore(key, dataStoreType).toString();
+        let val = this.getFirstValueFromDataStore(key, dataStoreType);
+        if (val || val === '') {
+            return val.toString();
+        }
+
+        return val;
     }
 
     public getValueWithRoute(route: string, key: string, dataStoreType: DataStoreType = DataStoreType.Any): string {

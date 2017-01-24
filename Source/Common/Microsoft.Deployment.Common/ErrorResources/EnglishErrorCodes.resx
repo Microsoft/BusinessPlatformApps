@@ -205,10 +205,10 @@
     <value>PowerShell version too low - please upgrade to latest version https://msdn.microsoft.com/en-us/powershell/wmf/5.0/requirements"</value>
   </data>
   <data name="MsCrm_NoOrg" xml:space="preserve">
-    <value>No CRM organization with this URL could be found</value>
+    <value>No Dynamics 365 organization with this URL could be found</value>
   </data>
   <data name="MsCrm_NoOrgs" xml:space="preserve">
-    <value>No Dynamics CRM organizations were found</value>
+    <value>No Dynamics 365 organizations were found</value>
   </data>
   <data name="SQL_DenyPDW" xml:space="preserve">
     <value>Microsoft Azure SQL Data Warehouse is not supported</value>
@@ -230,5 +230,11 @@
   </data>
   <data name="SQL_TargetCollationDoesntMatch" xml:space="preserve">
     <value>The target database must have the same locale ID as the source database</value>
+  </data>
+  <data name="MsCrm_Unauthorized" xml:space="preserve">
+    <value>Your account does not have System Administrator privileges for this instance of Dynamics 365</value>
+  </data>
+  <data name="MsCrm_MetadataError" xml:space="preserve">
+    <value>Failed to read metadata for your Dynamics 365 organization</value>
   </data>
 </root>

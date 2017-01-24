@@ -19,12 +19,12 @@
                 "subtitle": "Welcome to the brand and campaign management solution template.",
                 "templateName": "Brand and Campaign Management for Twitter"
             },
-          {
-            "displayname": "Login",
-            "name": "$SiteCommon$/pagesgallery/azure-login.html",
-            "pricingCost": "$('By deploying the template you authorize the creation of Azure resources on your subscription. The base cost of these services is $6 a day. Every 1000 tweets will incur an additional cost of approximately $0.80.')",
-            "pricingUrl": "https://github.com/Microsoft/BusinessPlatformApps/tree/master/Source/Apps/Microsoft/Released/Microsoft-TwitterTemplate#pricing"
-          },
+            {
+                "displayname": "Login",
+                "name": "$SiteCommon$/pagesgallery/azure-login.html",
+                "pricingCost": "$('By deploying the template you authorize the creation of Azure resources on your subscription. The base cost of these services is $6 a day. Every 1000 tweets will incur an additional cost of approximately $0.80.')",
+                "pricingUrl": "https://github.com/Microsoft/BusinessPlatformApps/tree/master/Source/Apps/Microsoft/Released/Microsoft-TwitterTemplate#pricing"
+            },
             {
                 "name": "$SiteCommon$/pagesgallery/sql-server.html",
                 "displayname": "Source",
@@ -61,19 +61,19 @@
                     "Target Username": "$(this.MS.DataStore.getValue('Username'))"
                 }
             },
-          {
-            "name": "$SiteCommon$/pagesgallery/progress.html",
-            "displayname": "Deploy",
-            "uniqueId": "$(this.MS.UtilityService.GetUniqueId(18))",
-            "uniqueIdFunction": "$(this.MS.UtilityService.GetUniqueId(18), )",
+            {
+                "name": "$SiteCommon$/pagesgallery/progress.html",
+                "displayname": "Deploy",
+                "uniqueId": "$(this.MS.UtilityService.GetUniqueId(18))",
+                "uniqueIdFunction": "$(this.MS.UtilityService.GetUniqueId(18), )",
 
-            "LogicAppHostingPlan": "$(this.uniqueId, issaved=true)",
-            "LogicAppName": "$(this.uniqueId, issaved=true)",
-            "LogicAppNameHistorical": "$(this.uniqueId, issaved=true)",
-            "SiteName": "$(this.uniqueIdFunction, issaved=true)",
-            "functionAppHostingPlan": "$(this.uniqueIdFunction, issaved=true)",
-            "filename": "$('TwitterTemplate.pbix', isSaved=true)"
-          }
+                "LogicAppHostingPlan": "$(this.uniqueId, issaved=true)",
+                "LogicAppName": "$(this.uniqueId, issaved=true)",
+                "LogicAppNameHistorical": "$(this.uniqueId, issaved=true)",
+                "SiteName": "$(this.uniqueIdFunction, issaved=true)",
+                "functionAppHostingPlan": "$(this.uniqueIdFunction, issaved=true)",
+                "filename": "$('TwitterTemplate.pbix', isSaved=true)"
+            }
         ],
 
         "Actions": [

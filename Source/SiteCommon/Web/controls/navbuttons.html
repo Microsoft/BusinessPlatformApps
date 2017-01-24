@@ -1,7 +1,7 @@
 ﻿<template bindable="viewmodel">
     <!-- Validation -->
     <p class="st-float" if.bind="viewmodel.useDefaultValidateButton">
-        <button class="primary" click.delegate="viewmodel.OnValidate()" disabled.bind="viewmodel.MS.HttpService.isServiceBusy" if.bind="!MS.HttpService.isServiceBusy">Validate</button>
+        <button class="primary" click.delegate="viewmodel.OnValidate()" disabled.bind="viewmodel.MS.HttpService.isServiceBusy" if.bind="!MS.HttpService.isServiceBusy">${viewmodel.MS.Translate.COMMON_VALIDATE}</button>
     </p>
 
     <p class="st-validated" if.bind="viewmodel.showValidation || viewmodel.MS.ErrorService.message">
@@ -10,16 +10,19 @@
         <span class="powervisuals-glyph checkmark st-icon st-icon-checkmark" if.bind="!viewmodel.MS.ErrorService.message"></span>
         <span class="st-tab-text st-error" if.bind="viewmodel.MS.ErrorService.message">${viewmodel.MS.ErrorService.message}</span>
         <span class="st-tab-text" if.bind="!viewmodel.MS.ErrorService.message && viewmodel.validationText">${viewmodel.validationText}</span>
-        <span class="st-tab-text" if.bind="!viewmodel.MS.ErrorService.message && !viewmodel.validationText">Successfully validated</span>
+        <span class="st-tab-text" if.bind="!viewmodel.MS.ErrorService.message && !viewmodel.validationText">${viewmodel.MS.Translate.NAVIGATION_SUCCESSFULLY_VALIDATED}</span>
     </p>
     <p class="st-float st-text" click.trigger="viewmodel.showValidationDetails = !viewmodel.showValidationDetails" if.bind="viewmodel.MS.ErrorService.details">
         <span class="glyphicon pbi-glyph-circlering glyph-small st-toggle" if.bind="viewmodel.showValidationDetails"></span>
         <span class="st-toggle-collapse" if.bind="viewmodel.showValidationDetails">-</span>
         <span class="glyphicon pbi-glyph-addcircle glyph-small st-toggle" if.bind="!viewmodel.showValidationDetails"></span>
-        <span>View Details</span>
+        <span>${viewmodel.MS.Translate.NAVIGATION_VIEW_DETAILS}</span>
     </p>
     <p class="st-float st-text" if.bind="viewmodel.showValidationDetails">${viewmodel.MS.ErrorService.details}</p>
-    <p class="st-float st-text" if.bind="viewmodel.MS.ErrorService.logLocation">Navigate here to view logs: ${viewmodel.MS.ErrorService.logLocation}</p>
+    <p class="st-float st-text" if.bind="viewmodel.MS.ErrorService.logLocation">
+        <span>${viewmodel.MS.Translate.NAVIGATION_LOGS}</span>
+        <span>${viewmodel.MS.ErrorService.logLocation}</span>
+    </p>
 
     <!-- Spinner -->
     <div class="st-float">
@@ -29,22 +32,18 @@
 
     <!-- Navigation Buttons -->
     <p class="st-nav-buttons" if.bind="viewmodel && viewmodel.DeploymentService.NavigationService.templateName !== ''">
-        <button class="default st-buttons-back" click.delegate="viewmodel.NavigateBack()" disabled.bind="viewmodel.MS.HttpService.isServiceBusy" if.bind="viewmodel.showBack && !viewmodel.MS.NavigationService.isFirstPage()">Back</button>
+        <button class="default st-buttons-back" click.delegate="viewmodel.NavigateBack()" disabled.bind="viewmodel.MS.HttpService.isServiceBusy" if.bind="viewmodel.showBack && !viewmodel.MS.NavigationService.isFirstPage()">${viewmodel.MS.Translate.NAVIGATION_BACK}</button>
         <button class="primary" click.delegate="viewmodel.NavigateNext()" disabled.bind="!viewmodel.isValidated || viewmodel.MS.HttpService.isServiceBusy" if.bind="viewmodel.showNext && !viewmodel.isDownload && !viewmodel.MS.NavigationService.isLastPage()">${viewmodel.textNext}</button>
         <a target="_blank" href.bind="viewmodel.downloadLink" if.bind="viewmodel.isDownload && viewmodel.downloadLink">
-            <button class="primary" disabled.bind="viewmodel.MS.HttpService.isServiceBusy">Download</button>
+            <button class="primary" disabled.bind="!viewmodel.isValidated || viewmodel.MS.HttpService.isServiceBusy">${viewmodel.MS.Translate.COMMON_DOWNLOAD}</button>
         </a>
     </p>
 
     <!-- Privacy Statement -->
     <div class="st-privacy smallFontSize" if.bind="viewmodel.showPrivacy">
+        <p>${viewmodel.MS.Translate.NAVIGATION_MS_PRIVACY}</p>
         <p>
-            Information gathered is used by Microsoft to replicate information from the source application to the
-            destination database. By using this solution template, you agree to Microsoft’s terms and privacy statement.
-            Read the Microsoft privacy statement to learn more about how your information is used.
-        </p>
-        <p>
-            <a href="https://www.microsoft.com/en-us/privacystatement/OnlineServices/Default.aspx" target="_blank">Microsoft Privacy Statement</a>
+            <a href="${viemodel.MS.Translate.NAVIGATION_MS_PRIVACY_LINK}" target="_blank">${viewmodel.MS.Translate.NAVIGATION_MS_PRIVACY_LINK_TEXT}</a>
         </p>
     </div>
 </template>

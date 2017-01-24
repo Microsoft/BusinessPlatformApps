@@ -1,0 +1,364 @@
+{
+  "properties": {
+    "packageType": "Graph",
+    "package": {
+      "nodes": {
+        "node1": {
+          "assetId": "asset1",
+          "parameters": {
+            "R Script": "# The script MUST contain a function named azureml_main\n# which is the entry point for this module.\n\n# imports up here can be used to \nimport pandas as pd\n\n# The entry point function can contain up to two input arguments:\n#   Param<dataframe1>: a pandas.DataFrame\n#   Param<dataframe2>: a pandas.DataFrame\ndef azureml_main(dataframe1 = None, dataframe2 = None):\n\n    # Execution logic goes here\n    result = pd.melt(dataframe1, id_vars = ['Feature'], var_name = 'Topic', value_name = 'Score')\n    \n    # Add a rank by sorting the scores.\n    result['Rank'] = result.sort_values(['Score'], ascending=[False]) \\\n             .groupby(['Topic']) \\\n             .cumcount() + 1\n\n    # Grab the top five features for each topic\n    return result.loc[result['Rank'] <= 5]\n",
+            "Python Version": "Anaconda 4.0/Python 2.7.11"
+          }
+        },
+        "node2": {
+          "assetId": "asset1",
+          "parameters": {
+            "R Script": "# The script MUST contain a function named azureml_main\n# which is the entry point for this module.\n\n# imports up here can be used to \nimport pandas as pd\n\n# The entry point function can contain up to two input arguments:\n#   Param<dataframe1>: a pandas.DataFrame\n#   Param<dataframe2>: a pandas.DataFrame\ndef azureml_main(dataframe1 = None, dataframe2 = None):\n\n    return dataframe1.loc[dataframe1['Rank'] <= 5] \\\n        .sort_values(['Rank'], ascending=[True]) \\\n        .groupby('Topic')['Feature'] \\\n        .apply(lambda x: ', '.join(x)) \\\n        .reset_index()",
+            "Python Version": "Anaconda 4.0/Python 2.7.11"
+          }
+        },
+        "node3": {
+          "assetId": "asset1",
+          "parameters": {
+            "R Script": "# The script MUST contain a function named azureml_main\n# which is the entry point for this module.\n\n# imports up here can be used to \nimport pandas as pd\n\n# The entry point function can contain up to two input arguments:\n#   Param<dataframe1>: a pandas.DataFrame\n#   Param<dataframe2>: a pandas.DataFrame\ndef azureml_main(dataframe1 = None, dataframe2 = None):\n\n    # Execution logic goes here\n    frame = dataframe1.drop(['cleanedText', 'Preprocessed cleanedText'], axis = 1)\n    \n    return pd.melt(frame, id_vars = ['DocumentId'], var_name = 'Topic', value_name = 'Score')\n",
+            "Python Version": "Anaconda 4.0/Python 2.7.11"
+          }
+        },
+        "node4": {
+          "assetId": "asset1",
+          "parameters": {
+            "R Script": "# The script MUST contain a function named azureml_main\n# which is the entry point for this module.\n\n# imports up here can be used to \nimport pandas as pd\n\n# The entry point function can contain up to two input arguments:\n#   Param<dataframe1>: a pandas.DataFrame\n#   Param<dataframe2>: a pandas.DataFrame\ndef azureml_main(dataframe1 = None, dataframe2 = None):\n\n    result = dataframe1\n\n    # Add a rank by sorting the scores.\n    result['Rank'] = result.sort_values(['Score'], ascending=[False]) \\\n             .groupby(['DocumentId']) \\\n             .cumcount() + 1\n\n    # Grab the top five features for each topic\n    return result.loc[result['Rank'] == 1]",
+            "Python Version": "Anaconda 4.0/Python 2.7.11"
+          }
+        },
+        "node5": {
+          "assetId": "asset1",
+          "parameters": {
+            "R Script": "# The script MUST contain a function named azureml_main\n# which is the entry point for this module.\n\n# imports up here can be used to \nimport pandas as pd\n\n# The entry point function can contain up to two input arguments:\n#   Param<dataframe1>: a pandas.DataFrame\n#   Param<dataframe2>: a pandas.DataFrame\ndef azureml_main(dataframe1 = None, dataframe2 = None):\n\n    o = dataframe1.groupby(['Topic'])['DocumentId'].count().reset_index()\n    o.columns = ['Topic', 'DocumentCount']\n    return o",
+            "Python Version": "Anaconda 4.0/Python 2.7.11"
+          }
+        },
+        "node6": {
+          "assetId": "asset1",
+          "parameters": {
+            "R Script": "# The script MUST contain a function named azureml_main\n# which is the entry point for this module.\n\n# imports up here can be used to \nimport pandas as pd\nimport re\n\n# The entry point function can contain up to two input arguments:\n#   Param<dataframe1>: a pandas.DataFrame\n#   Param<dataframe2>: a pandas.DataFrame\ndef azureml_main(dataframe1 = None, dataframe2 = None):\n\n    dataframe1['Topic'] = dataframe1['Topic'].str.replace(r'\\D+', '').astype('int')\n    \n    return dataframe1",
+            "Python Version": "Anaconda 4.0/Python 2.7.11"
+          }
+        },
+        "node7": {
+          "assetId": "asset1",
+          "parameters": {
+            "R Script": "# The script MUST contain a function named azureml_main\n# which is the entry point for this module.\n\n# imports up here can be used to \nimport pandas as pd\nimport re\n\n# The entry point function can contain up to two input arguments:\n#   Param<dataframe1>: a pandas.DataFrame\n#   Param<dataframe2>: a pandas.DataFrame\ndef azureml_main(dataframe1 = None, dataframe2 = None):\n\n    dataframe1['Topic'] = dataframe1['Topic'].str.replace(r'\\D+', '').astype('int')\n    \n    return dataframe1",
+            "Python Version": "Anaconda 4.0/Python 2.7.11"
+          }
+        },
+        "node8": {
+          "assetId": "asset2",
+          "parameters": {
+            "Comma-separated case-sensitive names of join key columns for L": "%7B%22isFilter%22%3Atrue%2C%22rules%22%3A%5B%7B%22ruleType%22%3A%22ColumnNames%22%2C%22columns%22%3A%5B%22Topic%22%5D%2C%22exclude%22%3Afalse%7D%5D%2C%22ui%22%3A%7B%22withRules%22%3Atrue%7D%7D",
+            "Comma-separated case-sensitive names of join key columns for R": "%7B%22isFilter%22%3Atrue%2C%22rules%22%3A%5B%7B%22ruleType%22%3A%22ColumnNames%22%2C%22columns%22%3A%5B%22Topic%22%5D%2C%22exclude%22%3Afalse%7D%5D%7D",
+            "Match case": "True",
+            "Join type": "Inner Join",
+            "Keep right key columns in joined table": "False"
+          }
+        },
+        "node9": {
+          "assetId": "asset2",
+          "parameters": {
+            "Comma-separated case-sensitive names of join key columns for L": "%7B%22isFilter%22%3Atrue%2C%22rules%22%3A%5B%7B%22ruleType%22%3A%22ColumnNames%22%2C%22columns%22%3A%5B%22Topic%22%5D%2C%22exclude%22%3Afalse%7D%5D%2C%22ui%22%3A%7B%22withRules%22%3Atrue%7D%7D",
+            "Comma-separated case-sensitive names of join key columns for R": "%7B%22isFilter%22%3Atrue%2C%22rules%22%3A%5B%7B%22ruleType%22%3A%22ColumnNames%22%2C%22columns%22%3A%5B%22Topic%22%5D%2C%22exclude%22%3Afalse%7D%5D%2C%22ui%22%3A%7B%22withRules%22%3Atrue%7D%7D",
+            "Match case": "True",
+            "Join type": "Inner Join",
+            "Keep right key columns in joined table": "False"
+          }
+        },
+        "node10": {
+          "assetId": "asset3",
+          "parameters": {
+            "Language": "English",
+            "Remove by part of speech": "False",
+            "Text column to clean": "%7B%22isFilter%22%3Atrue%2C%22rules%22%3A%5B%7B%22ruleType%22%3A%22ColumnNames%22%2C%22columns%22%3A%5B%22cleanedText%22%5D%2C%22exclude%22%3Afalse%7D%5D%7D",
+            "Remove stop words": "True",
+            "Lemmatization": "True",
+            "Detect sentences": "True",
+            "Normalize case to lowercase": "True",
+            "Remove numbers": "True",
+            "Remove special characters": "True",
+            "Remove duplicate characters": "True",
+            "Remove email addresses": "False",
+            "Remove URLs": "True",
+            "Expand verb contractions": "True",
+            "Normalize backslashes to slashes": "True",
+            "Split tokens on special characters": "True"
+          }
+        },
+        "node11": {
+          "assetId": "asset4",
+          "parameters": {
+            "Please Specify Data Source": "SqlAzure",
+            "Database Server Name": "pbist.database.windows.net",
+            "Database Name": "NewsTemplateTest",
+            "Server User Account Name": "pbiadmin",
+            "Server User Account Password": "PasswordPlaceholder",
+            "Trust Server Certificate": "False",
+            "Database Query": "select id as DocumentId, cleanedText FROM bpst_news.documents"
+          }
+        },
+        "node12": {
+          "assetId": "asset5",
+          "parameters": {
+            "Target columns": "%7B%22isFilter%22%3Atrue%2C%22rules%22%3A%5B%7B%22ruleType%22%3A%22ColumnNames%22%2C%22columns%22%3A%5B%22Preprocessed%20cleanedText%22%5D%2C%22exclude%22%3Afalse%7D%5D%7D",
+            "Number of topics to model": "391",
+            "N-grams": "1",
+            "Normalize": "True",
+            "Show all options": "True",
+            "Rho parameter": "0.0006",
+            "Alpha parameter": ".0006",
+            "Estimated number of documents": "1348",
+            "Size of the batch": "256",
+            "Initial value of iteration count": "0",
+            "Power applied to the iteration during updates": "0.5",
+            "passes": "10",
+            "Build dictionary of ngrams prior to LDA": "False",
+            "Hash bits": "18"
+          }
+        },
+        "node13": {
+          "assetId": "asset6",
+          "parameters": {
+            "Please Specify Data Destination": "SqlAzure",
+            "Database Server Name": "pbist.database.windows.net",
+            "Database Name": "NewsTemplateTest",
+            "Server User Account Name": "pbiadmin",
+            "Server User Account Password": "PasswordPlaceholder",
+            "Trust Server Certificate": "False",
+            "Comma separated list of columns to be saved": "DocumentId,Topic,Score,DocumentCount,Feature",
+            "Data Table Name": "bpst_news.stg_documenttopics",
+            "Comma separated list of datatable columns": "documentId,topicId,documentDistance,topicScore,topicKeyPhrase",
+            "SQL Azure Number Of Rows To Write": "50",
+            "Treat Errors as Warnings": "False"
+          }
+        }
+      },
+      "edges": [
+        {
+          "sourceNodeId": "node1",
+          "sourcePortId": "Result Dataset",
+          "targetNodeId": "node2",
+          "targetPortId": "Dataset1"
+        },
+        {
+          "sourceNodeId": "node2",
+          "sourcePortId": "Result Dataset",
+          "targetNodeId": "node7",
+          "targetPortId": "Dataset1"
+        },
+        {
+          "sourceNodeId": "node3",
+          "sourcePortId": "Result Dataset",
+          "targetNodeId": "node4",
+          "targetPortId": "Dataset1"
+        },
+        {
+          "sourceNodeId": "node4",
+          "sourcePortId": "Result Dataset",
+          "targetNodeId": "node6",
+          "targetPortId": "Dataset1"
+        },
+        {
+          "sourceNodeId": "node5",
+          "sourcePortId": "Result Dataset",
+          "targetNodeId": "node8",
+          "targetPortId": "Dataset1"
+        },
+        {
+          "sourceNodeId": "node6",
+          "sourcePortId": "Result Dataset",
+          "targetNodeId": "node5",
+          "targetPortId": "Dataset1"
+        },
+        {
+          "sourceNodeId": "node6",
+          "sourcePortId": "Result Dataset",
+          "targetNodeId": "node9",
+          "targetPortId": "Dataset1"
+        },
+        {
+          "sourceNodeId": "node7",
+          "sourcePortId": "Result Dataset",
+          "targetNodeId": "node8",
+          "targetPortId": "Dataset2"
+        },
+        {
+          "sourceNodeId": "node8",
+          "sourcePortId": "Results dataset",
+          "targetNodeId": "node9",
+          "targetPortId": "Dataset2"
+        },
+        {
+          "sourceNodeId": "node9",
+          "sourcePortId": "Results dataset",
+          "targetNodeId": "node13",
+          "targetPortId": "Dataset"
+        },
+        {
+          "sourceNodeId": "node10",
+          "sourcePortId": "Results dataset",
+          "targetNodeId": "node12",
+          "targetPortId": "Dataset"
+        },
+        {
+          "sourceNodeId": "node11",
+          "sourcePortId": "Results dataset",
+          "targetNodeId": "node10",
+          "targetPortId": "Dataset"
+        },
+        {
+          "sourceNodeId": "node12",
+          "sourcePortId": "Transformed dataset",
+          "targetNodeId": "node3",
+          "targetPortId": "Dataset1"
+        },
+        {
+          "sourceNodeId": "node12",
+          "sourcePortId": "Feature topic matrix",
+          "targetNodeId": "node1",
+          "targetPortId": "Dataset1"
+        }
+      ],
+      "graphParameters": {
+        "Database server name": {
+          "description": "Database server name",
+          "type": "String",
+          "links": [
+            {
+              "nodeId": "node11",
+              "parameterKey": "Database Server Name"
+            },
+            {
+              "nodeId": "node13",
+              "parameterKey": "Database Server Name"
+            }
+          ]
+        },
+        "Database name": {
+          "description": "Database name",
+          "type": "String",
+          "links": [
+            {
+              "nodeId": "node11",
+              "parameterKey": "Database Name"
+            },
+            {
+              "nodeId": "node13",
+              "parameterKey": "Database Name"
+            }
+          ]
+        },
+        "User name": {
+          "description": "User name",
+          "type": "String",
+          "links": [
+            {
+              "nodeId": "node11",
+              "parameterKey": "Server User Account Name"
+            },
+            {
+              "nodeId": "node13",
+              "parameterKey": "Server User Account Name"
+            }
+          ]
+        }
+      }
+    },
+    "title": "TopicsDeployed",
+    "readOnly": false,
+    "exposeSampleData": false,
+    "realtimeConfiguration": {
+      "maxConcurrentCalls": 20
+    },
+    "diagnostics": {
+      "level": "None"
+    },
+    "storageAccount": {
+      "name": "hcodedtestmo123"
+    },
+    "input": {
+      "title": "",
+      "description": "",
+      "type": "object",
+      "properties": {}
+    },
+    "output": {
+      "title": "",
+      "description": "",
+      "type": "object",
+      "properties": {}
+    },
+    "exampleRequest": {
+      "globalParameters": {
+        "Database server name": "pbist.database.windows.net",
+        "Database name": "NewsTemplateTest",
+        "User name": "pbiadmin"
+      }
+    },
+    "assets": {
+      "asset1": {
+        "name": "Execute Python Script",
+        "type": "Module",
+        "locationInfo": {
+          "uri": "aml://module/506153734175476c4f62416c57734963.cdb56f957f4c404dbde75bb972e6f232.v1-default-1735",
+          "credentials": ""
+        }
+      },
+      "asset2": {
+        "name": "Join Data",
+        "type": "Module",
+        "locationInfo": {
+          "uri": "aml://module/506153734175476c4f62416c57734963.124865f7e9014656adacf4cb08248099.v1-default-1712",
+          "credentials": ""
+        }
+      },
+      "asset3": {
+        "name": "Preprocess Text",
+        "type": "Module",
+        "locationInfo": {
+          "uri": "aml://module/506153734175476c4f62416c57734963.bf9e794a9e2b4662902a0e73b255c135.v1-default-1740",
+          "credentials": ""
+        }
+      },
+      "asset4": {
+        "name": "Import Data",
+        "type": "Module",
+        "locationInfo": {
+          "uri": "aml://module/506153734175476c4f62416c57734963.4e1b0fe6aded4b3fa36f39b8862b9004.v1-default-1742",
+          "credentials": ""
+        }
+      },
+      "asset5": {
+        "name": "Latent Dirichlet Allocation",
+        "type": "Module",
+        "locationInfo": {
+          "uri": "aml://module/506153734175476c4f62416c57734963.e35a5905bd5741f4957682bfcb92f837.v1-default-1742",
+          "credentials": ""
+        }
+      },
+      "asset6": {
+        "name": "Export Data",
+        "type": "Module",
+        "locationInfo": {
+          "uri": "aml://module/506153734175476c4f62416c57734963.7a391181b6a74ad4b82de419c0d6522c.v1-default-1742",
+          "credentials": ""
+        }
+      }
+    },
+    "parameters": {
+      "database server name": "databaseservertoreplace",
+      "database name": "databasenametoreplace",
+      "user name": "databaseusernametoreplace"
+    }
+  },
+  "name": "TopicsDeployed.2017.1.5.21.40.19.12",
+  "location": "South Central US",
+  "tags": {}
+}

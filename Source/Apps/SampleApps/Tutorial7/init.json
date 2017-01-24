@@ -1,0 +1,35 @@
+{
+  "Install": {
+    "Pages": [
+      {
+        "name": "dummypage.html",
+        "displayname": "Dummy Page",
+        "showPrivacy": false,
+        "subtitle": "This is my new template",
+        "testSave": {
+          "testprop": "testprop",
+          "testprop2": "testprop2"
+        },
+
+        "test1": "$save(this.testSave)",
+        "test2": "$ds(test1)['testprop']",
+        "test3": "$dsall(test1)[0]",
+        "templateName": "$save('Tutorial')"
+      }
+    ],
+
+    "Actions": [
+      {
+        "name": "Microsoft-DeployAzureArmTemplate",
+        "displayname": "Deploy Arm File",
+        "AzureArmFile": "Service/Arm/armtemplate.json",
+        "AzureArmParameters": {
+          "SqlServerName": "$(this.MS.UtilityService.GetUniqueId(18))",
+          "SqlDatabaseName": "database",
+          "Username": "testuser",
+          "Password": "P@ssw0rd123"
+        }
+      }
+    ]
+  }
+}

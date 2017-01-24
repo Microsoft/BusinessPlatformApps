@@ -1,0 +1,147 @@
+{
+  "properties": {
+    "packageType": "Graph",
+    "package": {
+      "nodes": {
+        "node1": {
+          "assetId": "asset1",
+          "parameters": {
+            "Please Specify Data Destination": "SqlAzure",
+            "Database Server Name": "pbist.database.windows.net",
+            "Database Name": "NewsTemplateTest",
+            "Server User Account Name": "pbiadmin",
+            "Server User Account Password": "Billing.26",
+            "Trust Server Certificate": "False",
+            "Comma separated list of columns to be saved": "topicId,imageUrl1,imageUrl2,imageUrl3,imageUrl4",
+            "Data Table Name": "bpst_news.stg_documenttopicimages",
+            "Comma separated list of datatable columns": "topicId,imageUrl1,imageUrl2,imageUrl3,imageUrl4",
+            "SQL Azure Number Of Rows To Write": "50",
+            "Treat Errors as Warnings": "False"
+          }
+        },
+        "node2": {
+          "assetId": "asset2",
+          "parameters": {
+            "Please Specify Data Source": "SqlAzure",
+            "Database Server Name": "pbist.database.windows.net",
+            "Database Name": "NewsTemplateTest",
+            "Server User Account Name": "pbiadmin",
+            "Server User Account Password": "PasswordPlaceholder",
+            "Trust Server Certificate": "False",
+            "Database Query": "SELECT topicId, [1] AS imageUrl1, [2] AS imageUrl2, [3] AS imageUrl3, [4] AS imageUrl4\nFROM \n(\n\tSELECT topicId, imageUrl, [Rank] FROM \n\t(\n\t\tselect id as documentId, topicId, documentDistance, CONVERT(VARCHAR(MAX), imageUrl) AS imageUrl,  ROW_NUMBER() OVER (PARTITION BY topicId ORDER BY documentDistance ASC) [Rank] from bpst_news.documents \n\t\tINNER JOIN bpst_news.stg_documenttopics ON bpst_news.documents.id=bpst_news.stg_documenttopics.documentId\n\t\tWHERE imageUrl IS NOT NULL\n\t) t1 \n\tWHERE [Rank] <= 4\n) t2\nPIVOT\n(\n\tMAX(imageUrl) FOR [Rank] IN ([1], [2], [3], [4])\n) AS PivotTable"
+          }
+        }
+      },
+      "edges": [
+        {
+          "sourceNodeId": "node2",
+          "sourcePortId": "Results dataset",
+          "targetNodeId": "node1",
+          "targetPortId": "Dataset"
+        }
+      ],
+      "graphParameters": {
+        "Database server name": {
+          "description": "Database server name",
+          "type": "String",
+          "links": [
+            {
+              "nodeId": "node1",
+              "parameterKey": "Database Server Name"
+            },
+            {
+              "nodeId": "node2",
+              "parameterKey": "Database Server Name"
+            }
+          ]
+        },
+        "Database name": {
+          "description": "Database name",
+          "type": "String",
+          "links": [
+            {
+              "nodeId": "node1",
+              "parameterKey": "Database Name"
+            },
+            {
+              "nodeId": "node2",
+              "parameterKey": "Database Name"
+            }
+          ]
+        },
+        "User name": {
+          "description": "User name",
+          "type": "String",
+          "links": [
+            {
+              "nodeId": "node1",
+              "parameterKey": "Server User Account Name"
+            },
+            {
+              "nodeId": "node2",
+              "parameterKey": "Server User Account Name"
+            }
+          ]
+        }
+      }
+    },
+    "title": "TopicImages",
+    "description": "Solution Template",
+    "readOnly": false,
+    "exposeSampleData": false,
+    "realtimeConfiguration": {
+      "maxConcurrentCalls": 20
+    },
+    "diagnostics": {
+      "level": "None"
+    },
+    "storageAccount": {
+      "name": "hcodedtestmo123"
+    },
+    "input": {
+      "title": "",
+      "description": "",
+      "type": "object",
+      "properties": {}
+    },
+    "output": {
+      "title": "",
+      "description": "",
+      "type": "object",
+      "properties": {}
+    },
+    "exampleRequest": {
+      "globalParameters": {
+        "Database server name": "pbist.database.windows.net",
+        "Database name": "NewsTemplateTest",
+        "User name": "pbiadmin"
+      }
+    },
+    "assets": {
+      "asset1": {
+        "name": "Export Data",
+        "type": "Module",
+        "locationInfo": {
+          "uri": "aml://module/506153734175476c4f62416c57734963.7a391181b6a74ad4b82de419c0d6522c.v1-default-1742",
+          "credentials": ""
+        }
+      },
+      "asset2": {
+        "name": "Import Data",
+        "type": "Module",
+        "locationInfo": {
+          "uri": "aml://module/506153734175476c4f62416c57734963.4e1b0fe6aded4b3fa36f39b8862b9004.v1-default-1742",
+          "credentials": ""
+        }
+      }
+    },
+    "parameters": {
+      "database server name": "",
+      "database name": "mydummydb",
+      "user name": "mydummyuser"
+    }
+  },
+  "name": "TopicImages",
+  "location": "South Central US",
+  "tags": {}
+}

@@ -6,8 +6,9 @@ import {activationStrategy} from 'aurelia-router';
 
 export class ViewModelBase {
     isActivated: boolean = false;
+    isAuthenticated: boolean = false;
     isValidated: boolean = true;
-
+    
     showValidation: boolean = false;
     showValidationDetails: boolean = false;
     validationText: string;
@@ -38,7 +39,7 @@ export class ViewModelBase {
         // Load the parameters from the additionalParamters section
         if (!this.parametersLoaded) {
             var parameters = this.MS.NavigationService.getCurrentSelectedPage().Parameters;
-            this.loadVariables(this, parameters);
+            JsonCustomParser.loadVariables(this, parameters, this.MS, this);
         }
 
         this.parametersLoaded = true;
@@ -53,7 +54,8 @@ export class ViewModelBase {
             this.MS.NavigationService.isCurrentlyNavigating = true;
 
             let isNavigationSuccessful: boolean = await this.NavigatingNext();
-            let isExtendedNavigationSuccessful: boolean = await this.executeActions(this.onNext);
+            let isExtendedNavigationSuccessful: boolean =
+                await JsonCustomParser.executeActions(this.onNext, this, this.MS, this);;
 
             this.navigationMessage = '';
 
@@ -173,7 +175,7 @@ export class ViewModelBase {
         this.isValidated = false;
         this.showValidation = false;
         this.MS.ErrorService.Clear();
-        this.isValidated = await this.executeActions(this.onValidate);
+        this.isValidated = await JsonCustomParser.executeActions(this.onValidate, this, this.MS, this);
         this.showValidation = true;
         return this.isValidated;
     }
@@ -187,45 +189,5 @@ export class ViewModelBase {
 
     // Called when the view model is attached completely
     async OnLoaded() {
-    }
-
-    private async executeActions(actions: any[]): Promise<boolean> {
-        for (let index in actions) {
-            let actionToExecute: any = actions[index];
-            let name: string = actionToExecute.name;
-            if (name) {
-                var body = {};
-                this.loadVariables(body, actionToExecute);
-
-                var response: ActionResponse = await this.MS.HttpService.executeAsync(name, body);
-                if (!response.IsSuccess) {
-                    return false;
-                }
-
-                this.MS.DataStore.addObjectToDataStore(response, DataStoreType.Private);
-            }
-        }
-
-        return true;
-    }
-
-    private loadVariables(objToChange, obj: any) {
-        for (let propertyName in obj) {
-            let val: string = obj[propertyName];
-            if (JsonCustomParser.isVariable(val)) {
-                const codeToRun = JsonCustomParser.extractVariable(val);
-                val = eval(codeToRun);
-
-                if (JsonCustomParser.isPermenantEntryIntoDataStore(obj[propertyName])) {
-                    this.MS.DataStore.addToDataStore(propertyName, val, DataStoreType.Private);
-                }
-            }
-            
-            objToChange[propertyName] = val;
-
-            if (val && typeof (val) === 'object' && propertyName !== 'onNext' && propertyName!== 'onValidate') {
-                this.loadVariables(objToChange[propertyName], val);
-            }
-        }
     }
 }

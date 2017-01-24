@@ -62,5 +62,15 @@
             <span>${MS.Translate.AZURE_LOGIN_PRICING_TEXT}</span>
             <a href="${pricingUrl}" target="_blank">${MS.Translate.COMMON_HERE}</a>
         </p>
+        <div if.bind="bingUrl">
+            <label class="st-float st-text">
+                <input type="checkbox" tabindex="-1" change.delegate="verifyBing()" checked.bind="isBingChecked" disabled.bind="MS.HttpService.isServiceBusy">
+                <span class="st-text">${bingtermsofuse}</span>
+            </label>
+            <p class="st-float st-text">
+                <span>${MS.Translate.AZURE_LOGIN_BING_TEXT}</span>
+                <a href="${bingUrl}" target="_blank">${MS.Translate.COMMON_HERE}</a>
+            </p>
+        </div>
     </div>
 </template>

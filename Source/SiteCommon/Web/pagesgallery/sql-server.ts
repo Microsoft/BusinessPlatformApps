@@ -26,6 +26,7 @@ export class SqlServer extends ViewModelBase {
     showDatabases: boolean = false;
     showNewSqlOption: boolean = false;
     showSkuS1: boolean = true;
+    showSqlRecoveryModeHint: boolean = false;
     sqlInstance: string = 'ExistingSql';
     sqlServer: string = '';
     sqlSku: string = 'S1';
@@ -106,6 +107,7 @@ export class SqlServer extends ViewModelBase {
         this.MS.DataStore.addToDataStore('Server', this.getSqlServer(), DataStoreType.Public);
         this.MS.DataStore.addToDataStore('Database', this.database, DataStoreType.Public);
         this.MS.DataStore.addToDataStore('Username', this.username, DataStoreType.Public);
+        this.MS.DataStore.addToDataStore('Password', this.password, DataStoreType.Private);
 
         if (this.checkSqlVersion) {
             let responseVersion = await this.MS.HttpService.executeAsync('Microsoft-CheckSQLVersion', body);

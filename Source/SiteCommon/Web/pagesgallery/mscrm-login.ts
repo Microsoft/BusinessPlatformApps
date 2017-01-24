@@ -41,19 +41,44 @@ export class MsCrmLogin extends AzureLogin {
                 if (this.authToken.IsSuccess) {
                     var response = await this.MS.HttpService.executeAsync('Microsoft-CrmGetOrgs', {});
                     if (response.IsSuccess) {
-                        this.msCrmOrganizations = JSON.parse(response.Body.value);
-                        if (this.msCrmOrganizations && this.msCrmOrganizations.length > 0) {
-                            this.msCrmOrganizationId = this.msCrmOrganizations[0].OrganizationId;
+                        let msCrmOrganizationsAll: MsCrmOrganization[] = JSON.parse(response.Body.value);
 
-                            let subscriptions: ActionResponse = await this.MS.HttpService.executeAsync('Microsoft-GetAzureSubscriptions', {});
-                            if (subscriptions.IsSuccess) {
-                                this.subscriptionsList = subscriptions.Body.value;
-                                if (!this.subscriptionsList ||
-                                    (this.subscriptionsList && this.subscriptionsList.length === 0)) {
-                                    this.MS.ErrorService.message = this.MS.Translate.AZURE_LOGIN_SUBSCRIPTION_ERROR;
-                                    this.showAzureTrial = true;
+                        if (msCrmOrganizationsAll && msCrmOrganizationsAll.length > 0) {
+                            let countNoAdminister: number = 0;
+                            let countNoOther: number = 0;
+                            for (let i = 0; i < msCrmOrganizationsAll.length; i++) {
+                                switch (msCrmOrganizationsAll[i].ErrorCode) {
+                                    case '1':
+                                        countNoAdminister++;
+                                        break;
+                                    case '2':
+                                        countNoOther++;
+                                        break;
+                                    case null:
+                                        this.msCrmOrganizations.push(msCrmOrganizationsAll[i]);
+                                        break;
+                                }
+                            }
+
+                            if (this.msCrmOrganizations.length > 0) {
+                                this.msCrmOrganizationId = this.msCrmOrganizations[0].OrganizationId;
+
+                                let subscriptions: ActionResponse = await this.MS.HttpService.executeAsync('Microsoft-GetAzureSubscriptions', {});
+                                if (subscriptions.IsSuccess) {
+                                    this.subscriptionsList = subscriptions.Body.value;
+                                    if (!this.subscriptionsList ||
+                                        (this.subscriptionsList && this.subscriptionsList.length === 0)) {
+                                        this.MS.ErrorService.message = this.MS.Translate.AZURE_LOGIN_SUBSCRIPTION_ERROR;
+                                        this.showAzureTrial = true;
+                                    } else {
+                                        this.showPricingConfirmation = true;
+                                    }
+                                }
+                            } else {
+                                if (countNoAdminister === 0) {
+                                    this.MS.ErrorService.message = this.MS.Translate.MSCRM_LOGIN_NO_OTHER;
                                 } else {
-                                    this.showPricingConfirmation = true;
+                                    this.MS.ErrorService.message = this.MS.Translate.MSCRM_LOGIN_NO_AUTHORIZATION;
                                 }
                             }
                         } else {
@@ -112,6 +137,9 @@ export class MsCrmLogin extends AzureLogin {
 
 class MsCrmOrganization {
     ConnectorUrl: string;
+    ErrorCategory: string;
+    ErrorCode: string;
+    ErrorMessage: string;
     OrganizationId: string;
     OrganizationName: string;
     OrganizationUrl: string;
