@@ -1,0 +1,336 @@
+﻿{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "logicappname": {
+      "defaultValue": "LogicApp",
+      "type": "string"
+    },
+    "resourcegroup": {
+      "defaultValue": "stresourcegroup",
+      "type": "string"
+    },
+    "subscription": {
+      "defaultValue": "idrequired",
+      "type": "string"
+    },
+    "imagecachelogicapp": {
+      "defaultValue": "ImageCacheLogicApp",
+      "type": "string"
+    },
+    "sitename": {
+      "defaultValue": "sitename",
+      "type": "string"
+    },
+    "searchquery": {
+      "defaultValue": "searchQuery",
+      "type": "string"
+    }
+  },
+    "variables": {},
+    "resources": [
+      {
+        "type": "Microsoft.Logic/workflows",
+        "name": "[parameters('logicappname')]",
+        "apiVersion": "2016-06-01",
+        "location": "[resourceGroup().location]",
+        "properties": {
+          "state": "Enabled",
+          "definition": {
+            "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+            "contentVersion": "1.0.0.0",
+            "parameters": {
+              "$connections": {
+                "defaultValue": {},
+                "type": "Object"
+              }
+            },
+            "triggers": {
+              "On_new_news_article": {
+                "inputs": {
+                  "host": {
+                    "api": {
+                      "runtimeUrl": "https://logic-apis-df.azure-apim.net/apim/bingnews"
+                    },
+                    "connection": {
+                      "name": "@parameters('$connections')['bingnews']['connectionId']"
+                    }
+                  },
+                  "method": "get",
+                  "path": "/trigger/on/search",
+                  "queries": {
+                    "count": "20",
+                    "mkt": "en-US",
+                    "offset": "0",
+                    "q": "[parameters('searchquery')]",
+                    "safeSearch": "Moderate"
+                  }
+                },
+                "recurrence": {
+                  "frequency": "Minute",
+                  "interval": 5
+                },
+                "splitOn": "@triggerBody()?.value",
+                "type": "ApiConnection"
+              }
+            },
+            "actions": {
+              "ArticleCleanerWebHook": {
+                "inputs": {
+                  "body": {
+                    "text": "@body('ExtractArticle')['bodyInHtml']"
+                  },
+                  "function": {
+                    "id": "[concat('/subscriptions/', parameters('subscription'), '/resourceGroups/',parameters('resourcegroup'),'/providers/Microsoft.Web/sites/', parameters('sitename'), '/Functions/ASCIICleanerWebhook')]"
+                  }
+                },
+                "runAfter": {
+                  "ExtractArticle": [
+                    "Succeeded"
+                  ]
+                },
+                "type": "Function"
+              },
+              "Detect_Sentiment": {
+                "inputs": {
+                  "body": {
+                    "text": "@{body('HTMLStripperWebHook')['NoTags']}"
+                  },
+                  "host": {
+                    "api": {
+                      "runtimeUrl": "https://logic-apis-df.azure-apim.net/apim/cognitiveservicestextanalytics"
+                    },
+                    "connection": {
+                      "name": "@parameters('$connections')['cognitiveservicestextanalytics']['connectionId']"
+                    }
+                  },
+                  "method": "post",
+                  "path": "/sentiment"
+                },
+                "runAfter": {
+                  "HTMLStripperWebHook": [
+                    "Succeeded"
+                  ]
+                },
+                "type": "ApiConnection"
+              },
+              "ExtractArticle": {
+                "inputs": {
+                  "body": {
+                    "html": "@{body('HTTP')}",
+                    "url": "@{triggerBody()?['url']}"
+                  },
+                  "headers": {
+                    "Ocp-Apim-Subscription-Key": "09f3c662277a4dc2bbfff8a8ae798ed3"
+                  },
+                  "method": "post",
+                  "uri": "http://vi.azure-api.net/Article/v1"
+                },
+                "metadata": {
+                  "apiDefinitionUrl": "https://jehollanswagger.blob.core.windows.net/swagger/articleExtract.json",
+                  "swaggerSource": "custom"
+                },
+                "runAfter": {
+                  "HTTP": [
+                    "Succeeded"
+                  ]
+                },
+                "type": "Http"
+              },
+              "HTMLStripperWebHook": {
+                "inputs": {
+                  "body": {
+                    "html": "@{body('ArticleCleanerWebHook')['text']}"
+                  },
+                  "function": {
+                    "id": "[concat('/subscriptions/', parameters('subscription'), '/resourceGroups/',parameters('resourcegroup'),'/providers/Microsoft.Web/sites/', parameters('sitename'), '/Functions/HTMLCleanerWebhook')]"
+                  }
+                },
+                "runAfter": {
+                  "ArticleCleanerWebHook": [
+                    "Succeeded"
+                  ]
+                },
+                "type": "Function"
+              },
+              "HTTP": {
+                "inputs": {
+                  "method": "GET",
+                  "uri": "@{triggerBody()?['url']}"
+                },
+                "runAfter": {},
+                "type": "Http"
+              },
+              "ImageCacherApp": {
+                    "inputs": {
+                        "body": {
+                            "Request": {
+                                "DocumentID": "@{triggerBody()?['id']}",
+                                "imgUrl": "@triggerBody()?['image']?['thumbnail']?['contentUrl']"
+                            }
+                        },
+                        "host": {
+                            "triggerName": "manual",
+                            "workflow": {
+                                "id": "[concat('/subscriptions/', parameters('subscription'), '/resourceGroups/',parameters('resourcegroup'),'/providers/Microsoft.Logic/workflows/', parameters('imagecachelogicapp'))]"
+                            }
+                        }
+                    },
+                    "runAfter": {
+                        "UrlDomainWebHook": [
+                            "Succeeded"
+                        ]
+                    },
+                    "type": "Workflow"
+                },
+              "InsertDocument": {
+              "runAfter": {
+                "Detect_Sentiment": [
+                  "Succeeded"
+                ],
+                "TimeUtilsWebHook": [
+                  "Succeeded"
+                ],
+                "TimeUtilsWebHook_2": [
+                  "Succeeded"
+                ],
+                "ImageCacherApp": [
+                  "Succeeded"
+                ],
+                "Key_Phrases": [
+                  "Succeeded"
+                ]
+              },
+              "type": "ApiConnection",
+              "inputs": {
+                "body": {
+                  "category": "@{triggerBody()?['category']}",
+                  "cleanedText": "@{body('HTMLStripperWebHook')['NoTags']}",
+                  "cleanedTextLength": "@{body('HTMLStripperWebHook')['NoTagsLength']}",
+                  "docid": "@{triggerBody()?['id']}",
+                  "imageHeight": "@triggerBody()?['image']?['thumbnail']?['height']",
+                  "imageUrl": "@{body('ImageCacherApp')}",
+                  "imageWidth": "@triggerBody()?['image']?['thumbnail']?['width']",
+                  "ingestDayPrecision": "@Json(body('TimeUtilsWebHook'))?['DayPrecision']",
+                  "ingestHourPrecision": "@Json(body('TimeUtilsWebHook'))?['HourPrecision']",
+                  "ingestMinutePrecision": "@Json(body('TimeUtilsWebHook'))?['MinutePrecision']",
+                  "ingestMonthPrecision": "@Json(body('TimeUtilsWebHook'))?['MonthPrecision']",
+                  "ingestTimestamp": "@Json(body('TimeUtilsWebHook'))?['Timestamp']",
+                  "ingestWeekPrecision": "@Json(body('TimeUtilsWebHook'))?['WeekPrecision']",
+                  "keyPhraseJson": "@{body('Key_Phrases')?['keyPhrases']}",
+                  "publishedDayPrecision": "@Json(body('TimeUtilsWebHook_2'))?['DayPrecision']",
+                  "publishedHourPrecision": "@Json(body('TimeUtilsWebHook_2'))?['HourPrecision']",
+                  "publishedMinutePrecision": "@Json(body('TimeUtilsWebHook_2'))?['MinutePrecision']",
+                  "publishedMonthPrecision": "@Json(body('TimeUtilsWebHook_2'))?['MonthPrecision']",
+                  "publishedTimestamp": "@Json(body('TimeUtilsWebHook_2'))?['Timestamp']",
+                  "publishedWeekPrecision": "@Json(body('TimeUtilsWebHook_2'))?['WeekPrecision']",
+                  "sentimentScore": "@body('Detect_Sentiment')?['score']",
+                  "sourceDomain": "@{body('UrlDomainWebHook')?['host']}",
+                  "sourceUrl": "@{triggerBody()?['url']}",
+                  "text": "@{body('HTMLStripperWebHook')['Scrubbed']}",
+                  "textLength": "@{body('HTMLStripperWebHook')['ScrubbedLength']}",
+                  "title": "@{triggerBody()?['name']}"
+                },
+                "host": {
+                  "connection": {
+                    "name": "@parameters('$connections')['sql_1']['connectionId']"
+                  }
+                },
+                "method": "post",
+                "path": "/datasets/default/procedures/@{encodeURIComponent(encodeURIComponent('[dbo].[WriteDocument]'))}"
+              }
+            },
+              "Key_Phrases": {
+                "inputs": {
+                  "body": {
+                    "text": "@{body('HTMLStripperWebHook')['NoTags']}"
+                  },
+                  "host": {
+                    "api": {
+                      "runtimeUrl": "https://logic-apis-df.azure-apim.net/apim/cognitiveservicestextanalytics"
+                    },
+                    "connection": {
+                      "name": "@parameters('$connections')['cognitiveservicestextanalytics']['connectionId']"
+                    }
+                  },
+                  "method": "post",
+                  "path": "/keyPhrases"
+                },
+                "runAfter": {
+                  "HTMLStripperWebHook": [
+                    "Succeeded"
+                  ]
+                },
+                "type": "ApiConnection"
+              },
+              "TimeUtilsWebHook": {
+                "inputs": {
+                  "body": {
+                    "date": "@utcnow()"
+                  },
+                  "function": {
+                    "id": "[concat('/subscriptions/', parameters('subscription'), '/resourceGroups/',parameters('resourcegroup'),'/providers/Microsoft.Web/sites/', parameters('sitename'), '/Functions/TimeUtilsWebhook')]"
+                  }
+                },
+                "runAfter": {},
+                "type": "Function"
+              },
+              "TimeUtilsWebHook_2": {
+                "inputs": {
+                  "body": {
+                    "date": "@triggerBody()?['datePublished']"
+                  },
+                  "function": {
+                    "id": "[concat('/subscriptions/', parameters('subscription'), '/resourceGroups/',parameters('resourcegroup'),'/providers/Microsoft.Web/sites/', parameters('sitename'), '/Functions/TimeUtilsWebhook')]"
+                  }
+                },
+                "runAfter": {},
+                "type": "Function"
+              },
+              "UrlDomainWebHook": {
+                "inputs": {
+                  "body": {
+                    "url": "@{triggerBody()?['url']}"
+                  },
+                  "function": {
+                    "id": "[concat('/subscriptions/', parameters('subscription'), '/resourceGroups/',parameters('resourcegroup'),'/providers/Microsoft.Web/sites/', parameters('sitename'), '/Functions/UrlDomainWebhook')]"
+                  }
+                },
+                "runAfter": {
+                  "HTMLStripperWebHook": [
+                    "Succeeded"
+                  ]
+                },
+                "type": "Function"
+              }
+            },
+            "outputs": {}
+          },
+          "parameters": {
+            "$connections": {
+              "value": {
+                "bingnews": {
+                  "connectionId": "[concat('/subscriptions/', parameters('subscription'), '/resourceGroups/',parameters('resourcegroup'),'/providers/Microsoft.Web/connections/bingnews')]",
+                  "connectionName": "bingnews",
+                  "id": "[concat('/subscriptions/', parameters('subscription'), '/providers/Microsoft.Web/locations/brazilsouth/managedApis/bingnews')]"
+                },
+                "cognitiveservicestextanalytics": {
+                  "connectionId": "[concat('/subscriptions/', parameters('subscription'), '/resourceGroups/',parameters('resourcegroup'),'/providers/Microsoft.Web/connections/cognitiveservicestextanalytics')]",
+                  "connectionName": "cognitiveservicestextanalytics",
+                  "id": "[concat('/subscriptions/', parameters('subscription'), '/providers/Microsoft.Web/locations/', resourceGroup().location, '/managedApis/cognitiveservicestextanalytics')]"
+                },
+                "sql": {
+                  "connectionId": "[concat('/subscriptions/', parameters('subscription'), '/resourceGroups/',parameters('resourcegroup'),'/providers/Microsoft.Web/connections/sql')]",
+                  "connectionName": "sql",
+                  "id": "[concat('/subscriptions/', parameters('subscription'), '/providers/Microsoft.Web/locations/', resourceGroup().location, '/managedApis/sql')]"
+                }
+              }
+            }
+          }
+        },
+        "resources": [],
+        "dependsOn": []
+      }
+    ],
+    "outputs": {}
+  }

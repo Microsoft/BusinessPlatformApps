@@ -15,7 +15,7 @@ namespace Microsoft.Deployment.Actions.AzureCustom.Twitter
         public override async Task<ActionResponse> ExecuteActionAsync(ActionRequest request)
         {
             //Request headers
-            var subscriptionKey = request.DataStore.GetValue("subscriptionKey");
+            var subscriptionKey = request.DataStore.GetValue("CognitiveServiceKey");
             Dictionary<string, string> customHeader = new Dictionary<string, string>();
             customHeader.Add("Ocp-Apim-Subscription-Key", subscriptionKey);
 

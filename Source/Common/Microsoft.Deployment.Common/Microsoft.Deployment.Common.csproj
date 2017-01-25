@@ -31,8 +31,8 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Microsoft.ApplicationInsights, Version=2.2.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.ApplicationInsights.2.2.0\lib\net45\Microsoft.ApplicationInsights.dll</HintPath>
+    <Reference Include="Microsoft.ApplicationInsights, Version=2.3.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.ApplicationInsights.2.3.0-beta1\lib\net45\Microsoft.ApplicationInsights.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=9.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
@@ -56,6 +56,7 @@
     <Compile Include="..\..\Shared\SharedVersion.cs">
       <Link>Properties\SharedVersion.cs</Link>
     </Compile>
+    <Compile Include="ActionModel\DictionaryIgnoreCase.cs" />
     <Compile Include="Exceptions\ActionFailedException.cs" />
     <Compile Include="ActionModel\ActionRequest.cs" />
     <Compile Include="ActionModel\ActionResponse.cs" />

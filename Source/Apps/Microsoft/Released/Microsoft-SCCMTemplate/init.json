@@ -67,18 +67,20 @@
 
             // Target
             {
-                "name": "$SiteCommon$/pagesgallery/sql-server.html",
-                "displayname": "Target",
                 "checkSqlVersion": true,
-                "useImpersonation": true,
-                "title": "Connect to your SQL database",
-                "subtitle": "Set up a connection to your target database so we can transfer your data.",
+                "credentialTarget": "pbi_sccm",
+                "displayname": "Target",
+                "name": "$SiteCommon$/pagesgallery/sql-server.html",
                 "onNext": [
                     {
                         "name": "Microsoft-CompareSqlLCIDs",
                         "useImpersonation": true
                     }
-                ]
+                ],
+                "showSqlRecoveryModeHint": true,
+                "subtitle": "Set up a connection to your target database so we can transfer your data.",
+                "title": "Connect to your SQL database",
+                "useImpersonation": true
             },
 
             // Customize

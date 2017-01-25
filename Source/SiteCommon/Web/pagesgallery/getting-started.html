@@ -35,8 +35,13 @@
         </div>
     </div>
 
+    <!-- Power BI Login -->
+    <p class="st-nav-buttons" if.bind="viewmodel && viewmodel.DeploymentService.NavigationService.templateName !== ''">
+        <button class="primary" click.delegate="connect()" disabled.bind="viewmodel.MS.HttpService.isServiceBusy" if.bind="!MS.HttpService.isOnPremise && !viewmodel.isAuthenticated">Login</button>
+    </p>
+
     <!-- Registration -->
-    <div class="st-text" if.bind="registration">
+    <div class="st-text" if.bind="registration && viewmodel.isAuthenticated">
         <p class"st-text">${registration}</p>
 
         <p class="st-text">${MS.Translate.GETTING_STARTED_FIRST_NAME}</p>

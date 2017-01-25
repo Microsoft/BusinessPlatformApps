@@ -4,6 +4,7 @@ import { ActionStatus } from './actionresponse';
 import {DataStoreType} from "./datastore";
 
 import {ExperienceType} from '../base/ExperienceType';
+import {JsonCustomParser} from "../base/JsonCustomParser";
 
 export class DeploymentService {
     MS: MainService;
@@ -39,6 +40,8 @@ export class DeploymentService {
             if (lastActionStatus !== ActionStatus.BatchWithState) {
                 param = this.actions[i].AdditionalParameters;
             }
+
+            JsonCustomParser.loadVariables(param,param,this.MS, this);
 
             this.MS.LoggerService.TrackDeploymentStepStartEvent(i, this.actions[i].OperationName);
             let response = await this.MS.HttpService.executeAsync(this.actions[i].OperationName, param);

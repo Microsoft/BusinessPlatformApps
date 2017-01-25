@@ -21,6 +21,7 @@ namespace Microsoft.Deployment.Actions.AzureCustom.AzureML
             var azureToken = request.DataStore.GetJson("AzureToken")["access_token"].ToString();
             var subscription = request.DataStore.GetJson("SelectedSubscription")["SubscriptionId"].ToString();
             var workspaceName = request.DataStore.GetValue("WorkspaceName");
+            var experimentName = request.DataStore.GetValue("ExperimentName");
             var webserviceJson = request.DataStore.GetValue("AzureMLWebService");
 
             ManagementSDK azuremlClient = new ManagementSDK();
@@ -39,13 +40,21 @@ namespace Microsoft.Deployment.Actions.AzureCustom.AzureML
                 WorkspaceId = workspace.Id
             };
 
+            var experiments = azuremlClient.GetExperiments(workspaceSettings);
+            var experiment = experiments.LastOrDefault(p => p.Description.ToLowerInvariant() == experimentName.ToLowerInvariant());
+
+            if (experiment == null)
+            {
+                return new ActionResponse(ActionStatus.Failure, null, null, string.Empty, "Experiment not found");
+            }
+
             WebServiceCreationStatus webservice = JsonConvert.DeserializeObject<WebServiceCreationStatus>(webserviceJson);
             while (true)
             {
                 await Task.Delay(5000);
                 webservice = azuremlClient.GetWebServiceCreationStatus(workspaceSettings, webservice.ActivityId);
 
-                if ( "Success" == webservice.Status)
+                if ("Completed" == webservice.Status)
                 {
                     return new ActionResponse(ActionStatus.Success);
                 }

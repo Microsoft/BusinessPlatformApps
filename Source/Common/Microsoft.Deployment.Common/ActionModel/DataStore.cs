@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using Newtonsoft.Json.Linq;
 
@@ -16,9 +15,9 @@ namespace Microsoft.Deployment.Common.ActionModel
 
         public string CurrentRoute => CurrentRoutePage + "-" + DeploymentIndex;
 
-        public Dictionary<string,Dictionary<string,JToken>> PublicDataStore { get; set; } = new Dictionary<string, Dictionary<string, JToken>>();
+        public DictionaryIgnoreCase<DictionaryIgnoreCase<JToken>> PublicDataStore { get; set; } = new DictionaryIgnoreCase<DictionaryIgnoreCase<JToken>>();
 
-        public Dictionary<string, Dictionary<string, JToken>> PrivateDataStore { get; set; } = new Dictionary<string, Dictionary<string, JToken>>();
+        public DictionaryIgnoreCase<DictionaryIgnoreCase<JToken>> PrivateDataStore { get; set; } = new DictionaryIgnoreCase<DictionaryIgnoreCase<JToken>>();
 
         // Removed for the time being to force usage of getfirst and getall
         //public JToken this[string route, string key]
@@ -94,19 +93,18 @@ namespace Microsoft.Deployment.Common.ActionModel
             var listOfKeys = this.GetValueAndRoutesFromDataStore(dataStoreType, key).ToList();
             if (listOfKeys.Any())
             {
-                return listOfKeys.Any(p => p.Route.Equals(route));
+                return listOfKeys.Any(p => p.Route.ToLowerInvariant().Equals(route.ToLowerInvariant()));
             }
 
             return false;
         }
-
 
         public void AddToDataStore(string route, string key, JToken value, DataStoreType dataStoreType = DataStoreType.Any)
         {
             this.UpdateValue(dataStoreType, route, key, value);
         }
 
-        public void AddToDataStore(string key, JToken value, DataStoreType dataStoreType  = DataStoreType.Any)
+        public void AddToDataStore(string key, JToken value, DataStoreType dataStoreType = DataStoreType.Any)
         {
             this.UpdateValue(dataStoreType, this.CurrentRoute, key, value);
         }
@@ -142,7 +140,22 @@ namespace Microsoft.Deployment.Common.ActionModel
             return this.GetFirstValueFromDataStore(key, dataStoreType)?.ToString();
         }
 
-        public JToken GetJson( string key, DataStoreType dataStoreType = DataStoreType.Any)
+        public string GetLastValue(string key, DataStoreType dataStoreType = DataStoreType.Any)
+        {
+            return this.GetLastValueFromDataStore(key, dataStoreType)?.ToString();
+        }
+
+        public string GetValueAtIndex(string key, string index, DataStoreType dataStoreType = DataStoreType.Any)
+        {
+            int i = 0;
+            if (this.KeyExists(index))
+            {
+                i = int.Parse(this.GetValue(index));
+            }
+            return this.GetAllValues(key)[i];
+        }
+
+        public JToken GetJson(string key, DataStoreType dataStoreType = DataStoreType.Any)
         {
             return this.GetFirstValueFromDataStore(key, dataStoreType);
         }
@@ -154,7 +167,7 @@ namespace Microsoft.Deployment.Common.ActionModel
 
         public IList<string> GetAllValues(string key, DataStoreType dataStoreType = DataStoreType.Any)
         {
-            return this.GetAllValueFromDataStore(key,dataStoreType).Select(p=>p?.ToString()).ToList();
+            return this.GetAllValueFromDataStore(key, dataStoreType).Select(p => p?.ToString()).ToList();
         }
 
         public IList<JToken> GetAllJson(string key, DataStoreType dataStoreType = DataStoreType.Any)
@@ -164,10 +177,10 @@ namespace Microsoft.Deployment.Common.ActionModel
 
         public IList<DataStoreItem> GetAllDataStoreItems(string key, DataStoreType dataStoreType = DataStoreType.Any)
         {
-            return this.GetValueAndRoutesFromDataStore(dataStoreType,key);
+            return this.GetValueAndRoutesFromDataStore(dataStoreType, key);
         }
 
-        private JToken GetFirstValueFromDataStore( string key, DataStoreType dataStoreType = DataStoreType.Any)
+        private JToken GetFirstValueFromDataStore(string key, DataStoreType dataStoreType = DataStoreType.Any)
         {
             List<DataStoreItem> itemsList = null;
             JToken itemToReturn = null;
@@ -177,7 +190,7 @@ namespace Microsoft.Deployment.Common.ActionModel
                 var values = GetValueAndRoutesFromDataStore(this.PrivateDataStore, key, DataStoreType.Private);
                 if (values.Any())
                 {
-                    itemsList =  values;
+                    itemsList = values;
                 }
             }
 
@@ -192,9 +205,42 @@ namespace Microsoft.Deployment.Common.ActionModel
 
             if (itemsList != null)
             {
-                itemToReturn = itemsList.Any(p => p.Route == "RequestParameters") 
-                    ? itemsList.Single(p => p.Route == "RequestParameters").Value 
+                itemToReturn = itemsList.Any(p => p.Route.ToLowerInvariant() == "requestparameters")
+                    ? itemsList.Single(p => p.Route.ToLowerInvariant() == "requestparameters").Value
                     : itemsList.First().Value;
+            }
+
+            return itemToReturn;
+        }
+
+        private JToken GetLastValueFromDataStore(string key, DataStoreType dataStoreType = DataStoreType.Any)
+        {
+            List<DataStoreItem> itemsList = null;
+            JToken itemToReturn = null;
+
+            if (dataStoreType == DataStoreType.Private || dataStoreType == DataStoreType.Any)
+            {
+                var values = GetValueAndRoutesFromDataStore(this.PrivateDataStore, key, DataStoreType.Private);
+                if (values.Any())
+                {
+                    itemsList = values;
+                }
+            }
+
+            if (dataStoreType == DataStoreType.Public || dataStoreType == DataStoreType.Any)
+            {
+                var values = GetValueAndRoutesFromDataStore(this.PublicDataStore, key, DataStoreType.Private);
+                if (values.Any())
+                {
+                    itemsList = values;
+                }
+            }
+
+            if (itemsList != null)
+            {
+                itemToReturn = itemsList.Any(p => p.Route.ToLowerInvariant() == "requestparameters")
+                    ? itemsList.Single(p => p.Route.ToLowerInvariant() == "requestparameters").Value
+                    : itemsList.Last().Value;
             }
 
             return itemToReturn;
@@ -256,14 +302,14 @@ namespace Microsoft.Deployment.Common.ActionModel
 
             if (dataStoreType == DataStoreType.Public || dataStoreType == DataStoreType.Any)
             {
-                foundInPublic=  UpdateItemIntoDataStore(this.PublicDataStore, route, key, value);
+                foundInPublic = UpdateItemIntoDataStore(this.PublicDataStore, route, key, value);
             }
 
             if (!foundInPublic && !foundInPrivate)
             {
                 if (dataStoreType == DataStoreType.Private || dataStoreType == DataStoreType.Any)
                 {
-                    AddModifyItemToDataStore(this.PrivateDataStore, route,key,value);
+                    AddModifyItemToDataStore(this.PrivateDataStore, route, key, value);
                 }
 
                 if (dataStoreType == DataStoreType.Public)
@@ -273,7 +319,7 @@ namespace Microsoft.Deployment.Common.ActionModel
             }
         }
 
-        private static List<DataStoreItem> GetValueAndRoutesFromDataStore(Dictionary<string, Dictionary<string, JToken>> store,
+        private static List<DataStoreItem> GetValueAndRoutesFromDataStore(DictionaryIgnoreCase<DictionaryIgnoreCase<JToken>> store,
             string key, DataStoreType dataStoreType)
         {
             List<DataStoreItem> itemsMatching = new List<DataStoreItem>();
@@ -295,7 +341,7 @@ namespace Microsoft.Deployment.Common.ActionModel
             return itemsMatching;
         }
 
-        private static bool UpdateItemIntoDataStore(Dictionary<string, Dictionary<string, JToken>> store,
+        private static bool UpdateItemIntoDataStore(DictionaryIgnoreCase<DictionaryIgnoreCase<JToken>> store,
             string route, string key, JToken value)
         {
             bool found = false;
@@ -321,12 +367,12 @@ namespace Microsoft.Deployment.Common.ActionModel
             return found;
         }
 
-        private static void AddModifyItemToDataStore(Dictionary<string, Dictionary<string, JToken>> store,
+        private static void AddModifyItemToDataStore(DictionaryIgnoreCase<DictionaryIgnoreCase<JToken>> store,
             string route, string key, JToken value)
         {
             if (!store.ContainsKey(route))
             {
-                store.Add(route, new Dictionary<string, JToken>());
+                store.Add(route, new DictionaryIgnoreCase<JToken>());
             }
 
             if (!store[route].ContainsKey(key))

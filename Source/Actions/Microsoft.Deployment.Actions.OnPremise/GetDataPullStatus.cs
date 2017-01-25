@@ -20,9 +20,7 @@ namespace Microsoft.Deployment.Actions.OnPremise
                 ? false
                 : bool.Parse(request.DataStore.GetValue("IsWaiting"));
 
-            int sqlIndex = int.Parse(request.DataStore.GetValue("SqlServerIndex"));
-
-            string connectionString = request.DataStore.GetAllValues("SqlConnectionString")[sqlIndex]; // Must specify Initial Catalog
+            string connectionString = request.DataStore.GetValueAtIndex("SqlConnectionString", "SqlServerIndex"); // Must specify Initial Catalog
             string finishedActionName = request.DataStore.GetValue("FinishedActionName");
             string targetSchema = request.DataStore.GetValue("TargetSchema"); // Specifies the schema used by the template
 
@@ -104,7 +102,7 @@ namespace Microsoft.Deployment.Actions.OnPremise
                      "\",status:" + JsonUtility.Serialize(recordCounts) +
                     ", slices:" + JObject.FromObject(finishedResponse.Body)["value"]?.ToString() + "}"));
                 }
-                else 
+                else
                 {
                     resp = new ActionResponse(ActionStatus.Success,
                         JsonUtility.GetJsonObjectFromJsonString(

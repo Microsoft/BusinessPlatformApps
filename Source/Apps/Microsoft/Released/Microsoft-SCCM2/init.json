@@ -1,0 +1,172 @@
+﻿{
+
+    "MSI": {
+        "Guid": "88DC5CAB-D05D-4193-A432-30A09138D26D"
+    },
+
+    "Install": {
+        "Pages": [
+            // Getting Started
+            {
+                "name": "$SiteCommon$/pagesgallery/getting-started.html",
+                "displayname": "Getting Started",
+                "architectureDiagram": "dist/Apps/Microsoft/Released/Microsoft-SCCM2/Web/Images/SCCMArchitectureDiagram.png",
+                "list1": [
+                    "System Center 2012 Configuration Manager R2 SP1 or later. Read access to System Center Configuration Manager database is required.",
+                    "Destination database: Azure SQL database or SQL Server database (SQL Server 2008 R2 SP3 or later).",
+                    "For the machine where the installation is run, Microsoft .NET Framework 4.5 or later & PowerShell version 3.0 or later.",
+                    "Power BI Desktop (latest version)",
+                    "Power BI Pro (to share the template with your organization)"
+                ],
+                "list2": [
+                    "Scalable and extensible solution with minimum set up and maintenance considerations",
+                    "Data pulled daily from System Center Configuration Manager & stored in a SQL database optimized for reporting",
+                    "Import data into powerful Power BI reports"
+                ],
+                "subtitle": "Welcome to the System Center Configuration Manager solution template.",
+                "templateName": "System Center Configuration Manager",
+                "isDownload": "$(!this.MS.HttpService.isOnPremise)"
+            },
+
+            // Login
+            {
+                "name": "$SiteCommon$/pagesgallery/windows-auth.html",
+                "displayname": "Login",
+                "subtitle": "Specify your windows credentials to create a recurring schedule. The credentials you specify will be used to also connect to the SCCM database",
+                "onValidate": [{
+                        "name": "Microsoft-ValidateAdminPrivileges"
+                    }, {
+                        "name": "Microsoft-ValidatePowerShellVersion"
+                    }
+                ]
+            },
+
+            //SQL Server
+            {
+                "name": "$SiteCommon$/pagesgallery/sql-server.html",
+                "displayname": "Source",
+                "hideSqlAuth": true,
+                "title": "Connect to your System Center Configuration Manager database",
+                "showAzureSql": false,
+                "showAllWriteableDatabases": false,
+                "useImpersonation": true,
+
+                "subtitle": "Set up a connection to your SCCM database so we can bring in your data.",
+                "onNext": [{
+                        "name": "Microsoft-CheckSCCMVersion",
+                        "useImpersonation": true
+                    }, {
+                        "name": "Microsoft-ValidatePowerShellVersion"
+                    }
+                ]
+            },
+
+            // Target
+            {
+                "name": "$SiteCommon$/pagesgallery/sql-server.html",
+                "displayname": "Target",
+                "checkSqlVersion": true,
+                "useImpersonation": true,
+                "showSqlRecoveryModeHint": true,
+                "title": "Connect to your SQL database",
+                "subtitle": "Set up a connection to your target database so we can transfer your data.",
+                "onNext": [{
+                        "name": "Microsoft-CompareSqlLCIDs",
+                        "useImpersonation": true
+                    }
+                ]
+            },
+
+            // Customize
+            {
+                "name": "customize.html",
+                "displayname": "Customize"
+            },
+
+            // Progress
+            {
+                "name": "$SiteCommon$/pagesgallery/progress.html",
+                "displayname": "Progress",
+                "finishedActionName": "Microsoft-GetTaskStatus",
+                "targetSchema": "pbist_sccm",
+                "filename": "$('SCCMSolutionTemplate2.pbix', isSaved=true)",
+                "showCounts": true,
+                "sqlServerIndex": 1,
+                "showEmailSubmission": false
+            }
+        ],
+
+        "Actions": [{
+                "name": "Microsoft-DeploySQLScripts",
+                "displayname": "Deploy DB scripts",
+                "SqlServerIndex": "1",
+                "SqlScriptsFolder": "Service/Database/NoETL",
+                "useImpersonation": true
+            }, {
+                "name": "Microsoft-SetConfigValueInSql",
+                "displayname": "Deploy DB Configuration",
+                "SqlServerIndex": "1",
+                "SqlConfigTable": "pbist_sccm.[configuration]",
+                "useImpersonation": true
+            }, {
+                "name": "Microsoft-InstallSqlTools",
+                "displayname": "Installing SQL Tools"
+            }, {
+                "name": "Microsoft-InstallSCCM",
+                "displayname": "Copy dataload scripts"
+            }, {
+                "name": "Microsoft-AddLogonAsBatchPermission",
+                "displayname": "Grant permission for logging as a batch job"
+            }, {
+                "name": "Microsoft-CreateTask",
+                "displayname": "Schedule tasks"
+            }, {
+                "name": "Microsoft-RunTask",
+                "displayname": "Run tasks"
+            }, {
+                "name": "Microsoft-GetDataPullStatus",
+                "displayname": "Waiting for data to come in",
+                "FinishedActionName": "Microsoft-GetTaskStatus",
+                "IsWaiting": true,
+                "SqlServerIndex": 1,
+                "TargetSchema": "pbist_sccm",
+                "useImpersonation": true
+            }
+        ]
+    },
+
+    "Uninstall": {
+        "Pages": [{
+                "name": "$SiteCommon$/pagesgallery/uninstall.html",
+                "displayname": "Uninstall",
+                "architectureDiagram": "dist/Apps/Microsoft/Released/Microsoft-SCCM2/Web/Images/SCCMArchitectureDiagram.png",
+                "templateName": "System Center Configuration Manager",
+                "isDownload": "$(!this.MS.HttpService.isOnPremise)",
+                "uninstallList": [
+                    "The task used to move data between the SCCM database and the target database",
+                    "The scripts used to create the initial tables in the target database"
+                ],
+                "showBack": "$(false)"
+            }, {
+                "name": "$SiteCommon$/pagesgallery/progress.html",
+                "displayname": "Uninstall Progress",
+                "successMessage": "Uninstall complete",
+                "isUninstall": true,
+                "showEmailSubmission": false
+            }
+        ],
+        "Actions": [{
+                "name": "Microsoft-RemoveTask",
+                "displayname": "Remove task",
+                "TaskName": "Power BI Solution Template - SCCM"
+            }, {
+                "name": "Microsoft-RemoveFiles",
+                "displayname": "Remove files"
+            }, {
+                "name": "Microsoft-RemoveFiles",
+                "displayname": "Finishing cleanup",
+                "TargetPath": "C:\\Program Files\\Microsoft Templates\\Microsoft-SCCM2\\Apps\\Microsoft\\Released\\Microsoft-SCCM2\\Temp"
+            }
+        ]
+    }
+}

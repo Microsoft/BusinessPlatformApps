@@ -16,6 +16,12 @@ export class AzureLogin extends ViewModelBase {
     showAdvanced: boolean = false;
     showPricingConfirmation: boolean = false;
     subscriptionsList: any[] = [];
+    defaultLocation: number = 5;
+
+    //News Specific Variables for Azure
+    isBingChecked: boolean = false;
+    bingUrl: string = '';
+    bingtermsofuse: string = '';
 
     // Variables to override
     pricingUrl: string = '';
@@ -35,7 +41,7 @@ export class AzureLogin extends ViewModelBase {
             let queryParam = this.MS.UtilityService.GetItem('queryUrl');
             if (queryParam) {
                 let token = this.MS.UtilityService.GetQueryParameterFromUrl(QueryParameter.CODE, queryParam);
-                if (token ==='') {
+                if (token === '') {
                     this.MS.ErrorService.message = this.MS.Translate.AZURE_LOGIN_UNKNOWN_ERROR;
                     this.MS.ErrorService.details = this.MS.UtilityService.GetQueryParameterFromUrl(QueryParameter.ERRORDESCRIPTION, queryParam);
                     this.MS.ErrorService.showContactUs = true;
@@ -63,7 +69,7 @@ export class AzureLogin extends ViewModelBase {
                 }
 
                 this.MS.UtilityService.RemoveItem('queryUrl');
-            } 
+            }
         }
     }
 
@@ -76,8 +82,12 @@ export class AzureLogin extends ViewModelBase {
         this.MS.LoggerService.TrackEvent('AzurePricingClicked');
     }
 
+    verifyBing() {
+        this.isValidated = this.isBingChecked && this.isPricingChecked;
+    }
+
     verifyPricing() {
-        this.isValidated = this.isPricingChecked;
+        this.isValidated = (this.bingUrl && this.isPricingChecked && this.isBingChecked) || (!this.bingUrl && this.isPricingChecked);
     }
 
     async connect() {
@@ -100,7 +110,7 @@ export class AzureLogin extends ViewModelBase {
 
         let locationsResponse: ActionResponse = await this.MS.HttpService.executeAsync('Microsoft-GetLocations', {});
         if (locationsResponse.IsSuccess) {
-            this.MS.DataStore.addToDataStore('SelectedLocation', locationsResponse.Body.value[5], DataStoreType.Public);
+            this.MS.DataStore.addToDataStore('SelectedLocation', locationsResponse.Body.value[this.defaultLocation], DataStoreType.Public);
         }
 
         let response = await this.MS.HttpService.executeAsync('Microsoft-CreateResourceGroup', {});

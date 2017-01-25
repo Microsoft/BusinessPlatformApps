@@ -1,0 +1,17 @@
+﻿<template>
+    <h1 class="st-title">${MS.Translate.SEARCH_TERMS_TITLE}</h1>
+    <p class="st-subtitle">Input the search terms you want to track. We will collect all the articles that are relevant to your search criteria.</p>
+    <p>
+        <span>Preview your news results</span>
+        <a href="https://www.microsoft.com/cognitive-services/en-us/bing-news-search-api" target="_blank">here</a>
+    </p>
+
+    <div class="st-float">
+        <p class="st-text">${MS.Translate.SEARCH_TERMS_QUERY}</p>
+        <input class="st-input" type="text" placeholder.bind="MS.Translate.SEARCH_TERMS_QUERY_EXAMPLE" change.delegate="viewmodel.Invalidate()" disabled.bind="MS.HttpService.isServiceBusy" value.bind="viewmodel.searchQuery" />
+    </div>
+
+    <p class="st-float">
+        <button class="primary" click.delegate="viewmodel.OnValidate()" if.bind="!MS.HttpService.isServiceBusy">${MS.Translate.COMMON_VALIDATE}</button>
+    </p>
+</template>

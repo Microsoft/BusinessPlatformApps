@@ -23,6 +23,11 @@ namespace Microsoft.Deployment.Actions.AzureCustom.Common
             var location = request.DataStore.GetJson("SelectedLocation")["Name"].ToString();
             var connectorName = request.DataStore.GetValue("ConnectorName");
 
+            //Needs to be changed once Logic Apps makes it available
+            if (connectorName == "bingsearch")
+                {
+                location = "brazilsouth";
+            }
 
             SubscriptionCloudCredentials creds = new TokenCloudCredentials(subscription, azureToken);
             Microsoft.Azure.Management.Resources.ResourceManagementClient client = new ResourceManagementClient(creds);
