@@ -30,7 +30,7 @@ namespace Microsoft.Deployment.Actions.AzureCustom.AzureML
 
             var workspaceName = request.DataStore.GetValue("WorkspaceName");
             var storageAccountName = request.DataStore.GetValue("StorageAccountName");
-            var planName = request.DataStore.GetValue("PlanName") ?? "testazuremlplan";
+            var planName = request.DataStore.GetValue("PlanName") ?? "azuremlplan";
             var skuName = request.DataStore.GetValue("SkuName")?? "S1";
             var skuTier = request.DataStore.GetValue("SkuTier") ?? "Standard";
             var skuCapacity = request.DataStore.GetValue("SkuCapacity") ?? "1";

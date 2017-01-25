@@ -81,27 +81,21 @@
                 "useImpersonation": true
             },
             {
-                "name": "$SiteCommon$/pagesgallery/sql-server.html",
+                "credentialTarget": "Simplement.SolutionTemplate.AR.SQL",
                 "displayname": "Target",
-                "useImpersonation": true,
-                "title": "Connect to your SQL database",
-                "subtitle": "Set up a connection to your target database so we can transfer your data.",
+                "name": "$SiteCommon$/pagesgallery/sql-server.html",
                 "onNext": [
                     {
                         "name": "Microsoft-WriteSAPJson"
-                    },
-                    {
-                        "name": "Microsoft-CredentialManagerWrite",
-                        "CredentialTarget2": "$('Simplement.SolutionTemplate.AR.SQL', isSaved=true)",
-                        "CredentialUsername2": "$(this.username, isSaved=true)",
-                        "CredentialPassword2": "$(this.password, isSaved=true)",
-                        "useImpersonation": true
                     }
-                ]
+                ],
+                "subtitle": "Set up a connection to your target database so we can transfer your data.",
+                "title": "Connect to your SQL database",
+                "useImpersonation": true
             },
             {
-                "name": "customize.html",
-                "displayname": "Customize"
+                "displayname": "Customize",
+                "name": "customize.html"
             },
             {
                 "name": "$SiteCommon$/pagesgallery/progress.html",

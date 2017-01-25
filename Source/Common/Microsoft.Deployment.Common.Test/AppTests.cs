@@ -6,6 +6,7 @@ using Microsoft.Deployment.Common.AppLoad;
 using Microsoft.Deployment.Common.Controller;
 using Microsoft.Deployment.Common.Helpers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Deployment.Common.Test
@@ -25,20 +26,20 @@ namespace Microsoft.Deployment.Common.Test
         public void DataStoreRetrievalTest()
         {
             DataStore store = new DataStore();
-            store.PrivateDataStore = new Dictionary<string, Dictionary<string, JToken>>();
-            store.PublicDataStore = new Dictionary<string, Dictionary<string, JToken>>();
+            store.PrivateDataStore = new DictionaryIgnoreCase<DictionaryIgnoreCase<JToken>>();
+            store.PublicDataStore = new DictionaryIgnoreCase<DictionaryIgnoreCase<JToken>>();
 
-            store.PrivateDataStore.Add("TestRoute", new Dictionary<string, JToken>()
+            store.PrivateDataStore.Add("TestRoute", new DictionaryIgnoreCase<JToken>()
             {
-                {"TestObject","TestValue" },
-                {"TestObject2","TestValue2" },
-                {"password","secret" }
+                {"TestObject", "TestValue"},
+                {"TestObject2", "TestValue2"},
+                {"password", "secret"}
             });
 
-            store.PrivateDataStore.Add("TestRoute2", new Dictionary<string, JToken>()
+            store.PrivateDataStore.Add("TestRoute2", new DictionaryIgnoreCase<JToken>()
             {
-                {"TestObject","TestValue" },
-                {"TestObject2","TestValue2" }
+                {"TestObject", "TestValue"},
+                {"TestObject2", "TestValue2"}
             });
 
             Assert.IsTrue(store.GetAllValues("TestObject").Count() == 2);
@@ -87,17 +88,50 @@ namespace Microsoft.Deployment.Common.Test
             UserInfo info = new UserInfo();
             info.ActionName = "Microsoft-MockAction";
             info.AppName = "TestApp";
-            var result = commonController.ExecuteAction(info, new ActionRequest() { DataStore = new DataStore() }).Result;
+            var result = commonController.ExecuteAction(info, new ActionRequest() {DataStore = new DataStore()}).Result;
             Assert.IsTrue(result.Status == ActionStatus.Success);
         }
 
         [TestMethod]
         public void TestAzureParam()
         {
-          AzureArmParameterGenerator param = new AzureArmParameterGenerator();
+            AzureArmParameterGenerator param = new AzureArmParameterGenerator();
             param.AddStringParam("test", "test2");
             param.AddStringParam("test2", "test2");
             var val = param.GetDynamicObject();
+        }
+
+
+        [TestMethod]
+        public void DataStoreCaseSensitivityTest()
+        {
+            try
+            {
+                DataStore store = new DataStore();
+                store.PrivateDataStore = new DictionaryIgnoreCase<DictionaryIgnoreCase<JToken>>();
+                store.PublicDataStore = new DictionaryIgnoreCase<DictionaryIgnoreCase<JToken>>();
+
+                store.PrivateDataStore.Add("TestRoute", new DictionaryIgnoreCase<JToken>()
+            {
+                {"TestObject","TestValue" },
+                {"Testobject","TestValue2" },
+                {"password","secret" }
+            });
+
+                store.PrivateDataStore.Add("TestRoute2", new DictionaryIgnoreCase<JToken>()
+            {
+                {"TestObject","TestValue" },
+                {"TestObject2","TestValue2" }
+            });
+            }
+            catch (ArgumentException)
+            {
+
+                return;
+            }
+
+            Assert.Fail();
+           
         }
     }
 }

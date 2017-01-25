@@ -16,13 +16,10 @@ namespace Microsoft.Deployment.Actions.SQL
         public override async Task<ActionResponse> ExecuteActionAsync(ActionRequest request)
         {
             // Provided by the json 
-            var sqlIndex = int.Parse(request.DataStore.GetValue("SqlServerIndex"));
             string configTable = request.DataStore.GetValue("SqlConfigTable");
 
-
-            // Provided by thge user including the messages below
-            string connectionString = request.DataStore.GetAllValues("SqlConnectionString")[sqlIndex].ToString();
-                // Must specify Initial Catalog
+            // Provided by the user including the messages below
+            string connectionString = request.DataStore.GetValueAtIndex("SqlConnectionString", "SqlServerIndex");
 
             // Get list of settings to deploy;
             var listGroup = request.DataStore.GetAllJson("SqlGroup");
@@ -32,7 +29,7 @@ namespace Microsoft.Deployment.Actions.SQL
 
             if (listGroup == null || listSubgroup == null || listConfigEntryName == null || listConfigEntryValue == null)
             {
-                return new ActionResponse(ActionStatus.Success, JsonUtility.GetEmptyJObject(),null, DefaultErrorCodes.DefaultErrorCode, 
+                return new ActionResponse(ActionStatus.Success, JsonUtility.GetEmptyJObject(), null, DefaultErrorCodes.DefaultErrorCode,
                     "Configuration value properties not found");
             }
 

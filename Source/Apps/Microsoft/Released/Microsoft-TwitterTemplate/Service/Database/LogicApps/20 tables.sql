@@ -92,5 +92,18 @@ CREATE TABLE pbist_twitter.authormention_graph
     mention      NCHAR(200),
     mentioncolor NCHAR(10)
 );
+
 ALTER TABLE pbist_twitter.authormention_graph ADD CONSTRAINT ck_tweetmentiongraph FOREIGN KEY(tweetid) REFERENCES pbist_twitter.tweets_processed(tweetid);
+
+CREATE TABLE [pbist_twitter].[minimum_tweets](
+	[MinimumTweets] [smallint] NOT NULL
+);
+
+CREATE TABLE pbist_twitter.twitter_query
+(
+    Id			 INT,
+    IsAdvanced	 TINYINT,
+    QueryString  NVARCHAR(max),
+    TweetId      NCHAR(20),
+)
 

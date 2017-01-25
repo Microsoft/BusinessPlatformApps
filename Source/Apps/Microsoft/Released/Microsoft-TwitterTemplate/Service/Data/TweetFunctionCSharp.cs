@@ -130,6 +130,7 @@ public class TweetHandler
         string twitterHandleId =
             ExecuteSqlQuery("select value FROM pbist_twitter.configuration where name = \'twitterHandleId\'",
                 "value");
+        ExecuteSqlNonQuery("INSERT into pbist_twitter.twitterquery (TweetId) VALUES (@tweet.TweetId");
 
         // Split out all the handles & create dictionary
         String[] handle = null;

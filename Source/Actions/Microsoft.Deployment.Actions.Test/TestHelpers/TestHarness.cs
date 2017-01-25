@@ -21,7 +21,7 @@ namespace Microsoft.Deployment.Actions.Test.TestHelpers
     {
         public static string RandomCharacters = RandomGenerator.GetRandomLowerCaseCharacters(5);
         private static CommonController Controller { get; set; }
-        public static string TemplateName = "TestApp";
+        public static string TemplateName = "Microsoft-NewsTemplateTest";
         private static DataStore CommonDataStoreServicePrincipal = null;
         private static DataStore CommonDataStoreUserToken = null;
         private static string ResourceGroup = "UnitTest" + RandomGenerator.GetRandomLowerCaseCharacters(5);
@@ -31,7 +31,7 @@ namespace Microsoft.Deployment.Actions.Test.TestHelpers
         [AssemblyInitialize()]
         public static void AssemblyInit(TestContext context)
         {
-            AppFactory factory = new AppFactory();
+            AppFactory factory = new AppFactory(true);
             CommonControllerModel model = new CommonControllerModel()
             {
                 AppFactory = factory,
@@ -60,7 +60,6 @@ namespace Microsoft.Deployment.Actions.Test.TestHelpers
             }
         }
 
-
         public static ActionResponse ExecuteAction(string actionName, DataStore datastore)
         {
             UserInfo info = new UserInfo();
@@ -70,14 +69,15 @@ namespace Microsoft.Deployment.Actions.Test.TestHelpers
             return Controller.ExecuteAction(info, new ActionRequest() { DataStore = datastore }).Result;
         }
 
-        public static async Task<ActionResponse> ExecuteActionAsync(string actionName, DataStore datastore)
+        public static async Task<ActionResponse> ExecuteActionAsync(string actionName, DataStore datastore, string templateName = "Microsoft-NewsTemplateTest")
         {
             UserInfo info = new UserInfo();
             info.ActionName = actionName;
-            info.AppName = TemplateName;
+            info.AppName = templateName;
             info.WebsiteRootUrl = "https://unittest";
             return await Controller.ExecuteAction(info, new ActionRequest() { DataStore = datastore });
         }
+
 
         public static async Task<DataStore> GetCommonDataStore()
         {
@@ -154,18 +154,24 @@ namespace Microsoft.Deployment.Actions.Test.TestHelpers
             Assert.IsTrue(subscriptionResult.IsSuccess);
             var subscriptionId =
                 subscriptionResult.Body.GetJObject()["value"].SingleOrDefault(
-                    p => p["DisplayName"].ToString() == "PBI_ECO (Paas) Richard's team");
+                    p => p["DisplayName"].ToString() == "Project Essex");
             dataStore.AddToDataStore("SelectedSubscription", subscriptionId, DataStoreType.Public);
 
             var locationResult = await TestHarness.ExecuteActionAsync("Microsoft-GetLocations", dataStore);
             Assert.IsTrue(locationResult.IsSuccess);
-            var location = locationResult.Body.GetJObject()["value"][5];
+            var location = locationResult.Body.GetJObject()["value"][12];
             dataStore.AddToDataStore("SelectedLocation", location, DataStoreType.Public);
 
 
             if (System.Diagnostics.Debugger.IsAttached)
             {
                 ResourceGroup = Environment.MachineName;
+            }
+
+
+            if (System.Diagnostics.Debugger.IsAttached)
+            {
+                ResourceGroup = Environment.MachineName + RandomGenerator.GetRandomLowerCaseCharacters(5);
             }
 
             dataStore.AddToDataStore("SelectedResourceGroup", ResourceGroup);

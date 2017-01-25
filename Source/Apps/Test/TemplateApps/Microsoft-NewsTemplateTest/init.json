@@ -1,0 +1,333 @@
+﻿{
+  "Install": {
+    "Pages": [
+      {
+        "architectureDiagram": "dist/Apps/Test/TemplateApps/Microsoft-NewsTemplateTest/Web/Images/newsarchdiagram.png",
+        "displayname": "Getting Started",
+        "list1": [
+          "Azure Subscription",
+          "Power BI Desktop (latest version)",
+          "Power BI Pro (to share the template with your organization)"
+        ],
+        "list2": [
+          "Pull data from hundreds of news publishers",
+          "Data enriched using machine learning techniques like topic modelling and entity extraction",
+          "Full cloud solution with minimum set up and maintenance considerations"
+        ],
+        "name": "$SiteCommon$/pagesgallery/getting-started.html",
+        "subtitle": "Welcome to the brand management solution template.",
+        "templateName": "Brand Management for Bing News"
+      },
+      {
+        "displayname": "Login",
+        "name": "$SiteCommon$/pagesgallery/azure-login.html",
+        "pricingCost": "$('By deploying the template you authorize the creation of Azure resources on your subscription. The base cost of these services is $6 a day. Every 1000 tweets will incur an additional cost of approximately $0.80.')",
+        "pricingUrl": "https://github.com/Microsoft/BusinessPlatformApps/tree/master/Source/Apps/Microsoft/Released/Microsoft-TwitterTemplate#pricing",
+        "bingtermsofuse": "By deploying this template you agree to Bing's Terms of Use.",
+        "bingUrl": "placeholder",
+        "defaultLocation": 12
+      },
+      {
+        "name": "$SiteCommon$/pagesgallery/sql-server.html",
+        "displayname": "Source",
+        "isAzureSql": true,
+        "showAzureSql": false,
+        "showNewSqlOption": "true",
+        "subtitle": "Set up a connection to SQL so we can bring in Bing news data.",
+        "title": "Connect to your SQL Database",
+        "sqlInstance": "NewSql",
+        "newSqlDatabase": "bingNews"
+      },
+      {
+        "name": "search-terms.html",
+        "displayname": "Search Terms"
+      },
+      {
+        "name": "$SiteCommon$/pagesgallery/summary.html",
+        "displayname": "Summary",
+        "values": {
+          "Target Server": "$(this.MS.DataStore.getValue('Server'))",
+          "Target Database": "$(this.MS.DataStore.getValue('Database'))",
+          "Target Username": "$(this.MS.DataStore.getValue('Username'))",
+          "Search Query": "$(this.MS.DataStore.getValue('SearchQuery'))"
+        }
+      },
+      {
+        "name": "$SiteCommon$/pagesgallery/progress.html",
+        "displayname": "Deploy",
+        "filename": "$save('BingNewsTemplate.pbix')",
+        "uniqueId": "$save(this.MS.UtilityService.GetUniqueId(8))"
+      }
+    ],
+
+    "Actions": [
+      {
+        "name": "Microsoft-DeploySQLScripts",
+        "displayname": "Deploy DB Scripts",
+        "SqlServerIndex": "0",
+        "SqlScriptsFolder": "Service/Database/"
+      },
+      //{
+      //    "name": "Microsoft-SetConfigValueInSql",
+      //    "displayname": "Deploy DB Configuration",
+      //    "SqlServerIndex": "0",
+      //    "SqlConfigTable": "[bpst_news].[configuration]"
+      //},
+      {
+        "name": "Microsoft-DeployAzureFunction",
+        "displayname": "Deploy News Functions",
+        "DeploymentName": "Function",
+        "FunctionName": "$save('function' + this.MS.DataStore.getValue('uniqueId'))",
+        "RepoUrl": "https://github.com/juluczni/AzureFunctionsNewsTemplate"
+      },
+      {
+        "name": "Microsoft-WaitForArmDeploymentStatus",
+        "displayname": "Validating News Function",
+        "DeploymentName": "Function"
+      },
+      {
+        "name": "Microsoft-DeployPrivateAssemblyToFunction",
+        "displayname": "Deploy News Function Assets"
+      },
+      {
+        "name": "Microsoft-CreateAzureStorageAccount",
+        "displayname": "Deploy Storage Account",
+        "DeploymentName": "StorageAccount",
+        "StorageAccountName": "$save('storage' + this.MS.DataStore.getValue('uniqueId'))",
+        "StorageAccountType": "Standard_LRS",
+        "StorageAccountEncryptionEnabled": "false"
+      },
+      {
+        "name": "Microsoft-WaitForArmDeploymentStatus",
+        "displayname": "Validating Storage Account",
+        "DeploymentName": "StorageAccount"
+      },
+      {
+        "name": "Microsoft-GetStorageAccountKey",
+        "displayname": "Get Storage Account Key",
+        "DeploymentName": "StorageAccount"
+      },
+      {
+        "name": "Microsoft-WaitForArmDeploymentStatus",
+        "displayname": "Validating Key",
+        "DeploymentName": "StorageAccount"
+      },
+      {
+        "name": "Microsoft-DeployStorageAccountContainer",
+        "displayname": "Deploy Storage Account Container",
+        "DeploymentName": "StorageAccount",
+        "StorageAccountContainer": "newsimages"
+      },
+      {
+        "name": "Microsoft-DeployAzureMLWebServiceFromFile",
+        "displayname": "Deploy Azure ML Webservice",
+        "DeploymentName": "AzureML",
+        "CommitmentPlan": "commitmentplan",
+        "WebServiceFile": "Service/AzureML/Experiments/TopicsWebService.json",
+        "WebServiceName": "TopicsWebService"
+
+      },
+      {
+        "name": "Microsoft-DeployAzureMLWebServiceFromFile",
+        "displayname": "Deploy Azure ML Webservice",
+        "DeploymentName": "AzureML",
+        "CommitmentPlan": "commitmentplan",
+        "WebServiceFile": "Service/AzureML/Experiments/TopicImagesWebService.json",
+        "WebServiceName": "TopicsImagesWebService"
+      },
+      {
+        "name": "Microsoft-DeployAzureMLWebServiceFromFile",
+        "displayname": "Deploy Azure ML Webservice",
+        "DeploymentName": "AzureML",
+        "CommitmentPlan": "commitmentplan",
+        "WebServiceFile": "Service/AzureML/Experiments/EntityWebService.json",
+        "WebServiceName": "EntitiesWebService"
+      },
+
+
+      {
+        "name": "Microsoft-DeployCognitiveService",
+        "displayname": "Deploy Cognitive Service",
+        "DeploymentName": "Cognitive",
+        "CognitiveServiceName": "TextCognitiveService",
+        "CognitiveServiceType": "TextAnalytics",
+        "CognitiveSkuName": "S1"
+      },
+      {
+        "name": "Microsoft-GetCognitiveKey",
+        "displayname": "Deploy Cognitive Service Key",
+        "DeploymentName": "Cognitive",
+        "CognitiveServiceName": "TextCognitiveService",
+        "CognitiveServiceType": "TextAnalytics"
+      },
+      {
+        "name": "Microsoft-CreateConnectorToLogicApp",
+        "displayname": "Create Connector to Logic App",
+        "DeploymentName": "Cognitive",
+        "ConnectorName": "cognitiveservicestextanalytics",
+        "ConnectorDisplayName": "TextAnalytics",
+        "ConnectorPayload": {
+          "apiKey": "$ds(CognitiveServiceKey)"
+        }
+      },
+      {
+        "name": "Microsoft-UpdateBlobStorageConnector",
+        "displayname": "Update connector",
+        "DeploymentName": "Cognitive",
+        "ConnectorName": "cognitiveservicestextanalytics",
+        "ConnectorDisplayName": "TextAnalytics",
+        "ConnectorPayload": {
+          "apiKey": "$ds(CognitiveServiceKey)"
+        }
+      },
+
+
+      {
+        "name": "Microsoft-DeployCognitiveService",
+        "displayname": "Deploy Cognitive Service",
+        "DeploymentName": "Cognitive",
+        "KeyNumber": "1",
+        "CognitiveSkuName": "S1",
+        "CognitiveServiceType": "Bing.Search",
+        "CognitiveServiceKey": "",
+        "CognitiveServiceName": "BingCognitiveService"
+      },
+      {
+        "name": "Microsoft-GetCognitiveKey",
+        "displayname": "Deploy Cognitive Service Key",
+        "DeploymentName": "Cognitive",
+        "CognitiveServiceName": "BingCognitiveService",
+        "KeyNumber": "1"
+      },
+      {
+        "name": "Microsoft-CreateConnectorToLogicApp",
+        "displayname": "Create Connector to Logic App",
+        "DeploymentName": "Cognitive",
+        "ConnectorName": "bingsearch",
+        "ConnectorDisplayName": "bingsearch",
+        "ConnectorPayload": {
+          "apiKey": "$dsall(CognitiveServiceKey)[1]"
+        }
+      },
+      {
+        "name": "Microsoft-UpdateBlobStorageConnector",
+        "displayname": "Update connector",
+        "DeploymentName": "Cognitive",
+        "ConnectorName": "bingsearch",
+        "ConnectorDisplayName": "bingsearch",
+        "ConnectorPayload": {
+          "apiKey": "$dsall(CognitiveServiceKey)[1]"
+        }
+      },
+
+
+      {
+        "name": "Microsoft-CreateConnectorToLogicApp",
+        "displayname": "Create Connector to Logic App",
+        "DeploymentName": "blob",
+        "ConnectorName": "azureblob",
+        "ConnectorDisplayName": "azureblob",
+        "ConnectorPayload": {
+          "accountName": "$ds(StorageAccountName)",
+          "accessKey": "$ds(StorageAccountKey)"
+        }
+      },
+
+      {
+        "name": "Microsoft-UpdateBlobStorageConnector",
+        "displayname": "Update connector",
+        "DeploymentName": "blob",
+        "ConnectorName": "azureblob",
+        "ConnectorDisplayName": "azureblob",
+        "ConnectorPayload": {
+          "accountName": "$ds(StorageAccountName)",
+          "accessKey": "$ds(StorageAccountKey)"
+        }
+      },
+
+      {
+        "name": "Microsoft-CreateConnectorToLogicApp",
+        "displayname": "Create Connector to Logic App",
+        "DeploymentName": "sql",
+        "ConnectorName": "sql",
+        "ConnectorDisplayName": "SQLConnector",
+        "ConnectorPayload": {
+          "authType": "windows",
+          "database": "$ds(Database)",
+          "password": "$ds(Password)",
+          "server": "$ds(Server)",
+          "username": "$ds(Username)"
+        }
+      },
+
+      {
+        "name": "Microsoft-UpdateBlobStorageConnector",
+        "displayname": "Update connector",
+        "DeploymentName": "sql",
+        "ConnectorName": "sql",
+        "ConnectorDisplayName": "SQLConnector",
+        "ConnectorPayload": {
+          "authType": "windows",
+          "database": "$ds(Database)",
+          "password": "$ds(Password)",
+          "server": "$ds(Server)",
+          "username": "$ds(Username)"
+        }
+      },
+
+      {
+        "name": "Microsoft-CreateConnectorToLogicApp",
+        "displayname": "Create Connector to Logic App",
+        "DeploymentName": "azureml",
+        "ConnectorName": "azureml",
+        "ConnectorDisplayName": "azureml",
+        "ConnectorPayload": {
+        }
+      },
+
+      {
+        "name": "Microsoft-UpdateBlobStorageConnector",
+        "displayname": "Update connector",
+        "DeploymentName": "azureml",
+        "ConnectorName": "azureml",
+        "ConnectorDisplayName": "azureml",
+        "ConnectorPayload": {
+        }
+      },
+      {
+        "name": "Microsoft-DeployImageCachingLogicApp",
+        "displayname": "Deploy Image Cache Logic App",
+        "DeploymentName": "LogicAppImageCache",
+        "LogicAppName": "LogicAppImageCache"
+      },
+      {
+        "name": "Microsoft-WaitForArmDeploymentStatus",
+        "displayname": "Validate Logic App",
+        "DeploymentName": "LogicAppImageCache"
+      },
+      {
+        "name": "Microsoft-DeployAzureMLSchedulerLogicApp",
+        "displayname": "Deploy AML Scheduler Logic App",
+        "DeploymentName": "LogicAppScheduler",
+        "LogicAppName": "LogicAppScheduler"
+      },
+      {
+        "name": "Microsoft-WaitForArmDeploymentStatus",
+        "displayname": "Validate Logic App",
+        "DeploymentName": "LogicAppScheduler"
+      },
+      {
+        "name": "Microsoft-DeployNewsTemplateLogicApp",
+        "displayname": "Deploy News Template Logic App",
+        "DeploymentName": "LogicAppNewsTemplate",
+        "ImageCacheLogicApp": "LogicAppImageCache",
+        "LogicAppName": "LogicAppMainNews"
+      },
+      {
+        "name": "Microsoft-WaitForArmDeploymentStatus",
+        "displayname": "Validate Logic App",
+        "DeploymentName": "LogicAppNewsTemplate"
+      }
+    ]
+  }
+}
