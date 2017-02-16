@@ -14,10 +14,6 @@
       "defaultValue": "idrequired",
       "type": "string"
     },
-    "imagecachelogicapp": {
-      "defaultValue": "ImageCacheLogicApp",
-      "type": "string"
-    },
     "sitename": {
       "defaultValue": "sitename",
       "type": "string"
@@ -72,6 +68,23 @@
               }
             },
             "actions": {
+              "AbstractExtractor": {
+                "inputs": {
+                  "body": {
+                    "query": "@{trigger()['inputs']['queries']['q']}",
+                    "text": "@{body('HTMLStripperWebHook')['NoTags']}"
+                  },
+                  "function": {
+                    "id": "[concat('/subscriptions/', parameters('subscription'), '/resourceGroups/',parameters('resourcegroup'),'/providers/Microsoft.Web/sites/', parameters('sitename'), '/Functions/AbstractExtractor')]"
+                  }
+                },
+                "runAfter": {
+                  "HTMLStripperWebHook": [
+                    "Succeeded"
+                  ]
+                },
+                "type": "Function"
+              },
               "ArticleCleanerWebHook": {
                 "inputs": {
                   "body": {
@@ -103,7 +116,7 @@
                   "path": "/sentiment"
                 },
                 "runAfter": {
-                  "HTMLStripperWebHook": [
+                  "AbstractExtractor": [
                     "Succeeded"
                   ]
                 },
@@ -166,27 +179,21 @@
                 },
                 "type": "Http"
               },
-              "ImageCacherApp": {
+              "MainImageExtractor": {
                 "inputs": {
                   "body": {
-                    "Request": {
-                      "DocumentID": "@Json(body('UrlCleaner'))?['triggerId']",
-                      "imgUrl": "@triggerBody()?['image']?['thumbnail']?['contentUrl']"
-                    }
+                    "html": "@body('ExtractArticle')['bodyInHtml']"
                   },
-                  "host": {
-                    "triggerName": "manual",
-                    "workflow": {
-                      "id": "[concat('/subscriptions/', parameters('subscription'), '/resourceGroups/',parameters('resourcegroup'),'/providers/Microsoft.Logic/workflows/', parameters('imagecachelogicapp'))]"
-                    }
+                  "function": {
+                    "id": "[concat('/subscriptions/', parameters('subscription'), '/resourceGroups/',parameters('resourcegroup'),'/providers/Microsoft.Web/sites/', parameters('sitename'), '/Functions/MainImageExtractor')]"
                   }
                 },
                 "runAfter": {
-                  "UrlDomainWebHook": [
+                  "ExtractArticle": [
                     "Succeeded"
                   ]
                 },
-                "type": "Workflow"
+                "type": "Function"
               },
               "InsertDocument": {
                 "runAfter": {
@@ -199,7 +206,10 @@
                   "TimeUtilsWebHook_2": [
                     "Succeeded"
                   ],
-                  "ImageCacherApp": [
+                  "MainImageExtractor": [
+                    "Succeeded"
+                  ],
+                  "UrlDomainWebHook": [
                     "Succeeded"
                   ],
                   "Key_Phrases": [
@@ -212,10 +222,10 @@
                     "category": "@{triggerBody()?['category']}",
                     "cleanedText": "@{body('HTMLStripperWebHook')['NoTags']}",
                     "cleanedTextLength": "@{body('HTMLStripperWebHook')['NoTagsLength']}",
-                    "abstract": "@{triggerBody()?['description']}",
+                    "abstract": "@{body('AbstractExtractor')?['Snippet']}",
                     "docid": "@Json(body('UrlCleaner'))?['triggerId']",
                     "imageHeight": "@triggerBody()?['image']?['thumbnail']?['height']",
-                    "imageUrl": "@{body('ImageCacherApp')}",
+                    "imageUrl": "@Json(body('MainImageExtractor'))?['ImageUrl']",
                     "imageWidth": "@triggerBody()?['image']?['thumbnail']?['width']",
                     "ingestDayPrecision": "@Json(body('TimeUtilsWebHook'))?['DayPrecision']",
                     "ingestHourPrecision": "@Json(body('TimeUtilsWebHook'))?['HourPrecision']",
@@ -261,7 +271,7 @@
                   "path": "/keyPhrases"
                 },
                 "runAfter": {
-                  "HTMLStripperWebHook": [
+                  "AbstractExtractor": [
                     "Succeeded"
                   ]
                 },
@@ -301,7 +311,7 @@
                   }
                 },
                 "runAfter": {
-                  "HTMLStripperWebHook": [
+                  "AbstractExtractor": [
                     "Succeeded"
                   ]
                 },
@@ -316,7 +326,7 @@
                 "bingsearch": {
                   "connectionId": "[concat('/subscriptions/', parameters('subscription'), '/resourceGroups/',parameters('resourcegroup'),'/providers/Microsoft.Web/connections/bingsearch')]",
                   "connectionName": "bingsearch",
-                  "id": "[concat('/subscriptions/', parameters('subscription'), '/providers/Microsoft.Web/locations/brazilsouth/managedApis/bingsearch')]"
+                  "id": "[concat('/subscriptions/', parameters('subscription'), '/providers/Microsoft.Web/locations/westus/managedApis/bingsearch')]"
                 },
                 "cognitiveservicestextanalytics": {
                   "connectionId": "[concat('/subscriptions/', parameters('subscription'), '/resourceGroups/',parameters('resourcegroup'),'/providers/Microsoft.Web/connections/cognitiveservicestextanalytics')]",

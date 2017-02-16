@@ -234,7 +234,6 @@
     <Compile Include="FTPUtilityTest.cs" />
     <Compile Include="LogicApp\LogicAppConnector.cs" />
     <Compile Include="News\DeployAzureMLSchedulerLogicApp.cs" />
-    <Compile Include="News\DeployImageCachingLogicApp.cs" />
     <Compile Include="News\DeployNewsTemplateLogicApp.cs" />
     <Compile Include="PowerApp\CreatePowerAppSqlConnection.cs" />
     <Compile Include="PowerApp\ConfigurePowerAppTables.cs" />

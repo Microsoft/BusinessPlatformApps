@@ -133,7 +133,7 @@ namespace Microsoft.Deployment.Actions.Test.ActionsTest
             dataStore.AddToDataStore("DeploymentName", "CongitiveServiceDeployBing");
             dataStore.AddToDataStore("CognitiveServiceName", "TestCognitiveService2");
             dataStore.AddToDataStore("CognitiveServiceType", "Bing.Search");
-            dataStore.AddToDataStore("CognitiveSkuName", "S1");
+            dataStore.AddToDataStore("CognitiveSkuName", "S2");
             dataStore.AddToDataStore("CognitiveServiceKey", "");
 
             response = await TestHarness.ExecuteActionAsync("Microsoft-DeployCognitiveService", dataStore, "Microsoft-NewsTemplateTest");
@@ -156,18 +156,18 @@ namespace Microsoft.Deployment.Actions.Test.ActionsTest
             response = await TestHarness.ExecuteActionAsync("Microsoft-UpdateBlobStorageConnector", dataStore, "Microsoft-NewsTemplateTest");
             Assert.IsTrue(response.IsSuccess);
 
-            // Create storage account connector
-            dataStore.AddToDataStore("ConnectorName", "azureblob");
-            dataStore.AddToDataStore("ConnectorDisplayName", "azureblob");
-            payload = new ExpandoObject();
-            payload.accountName = dataStore.GetValue("StorageAccountName");
-            payload.accessKey = dataStore.GetValue("StorageAccountKey");
-            payload = JsonUtility.GetJObjectFromObject(payload);
-            dataStore.AddToDataStore("ConnectorPayload", payload);
-            //response = await TestHarness.ExecuteActionAsync("Microsoft-CreateConnectorToLogicApp", dataStore, "Microsoft-NewsTemplateTest");
+            //// Create storage account connector
+            //dataStore.AddToDataStore("ConnectorName", "azureblob");
+            //dataStore.AddToDataStore("ConnectorDisplayName", "azureblob");
+            //payload = new ExpandoObject();
+            //payload.accountName = dataStore.GetValue("StorageAccountName");
+            //payload.accessKey = dataStore.GetValue("StorageAccountKey");
+            //payload = JsonUtility.GetJObjectFromObject(payload);
+            //dataStore.AddToDataStore("ConnectorPayload", payload);
+            ////response = await TestHarness.ExecuteActionAsync("Microsoft-CreateConnectorToLogicApp", dataStore, "Microsoft-NewsTemplateTest");
+            ////Assert.IsTrue(response.IsSuccess);
+            //response = await TestHarness.ExecuteActionAsync("Microsoft-UpdateBlobStorageConnector", dataStore, "Microsoft-NewsTemplateTest");
             //Assert.IsTrue(response.IsSuccess);
-            response = await TestHarness.ExecuteActionAsync("Microsoft-UpdateBlobStorageConnector", dataStore, "Microsoft-NewsTemplateTest");
-            Assert.IsTrue(response.IsSuccess);
 
             //Create SQL Connector
             dataStore.AddToDataStore("ConnectorName", "sql");
@@ -200,20 +200,6 @@ namespace Microsoft.Deployment.Actions.Test.ActionsTest
 
             #endregion
 
-            #region DeployLogicAppImageCache
-
-            ////Image Cache Logic App
-            dataStore.AddToDataStore("DeploymentName", "LogicAppDeploymentTest");
-            dataStore.AddToDataStore("LogicAppName", "testname");
-            dataStore.AddToDataStore("ImageCacheLogicApp", "testname");
-
-            response = await TestHarness.ExecuteActionAsync("Microsoft-DeployImageCachingLogicApp", dataStore, "Microsoft-NewsTemplateTest");
-            Assert.IsTrue(response.IsSuccess);
-            response = await TestHarness.ExecuteActionAsync("Microsoft-WaitForArmDeploymentStatus", dataStore, "Microsoft-NewsTemplateTest");
-            Assert.IsTrue(response.IsSuccess);
-
-            #endregion
-
             #region DeployAMLLogicApp
             dataStore.AddToDataStore("DeploymentName", "amllogicapp");
             dataStore.AddToDataStore("LogicAppName", "AmlLogicApp");
@@ -237,6 +223,35 @@ namespace Microsoft.Deployment.Actions.Test.ActionsTest
             #endregion
         }
 
+
+        [TestMethod]
+
+        public async Task TestAzureMLError()
+        {
+            var dataStore = await TestHarness.GetCommonDataStoreWithUserToken();
+
+            // Deploy SQL Scripts
+            dataStore.AddToDataStore("SqlConnectionString", TestHarness.GetSqlPagePayload("NewsTemplateTest"));
+            dataStore.AddToDataStore("SqlServerIndex", "0");
+            dataStore.AddToDataStore("SqlScriptsFolder", "Service/Database");
+
+            //// Create Storage Account
+            dataStore.AddToDataStore("DeploymentName", "StorageDeploymentTest");
+            dataStore.AddToDataStore("StorageAccountName", "unitteststorageamltest");
+            dataStore.AddToDataStore("StorageAccountType", "Standard_LRS");
+            dataStore.AddToDataStore("StorageAccountEncryptionEnabled", "false");
+
+            var response = await TestHarness.ExecuteActionAsync("Microsoft-CreateAzureStorageAccount", dataStore, "Microsoft-NewsTemplateTest");
+            Assert.IsTrue(response.IsSuccess);
+            response = await TestHarness.ExecuteActionAsync("Microsoft-WaitForArmDeploymentStatus", dataStore, "Microsoft-NewsTemplateTest");
+            Assert.IsTrue(response.IsSuccess);
+
+            dataStore.AddToDataStore("CommitmentPlan", "motestcomm");
+            dataStore.AddToDataStore("Replace", "WebServiceFile", "Service/AzureML/Experiments/TopicsWebService.json");
+            dataStore.AddToDataStore("Replace", "WebServiceName", "Topics");
+            response = await TestHarness.ExecuteActionAsync("Microsoft-DeployAzureMLWebServiceFromFile", dataStore, "Microsoft-NewsTemplateTest");
+            Assert.IsTrue(response.Status == ActionStatus.Success);
+        }
 
         [TestMethod]
         public async Task NewsTemplateE2E()
@@ -293,7 +308,7 @@ namespace Microsoft.Deployment.Actions.Test.ActionsTest
             dataStore.AddToDataStore("DeploymentName", "CongitiveServiceDeployBing");
             dataStore.AddToDataStore("CognitiveServiceName", "TestCognitiveService2");
             dataStore.AddToDataStore("CognitiveServiceType", "Bing.Search");
-            dataStore.AddToDataStore("CognitiveSkuName", "S1");
+            dataStore.AddToDataStore("CognitiveSkuName", "S2");
 
             response = TestHarness.ExecuteAction("Microsoft-DeployCognitiveService", dataStore);
             Assert.IsTrue(response.IsSuccess);

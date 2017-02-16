@@ -104,7 +104,7 @@
       <Link>Properties\SharedVersion.cs</Link>
     </Compile>
     <Compile Include="ADFDeployDatasets.cs" />
-    <Compile Include="ADFDeployLinkedServicesAndSqlCustomizations.cs" />
+    <Compile Include="ADFDeployLinkedServices.cs" />
     <Compile Include="ADFDeployPipelines.cs" />
     <Compile Include="ADFSliceStatus.cs" />
     <Compile Include="Helpers\DeploymentHelper.cs" />

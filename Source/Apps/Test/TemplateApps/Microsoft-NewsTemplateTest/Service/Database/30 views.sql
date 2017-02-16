@@ -61,8 +61,17 @@ AS
            documenttopicimages.imageUrl2				AS [Image URL 2],
            documenttopicimages.imageUrl3				AS [Image URL 3],
            documenttopicimages.imageUrl4				AS [Image URL 4],
-           ((1-DocumentTopics.documentDistance)*100)	AS [Weight]
-    FROM   bpst_news.documenttopics	LEFT OUTER JOIN documenttopicimages	ON documenttopics.topicid = documenttopicimages.topicid;
+           ((1-DocumentTopics.documentDistance)*100)	AS [Weight],
+		   CASE
+		      WHEN documents.imageUrl = documenttopicimages.imageUrl1 THEN 0.0001
+		      WHEN documents.imageUrl = documenttopicimages.imageUrl2 THEN 0.0002
+		      WHEN documents.imageUrl = documenttopicimages.imageUrl3 THEN 0.0003
+		      WHEN documents.imageUrl = documenttopicimages.imageUrl4 THEN 0.0004
+			  ELSE documenttopics.documentDistance
+		   END AS [Document Distance With Topic Image]
+    FROM   bpst_news.documenttopics
+    LEFT OUTER JOIN documenttopicimages	ON documenttopics.topicid = documenttopicimages.topicid
+    INNER JOIN bpst_news.documents documents ON documenttopics.documentid = documents.id;
 go
 
 

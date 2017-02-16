@@ -34,6 +34,23 @@ namespace Microsoft.Deployment.Actions.Test.ActionsTest
             Assert.IsTrue(response.IsSuccess);
         }
 
+
+        [TestMethod]
+        public async Task DeployTwitterAzureFunction()
+        {
+            var dataStore = await TestHarness.GetCommonDataStoreWithUserToken();
+
+            dataStore.AddToDataStore("DeploymentName", "FunctionDeploymentTest");
+            dataStore.AddToDataStore("FunctionAppHostingPlan", "FunctionPlanName");
+            dataStore.AddToDataStore("SiteName", "unituestrialbpst" + randomString);
+
+            var response = TestHarness.ExecuteAction("Microsoft-DeployTwitterFunction", dataStore);
+            Assert.IsTrue(response.IsSuccess);
+
+            response = TestHarness.ExecuteAction("Microsoft-WaitForArmDeploymentStatus", dataStore);
+            Assert.IsTrue(response.IsSuccess);
+        }
+
         [TestMethod]
         public async Task DeployAzureFunctionAssets()
         {

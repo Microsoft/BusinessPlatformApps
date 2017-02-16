@@ -40,7 +40,7 @@ export class Salesforce extends ViewModelBase {
 
         this.isValidated = true;
         this.showValidation = true;
-        this.MS.DataStore.addToDataStore('SalesforceBaseUrl', salesforceLoginResponse.Body.serverUrl, DataStoreType.Public);
+        this.MS.DataStore.addToDataStore('SalesforceBaseUrl', salesforceLoginResponse.Body.serverUrlField, DataStoreType.Public);
 
         return true;
     }

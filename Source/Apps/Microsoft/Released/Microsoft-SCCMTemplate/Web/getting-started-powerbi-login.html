@@ -1,0 +1,78 @@
+﻿<template>
+    <require from="../../../../../SiteCommon/Web/directives/bpst-link.html"></require>
+
+    <!-- Heading -->
+    <h1 class="st-title">${MS.Translate.GETTING_STARTED_TITLE} ${templateName}</h1>
+    <p class="st-subtitle">${subtitle}</p>
+
+    <!-- Prerequisites -->
+    <bpst-link if.bind="prerequisitesDescription" a-description="${prerequisitesDescription}" a-link="${prerequisitesLink}" a-link-text="${prerequisiteLinkText}"></bpst-link>
+
+    <!-- Set Up -->
+    <div if.bind="list1.length > 0">
+        <p class="st-subtitle">${list1Title}</p>
+        <div class="st-text">
+            <ul>
+                <li repeat.for="list1Text of list1">${list1Text}</li>
+            </ul>
+            <p if.bind="showDownload">
+                ${MS.Translate.COMMON_SHOW_DOWNLOAD}
+            </p>
+        </div>
+    </div>
+
+    <!-- Architecture Diagram -->
+    <img class="st-diagram" src.bind="architectureDiagram">
+
+    <!-- Features -->
+    <div if.bind="list2.length > 0">
+        <p class="st-subtitle">${list2Title}</p>
+        <div class="st-text">
+            <ul>
+                <li repeat.for="list2Text of list2">${list2Text}</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Registration -->
+    <div class="st-text" if.bind="registration">
+        <p class"st-text">
+            <bpst-link a-description="${registration}" a-link="${registrationContactLink}" a-link-text="${registrationContactLinkText}"></bpst-link>
+        </p>
+
+        <p class="st-text">${MS.Translate.GETTING_STARTED_FIRST_NAME}</p>
+        <input class="st-input" type="text" disabled.bind="MS.HttpService.isServiceBusy" value.bind="registrationNameFirst" />
+
+        <p class="st-text">${MS.Translate.GETTING_STARTED_LAST_NAME}</p>
+        <input class="st-input" type="text" disabled.bind="MS.HttpService.isServiceBusy" value.bind="registrationNameLast" />
+
+        <p class="st-text">${MS.Translate.GETTING_STARTED_COMPANY}</p>
+        <input class="st-input" type="text" disabled.bind="MS.HttpService.isServiceBusy" value.bind="registrationCompany" />
+
+        <p class="st-text">${MS.Translate.GETTING_STARTED_EMAIL}</p>
+        <input class="st-input" type="text" disabled.bind="MS.HttpService.isServiceBusy" value.bind="registrationEmail" />
+
+        <p class="st-text">${MS.Translate.GETTING_STARTED_EMAIL_CONFIRMATION}</p>
+        <input class="st-input" type="text" disabled.bind="MS.HttpService.isServiceBusy" value.bind="registrationEmailConfirmation" />
+
+        <div class="st-label-wrapper">
+            <label class="st-label">
+                <input type="checkbox" tabindex="-1" checked.bind="registrationAccepted" disabled.bind="MS.HttpService.isServiceBusy">
+                <span class="smallFontSize">${registrationValidation}</span>
+            </label>
+        </div>
+
+        <button class="primary" click.trigger="Register()" disabled.bind="!registrationAccepted || MS.HttpService.isServiceBusy">${MS.Translate.COMMON_REGISTER}</button>
+
+        <p class="smallFontSize">
+            <bpst-link a-description="${registrationPrivacy}" a-link="${registrationLink}" a-link-text="${registrationPrivacyTitle}" a-description2="${MS.Translate.COMMON_AND}" a-link2="${registrationEulaLink}" a-link-text2="${registrationEulaLinkText}"></bpst-link>
+        <p>
+    </div>
+
+    <!-- Power BI Login -->
+    <div>
+        <p class="st-nav-buttons">
+            <button class="primary" click.delegate="connect()" disabled.bind="MS.HttpService.isServiceBusy" if.bind="!isAuthenticated">Login</button>
+        </p>
+    </div>
+</template>

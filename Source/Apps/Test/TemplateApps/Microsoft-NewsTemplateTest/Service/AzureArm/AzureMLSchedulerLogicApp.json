@@ -40,8 +40,8 @@
           "triggers": {
             "Recurrence": {
               "recurrence": {
-                "frequency": "Day",
-                "interval": 1,
+                "frequency": "Hour",
+                "interval": 3,
                 "startTime": "26 Oct 2016 01:00:00",
                 "timeZone": "Pacific Standard Time"
               },

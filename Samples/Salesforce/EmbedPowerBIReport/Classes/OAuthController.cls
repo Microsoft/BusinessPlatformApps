@@ -41,10 +41,12 @@ public virtual class OAuthController {
         
     public String PBIexpires_on { 
         get {
-            this.expires_On = OAuthApp_pbi__c.getValues(this.application_name).Token_Expires_On__c;
+            Cookie pbi_ExpiresOn= ApexPages.currentPage().getCookies().get('pbi_ExpiresOn');
+            if(pbi_ExpiresOn== null)
+                this.expires_on= '';
+            else
+                this.expires_on= pbi_ExpiresOn.getValue();
             
-            if(this.expires_On == null)
-                this.expires_On = '';
             return this.expires_on;
         } 
         set;
@@ -121,12 +123,10 @@ public virtual class OAuthController {
     * @return The oauth result
     */
     public PageReference refreshAccessToken(PageReference location){
-    	OAuthApp_pbi__c app = OAuthApp_pbi__c.getValues(this.application_name);
-        app.Token_Expires_On__c = null;
-        update app;
+        Cookie accessToken = new Cookie('pbi_AccessToken', '',null,0,false);
+        Cookie expiresOn = new Cookie('pbi_ExpiresOn','',null,0,false);
             
-		Cookie accessToken = new Cookie('pbi_AccessToken', '',null,0,false);
-        ApexPages.currentPage().setCookies(new Cookie[]{accessToken});
+        ApexPages.currentPage().setCookies(new Cookie[]{accessToken,expiresOn}); 
             
         String client_id = OAuthApp_pbi__c.getValues(this.application_name).Client_Id__c;
         String client_secret = OAuthApp_pbi__c.getValues(this.application_name).Client_Secret__c;
@@ -153,22 +153,14 @@ public virtual class OAuthController {
         req.setBody(body);
 
         HttpResponse res = h.send(req);
-        
-        if(res.getStatusCode() != 200)
-        {
-        	return null;
-        }
-        
+
         OAuthResult result = (OAuthResult)(JSON.deserialize(res.getBody(), OAuthResult.class));
         
+        Cookie refreshTokenCookie = new Cookie('pbi_RefreshToken', result.refresh_token,null,-1,false);        
         accessToken = new Cookie('pbi_AccessToken', result.access_token,null,-1,false);
-        Cookie refreshTokenCookie = new Cookie('pbi_RefreshToken', result.refresh_token,null,-1,false);
-
-        ApexPages.currentPage().setCookies(new Cookie[]{accessToken,refreshTokenCookie});   
+        expiresOn = new Cookie('pbi_ExpiresOn',result.expires_on,null,-1,false);
         
-        app = OAuthApp_pbi__c.getValues(this.application_name);
-        app.Token_Expires_On__c = result.expires_on;
-        update app;
+        ApexPages.currentPage().setCookies(new Cookie[]{accessToken,refreshTokenCookie,expiresOn});   
             
         return location;
     }
@@ -177,11 +169,12 @@ public virtual class OAuthController {
     * Generic constructor
     */
     public OAuthController() {
-    this.isCallback = ApexPages.currentPage().getParameters().containsKey('code');				
+    this.isCallback = ApexPages.currentPage().getParameters().containsKey('code');              
 
         if (OAuthApp_pbi__c.getValues(this.application_name) != null) {
             Cookie pbi_AccessToken = ApexPages.currentPage().getCookies().get('pbi_AccessToken');
             Cookie pbi_RefreshToken = ApexPages.currentPage().getCookies().get('pbi_RefreshToken');
+            Cookie pbi_ExpiresOn = ApexPages.currentPage().getCookies().get('pbi_ExpiresOn');
          
          if(pbi_AccessToken == null)
              this.access_token = '';
@@ -192,6 +185,11 @@ public virtual class OAuthController {
              this.refresh_token= '';
          else
             this.refresh_token = pbi_RefreshToken.getValue();
+            
+         if(pbi_ExpiresOn == null)
+             this.expires_on = '';
+         else
+             this.expires_on = pbi_ExpiresOn.getValue();
         }
     }
 
@@ -234,33 +232,20 @@ public virtual class OAuthController {
     * @param location Where to redirect to after success
     * @return null to refresh the page
     */
-    public PageReference redirectOnCallback(PageReference location) {
-          Long expiresOn;
-    
-    if(PBIexpires_on != '')
-    {
-        expiresOn = Integer.valueOf(PBIexpires_on);
-    } else expiresOn = 0;
-         
-    DateTime currentTime = DateTime.now();
-    
-        if ((this.isCallback && ((expiresOn - 2000) < currentTime.getTime()/1000)) || (this.isCallback && this.PBIaccess_token == '')) {
+       public PageReference redirectOnCallback(PageReference location) {
+        if (this.isCallback)  {
             String code = ApexPages.currentPage().getParameters().get('code');
             OAuthResult result = validateCode(code, this.getPageUrl());
                                    
             //Store accesstoken in cookie
             Cookie accessToken = new Cookie('pbi_AccessToken', result.access_token,null,-1,false);
             Cookie refreshToken = new Cookie('pbi_RefreshToken', result.refresh_token,null,-1,false);
- 
-            ApexPages.currentPage().setCookies(new Cookie[]{accessToken,refreshToken}); 
+            Cookie expiresOn = new Cookie('pbi_ExpiresOn',result.expires_on,null,-1,false);
             
-            OAuthApp_pbi__c app = OAuthApp_pbi__c.getValues(this.application_name);
-            app.Token_Expires_On__c = result.expires_on;
-            update app;
-            
+            ApexPages.currentPage().setCookies(new Cookie[]{accessToken,refreshToken,expiresOn}); 
+
             return location;
         }
-
         return null;
     }
 }

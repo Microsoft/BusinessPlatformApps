@@ -7,6 +7,7 @@ import {activationStrategy} from 'aurelia-router';
 export class ViewModelBase {
     isActivated: boolean = false;
     isValidated: boolean = false;
+    isAuthenticated: boolean = true;
 
     showValidation: boolean = false;
     showValidationDetails: boolean = false;

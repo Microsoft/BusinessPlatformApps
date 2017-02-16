@@ -154,12 +154,12 @@ namespace Microsoft.Deployment.Actions.Test.TestHelpers
             Assert.IsTrue(subscriptionResult.IsSuccess);
             var subscriptionId =
                 subscriptionResult.Body.GetJObject()["value"].SingleOrDefault(
-                    p => p["DisplayName"].ToString() == "Project Essex");
+                    p => p["DisplayName"].ToString() == "Mohaali Prod");
             dataStore.AddToDataStore("SelectedSubscription", subscriptionId, DataStoreType.Public);
 
             var locationResult = await TestHarness.ExecuteActionAsync("Microsoft-GetLocations", dataStore);
             Assert.IsTrue(locationResult.IsSuccess);
-            var location = locationResult.Body.GetJObject()["value"][12];
+            var location = locationResult.Body.GetJObject()["value"][5];
             dataStore.AddToDataStore("SelectedLocation", location, DataStoreType.Public);
 
 
@@ -168,11 +168,6 @@ namespace Microsoft.Deployment.Actions.Test.TestHelpers
                 ResourceGroup = Environment.MachineName;
             }
 
-
-            if (System.Diagnostics.Debugger.IsAttached)
-            {
-                ResourceGroup = Environment.MachineName + RandomGenerator.GetRandomLowerCaseCharacters(5);
-            }
 
             dataStore.AddToDataStore("SelectedResourceGroup", ResourceGroup);
 

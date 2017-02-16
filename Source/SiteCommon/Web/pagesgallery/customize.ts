@@ -1,29 +1,18 @@
-import { ViewModelBase } from '../../../../../SiteCommon/Web/services/viewmodelbase';
-import {DataStoreType} from '../../../../../SiteCommon/Web/services/datastore';
+import { DataStoreType } from '../services/datastore';
+import { ViewModelBase } from '../services/viewmodelbase';
 
 export class Customize extends ViewModelBase {
-    actuals: string = '';
+    actuals: string = 'Closed opportunities';
+    baseUrl: string = '';
+    fiscalMonth: number = 1;
     emails: string = '';
-    emailRegex: RegExp;
-    fiscalMonth: string = '';
+    emailRegex: RegExp = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     pipelineFrequency: string = '';
     pipelineInterval: number;
-    recurrent: string = '';
-
-    constructor() {
-        super();
-        this.isValidated = false;
-        this.showValidation = false;
-        this.fiscalMonth = "January";
-        this.recurrent = "None";
-        this.actuals = "Closed opportunities";
-        this.emailRegex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-    }
-
-    async OnLoaded() {
-        this.isValidated = false;
-        this.showValidation = false;
-    }
+    recurrent: string = 'None';
+    showEmails: boolean = false;
+    showCrmUrl: boolean = false;
+    showRecurrenceOptions: boolean = false;
 
     async OnValidate(): Promise<boolean> {
         this.isValidated = false;
@@ -70,9 +59,6 @@ export class Customize extends ViewModelBase {
                 break;
         }
 
-        this.MS.DataStore.addToDataStore("fiscalMonth", this.fiscalMonth, DataStoreType.Public);
-        this.MS.DataStore.addToDataStore("actuals", this.actuals, DataStoreType.Public);
-
         this.MS.DataStore.addToDataStore('EmailAddresses', this.emails, DataStoreType.Public);
         this.MS.DataStore.addToDataStore('pipelineStart', null, DataStoreType.Public);
         this.MS.DataStore.addToDataStore('pipelineEnd', null, DataStoreType.Public);
@@ -93,8 +79,34 @@ export class Customize extends ViewModelBase {
         this.MS.DataStore.addToDataStore('pipelineEnd', '', DataStoreType.Public);
         this.MS.DataStore.addToDataStore('pipelineType', "PreDeployment", DataStoreType.Public);
 
+        let url = this.MS.DataStore.getValue('SalesforceBaseUrl');
+
+        if (url && url.split('/').length >= 3) {
+            let urlParts = url.split('/');
+            this.baseUrl = urlParts[0] + '//' + urlParts[2] + '/';
+        }
+
         this.isValidated = true;
         this.showValidation = true;
+        return true;
+    }
+
+    async NavigatingNext(): Promise<boolean> {
+        this.MS.DataStore.addToDataStoreWithCustomRoute('CustomizeActuals', 'SqlGroup', 'data', DataStoreType.Public);
+        this.MS.DataStore.addToDataStoreWithCustomRoute('CustomizeActuals', 'SqlSubGroup', 'actual_sales', DataStoreType.Public);
+        this.MS.DataStore.addToDataStoreWithCustomRoute('CustomizeActuals', 'SqlEntryName', 'enabled', DataStoreType.Public);
+        this.MS.DataStore.addToDataStoreWithCustomRoute('CustomizeActuals', 'SqlEntryValue', this.actuals === "Closed opportunities" ? 0 : 1, DataStoreType.Public);
+
+        this.MS.DataStore.addToDataStoreWithCustomRoute('CustomizeBaseUrl', 'SqlGroup', 'SolutionTemplate', DataStoreType.Public);
+        this.MS.DataStore.addToDataStoreWithCustomRoute('CustomizeBaseUrl', 'SqlSubGroup', 'SalesManagement', DataStoreType.Public);
+        this.MS.DataStore.addToDataStoreWithCustomRoute('CustomizeBaseUrl', 'SqlEntryName', 'BaseURL', DataStoreType.Public);
+        this.MS.DataStore.addToDataStoreWithCustomRoute('CustomizeBaseUrl', 'SqlEntryValue', this.baseUrl, DataStoreType.Public);
+
+        this.MS.DataStore.addToDataStoreWithCustomRoute('CustomizeFiscalMonth', 'SqlGroup', 'SolutionTemplate', DataStoreType.Public);
+        this.MS.DataStore.addToDataStoreWithCustomRoute('CustomizeFiscalMonth', 'SqlSubGroup', 'SalesManagement', DataStoreType.Public);
+        this.MS.DataStore.addToDataStoreWithCustomRoute('CustomizeFiscalMonth', 'SqlEntryName', 'FiscalMonthStart', DataStoreType.Public);
+        this.MS.DataStore.addToDataStoreWithCustomRoute('CustomizeFiscalMonth', 'SqlEntryValue', this.fiscalMonth, DataStoreType.Public);
+
         return true;
     }
 }
