@@ -86,8 +86,8 @@
       <HintPath>..\packages\Microsoft.Data.Services.Client.5.8.1\lib\net40\Microsoft.Data.Services.Client.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Microsoft.Deployment.Common, Version=1.0.6246.32824, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.Deployment.Common.1.4.3-CI201702061813\lib\net452\Microsoft.Deployment.Common.dll</HintPath>
+    <Reference Include="Microsoft.Deployment.Common, Version=1.0.6247.19916, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Deployment.Common.1.4.3-CI201702071103\lib\net452\Microsoft.Deployment.Common.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Microsoft.IdentityModel.Clients.ActiveDirectory">
