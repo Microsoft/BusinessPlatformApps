@@ -19,21 +19,20 @@ let accessToken = '{!PBIaccess_token}';
 let refreshToken = '{!PBIrefresh_token}';
 let expires_on = '{!PBIexpires_on}';
 let selectedReport = 'YOURREPORTID';
-
 window.onload = function() {
-    
+
+
 let expiresOn = parseInt(expires_on);
 let currentTime = Date.now()/1000;
     
-    if(!accessToken || currentTime > expiresOn)
-    {
+    if(expiresOn <= currentTime || !accessToken)
+    { 
         window.location.href = '{!authUrl}';
-    } else if(expiresOn <= currentTime)
+    } else if((expiresOn - 2000) <= currentTime)
            {
                 refreshAccessToken();
-                location.reload(true);
            }
- }
+ 
 
 var filter = {
       $schema: "http://powerbi.com/product/schema#basic"
@@ -63,6 +62,7 @@ powerbi.accessToken = '{!PBIaccess_token}';
 var element = document.getElementById('myReport');
 
 var report = powerbi.embed(element, embedConfiguration);
+}
 
 </script>
 </html>
