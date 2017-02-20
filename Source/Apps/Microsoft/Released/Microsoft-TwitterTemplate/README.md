@@ -10,7 +10,7 @@ Brand & Campaign Management Solution Template Documentation
 6. [Model Schema] (#model-schema)
 7. [Reports Walkthrough](#report-walkthrough)
 8. [Customizations](#customizations)
-9. [Pricing] (#pricing)
+9. [Estimated Costs] (#estimated-costs)
 
 
 
