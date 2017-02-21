@@ -37,28 +37,28 @@
             }
         ],
         "Pages": [
-            {
-                "architectureDiagram": "dist/Apps/Microsoft/Released/Microsoft-CRMSalesManagement/Web/Images/crm-sales-management.png",
-                "displayname": "Getting Started",
-                "list1": [
-                    "December 2016 update for Microsoft Dynamics 365 (online) or a later instance",
-                    "You must be a Dynamics 365 Administrator",
-                    "A valid Azure subscription in the same Azure tenant as the Dynamics 365 instance",
-                    "The target Azure Database must support the volume of data being replicated from your Dynamics 365 instance",
-                    "Power BI Desktop (latest version)",
-                    "Power BI Pro (to share the template with your organization)"
-                ],
-                "list2": [
-                    "Full cloud solution with minimum set up and maintenance considerations",
-                    "Data pulled from Dynamics 365 into an Azure SQL Database using the Dynamics 365 Export Service",
-                    "Connect to Azure SQL and import data into Power BI"
-                ],
-                "name": "$SiteCommon$/pagesgallery/getting-started.html",
-                "prerequisiteDescription": "Lorem ipsum",
-                "prerequisiteLink": "https://www.bing.com",
-                "prerequisiteLinkText": "link",
-                "templateName": "Professional Services for Dynamics 365"
-            },
+          {
+            "architectureDiagram": "dist/Apps/Microsoft/Released/Microsoft-CRMSalesManagement/Web/Images/crm-sales-management.png",
+            "displayname": "Getting Started",
+            "list1": [
+              "December 2016 update for Microsoft Dynamics 365 (online) or a later instance",
+              "You must be a Dynamics 365 Administrator",
+              "A valid Azure subscription in the same Azure tenant as the Dynamics 365 instance",
+              "The target Azure Database must support the volume of data being replicated from your Dynamics 365 instance",
+              "Power BI Desktop (latest version)",
+              "Power BI Pro (to share the template with your organization)"
+            ],
+            "list2": [
+              "Full cloud solution with minimum set up and maintenance considerations",
+              "Data pulled from Dynamics 365 into an Azure SQL Database using the Dynamics 365 Export Service",
+              "Connect to Azure SQL and import data into Power BI"
+            ],
+            "name": "$SiteCommon$/pagesgallery/getting-started.html",
+            "prerequisiteDescription": "In order to use this solution template you will first need to enable change tracking using",
+            "prerequisiteLink": "https://www.microsoft.com/en-us/download/details.aspx?id=54769",
+            "prerequisiteLinkText": "this installer",
+            "templateName": "Professional Services for Dynamics 365"
+          },
             {
                 "displayname": "Dynamics 365 Login",
                 "entities": "systemuser, salesorderdetail, salesorder, quotedetail, quote, opportunity, msdyn_transactioncategory, msdyn_timeentry, msdyn_resourcerequirementdetail, msdyn_resourcerequirement, msdyn_resourcerequest, msdyn_project, msdyn_organizationalunit, msdyn_orderlineresourcecategory, msdyn_estimateline, msdyn_actual, bookingstatus, bookableresourcecategoryassn, bookableresourcecategory, bookableresourcebooking, bookableresource, account",

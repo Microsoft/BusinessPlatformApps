@@ -9,7 +9,6 @@ export class AzureLogin extends ViewModelBase {
     azureConnection = AzureConnection;
     azureDirectory: string = '';
     connectionType: AzureConnection = AzureConnection.Organizational;
-    isPricingChecked: boolean = false;
     oauthType: string = '';
     selectedResourceGroup: string = `SolutionTemplate-${this.MS.UtilityService.GetUniqueId(5)}`;
     selectedSubscriptionId: string = '';
@@ -19,13 +18,14 @@ export class AzureLogin extends ViewModelBase {
     defaultLocation: number = 5;
 
     //News Specific Variables for Azure
-    isBingChecked: boolean = false;
     bingUrl: string = '';
     bingtermsofuse: string = '';
 
     // Variables to override
     pricingUrl: string = '';
     pricingCost: string = '';
+    pricingCalculator: string = '';
+    pricingCalculatorUrl: string = '';
 
     constructor() {
         super();
@@ -64,6 +64,8 @@ export class AzureLogin extends ViewModelBase {
                             this.MS.ErrorService.message = this.MS.Translate.AZURE_LOGIN_SUBSCRIPTION_ERROR;
                         } else {
                             this.showPricingConfirmation = true;
+                            this.isValidated = true;
+                            this.showValidation = true;
                             await this.MS.HttpService.executeAsync('Microsoft-PowerBiLogin');
                         }
                     }
@@ -81,14 +83,6 @@ export class AzureLogin extends ViewModelBase {
 
     AzurePricingClicked() {
         this.MS.LoggerService.TrackEvent('AzurePricingClicked');
-    }
-
-    verifyBing() {
-        this.isValidated = this.isBingChecked && this.isPricingChecked;
-    }
-
-    verifyPricing() {
-        this.isValidated = (this.bingUrl && this.isPricingChecked && this.isBingChecked) || (!this.bingUrl && this.isPricingChecked);
     }
 
     async connect() {

@@ -1,30 +1,23 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.Deployment.Common.Helpers;
-
+﻿
 namespace Microsoft.Deployment.Common.ActionModel
 {
+    using ErrorResources;
+    using Helpers;
+    using System;
+
+    // TODO: rename variables since this is about error messages not codes
     public class ActionResponseExceptionDetail
     {
         public Exception ExceptionCaught = null;
-
-        public string LogLocation { get; set; }  = string.Empty;
-
-        public string FriendlyMessageCode { get; set; }
+        public string LogLocation = string.Empty;
+        public string FriendlyMessageCode;
 
         public string FriendlyErrorMessage
         {
             get
             {
-                if (this.FriendlyMessageCode == null)
-                {
-                    return string.Empty;
-                }
-
-                return ErrorUtility.GetErrorCode(this.FriendlyMessageCode);
+                
+                return this.FriendlyMessageCode == null ? EnglishErrorCodes.DefaultErrorCode : ErrorUtility.GetErrorCode(this.FriendlyMessageCode);
             }
         }
 

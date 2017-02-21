@@ -39,58 +39,6 @@ AS
 go  
 
 
--- ActualSalesView
-CREATE VIEW smgt.actualsalesview
-AS
-  SELECT invoiceid                              AS [Invoice Id],
-         actualsales                            AS [Actual Sales],
-         CONVERT(DATE, invoicedate)             AS [Invoice Date],
-         CONVERT(UNIQUEIDENTIFIER, [accountid]) AS [Account Id],
-         CONVERT(UNIQUEIDENTIFIER, [productid]) AS [Product Id]
-  FROM   smgt.actualsales
-  WHERE  EXISTS (SELECT *
-                 FROM   smgt.[configuration]
-                 WHERE  configuration_group = 'DATA' AND configuration_subgroup = 'actual_sales' AND [name] = 'enabled' AND value = '1')
-  UNION ALL
-  -- This gets the Opportunity's OpportunityProducts that can be prorated.
-  SELECT CONVERT(VARCHAR(50), op.opportunityproductid)                        AS [Invoice Id],
-         CASE
-             WHEN o.totallineitemamount_base = 0 THEN NULL
-             ELSE op.baseamount_base * o.actualvalue_base / o.totallineitemamount_base
-         END                                                                  AS [Actual Sales],   -- Allocate line items based on ratio to actual total
-         CONVERT(DATE, o.actualclosedate)                                     AS [Invoice Date],
-         CONVERT(UNIQUEIDENTIFIER, o.parentaccountid)                         AS [Account ID],
-         CONVERT(UNIQUEIDENTIFIER, op.productid)                              AS [Product ID]
-  FROM   dbo.opportunity AS o INNER JOIN dbo.opportunityproduct AS op ON o.opportunityid = op.opportunityid
-                              LEFT OUTER JOIN dbo.StatusMetadata sm ON o.statecode=sm.[State] AND
-                                              sm.IsUserLocalizedLabel=0 AND sm.LocalizedLabelLanguageCode=1033 AND
-                                              sm.EntityName='opportunity' COLLATE Latin1_General_100_CI_AS 
-  WHERE  sm.LocalizedLabel = 'Won' AND
-         op.baseamount_base > 0 AND
-         op.baseamount_base IS NOT NULL AND
-         NOT EXISTS (SELECT *
-                     FROM   smgt.[configuration]
-                     WHERE  configuration_group = 'DATA' AND configuration_subgroup = 'actual_sales' AND [name] = 'enabled' AND [value] = '1')
-  UNION ALL
-  -- This gets the Opportunities for which there are no OpportunityProducts that can be used
-  SELECT CONVERT(VARCHAR(50), o.opportunityid)        AS [Invoice Id],
-         o.actualvalue_base                           AS [Actual Sales],
-         CONVERT(DATE, o.actualclosedate)             AS [Invoice Date],
-         CONVERT(UNIQUEIDENTIFIER, o.parentaccountid) AS [Account ID],
-         NULL                                         AS [Product ID]
-  FROM   dbo.opportunity AS o LEFT OUTER JOIN dbo.StatusMetadata sm ON o.statecode=sm.[State] AND
-                                              sm.IsUserLocalizedLabel=0 AND sm.LocalizedLabelLanguageCode=1033 AND
-                                              sm.EntityName='opportunity' COLLATE Latin1_General_100_CI_AS
-  WHERE  sm.LocalizedLabel = 'Won' AND
-         NOT EXISTS (SELECT *
-                     FROM   opportunityproduct op
-                     WHERE  op.opportunityid = o.opportunityid AND op.baseamount_base > 0) AND
-         NOT EXISTS (SELECT *
-                     FROM   smgt.[configuration]
-                     WHERE  configuration_group = 'DATA' AND configuration_subgroup = 'actual_sales' AND [name] = 'enabled' AND [value] = '1');
-go
-
-
 -- BusinessUnitView
 CREATE VIEW smgt.businessunitview
 AS
@@ -164,7 +112,7 @@ AS
 go
 
 -- LeadView
-CREATE VIEW smgt.leadview
+CREATE VIEW [smgt].[leadview]
 AS
     SELECT estimatedamount               AS [Estimated Amount],
            osm1.LocalizedLabel           AS [Status],
@@ -174,14 +122,19 @@ AS
            leadid                        AS [Lead Id],
            estimatedamount_base          AS [Estimated Amount Base],
            ownerid                       AS [Owner Id],
-           osm3.LocalizedLabel           AS [State Code],
+           osm3.LocalizedLabel           AS [State],
            campaignid                    AS [Campaign Id],
            estimatedclosedate            AS [Estimated Close Date],
            osm4.LocalizedLabel           AS [Lead Source Name],
            osm5.LocalizedLabel           AS [Industry Name],
            osm6.LocalizedLabel           AS [Purchase Time Frame],
-           createdon                     AS [Created On],
-           companyname                   AS [Company Name]
+           Convert(date,createdon)       AS [Created On],
+           companyname                   AS [Company Name],
+           lastname                      AS [Last Name],
+           firstname                     AS [First Name],
+           emailaddress1                 AS [Email],
+           address1_city                 AS [City],
+           address1_country              AS [Country]
   FROM     dbo.lead LEFT OUTER JOIN dbo.StatusMetadata osm1 ON lead.statuscode=osm1.[Status] AND osm1.IsUserLocalizedLabel=0 AND osm1.LocalizedLabelLanguageCode=1033 AND osm1.EntityName='lead' COLLATE Latin1_General_100_CI_AS
                     LEFT OUTER JOIN dbo.OptionSetMetadata osm2 ON lead.leadqualitycode=osm2.[Option] AND osm2.OptionSetName='leadqualitycode' COLLATE Latin1_General_100_CI_AS AND osm2.IsUserLocalizedLabel=0 AND osm2.LocalizedLabelLanguageCode=1033 AND osm2.EntityName='lead' COLLATE Latin1_General_100_CI_AS
                     LEFT OUTER JOIN dbo.StateMetadata osm3 ON lead.statecode=osm3.[State] AND osm3.IsUserLocalizedLabel=0 AND osm3.LocalizedLabelLanguageCode=1033 AND osm3.EntityName='lead' COLLATE Latin1_General_100_CI_AS
@@ -209,11 +162,12 @@ go
 
 
 -- OpportunityView
-CREATE VIEW smgt.opportunityview
+CREATE VIEW [smgt].[opportunityview]
 AS
     SELECT  o.opportunityid                     AS [Opportunity Id],
             o.NAME                              AS [Opportunity Name],
             o.ownerid                           AS [Owner Id],
+            CONVERT(DATE, o.createdon)          AS [Created Date],
             CONVERT(DATE, o.actualclosedate)    AS [Actual Close Date],
             CONVERT(DATE, o.estimatedclosedate) AS [Estimated Close Date],
             o.closeprobability                  AS [Close Probability],
@@ -223,6 +177,8 @@ AS
             END                                 AS [Account Id],
             o.actualvalue                       AS [Actual Value],
             o.estimatedvalue                    AS [Estimated Value],
+            o.estimatedvalue* o.closeprobability/100.0
+			                                    AS [Expected Value],
             osm1.LocalizedLabel                 AS [Status],
             CASE
                 WHEN stepname IS NULL OR Charindex('-', o.stepname) = 0 THEN NULL
@@ -237,6 +193,7 @@ AS
                              LEFT OUTER JOIN dbo.StateMetadata osm2 ON o.statecode=osm2.[State] AND osm2.IsUserLocalizedLabel=0 AND osm2.LocalizedLabelLanguageCode=1033 AND osm2.EntityName='opportunity' COLLATE Latin1_General_100_CI_AS
                              LEFT OUTER JOIN dbo.OptionSetMetadata osm3 ON o.opportunityratingcode=osm3.[Option] AND osm3.OptionSetName='opportunityratingcode'  COLLATE Latin1_General_100_CI_AS AND osm3.IsUserLocalizedLabel=0 AND osm3.LocalizedLabelLanguageCode=1033 AND osm3.EntityName='opportunity' COLLATE Latin1_General_100_CI_AS;
 go
+
 
 -- ProductView
 CREATE VIEW smgt.productview
@@ -277,27 +234,6 @@ AS
                                       LEFT OUTER JOIN dbo.product AS d ON d.productid = level3;
 go
 
-
--- QuotaView
-CREATE VIEW smgt.quotaview
-AS
-    SELECT [amount]                               AS [Amount],
-           CONVERT(DATE, [date], 101)             AS [Date],
-           CONVERT(UNIQUEIDENTIFIER, [ownerid])   AS [Owner Id],
-           CONVERT(UNIQUEIDENTIFIER, [productid]) AS [Product Id]
-    FROM   smgt.quotas;
-go
-
--- TargetView
-CREATE VIEW smgt.targetview
-AS
-    SELECT CONVERT(UNIQUEIDENTIFIER, productid)      AS [Product Id],
-           CONVERT(UNIQUEIDENTIFIER, businessunitid) AS [Business Unit Id],
-           CONVERT(UNIQUEIDENTIFIER, territoryid)    AS [Territory Id],
-           [target]                                  AS [Target],
-           CONVERT(DATE, [date], 101)                AS [Date]
-    FROM   smgt.targets;
-go
 
 -- TempUserView
 CREATE VIEW smgt.tempuserview

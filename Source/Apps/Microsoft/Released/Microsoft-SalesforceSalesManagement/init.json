@@ -25,7 +25,9 @@
         "name": "$SiteCommon$/pagesgallery/azure-login.html",
         "displayname": "Azure",
         "pricingUrl": "https://github.com/Microsoft/BusinessPlatformApps/tree/master/Source/Apps/Microsoft/Released/Microsoft-SalesforceSalesManagement#azure-data-factory-pricing",
-        "pricingCost": "$('By deploying the template you authorize the creation of Azure resources on your subscription. The base cost of these services is approximately $1.50 a day. The cost will vary with the amount of data that will be moved.')"
+        "pricingCost": "$run('By clicking next and deploying the template, you authorize Microsoft to create Azure resources on your subscription and bill based on their respective pricing rates. The approximate base cost of the Azure resources used by this template is $1.50 a day. The cost will vary with the amount of data that will be moved. These costs are estimates only and subject to change.')",
+        "pricingCalculatorUrl": "https://azure.microsoft.com/en-us/pricing/calculator/"
+
       },
       {
         "name": "$SiteCommon$/pagesgallery/salesforce-login.html",
@@ -43,8 +45,10 @@
         "newSqlDatabase": "SalesforceDB"
       },
       {
-        "name": "customize.html",
-        "displayname": "Customize"
+        "name": "$SiteCommon$/pagesgallery/customize.html",
+        "displayname": "Customize",
+        "showEmails": true,
+        "showRecurrenceOptions": true
       },
       {
         "name": "$SiteCommon$/pagesgallery/summary.html",
@@ -73,48 +77,54 @@
     "Actions": [
       {
         "name": "Microsoft-DeploySQLScripts",
-        "displayname": "Deploy DB Scripts",
+        "displayname": "Deploying database scripts",
         "SqlServerIndex": "0",
         "SqlScriptsFolder": "Service/Database/Cleanup"
       },
       {
         "name": "Microsoft-SalesforceGetObjectMetadata",
-        "displayname": "Retrieve metadata from Salesforce"
+        "displayname": "Retrieving metadata from Salesforce"
       },
       {
         "name": "Microsoft-SalesforceSqlArtefacts",
-        "displayname": "Create objects in SQL"
+        "displayname": "Creating tables in database"
       },
       {
         "name": "Microsoft-DeploySQLScripts",
-        "displayname": "Create DB relations",
+        "displayname": "Creating relations between tables",
         "SqlServerIndex": "0",
         "SqlScriptsFolder": "Service/Database/ADF"
       },
       {
-        "name": "Microsoft-ADFDeployLinkedServicesAndSqlCustomizations",
-        "displayname": "Creating linked services",
+        "name": "Microsoft-SetConfigValueInSql",
+        "displayname": "Seting configuration",
+        "SqlServerIndex": "0",
+        "SqlConfigTable": "[smgt].[configuration]"
+      },
+      {
+        "name": "Microsoft-ADFDeployLinkedServices",
+        "displayname": "Creating data connections",
         "DeploymentName": "ADFDeployment"
       },
       {
         "name": "Microsoft-ADFDeployDatasets",
-        "displayname": "Creating historical datasets",
+        "displayname": "Creating mappings to historical data",
         "DeploymentName": "ADFPreDeploymentDatasets"
       },
       {
         "name": "Microsoft-ADFDeployPipelines",
-        "displayname": "Creating historical pipelines",
+        "displayname": "Scheduling one time data load for historical data",
         "DeploymentName": "ADFPreDeploymentPipeline"
       },
       {
         "name": "Microsoft-ADFDeployDatasets",
-        "displayname": "Creating current datasets",
+        "displayname": "Creating mappings to future data",
         "DeploymentName": "ADFPostDeploymentDatasets",
         "postDeploymentPipelineType": "PostDeployment"
       },
       {
         "name": "Microsoft-ADFDeployPipelines",
-        "displayname": "Creating current pipelines",
+        "displayname": "Scheduling data loads for future data ",
         "DeploymentName": "ADFPostDeploymentPipeline",
         "postDeploymentPipelineType": "PostDeployment"
       },

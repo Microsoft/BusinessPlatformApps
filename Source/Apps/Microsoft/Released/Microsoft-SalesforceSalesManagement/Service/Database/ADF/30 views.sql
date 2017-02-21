@@ -35,51 +35,7 @@ AS
          NULL    AS [Annual Revenue]
   FROM   dbo.Opportunity
   WHERE  ( isdeleted=0 AND accountid IS NULL );
-go  
-
-
--- ActualSalesView
-CREATE VIEW smgt.actualsalesview
-AS
-  SELECT invoiceid   AS [Invoice Id],
-         actualsales AS [Actual Sales],
-         invoicedate AS [Invoice Date],
-         accountid   AS [Account Id],
-         productid   AS [Product Id]
-  FROM   smgt.actualsales
-  WHERE  EXISTS (SELECT *
-                 FROM   smgt.configuration
-                 WHERE  configuration_group = 'DATA' AND configuration_subgroup = 'actual_sales' AND [name] = 'enabled' AND value = '1')
-  UNION ALL
-  -- This gets the Opportunity's OpportunityLineItem if they exist. Salesforce does not allow the total to not match the
-  -- sum - so no prorating.
-  SELECT op.id         AS [Invoice Id],
-         op.totalprice AS [Actual Sales],
-         o.closedate   AS [Invoice Date],
-         o.accountid   AS [Account ID],
-         op.product2id AS [Product ID]
-  FROM   dbo.Opportunity AS o INNER JOIN dbo.OpportunityLineItem AS op ON o.id = op.opportunityid
-  WHERE  o.iswon = 1 AND NOT EXISTS (SELECT *
-                                     FROM   smgt.configuration
-                                     WHERE  configuration_group = 'DATA' AND configuration_subgroup = 'actual_sales' AND [name] = 'enabled' AND value = '1'
-                                    )
-  UNION ALL
-  -- This gets the Opportunities for which there are no OpportunityProducts that can be used
-  SELECT o.id        AS [Invoice Id],
-         o.amount    AS [Actual Sales],
-         o.closedate AS [Invoice Date],
-         o.accountid AS [Account ID],
-         NULL        AS [Product ID]
-  FROM   dbo.Opportunity AS o
-  WHERE  o.iswon = 1 AND
-         NOT EXISTS (SELECT *
-		 		     FROM   dbo.OpportunityLineItem op
-					 WHERE  op.opportunityid = o.id
-                    ) AND
-         NOT EXISTS (SELECT *
-                     FROM   smgt.configuration
-                     WHERE  configuration_group = 'DATA' AND configuration_subgroup = 'actual_sales' AND [name] = 'enabled' AND value = '1');
-go
+go 
 
 
 -- BusinessUnitView
@@ -146,7 +102,7 @@ AS
 go
 
 -- LeadView
-CREATE VIEW smgt.leadview
+CREATE VIEW [smgt].[leadview]
 AS
     SELECT NULL          AS [Estimated Amount],
            [status]      AS [Status],
@@ -156,17 +112,22 @@ AS
            id            AS [Lead Id],
            NULL          AS [Estimated Amount Base],
            ownerid       AS [Owner Id],
-           NULL          AS [State Code],
+           case when [status] like '%Not Converted%' then 'Disqualified' when [status] like '%Converted%' then 'Qualified' else 'Open' end
+		             AS [State],
            NULL          AS [Campaign Id],
            NULL          AS [Estimated Close Date],
            leadsource    AS [Lead Source Name],
            industry      AS [Industry Name],
            NULL          AS [Purchase Time Frame],
-           createddate   AS [Created On],
-           NULL          AS [Company Name]
+           convert(date, createddate)   AS [Created On],
+           company       AS [Company Name],
+           lastname      AS [Last Name],
+           firstname     AS [First Name],
+           email         AS [Email],
+		   city          AS [City],
+		   country       as [Country]
     FROM   dbo.Lead;
 go
-
 
 -- MeasuresView
 CREATE VIEW smgt.measuresview
@@ -186,11 +147,13 @@ go
 
 
 -- OpportunityView
-CREATE VIEW smgt.opportunityview
+CREATE VIEW [smgt].[opportunityview]
 AS
     SELECT o.id                    AS [Opportunity Id],
             o.NAME                 AS [Opportunity Name],
             o.ownerid              AS [Owner Id],
+			 CONVERT(DATE, o.createddate)
+			                       AS [Created Date],
             CASE
                 WHEN o.isclosed = 0 THEN NULL
                 ELSE CONVERT(DATE, o.closedate)
@@ -209,6 +172,7 @@ AS
                 ELSE o.amount
             END                    AS [Actual Value],
             o.amount               AS [Estimated Value],
+            o.expectedrevenue      AS [Expected Value],
             o.forecastcategoryname AS [Status],
             o.stagename            AS [Sales Stage],
             s.sortorder            AS [Sales Stage Code],
@@ -239,27 +203,6 @@ AS
     WHERE  isactive=1;
 go
 
-
--- QuotaView
-CREATE VIEW smgt.quotaview
-AS
-    SELECT amount                     AS Amount,
-            CONVERT(DATE, [date], 101) AS [Date],
-            ownerid                    AS [Owner Id],
-            productid                  AS [Product Id]
-    FROM   smgt.quotas;
-go
-
--- TargetView
-CREATE VIEW smgt.targetview
-AS
-  SELECT CONVERT(UNIQUEIDENTIFIER, productid)      AS [Product Id],
-         CONVERT(UNIQUEIDENTIFIER, businessunitid) AS [Business Unit Id],
-         CONVERT(UNIQUEIDENTIFIER, territoryid)    AS [Territory Id],
-         [target]                                  AS [Target],
-         CONVERT(DATE, [date], 101)                AS [Date]
-  FROM   smgt.targets;
-go
 
 -- TerritoryView
 CREATE VIEW smgt.territoryview

@@ -1,0 +1,23 @@
+﻿<template>
+    <require from="../../../../../SiteCommon/Web/directives/bpst-link.html"></require>
+
+    <h1 class="st-title">Connect to Cognitive Services</h1>
+    The Azure text analytics cognitive services enrich data through sentiment analysis and key phrase extraction. The Azure Bing News Search API finds articles based on a user's search query.
+    <p class="st-subtitle">
+    </p>
+    <label class="st-float st-text">
+        <input type="checkbox" tabindex="-1" change.delegate="verifyBing()" checked.bind="isBingChecked" disabled.bind="MS.HttpService.isServiceBusy">
+        <span class="st-text">By ticking this box you consent to Bing's Terms of Use.</span>
+    </label>
+    <p class="st-float st-text">
+        <bpst-link a-description="${MS.Translate.AZURE_LOGIN_BING_TEXT}" a-link="${bingUrl}" a-link-text="${MS.Translate.COMMON_HERE}"></bpst-link>
+    </p>
+    <label class="st-float st-text">
+        <input type="checkbox" tabindex="-1" change.delegate="verifyCognitive()" checked.bind="isCognitiveChecked" disabled.bind="MS.HttpService.isServiceBusy">
+        <span class="st-text">By ticking this box you consent to the Cognitive Services Terms of use.</span>
+    </label>
+    <p class="st-float st-text">
+        <bpst-link a-description="${MS.Translate.AZURE_LOGIN_COGNITIVE_TEXT}" a-link="${cognitiveUrl}" a-link-text="${MS.Translate.COMMON_HERE}"></bpst-link>
+    </p>
+
+</template>

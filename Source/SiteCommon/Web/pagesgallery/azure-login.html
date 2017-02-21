@@ -55,20 +55,13 @@
     <!-- Pricing Confirmation -->
     <div if.bind="showPricingConfirmation">
         <label class="st-float st-text">
-            <input type="checkbox" tabindex="-1" change.delegate="verifyPricing()" checked.bind="isPricingChecked" disabled.bind="MS.HttpService.isServiceBusy">
             <span class="st-text">${pricingCost}</span>
         </label>
         <p class="st-float st-text">
-            <bpst-link a-description="${MS.Translate.AZURE_LOGIN_PRICING_TEXT}" a-link="${pricingUrl}" a-link-text="${MS.Translate.COMMON_HERE}"></bpst-link>
+            <bpst-link a-description="${MS.Translate.AZURE_LOGIN_PRICING_TEXT}" a-link="${pricingCalculatorUrl}" a-link-text="${MS.Translate.COMMON_HERE}"></bpst-link>
         </p>
-        <div if.bind="bingUrl">
-            <label class="st-float st-text">
-                <input type="checkbox" tabindex="-1" change.delegate="verifyBing()" checked.bind="isBingChecked" disabled.bind="MS.HttpService.isServiceBusy">
-                <span class="st-text">${bingtermsofuse}</span>
-            </label>
-            <p class="st-float st-text">
-                <bpst-link a-description="${MS.Translate.AZURE_LOGIN_BING_TEXT}" a-link="${bingUrl}" a-link-text="${MS.Translate.COMMON_HERE}"></bpst-link>
-            </p>
+        <p class="st-float st-text">
+            <bpst-link a-description="${MS.Translate.AZURE_LOGIN_PRICING_CALCULATOR_TEXT}" a-link="${pricingUrl}" a-link-text="${MS.Translate.COMMON_HERE}"></bpst-link>
+        </p>
         </div>
-    </div>
 </template>

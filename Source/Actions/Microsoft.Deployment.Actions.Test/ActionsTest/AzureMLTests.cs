@@ -121,7 +121,7 @@ namespace Microsoft.Deployment.Actions.Test.ActionsTest
             var dataStore = await TestHarness.GetCommonDataStoreWithUserToken();
             var azureToken = dataStore.GetJson("AzureToken")["access_token"].ToString();
             var subscription = dataStore.GetJson("SelectedSubscription")["SubscriptionId"].ToString();
-            var resourceGroup = dataStore.GetValue("SelectedResourceGroup");
+            var resourceGroup = "twitterAML";//dataStore.GetValue("SelectedResourceGroup");
 
             ServiceClientCredentials creds = new TokenCredentials(azureToken);
             AzureMLWebServicesManagementClient client = new AzureMLWebServicesManagementClient(creds);

@@ -1,0 +1,77 @@
+{
+  "Install": {
+    "Pages": [
+      {
+        "name": "$SiteCommon$/pagesgallery/getting-started.html",
+        "displayname": "Getting Started",
+        "templateName": "Test Property",
+        "subtitle": "Test Subtitle",
+        "skip": "$save('true')",
+        "onNext": [
+          {
+            "name": "Microsoft-TestServiceAction",
+            "TargetSchema": "pbist",
+            "subtitle": "$save(this.subtitle)"
+          }
+        ]
+      },
+      {
+        "name": "$SiteCommon$/pagesgallery/cognitive-services.html",
+        "displayname": "Cognitive Api1",
+        "skip": "$ds(skip)"
+      },
+      {
+        "name": "$SiteCommon$/pagesgallery/twitter.html",
+        "displayname": "Twitter1",
+        "skip": "$ds(skip)"
+      },
+      {
+        "name": "$SiteCommon$/pagesgallery/search-terms.html",
+        "displayname": "Search Terms1",
+        "skip": "$ds(skip)"
+      },
+      {
+        "name": "$SiteCommon$/pagesgallery/cognitive-services.html",
+        "displayname": "Cognitive Api2",
+        "skip": "$ds(skip)"
+      },
+      {
+        "name": "$SiteCommon$/pagesgallery/twitter.html",
+        "displayname": "Twitter2",
+        "skip": "$ds(skip)"
+      },
+      {
+        "name": "$SiteCommon$/pagesgallery/search-terms.html",
+        "displayname": "Search Terms"
+      },
+      // Progress
+      {
+        "name": "$SiteCommon$/pagesgallery/progress.html",
+        "displayname": "Deploy"
+      }
+
+    ],
+    "Actions": [
+      {
+        "name": "Microsoft-TestServiceAction",
+        "displayname": "TestServiceAction",
+        "skip": "$ds(skip)"
+      },
+      {
+        "name": "Microsoft-TestServiceAction",
+        "displayname": "TestServiceAction",
+        "skip": "$ds(skip)"
+      },
+      {
+        "name": "Microsoft-TestServiceAction",
+        "displayname": "TestServiceAction",
+        "skip": "$ds(skip)"
+      },
+      {
+        "name": "Microsoft-TestServiceAction",
+        "displayname": "TestServiceAction"
+
+      }
+    ]
+  }
+}

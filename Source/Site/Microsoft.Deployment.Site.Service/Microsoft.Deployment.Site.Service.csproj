@@ -122,28 +122,28 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="Microsoft.Deployment.Actions.AzureCustom">
-      <HintPath>..\packages\Microsoft.Deployment.Actions.AzureCustom.1.4.3-CI201702062219\lib\net452\Microsoft.Deployment.Actions.AzureCustom.dll</HintPath>
+      <HintPath>..\packages\Microsoft.Deployment.Actions.AzureCustom.1.4.3-CI201702201056\lib\net452\Microsoft.Deployment.Actions.AzureCustom.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Deployment.Actions.Common">
-      <HintPath>..\packages\Microsoft.Deployment.Actions.Common.1.4.3-CI201702062219\lib\net452\Microsoft.Deployment.Actions.Common.dll</HintPath>
+      <HintPath>..\packages\Microsoft.Deployment.Actions.Common.1.4.3-CI201702201056\lib\net452\Microsoft.Deployment.Actions.Common.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Deployment.Actions.Custom">
-      <HintPath>..\packages\Microsoft.Deployment.Actions.Custom.1.4.3-CI201702062219\lib\net452\Microsoft.Deployment.Actions.Custom.dll</HintPath>
+      <HintPath>..\packages\Microsoft.Deployment.Actions.Custom.1.4.3-CI201702201056\lib\net452\Microsoft.Deployment.Actions.Custom.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Deployment.Actions.MsCrm">
-      <HintPath>..\packages\Microsoft.Deployment.Actions.MsCrm.1.4.3-CI201702062219\lib\net452\Microsoft.Deployment.Actions.MsCrm.dll</HintPath>
+      <HintPath>..\packages\Microsoft.Deployment.Actions.MsCrm.1.4.3-CI201702201056\lib\net452\Microsoft.Deployment.Actions.MsCrm.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Deployment.Actions.OnPremise">
-      <HintPath>..\packages\Microsoft.Deployment.Actions.OnPremise.1.4.3-CI201702062219\lib\net452\Microsoft.Deployment.Actions.OnPremise.dll</HintPath>
+      <HintPath>..\packages\Microsoft.Deployment.Actions.OnPremise.1.4.3-CI201702201056\lib\net452\Microsoft.Deployment.Actions.OnPremise.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Deployment.Actions.Salesforce">
-      <HintPath>..\packages\Microsoft.Deployment.Actions.Salesforce.1.4.3-CI201702062219\lib\net452\Microsoft.Deployment.Actions.Salesforce.dll</HintPath>
+      <HintPath>..\packages\Microsoft.Deployment.Actions.Salesforce.1.4.3-CI201702201056\lib\net452\Microsoft.Deployment.Actions.Salesforce.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Deployment.Actions.SQL">
-      <HintPath>..\packages\Microsoft.Deployment.Actions.SQL.1.4.3-CI201702062219\lib\net452\Microsoft.Deployment.Actions.SQL.dll</HintPath>
+      <HintPath>..\packages\Microsoft.Deployment.Actions.SQL.1.4.3-CI201702201056\lib\net452\Microsoft.Deployment.Actions.SQL.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Deployment.Common">
-      <HintPath>..\packages\Microsoft.Deployment.Common.1.4.3-CI201702062219\lib\net452\Microsoft.Deployment.Common.dll</HintPath>
+      <HintPath>..\packages\Microsoft.Deployment.Common.1.4.3-CI201702201056\lib\net452\Microsoft.Deployment.Common.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Extensions.Configuration, Version=1.1.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Extensions.Configuration.1.1.0\lib\netstandard1.1\Microsoft.Extensions.Configuration.dll</HintPath>

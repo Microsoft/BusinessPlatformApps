@@ -23,7 +23,7 @@ namespace Microsoft.Deployment.Site.Service
                 defaults: new { id = RouteParameter.Optional }
                 );
 
-            AppFactory appFactory = new AppFactory();
+            AppFactory appFactory = new AppFactory(true);
 
             CommonControllerModel = new CommonControllerModel()
             {

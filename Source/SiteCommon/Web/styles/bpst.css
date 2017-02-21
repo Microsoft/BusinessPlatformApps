@@ -279,7 +279,7 @@ ul {
 }
 
 .st-input[disabled] {
-    border-color:inherit;
+    border-color: inherit;
 }
 
 .st-input-column {
@@ -426,6 +426,17 @@ ul {
 
 .st-progress {
     line-height: 50px;
+}
+
+.st-progress-bar-wrapper {
+    border: 2px solid #000;
+    height: 40px;
+    width: 800px;
+}
+
+.st-progress-bar {
+    background-color: #F2C811;
+    height: 40px;
 }
 
 .st-progress-text {

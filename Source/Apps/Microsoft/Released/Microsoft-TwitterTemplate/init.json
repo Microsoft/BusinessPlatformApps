@@ -19,12 +19,13 @@
                 "subtitle": "Welcome to the brand and campaign management solution template.",
                 "templateName": "Brand and Campaign Management for Twitter"
             },
-            {
-                "displayname": "Login",
-                "name": "$SiteCommon$/pagesgallery/azure-login.html",
-                "pricingCost": "$('By deploying the template you authorize the creation of Azure resources on your subscription. The base cost of these services is $6 a day. Every 1000 tweets will incur an additional cost of approximately $0.80.')",
-                "pricingUrl": "https://github.com/Microsoft/BusinessPlatformApps/tree/master/Source/Apps/Microsoft/Released/Microsoft-TwitterTemplate#pricing"
-            },
+          {
+            "displayname": "Login",
+            "name": "$SiteCommon$/pagesgallery/azure-login.html",
+            "pricingCost": "$run('By clicking next and deploying the template, you authorize Microsoft to create Azure resources on your subscription and bill based on their respective pricing rates. The approximate base cost of the Azure resources used by this template is $6 a day, and every 1,000 tweets will incur an additional cost of approximately $0.8. These costs are estimates only and subject to change.')",
+            "pricingUrl": "https://github.com/Microsoft/BusinessPlatformApps/tree/master/Source/Apps/Microsoft/Released/Microsoft-TwitterTemplate#pricing",
+            "pricingCalculatorUrl": "https://azure.microsoft.com/en-us/pricing/calculator/"
+          },
             {
                 "name": "$SiteCommon$/pagesgallery/sql-server.html",
                 "displayname": "Source",
@@ -35,10 +36,6 @@
                 "title": "Connect to your SQL Database",
                 "sqlInstance": "NewSql",
                 "newSqlDatabase": "twitterDB"
-            },
-            {
-                "name": "$SiteCommon$/pagesgallery/cognitive-services.html",
-                "displayname": "Cognitive Api"
             },
             {
                 "name": "$SiteCommon$/pagesgallery/twitter.html",
@@ -64,57 +61,70 @@
             {
                 "name": "$SiteCommon$/pagesgallery/progress.html",
                 "displayname": "Deploy",
-                "uniqueId": "$(this.MS.UtilityService.GetUniqueId(18))",
-                "uniqueIdFunction": "$(this.MS.UtilityService.GetUniqueId(18), )",
-
+                "uniqueId": "$save(this.MS.UtilityService.GetUniqueId(18))",
+                "uniqueIdFunction": "$save(this.MS.UtilityService.GetUniqueId(18))",
                 "LogicAppHostingPlan": "$save(this.uniqueId)",
                 "LogicAppName": "$save(this.uniqueId)",
                 "LogicAppNameHistorical": "$save(this.uniqueId)",
                 "SiteName": "$save(this.uniqueIdFunction)",
                 "functionAppHostingPlan": "$save(this.uniqueIdFunction)",
-                "filename": "$save('TwitterTemplate.pbix')"
+                "filename": "$save('TwitterTemplate.pbix')",
+                "hasPowerApp": true,
+                "powerAppFileName": "TwitterTemplate.msapp"
             }
         ],
 
         "Actions": [
             {
                 "name": "Microsoft-DeploySQLScripts",
-                "displayname": "Deploy DB Scripts",
+                "displayname": "Deploying database scripts",
                 "SqlServerIndex": "0",
                 "SqlScriptsFolder": "Service/Database/LogicApps"
             },
             {
                 "name": "Microsoft-SetConfigValueInSql",
-                "displayname": "Deploy DB Configuration",
+                "displayname": "Deploying database configuration",
                 "SqlServerIndex": "0",
                 "SqlConfigTable": "[pbist_twitter].[configuration]"
             },
             {
-                "name": "Microsoft-DeployCognitiveServiceText",
-                "displayname": "Deploy Cognitive Service",
-                "DeploymentName": "Cognitive"
+                "displayname": "Deploying Logic App database",
+                "name": "Microsoft-ConfigurePowerAppTables"
             },
             {
-                "name": "Microsoft-GetCognitiveServiceKeys",
-                "displayname": "Deploy Cognitive Service Key"
+                "displayname": "Retrieving PowerApp environment",
+                "name": "Microsoft-GetPowerAppEnvironment"
+            },
+            {
+                "displayname": "Creating PowerApp SQL connection",
+                "name": "Microsoft-CreatePowerAppSqlConnection"
             },
             {
                 "name": "Microsoft-DeployTwitterFunction",
-                "displayname": "Deploy Twitter Function",
+                "displayname": "Deploying Twitter function",
                 "DeploymentName": "Function"
             },
             {
                 "name": "Microsoft-WaitForArmDeploymentStatus",
-                "displayname": "Validating Twitter Function",
+                "displayname": "Validating Twitter function",
                 "DeploymentName": "Function"
             },
             {
+                "name": "Microsoft-DeployAzureMLWebServiceFromFile",
+                "displayname": "Deploying Azure ML web service",
+                "DeploymentName": "AzureML",
+                "IsRequestResponse": true,
+                "CommitmentPlan": "commitmentplan",
+                "WebServiceFile": "Service/AzureArm/SentimentAnalysisWebServiceNew.json",
+                "WebServiceName": "$run('SentimentService' + this.MS.DataStore.getValue('uniqueId'))"
+            },
+            {
                 "name": "Microsoft-DeployTwitterCSharpFunctionAssets",
-                "displayname": "Deploy Twitter Function Assets"
+                "displayname": "Deploying Twitter function assets"
             },
             {
                 "name": "Microsoft-DeployTwitterHistoricalLogicApp",
-                "displayname": "Deploy Twitter Logic App",
+                "displayname": "Deploying Twitter logic app",
                 "DeploymentName": "LogicApp"
             },
             {
@@ -123,18 +133,46 @@
                 "DeploymentName": "LogicApp"
             },
             {
+                "name": "Microsoft-CreateConnectorToLogicApp",
+                "displayname": "Creating Logic App connector",
+                "DeploymentName": "sql",
+                "ConnectorName": "sql",
+                "ConnectorDisplayName": "SQLConnector",
+                "ConnectorPayload": {
+                    "authType": "windows",
+                    "database": "$ds(Database)",
+                    "password": "$ds(Password)",
+                    "server": "$ds(Server)",
+                    "username": "$ds(Username)"
+                }
+            },
+            {
+                "name": "Microsoft-UpdateBlobStorageConnector",
+                "displayname": "Updating Logic App connector",
+                "DeploymentName": "sql",
+                "ConnectorName": "sql",
+                "ConnectorDisplayName": "SQLConnector",
+                "ConnectorPayload": {
+                    "authType": "windows",
+                    "database": "$ds(Database)",
+                    "password": "$ds(Password)",
+                    "server": "$ds(Server)",
+                    "username": "$ds(Username)"
+                }
+            },
+            {
                 "name": "Microsoft-RunLogicAppHistorical",
-                "displayname": "Run Logic App Historical",
+                "displayname": "Running Logic App historical",
                 "DeploymentName": "LogicApp"
             },
             {
                 "name": "Microsoft-DeployTwitterLogicApp",
-                "displayname": "Deploy Twitter Logic App",
+                "displayname": "Deploying Twitter Logic App",
                 "DeploymentName": "LogicApp"
             },
             {
                 "name": "Microsoft-WaitForArmDeploymentStatus",
-                "displayname": "Validating Logic App",
+                "displayname": "Validating Twitter Logic App",
                 "DeploymentName": "LogicApp"
             }
         ]

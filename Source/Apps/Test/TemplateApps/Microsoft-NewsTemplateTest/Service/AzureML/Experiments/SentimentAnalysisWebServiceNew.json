@@ -1,0 +1,114 @@
+{
+  "properties": {
+    "packageType": "Graph",
+    "package": {
+      "nodes": {
+        "node1": {
+          "assetId": "asset1",
+          "parameters": {
+            "R Script": "# The script MUST contain a function named azureml_main\n# which is the entry point for this module.\n\n# imports up here can be used to \nimport pandas as pd\nimport nltk\nfrom nltk.sentiment.vader import SentimentIntensityAnalyzer\nfrom nltk import tokenize\nimport json\n\n\nnltk.download(info_or_id='punkt', download_dir='C:/users/client/nltk_data')\nnltk.download(info_or_id='vader_lexicon', download_dir='C:/users/client/nltk_data')\n\n# The entry point function can contain up to two input arguments:\n#   Param<dataframe1>: a pandas.DataFrame\n#   Param<dataframe2>: a pandas.DataFrame\ndef azureml_main(dataframe1 = None, dataframe2 = None):\n\n    text = dataframe1.Text[0]\n    lines_list = tokenize.sent_tokenize(\n        text)  # takes tweet text and takes out individual words and separates them into an array\n    sid = SentimentIntensityAnalyzer()  # instantiates the class that will do sentiment analysis\n    composite = 0  # initiates initial starting score\n    for line in lines_list:\n        ss = sid.polarity_scores(line)  # give you the sentiment for a line\n        composite += float(ss['compound'])  # adds up all the sentiments\n\n        # for now, just average the scores together\n        sentiment = composite / len(lines_list)  # finds average sentiment\n        \n    result = pd.DataFrame({\"text\" : [text],\n                          \"score\": [sentiment]},\n                            index = [1])\n    return result\n",
+            "Python Version": "Anaconda 4.0/Python 3.5"
+          }
+        },
+        "node2": {
+          "inputId": "input1"
+        },
+        "node3": {
+          "outputId": "output1"
+        }
+      },
+      "edges": [
+        {
+          "sourceNodeId": "node2",
+          "targetNodeId": "node1",
+          "targetPortId": "Dataset1"
+        },
+        {
+          "sourceNodeId": "node1",
+          "sourcePortId": "Result Dataset",
+          "targetNodeId": "node3"
+        }
+      ],
+      "graphParameters": {}
+    },
+    "title": "AML Tweet",
+    "description": "",
+    "readOnly": false,
+    "exposeSampleData": false,
+    "realtimeConfiguration": {
+      "maxConcurrentCalls": 20
+    },
+    "diagnostics": {
+      "level": "Error"
+    },
+    "storageAccount": {
+      "name": "twitteramlworkspastorage"
+    },
+    "input": {
+      "title": "",
+      "description": "",
+      "type": "object",
+      "properties": {
+        "input1": {
+          "title": "",
+          "description": "",
+          "type": "object",
+          "properties": {
+            "Text": {
+              "type": "String",
+              "format": "",
+              "x-ms-isnullable": false
+            }
+          }
+        }
+      }
+    },
+    "output": {
+      "title": "",
+      "description": "",
+      "type": "object",
+      "properties": {
+        "output1": {
+          "title": "",
+          "description": "",
+          "type": "object",
+          "properties": {
+            "score": {
+              "type": "Number",
+              "format": "Double",
+              "x-ms-isnullable": false
+            },
+            "text": {
+              "type": "String",
+              "format": "",
+              "x-ms-isnullable": false
+            }
+          }
+        }
+      }
+    },
+    "exampleRequest": {
+      "inputs": {
+        "input1": [
+          [
+            "RT @GameOfThrones: 2 days. #GameofThroneshttps://t.co/7slYhtamj2"
+          ]
+        ]
+      }
+    },
+    "assets": {
+      "asset1": {
+        "name": "Execute Python Script",
+        "type": "Module",
+        "locationInfo": {
+          "uri": "aml://module/506153734175476c4f62416c57734963.cdb56f957f4c404dbde75bb972e6f232.v1-default-1735",
+          "credentials": ""
+        }
+      }
+    },
+    "parameters": {}
+  },
+  "name": "PythonSentimentAnalysis",
+  "location": "South Central US",
+  "tags": {}
+}

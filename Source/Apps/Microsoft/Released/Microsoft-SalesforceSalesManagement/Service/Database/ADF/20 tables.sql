@@ -7,15 +7,6 @@ SET QUOTED_IDENTIFIER       ON;
 go
 
 /* SMGT specific schemas */
-CREATE TABLE smgt.actualsales
-(
-  invoiceid   VARCHAR(50) NULL,
-  actualsales DECIMAL NULL,
-  invoicedate DATE NULL,
-  accountid   VARCHAR(50) NULL,
-  productid   VARCHAR(50) NULL
-);
-
 
 CREATE TABLE smgt.configuration
 (
@@ -59,25 +50,6 @@ CREATE TABLE smgt.[date]
    fiscalyearcompletename    AS Concat('FY', Substring(CONVERT(VARCHAR, fiscal_year), 3, 2)),
    fiscalmonthcompletename   AS Concat(month_abbrev, ' ', Substring(CONVERT(VARCHAR, fiscal_year), 3, 2)),
    CONSTRAINT pk_dim_date PRIMARY KEY CLUSTERED (date_key)
-);
-
-
-CREATE TABLE smgt.quotas
-(
-  [amount]    DECIMAL(18, 0) NULL,
-  [date]      DATE NULL,
-  ownerid     VARCHAR(50) NULL,
-  productid   VARCHAR(50) NULL
-);
-
-
-CREATE TABLE smgt.targets
-(
-  productid      VARCHAR(50) NULL,
-  businessunitid VARCHAR(50) NULL,
-  territoryid    VARCHAR(50) NULL,
-  [target]       DECIMAL NULL,
-  [date]         DATE NULL
 );
 
 

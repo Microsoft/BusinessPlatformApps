@@ -11,10 +11,11 @@ export class DeploymentService {
     actions: any[] = [];
     executingIndex: number = -1;
     executingAction: any = {};
+    experienceType: ExperienceType;
     hasError: boolean = false;
     isFinished: boolean = false;
     message: string = '';
-    experienceType: ExperienceType;
+    progressPercentage: number = 0;
 
     constructor(MainService) {
         this.MS = MainService;
@@ -30,25 +31,31 @@ export class DeploymentService {
 
         let lastActionStatus: ActionStatus = ActionStatus.Success;
         this.MS.DataStore.DeploymentIndex = '';
+        this.progressPercentage = 0;
 
         for (let i = 0; i < this.actions.length && !this.hasError; i++) {
             this.MS.DataStore.DeploymentIndex = i.toString();
             this.executingIndex = i;
             this.executingAction = this.actions[i];
+            this.progressPercentage = i / this.actions.length * 100;
 
             let param: any = {};
             if (lastActionStatus !== ActionStatus.BatchWithState) {
                 param = this.actions[i].AdditionalParameters;
             }
 
-            JsonCustomParser.loadVariables(param,param,this.MS, this);
+            JsonCustomParser.loadVariables(param, param, this.MS, this);
+
+            // Skip action if requested to do so by variable
+            if (param && param.skip && param.skip.toLowerCase() === 'true') {
+                continue;
+            }
 
             this.MS.LoggerService.TrackDeploymentStepStartEvent(i, this.actions[i].OperationName);
             let response = await this.MS.HttpService.executeAsync(this.actions[i].OperationName, param);
             this.message = '';
 
             this.MS.LoggerService.TrackDeploymentStepStoptEvent(i, this.actions[i].OperationName, response.IsSuccess);
-
 
             if (!(response.IsSuccess)) {
                 this.hasError = true;
@@ -65,12 +72,13 @@ export class DeploymentService {
         }
 
         this.MS.DataStore.DeploymentIndex = '';
-        if (!this.hasError) {
+        if (this.hasError) {
+            this.message = 'Error';
+        } else {
             this.executingAction = {};
             this.executingIndex++;
             this.message = 'Success';
-        } else {
-            this.message = 'Error';
+            this.progressPercentage = 100;
         }
 
         if (this.experienceType === ExperienceType.uninstall) {

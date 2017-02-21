@@ -21,11 +21,16 @@
       {
         "displayname": "Login",
         "name": "$SiteCommon$/pagesgallery/azure-login.html",
-        "pricingCost": "$('By deploying the template you authorize the creation of Azure resources on your subscription. The base cost of these services is $6 a day. Every 1000 tweets will incur an additional cost of approximately $0.80.')",
+        "pricingCost": "$run('By clicking next and deploying the template, you authorize Microsoft to create Azure resources on your subscription and bill based on their respective pricing rates.  The approximate base cost of the Azure resources used by this template is $7 a day, and every 1,000 articles will incur an additional cost of approximately $12.  These costs are estimates only and subject to change.')",
         "pricingUrl": "https://github.com/Microsoft/BusinessPlatformApps/tree/master/Source/Apps/Microsoft/Released/Microsoft-TwitterTemplate#pricing",
-        "bingtermsofuse": "By deploying this template you agree to Bing's Terms of Use.",
-        "bingUrl": "placeholder",
-        "defaultLocation": 12
+        "pricingCalculatorUrl": "https://azure.microsoft.com/en-us/pricing/calculator/",
+        "defaultLocation": 5
+      },
+      {
+        "displayname": "Cognitive API",
+        "name": "cognitive-text.html",
+        "cognitiveUrl": "placeholder",
+        "bingUrl": "placeholder"      
       },
       {
         "name": "$SiteCommon$/pagesgallery/sql-server.html",
@@ -197,17 +202,17 @@
           "apiKey": "$dsall(CognitiveServiceKey)[1]"
         }
       },
-      {
-        "name": "Microsoft-UpdateBlobStorageConnector",
-        "displayname": "Update connector",
-        "DeploymentName": "blob",
-        "ConnectorName": "azureblob",
-        "ConnectorDisplayName": "azureblob",
-        "ConnectorPayload": {
-          "accountName": "$ds(StorageAccountName)",
-          "accessKey": "$ds(StorageAccountKey)"
-        }
-      },
+      //{
+      //  "name": "Microsoft-UpdateBlobStorageConnector",
+      //  "displayname": "Update connector",
+      //  "DeploymentName": "blob",
+      //  "ConnectorName": "azureblob",
+      //  "ConnectorDisplayName": "azureblob",
+      //  "ConnectorPayload": {
+      //    "accountName": "$ds(StorageAccountName)",
+      //    "accessKey": "$ds(StorageAccountKey)"
+      //  }
+      //},
       {
         "name": "Microsoft-UpdateBlobStorageConnector",
         "displayname": "Update connector",
@@ -231,17 +236,11 @@
         "ConnectorPayload": {
         }
       },
-      {
-        "name": "Microsoft-DeployImageCachingLogicApp",
-        "displayname": "Deploy Image Cache Logic App",
-        "DeploymentName": "LogicAppImageCache",
-        "LogicAppName": "LogicAppImageCache"
-      },
-      {
-        "name": "Microsoft-WaitForArmDeploymentStatus",
-        "displayname": "Validate Logic App",
-        "DeploymentName": "LogicAppImageCache"
-      },
+      //{
+      //  "name": "Microsoft-WaitForArmDeploymentStatus",
+      //  "displayname": "Validate Logic App",
+      //  "DeploymentName": "LogicAppImageCache"
+      //},
       {
         "name": "Microsoft-DeployAzureMLSchedulerLogicApp",
         "displayname": "Deploy AML Scheduler Logic App",

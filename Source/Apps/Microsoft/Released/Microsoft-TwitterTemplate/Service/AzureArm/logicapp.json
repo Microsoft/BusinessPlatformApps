@@ -16,7 +16,6 @@
       "defaultValue": "STHostingPlan",
       "type": "string"
     },
-
     "resourcegroup": {
       "defaultValue": "stresourcegroup",
       "type": "string"
@@ -50,52 +49,90 @@
           "contentVersion": "1.0.0.0",
           "parameters": {
             "$connections": {
-              "defaultValue": { },
+              "defaultValue": {},
               "type": "Object"
             }
           },
           "triggers": {
-            "When_a_new_tweet_appears": {
+            "Recurrence": {
               "recurrence": {
                 "frequency": "Minute",
                 "interval": 3
               },
-              "splitOn": "@triggerBody()?.value",
-              "type": "ApiConnection",
+              "type": "Recurrence"
+            }
+          },
+          "actions": {
+            "Get_row": {
               "inputs": {
                 "host": {
                   "api": {
-                    "runtimeUrl": "[concat('https://logic-apis-', resourceGroup().location ,'.azure-apim.net/apim/twitter')]"
+                    "runtimeUrl": "https://logic-apis-westus.azure-apim.net/apim/sql"
                   },
+                  "connection": {
+                    "name": "@parameters('$connections')['sql']['connectionId']"
+                  }
+                },
+                "method": "get",
+                "path": "/datasets/default/tables/@{encodeURIComponent(encodeURIComponent('[pbist_twitter].[twitter_query]'))}/items/@{encodeURIComponent(encodeURIComponent('1'))}"
+              },
+              "runAfter": {},
+              "type": "ApiConnection"
+            },
+            "Search_tweets": {
+              "inputs": {
+                "host": {
                   "connection": {
                     "name": "@parameters('$connections')['twitter']['connectionId']"
                   }
                 },
                 "method": "get",
-                "path": "/onnewtweet",
+                "path": "/searchtweets",
                 "queries": {
-                  "searchQuery": "[parameters('search')]"
+                  "maxResults": 100,
+                  "searchQuery": "@{body('Get_row')['QueryString']}",
+                  "sinceId": "@{body('Get_row')?['TweetId']}"
                 }
-              }
+              },
+              "runAfter": {
+                "Get_row": [
+                  "Succeeded"
+                ]
+              },
+              "type": "ApiConnection"
+            },
+            "For_each": {
+              "actions": {
+                "Python": {
+                  "inputs": {
+                    "body": "@item()",
+                    "function": {
+                      "id": "[concat('/subscriptions/', parameters('subscription'), '/resourceGroups/',parameters('resourcegroup'),'/providers/Microsoft.Web/sites/', parameters('sitename'), '/Functions/TweetProcessingFunction')]"
+                    }
+                  },
+                  "runAfter": {},
+                  "type": "Function"
+                }
+              },
+              "foreach": "@body('Search_tweets')",
+              "runAfter": {
+                "Search_tweets": [
+                  "Succeeded"
+                ]
+              },
+              "type": "Foreach"
             }
           },
-          "actions": {
-            "Python": {
-              "runAfter": { },
-              "type": "Function",
-              "inputs": {
-                "body": "@triggerBody()",
-                "function": {
-                  "id": "[concat('/subscriptions/', parameters('subscription'), '/resourceGroups/',parameters('resourcegroup'),'/providers/Microsoft.Web/sites/', parameters('sitename'), '/Functions/TweetProcessingFunction')]"
-                }
-              }
-            }
+            "outputs": {}
           },
-          "outputs": { }
-        },
         "parameters": {
           "$connections": {
             "value": {
+              "sql": {
+                "connectionId": "[concat('/subscriptions/', parameters('subscription'), '/resourceGroups/' ,parameters('resourceGroup'),'/providers/Microsoft.Web/connections/sql')]",
+                "connectionName": "sql",
+                "id": "[concat('/subscriptions/' , parameters('subscription'), '/providers/Microsoft.Web/locations/',resourceGroup().location , '/managedApis/sql')]"
+              },
               "twitter": {
                 "connectionId": "[concat('/subscriptions/', parameters('subscription'), '/resourceGroups/' ,parameters('resourceGroup'),'/providers/Microsoft.Web/connections/twitter')]",
                 "connectionName": "twitter",

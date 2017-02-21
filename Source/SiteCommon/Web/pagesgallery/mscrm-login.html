@@ -1,4 +1,6 @@
 ﻿<template>
+    <require from="../directives/bpst-link.html"></require>
+
     <h1 class="st-title">${MS.Translate.MSCRM_LOGIN_TITLE}</h1>
     <p class="st-subtitle">${MS.Translate.MSCRM_LOGIN_SUBTITLE}</p>
 
@@ -41,11 +43,13 @@
     <!-- Pricing Confirmation -->
     <div if.bind="showPricingConfirmation">
         <label class="st-float st-text">
-            <input type="checkbox" tabindex="-1" change.delegate="verifyPricing()" checked.bind="isPricingChecked" disabled.bind="MS.HttpService.isServiceBusy">
             <span class="st-text">${pricingCost}</span>
         </label>
         <p class="st-float st-text">
-            <bpst-link a-description="${MS.Translate.AZURE_LOGIN_PRICING_TEXT}" a-link="${pricingUrl}" a-link-text="${MS.Translate.COMMON_HERE}"></bpst-link>
+            <bpst-link a-description="${MS.Translate.AZURE_LOGIN_PRICING_TEXT}" a-link="${pricingCalculatorUrl}" a-link-text="${MS.Translate.COMMON_HERE}"></bpst-link>
+        </p>
+        <p class="st-float st-text">
+            <bpst-link a-description="${MS.Translate.AZURE_LOGIN_PRICING_CALCULATOR_TEXT}" a-link="${pricingUrl}" a-link-text="${MS.Translate.COMMON_HERE}"></bpst-link>
         </p>
     </div>
 </template>

@@ -81,7 +81,7 @@ namespace Microsoft.Deployment.Actions.Test.ActionsTest
 
             this.CreateDbRelations();
 
-            var response = TestHarness.ExecuteAction("Microsoft-ADFDeployLinkedServicesAndSqlCustomizations", dataStore);
+            var response = TestHarness.ExecuteAction("Microsoft-ADFDeployLinkedServices", dataStore);
 
             Assert.IsTrue(response.Status == ActionStatus.Success);
         }

@@ -1,17 +1,14 @@
-﻿using Microsoft.Deployment.Common.ErrorResources;
-
-namespace Microsoft.Deployment.Common.Helpers
+﻿namespace Microsoft.Deployment.Common.Helpers
 {
+    using ErrorResources;
+
     public static class ErrorUtility
     {
         public static string GetErrorCode(string code)
         {
-            if (EnglishErrorCodes.ResourceManager.GetString(code) != null)
-            {
-                return EnglishErrorCodes.ResourceManager.GetString(code);
-            }
+            string result = EnglishErrorCodes.ResourceManager.GetString(code);
 
-                return EnglishErrorCodes.DefaultErrorCode;
+            return result == null ? EnglishErrorCodes.DefaultErrorCode : result;
         }
     }
 }

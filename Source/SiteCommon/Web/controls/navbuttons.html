@@ -34,8 +34,8 @@
     <p class="st-nav-buttons" if.bind="viewmodel && viewmodel.DeploymentService.NavigationService.templateName !== ''">
         <button class="default st-buttons-back" click.trigger="viewmodel.NavigateBack()" disabled.bind="viewmodel.MS.HttpService.isServiceBusy || viewmodel.MS.NavigationService.isCurrentlyNavigating" if.bind="viewmodel.showBack && !viewmodel.MS.NavigationService.isFirstPage()">${viewmodel.MS.Translate.NAVIGATION_BACK}</button>
         <button class="primary" click.trigger="viewmodel.NavigateNext()" disabled.bind="!viewmodel.isValidated || viewmodel.MS.HttpService.isServiceBusy || viewmodel.MS.NavigationService.isCurrentlyNavigating" if.bind="viewmodel.showNext && !viewmodel.isDownload && !viewmodel.MS.NavigationService.isLastPage()">${viewmodel.textNext}</button>
-        <a target="_blank" href.bind="viewmodel.downloadLink" if.bind="viewmodel.isDownload && viewmodel.downloadLink">
-            <button class="primary" disabled.bind="!viewmodel.isValidated || viewmodel.MS.HttpService.isServiceBusy">${viewmodel.MS.Translate.COMMON_DOWNLOAD}</button>
+        <a target="_blank" href.bind="viewmodel.downloadLink" if.bind="viewmodel.isDownload && (viewmodel.downloadLink || !viewmodel.isAuthenticated)">
+            <button class="primary" disabled.bind="!viewmodel.isValidated || !viewmodel.isAuthenticated || viewmodel.MS.HttpService.isServiceBusy">${viewmodel.MS.Translate.COMMON_DOWNLOAD}</button>
         </a>
     </p>
 

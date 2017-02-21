@@ -25,14 +25,29 @@ namespace Microsoft.Deployment.Actions.AzureCustom.Common
             var repoUrl = request.DataStore.GetValue("RepoUrl");
             var name = request.DataStore.GetValue("FunctionName");
 
+            var hostingPlanName = request.DataStore.GetValue("hostingPlanName") == null ? "apphostingplan" : request.DataStore.GetValue("hostingPlanName");
+            var hostingEnvironment = request.DataStore.GetValue("hostingEnvironment") == null ? "": request.DataStore.GetValue("hostingEnvironment");
+            var sku = request.DataStore.GetValue("sku") == null ? "Dynamic" : request.DataStore.GetValue("sku");
+            var skuCode = request.DataStore.GetValue("skuCode") == null ? "S1" : request.DataStore.GetValue("skuCode");
+            var workerSize = request.DataStore.GetValue("workerSize") == null ? "0" : request.DataStore.GetValue("workerSize");
+
+            string functionArmDeploymentRelatovePath = sku.ToLower() == "standard"
+                ? "Service/Arm/AzureFunctionsStaticAppPlan.json"
+                : "Service/Arm/AzureFunctions.json";
+
             var param = new AzureArmParameterGenerator();
             param.AddStringParam("storageaccountname", "solutiontemplate" + Path.GetRandomFileName().Replace(".", "").Substring(0, 8));
             param.AddStringParam("name", name);
             param.AddStringParam("repoUrl", repoUrl);
             param.AddStringParam("resourcegroup", resourceGroup);
             param.AddStringParam("subscription", subscription);
+            param.AddStringParam("hostingPlanName", hostingPlanName);
+            param.AddStringParam("hostingEnvironment", hostingEnvironment);
+            param.AddStringParam("sku", sku);
+            param.AddStringParam("skuCode", skuCode);
+            param.AddStringParam("workerSize", workerSize);
 
-            var armTemplate = JsonUtility.GetJObjectFromJsonString(System.IO.File.ReadAllText(Path.Combine(request.ControllerModel.SiteCommonFilePath, "Service/Arm/AzureFunctions.json")));
+            var armTemplate = JsonUtility.GetJObjectFromJsonString(System.IO.File.ReadAllText(Path.Combine(request.ControllerModel.SiteCommonFilePath, functionArmDeploymentRelatovePath)));
             var armParamTemplate = JsonUtility.GetJObjectFromObject(param.GetDynamicObject());
             armTemplate.Remove("parameters");
             armTemplate.Add("parameters", armParamTemplate["parameters"]);

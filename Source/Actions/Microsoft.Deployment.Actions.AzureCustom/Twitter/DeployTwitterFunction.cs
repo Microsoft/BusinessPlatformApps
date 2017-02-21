@@ -27,7 +27,9 @@ namespace Microsoft.Deployment.Actions.AzureCustom.Twitter
             var sitename = request.DataStore.GetValue("SiteName");
 
             var param = new AzureArmParameterGenerator();
-            param.AddStringParam("storageaccountname", "solutiontemplate" + Path.GetRandomFileName().Replace(".", "").Substring(0, 8));
+            string storageAccountName = "solutiontemplate" + Path.GetRandomFileName().Replace(".", "").Substring(0, 8);
+            request.DataStore.AddToDataStore("StorageAccountName", storageAccountName);
+            param.AddStringParam("storageaccountname", storageAccountName);
             param.AddStringParam("sitename", sitename);
             param.AddStringParam("AppHostingPlan", functionAppHostingPlan);
             param.AddStringParam("resourcegroup", resourceGroup);

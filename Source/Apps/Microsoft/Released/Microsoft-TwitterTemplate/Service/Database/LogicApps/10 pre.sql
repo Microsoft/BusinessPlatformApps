@@ -31,6 +31,8 @@ IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA='pbist_twi
     DROP VIEW pbist_twitter.vw_date;
 IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA='pbist_twitter' AND TABLE_NAME='vw_configuration' AND TABLE_TYPE='VIEW')
     DROP VIEW pbist_twitter.vw_configuration;
+IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA='pbist_twitter' AND TABLE_NAME='vw_minimum_tweets' AND TABLE_TYPE='VIEW')
+    DROP VIEW pbist_twitter.vw_minimum_tweets;
 
 -- Tables
 IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA='pbist_twitter' AND TABLE_NAME='hashtag_slicer' AND TABLE_TYPE='BASE TABLE')
@@ -55,6 +57,16 @@ IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA='pbist_twi
     DROP TABLE pbist_twitter.[date];
 IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA='pbist_twitter' AND TABLE_NAME='configuration' AND TABLE_TYPE='BASE TABLE')
     DROP TABLE pbist_twitter.[configuration];
+IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA='pbist_twitter' AND TABLE_NAME='minimum_tweets' AND TABLE_TYPE='BASE TABLE')
+    DROP TABLE pbist_twitter.[minimum_tweets];
+IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA='pbist_twitter' AND TABLE_NAME='twitter_query' AND TABLE_TYPE='BASE TABLE')
+    DROP TABLE pbist_twitter.[twitter_query];
+IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA='pbist_twitter' AND TABLE_NAME='twitter_query_details' AND TABLE_TYPE='BASE TABLE')
+    DROP TABLE pbist_twitter.[twitter_query_details];
+IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA='pbist_twitter' AND TABLE_NAME='twitter_query_readable' AND TABLE_TYPE='BASE TABLE')
+    DROP TABLE pbist_twitter.[twitter_query_readable];
+IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA='pbist_twitter' AND TABLE_NAME='minimum_tweets' AND TABLE_TYPE='BASE TABLE')
+    DROP TABLE pbist_twitter.[minimum_tweets];
 
 
 
@@ -63,6 +75,21 @@ IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.ROUTINES WHERE ROUTINE_SCHEMA='pbist
     DROP PROCEDURE pbist_twitter.sp_get_replication_counts;
 IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.ROUTINES WHERE ROUTINE_SCHEMA='pbist_twitter' AND ROUTINE_NAME='sp_get_prior_content' AND ROUTINE_TYPE='PROCEDURE')
     DROP PROCEDURE pbist_twitter.sp_get_prior_content;
+	
+IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.ROUTINES WHERE ROUTINE_SCHEMA='pbist_twitter' AND ROUTINE_NAME='sp_set_process_flag' AND ROUTINE_TYPE='PROCEDURE')
+    DROP PROCEDURE pbist_twitter.sp_set_process_flag;
+IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.ROUTINES WHERE ROUTINE_SCHEMA='pbist_twitter' AND ROUTINE_NAME='sp_start_process' AND ROUTINE_TYPE='PROCEDURE')
+    DROP PROCEDURE pbist_twitter.sp_start_process;
+IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.ROUTINES WHERE ROUTINE_SCHEMA='pbist_twitter' AND ROUTINE_NAME='sp_finish_process' AND ROUTINE_TYPE='PROCEDURE')
+    DROP PROCEDURE pbist_twitter.sp_finish_process;
+IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.ROUTINES WHERE ROUTINE_SCHEMA='pbist_twitter' AND ROUTINE_NAME='sp_get_process_flag' AND ROUTINE_TYPE='PROCEDURE')
+    DROP PROCEDURE pbist_twitter.sp_get_process_flag;
+	
+IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.ROUTINES WHERE ROUTINE_SCHEMA='pbist_twitter' AND ROUTINE_NAME='sp_get_process_status_flag' AND ROUTINE_TYPE='PROCEDURE')
+    DROP PROCEDURE pbist_twitter.sp_get_process_status_flag;	
+IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.ROUTINES WHERE ROUTINE_SCHEMA='pbist_twitter' AND ROUTINE_NAME='sp_set_process_status_flag' AND ROUTINE_TYPE='PROCEDURE')
+    DROP PROCEDURE pbist_twitter.sp_set_process_status_flag;	
+
 
 
 IF NOT EXISTS (SELECT * FROM sys.schemas WHERE name='pbist_twitter')

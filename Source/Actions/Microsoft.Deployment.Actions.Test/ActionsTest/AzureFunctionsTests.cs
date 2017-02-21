@@ -34,6 +34,23 @@ namespace Microsoft.Deployment.Actions.Test.ActionsTest
             Assert.IsTrue(response.IsSuccess);
         }
 
+
+        [TestMethod]
+        public async Task DeployTwitterAzureFunction()
+        {
+            var dataStore = await TestHarness.GetCommonDataStoreWithUserToken();
+
+            dataStore.AddToDataStore("DeploymentName", "FunctionDeploymentTest");
+            dataStore.AddToDataStore("FunctionAppHostingPlan", "FunctionPlanName");
+            dataStore.AddToDataStore("SiteName", "unituestrialbpst" + randomString);
+
+            var response = TestHarness.ExecuteAction("Microsoft-DeployTwitterFunction", dataStore);
+            Assert.IsTrue(response.IsSuccess);
+
+            response = TestHarness.ExecuteAction("Microsoft-WaitForArmDeploymentStatus", dataStore);
+            Assert.IsTrue(response.IsSuccess);
+        }
+
         [TestMethod]
         public async Task DeployAzureFunctionAssets()
         {
@@ -76,6 +93,20 @@ namespace Microsoft.Deployment.Actions.Test.ActionsTest
 
         }
 
+        [TestMethod]
+        public async Task DeployFunctionStaticAppPlan()
+        {
+            var dataStore = await TestHarness.GetCommonDataStore();
+            dataStore.AddToDataStore("DeploymentName", "FunctionDeploymentTest");
+            dataStore.AddToDataStore("FunctionName", "unittestfunction" + TestHarness.RandomCharacters);
+            dataStore.AddToDataStore("sku", "Standard");
+            dataStore.AddToDataStore("RepoUrl", "https://github.com/juluczni/AzureFunctionsNewsTemplate");
+
+            var response = TestHarness.ExecuteAction("Microsoft-DeployAzureFunction", dataStore);
+            Assert.IsTrue(response.IsSuccess);
+            response = TestHarness.ExecuteAction("Microsoft-WaitForArmDeploymentStatus", dataStore);
+            Assert.IsTrue(response.IsSuccess);
+        }
     }
 }
 

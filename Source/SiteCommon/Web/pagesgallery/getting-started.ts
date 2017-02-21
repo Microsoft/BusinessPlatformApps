@@ -1,3 +1,4 @@
+import { DataStoreType } from '../services/datastore';
 import { ViewModelBase } from '../services/viewmodelbase';
 
 export class Gettingstarted extends ViewModelBase {
@@ -85,6 +86,10 @@ export class Gettingstarted extends ViewModelBase {
         }
 
         if (!this.MS.ErrorService.message) {
+            this.MS.DataStore.addToDataStore('FirstName', this.registrationNameFirst, DataStoreType.Public);
+            this.MS.DataStore.addToDataStore('LastName', this.registrationNameLast, DataStoreType.Public);
+            this.MS.DataStore.addToDataStore('CompanyName', this.registrationCompany, DataStoreType.Public);
+            this.MS.DataStore.addToDataStore('RowKey', this.registrationEmail, DataStoreType.Public);
             this.MS.HttpService.executeAsync(this.registrationAction, { isInvisible: true });
             this.registration = '';
             this.downloadLink = this.registrationDownload;

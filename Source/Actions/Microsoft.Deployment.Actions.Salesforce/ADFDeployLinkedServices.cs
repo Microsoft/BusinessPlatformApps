@@ -22,7 +22,7 @@ using System.Globalization;
 namespace Microsoft.Deployment.Actions.Salesforce
 {
     [Export(typeof(IAction))]
-    class ADFDeployLinkedServicesAndSqlCustomizations : BaseAction
+    class ADFDeployLinkedServices : BaseAction
     {
         public override async Task<ActionResponse> ExecuteActionAsync(ActionRequest request)
         {
@@ -40,15 +40,6 @@ namespace Microsoft.Deployment.Actions.Salesforce
             string fiscalMonth = request.DataStore.GetValue("fiscalMonth");
             string actuals = request.DataStore.GetValue("actuals");
             string emails = request.DataStore.GetValue("EmailAddresses");
-
-            string baseUrl = string.Empty;
-            if (!string.IsNullOrEmpty(fullServerUrl))
-            {
-                var uri = new Uri(fullServerUrl);
-                baseUrl = uri.Scheme + "://" + uri.Host + "/";
-            }
-
-            this.InsertCustomizations(connString, fiscalMonth, actuals, baseUrl);
 
             string dataFactoryName = resourceGroup + "SalesforceCopyFactory";
             var param = new AzureArmParameterGenerator();
@@ -134,42 +125,6 @@ namespace Microsoft.Deployment.Actions.Salesforce
             var helper = new DeploymentHelper();
 
             return helper.WaitForDeployment(resourceGroup, deploymentName, client);
-        }
-
-
-        public void InsertCustomizations(string connString, string fiscalMonth, string actuals, string baseUrl)
-        {
-            int monthNumber = DateTime.ParseExact(fiscalMonth, "MMMM", CultureInfo.InvariantCulture).Month;
-            bool actual = actuals != "Closed opportunities";
-
-            DeleteConfigurationValues(connString, "SolutionTemplate", "SalesManagement", "Source");
-            DeleteConfigurationValues(connString, "SolutionTemplate", "SalesManagement", "FiscalMonthStart");
-            DeleteConfigurationValues(connString, "data", "actual_sales", "enabled");
-            DeleteConfigurationValues(connString, "SolutionTemplate", "SalesManagement", "BaseURL");
-
-            AddConfigurationValues(connString, "SolutionTemplate", "SalesManagement", "FiscalMonthStart", monthNumber.ToString(CultureInfo.InvariantCulture));
-            AddConfigurationValues(connString, "data", "actual_sales", "enabled", Convert.ToInt32(actual).ToString(CultureInfo.InvariantCulture));
-            AddConfigurationValues(connString, "SolutionTemplate", "SalesManagement", "BaseURL", baseUrl);
-            AddConfigurationValues(connString, "SolutionTemplate", "SalesManagement", "Source", "Salesforce");
-        }
-
-        public void AddConfigurationValues(string connString, string group, string subgroup,
-                                        string name, string value, bool visible = true)
-        {
-            var configValues = new Dictionary<string, string>();
-            configValues.Add("arg1", group);
-            configValues.Add("arg2", subgroup);
-            configValues.Add("arg3", name);
-            configValues.Add("arg4", value);
-            configValues.Add("arg5", Convert.ToInt32(visible).ToString(CultureInfo.InvariantCulture));
-
-            SqlUtility.InvokeSqlCommand(connString, SqlConfigQueries.configQuery, configValues);
-        }
-
-        public void DeleteConfigurationValues(string connString, string group, string subgroup, string name)
-        {
-            var configValues = new Dictionary<string, string> { { "arg1", @group }, { "arg2", subgroup }, { "arg3", name } };
-            SqlUtility.InvokeSqlCommand(connString, SqlConfigQueries.deleteConfigQuery, configValues);
         }
     }
 }

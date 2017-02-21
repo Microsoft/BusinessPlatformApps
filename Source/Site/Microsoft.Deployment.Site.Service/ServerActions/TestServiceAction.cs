@@ -13,8 +13,6 @@ namespace Microsoft.Deployment.Site.Service.ServerActions
     {
         public override async Task<ActionResponse> ExecuteActionAsync(ActionRequest request)
         {
-            request.DataStore.PrivateDataStore = new DictionaryIgnoreCase<DictionaryIgnoreCase<JToken>>();
-            request.DataStore.PublicDataStore = new DictionaryIgnoreCase<DictionaryIgnoreCase<JToken>>();
             return new ActionResponse(ActionStatus.Success, "Test");
         }
     }

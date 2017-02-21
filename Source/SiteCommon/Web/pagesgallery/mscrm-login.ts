@@ -68,10 +68,12 @@ export class MsCrmLogin extends AzureLogin {
                                     this.subscriptionsList = subscriptions.Body.value;
                                     if (!this.subscriptionsList ||
                                         (this.subscriptionsList && this.subscriptionsList.length === 0)) {
-                                        this.MS.ErrorService.message = this.MS.Translate.AZURE_LOGIN_SUBSCRIPTION_ERROR;
-                                        this.showAzureTrial = true;
+                                        this.MS.ErrorService.message = this.MS.Translate.AZURE_LOGIN_SUBSCRIPTION_ERROR_CRM;
+                                        this.showAzureTrial = false;
                                     } else {
                                         this.showPricingConfirmation = true;
+                                        this.isValidated = true;
+                                        this.showValidation = true;
                                     }
                                 }
                             } else {

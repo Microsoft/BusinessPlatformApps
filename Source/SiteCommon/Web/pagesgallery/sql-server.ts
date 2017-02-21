@@ -54,8 +54,6 @@ export class SqlServer extends ViewModelBase {
         this.isWindowsAuth = this.auth.toLowerCase() === 'windows';
     }
 
-
-
     async OnValidate(): Promise<boolean> {
         this.isValidated = false;
 
