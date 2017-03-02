@@ -31,8 +31,11 @@ declare @year as smallint
 declare @yearmo as int
 declare @sameDayYearAgo as date
 
-Select @startDate = '2015-1-1'
-Select @endDate = DateAdd(dd, -1, DATEADD(yy, 6, @startDate))
+-- Go back 3 years from the first day of the current year
+Select @startDate = dateadd(yy, -3, dateadd(dd, 1-datepart(dy, getdate()), getdate()))
+
+-- Go forward 3 years from the last day of the current year
+Select @endDate = dateadd(yy, 4, dateadd(dd, -datepart(dy, getdate()), getdate()))
 
 select @curDate = @startDate
 
