@@ -19,6 +19,7 @@ CREATE TABLE smgt.configuration
 );
 
 
+
 CREATE TABLE smgt.[date]
 (
    date_key               INT NOT NULL,
@@ -30,28 +31,15 @@ CREATE TABLE smgt.[date]
    weekday_flag           CHAR(1) NOT NULL,
    week_num_in_year       TINYINT NOT NULL,
    week_begin_date        DATE NOT NULL,
-   week_begin_date_key    INT NOT NULL,
    [month]                TINYINT NOT NULL,
    month_name             CHAR(9) NOT NULL,
    month_abbrev           CHAR(3) NOT NULL,
    [quarter]              TINYINT NOT NULL,
    [year]                 SMALLINT NOT NULL,
    yearmo                 INT NOT NULL,
-   fiscal_month           TINYINT NOT NULL,
-   fiscal_quarter         TINYINT NOT NULL,
-   fiscal_year            SMALLINT NOT NULL,
-   last_day_in_month_flag CHAR(1) NOT NULL,
-   same_day_year_ago_date DATE NOT NULL,
-   same_day_year_ago_key  INT NOT NULL,
-   day_num_in_year           AS Datepart(dayofyear, full_date),
-   quarter_name              AS Concat('Q', [quarter]),
-   fiscal_quarter_name       AS Concat('Q', fiscal_quarter),
-   fiscalquartercompletename AS Concat('FY', Substring(CONVERT(VARCHAR, fiscal_year), 3, 2), ' Q', fiscal_quarter),
-   fiscalyearcompletename    AS Concat('FY', Substring(CONVERT(VARCHAR, fiscal_year), 3, 2)),
-   fiscalmonthcompletename   AS Concat(month_abbrev, ' ', Substring(CONVERT(VARCHAR, fiscal_year), 3, 2)),
+   same_day_year_ago_date DATE NOT NULL
    CONSTRAINT pk_dim_date PRIMARY KEY CLUSTERED (date_key)
 );
-
 
 CREATE TABLE smgt.usermapping
 (
