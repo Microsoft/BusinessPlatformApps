@@ -96,6 +96,8 @@
     GETTING_STARTED_LAST_NAME: `Last Name:`,
     GETTING_STARTED_LIST_1: `To set up this solution template you will need:`,
     GETTING_STARTED_LIST_2: `Features of this architecture:`,
+    GETTING_STARTED_NEW_VERSION: `There's a new version available!`,
+    GETTING_STARTED_NEW_VERSION_INFO: `Download the latest installer so you're up to date.`,
     GETTING_STARTED_REGISTRATION_ERROR: `Invalid name, company, or email`,
     GETTING_STARTED_REGISTRATION_ERROR_EMAIL: `Invalid email domain`,
     GETTING_STARTED_TITLE: `Get started with`,

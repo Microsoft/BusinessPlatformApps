@@ -11,6 +11,7 @@ export class Gettingstarted extends ViewModelBase {
     list2: string[] = [];
     list1Title: string = this.MS.Translate.GETTING_STARTED_LIST_1;
     list2Title: string = this.MS.Translate.GETTING_STARTED_LIST_2;
+    upgrade: boolean = false;
     prerequisiteDescription: string = '';
     prerequisiteLink: string = '';
     prerequisiteLinkText: string = '';
@@ -33,6 +34,11 @@ export class Gettingstarted extends ViewModelBase {
     }
 
     async OnLoaded() {
+
+        let res = await this.MS.HttpService.executeAsync('Microsoft-CheckVersion');
+
+        this.upgrade = res.Body;
+
         this.isValidated = true;
         if (this.isDownload) {
             this.GetDownloadLink();

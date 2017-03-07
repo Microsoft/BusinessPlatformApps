@@ -78,4 +78,17 @@
             </a>
         </p>
     </div>
+
+    <!-- Download new version -->
+    <div class="st-email-background if.bind="upgrade"></div>
+    <div class="st-email-background st-email-wrapper" click.trigger="upgrade = false" if.bind="upgrade">
+        <div class="st-email-submission" click.trigger="$event.stopPropagation()">
+            <span class="glyphicon pbi-glyph-close st-contact-us-close" click.trigger="latestVersion = false"></span>
+            <div class="st-email-centered st-email-heading">${MS.Translate.GETTING_STARTED_NEW_VERSION}</div>
+            <div class="st-email-centered st-text">${MS.Translate.GETTING_STARTED_NEW_VERSION_INFO}</div>
+            <a href="https://bpsolutiontemplates.com/?name=Microsoft-SCCMTemplate" target="_blank">
+                <button class="primary">${MS.Translate.COMMON_DOWNLOAD}</button>
+            </a>
+        </div>
+    </div>
 </template>

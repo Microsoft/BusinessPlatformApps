@@ -176,7 +176,7 @@ namespace Microsoft.Deployment.Site.Web.Tests
                 Thread.Sleep(new TimeSpan(0, 0, 10));
             }
 
-            Assert.IsTrue(progressText != null);
+            Assert.IsTrue(progressText.Text == "All done! You can now download your Power BI report and start exploring your data.");
         }
     }
 }

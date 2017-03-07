@@ -8,6 +8,7 @@ export class Gettingstarted extends ViewModelBase {
     architectureDiagram: string = '';
     downloadLink: string = '';
     isDownload: boolean = false;
+    upgrade: boolean = false;
     list1: string[] = [];
     list2: string[] = [];
     list1Title: string = this.MS.Translate.GETTING_STARTED_LIST_1;
@@ -52,6 +53,11 @@ export class Gettingstarted extends ViewModelBase {
     }
 
     async OnLoaded() {
+
+        let res = await this.MS.HttpService.executeAsync('Microsoft-CheckVersion');
+
+        this.upgrade = res.Body;
+        
         this.isAuthenticated = false;
         if (!this.isDownload) {
             this.isAuthenticated = true;
