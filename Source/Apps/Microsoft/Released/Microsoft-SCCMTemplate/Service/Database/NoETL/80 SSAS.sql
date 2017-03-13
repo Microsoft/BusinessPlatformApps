@@ -46,7 +46,7 @@ GO
 
 INSERT pbist_sccm.[configuration] (configuration_group, configuration_subgroup, [name], [value], [visible])
     VALUES ( N'SolutionTemplate', N'SSAS', N'ProcessOnNextSchedule', N'0', 0),
-           ( N'SolutionTemplate', N'SSAS', N'LastProcessRecordCounts', N'0', 0),
+           ( N'SolutionTemplate', N'SSAS', N'LastProcessedRecordCounts', N'0', 0),
 		   ( N'SolutionTemplate', N'SSAS', N'Timeout', N'4', 0),
 		   ( N'SolutionTemplate', N'SSAS', N'ValidateSchema', N'1', 0),
 		   ( N'SolutionTemplate', N'SSAS', N'CheckRowCounts', N'0', 0),
@@ -162,7 +162,7 @@ BEGIN
 
 	SELECT @oldRowCount  = [value]
 	FROM pbist_sccm.[configuration]
-	WHERE [configuration_group] = 'SolutionTemplate' AND [configuration_subgroup]='SSAS' AND [name]='LastProcessRecordCounts'; 
+	WHERE [configuration_group] = 'SolutionTemplate' AND [configuration_subgroup]='SSAS' AND [name]='LastProcessedRecordCounts'; 
 
 	IF( @newRowCount = @oldRowCount)
 	BEGIN
@@ -275,6 +275,13 @@ BEGIN
 	END
 
     EXEC [pbist_sccm].[sp_set_process_flag] @process_flag = '0'
+
+    DECLARE @newRowCount INT;
+	EXECUTE @newRowCount = pbist_sccm.sp_get_current_record_counts;
+
+    UPDATE [pbist_sccm].[configuration] 
+	SET [value]=CAST(@newRowCount as NVARCHAR(MAX))
+	WHERE [configuration_group] = 'SolutionTemplate' AND [configuration_subgroup]='SSAS' AND [name]='LastProcessedRecordCounts';
 
 	return @id;
 	END

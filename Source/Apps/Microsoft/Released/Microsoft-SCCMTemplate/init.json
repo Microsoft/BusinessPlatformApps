@@ -91,7 +91,8 @@
       // Adding azure actions
       {
         "name": "$SiteCommon$/pagesgallery/choose-analysis-server.html",
-        "displayname": "Use Analysis Services"
+        "displayname": "Use Analysis Services",
+        "showDescription": true
       },
 
       {
