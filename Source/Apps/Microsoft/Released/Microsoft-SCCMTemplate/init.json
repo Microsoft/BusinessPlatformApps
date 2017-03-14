@@ -88,23 +88,26 @@
         "useImpersonation": true
       },
 
-      // Adding azure actions
+      // Adding azure pages
       {
         "name": "$SiteCommon$/pagesgallery/choose-analysis-server.html",
-        "displayname": "Use Analysis Services"
+        "displayname": "AAS",
+        "showDescription": true,
+        "skip": "$ds(ssasDisabled)"
       },
 
       {
         "name": "$SiteCommon$/pagesgallery/azure-login.html",
         "displayname": "Azure Login",
-        "skip": "$ds(ssasEnabled)"
+        "skip": "$ds(ssasDisabled)"
       },
 
       {
         "name": "$SiteCommon$/pagesgallery/ssas.html",
-        "displayname": "SSAS",
-        "skip": "$ds(ssasEnabled)"
+        "displayname": "AAS Login",
+        "skip": "$ds(ssasDisabled)"
       },
+      // Finish azure pages
 
       // Customize
       {
@@ -117,12 +120,14 @@
         "name": "$SiteCommon$/pagesgallery/progress.html",
         "displayname": "Progress",
         "finishedActionName": "Microsoft-GetTaskStatus",
-        "targetSchema": "pbist_sccm",
         "filename": "$save('SCCMSolutionTemplate.pbix')",
+        "asDatabase": "Sccm",
+        "filenameSSAS": "SCCMSolutionTemplateAS.pbix",
         "showCounts": true,
         "uniqueId": "$save(this.MS.UtilityService.GetUniqueId(10))",
         "sqlServerIndex": 1,
-        "showEmailSubmission": false
+        "showEmailSubmission": false,
+        "targetSchema": "pbist_sccm"
       }
     ],
 
@@ -150,7 +155,7 @@
         "xmlaFilePath": "Service/SSAS/CreateSCCMDB_v2.xmla",
         "SqlConnectionString": "$dsall(SqlConnectionString)[1]",
         "ASDatabase": "Sccm",
-        "skip": "$ds(ssasEnabled)"
+        "skip": "$ds(ssasDisabled)"
       },
 
       {
@@ -160,21 +165,21 @@
         "FunctionName": "$save('asscheduler' + this.MS.DataStore.getValue('uniqueId'))",
         "RepoUrl": "https://github.com/MohaaliMicrosoft/AnalysisServicesRefresh",
         "sku": "Standard",
-        "skip": "$ds(ssasEnabled)"
+        "skip": "$ds(ssasDisabled)"
       },
 
       {
         "name": "Microsoft-WaitForArmDeploymentStatus",
         "displayname": "Waiting for scheduler",
         "DeploymentName": "ASFunction",
-        "skip": "$ds(ssasEnabled)"
+        "skip": "$ds(ssasDisabled)"
       },
 
       {
         "name": "Microsoft-DeployAzureFunctionConnectionStrings",
         "displayname": "Setting up scheduler",
         "DeploymentName": "ASFunction",
-        "skip": "$ds(ssasEnabled)",
+        "skip": "$ds(ssasDisabled)",
         "AppSettingKeys": {
           "connStringAS": "$ds(ASConnectionString)",
           "connStringSql": "$dsall(SqlConnectionString)[1]",

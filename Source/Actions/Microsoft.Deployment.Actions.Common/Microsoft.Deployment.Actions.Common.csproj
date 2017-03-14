@@ -103,6 +103,7 @@
     <Compile Include="CheckVersion.cs" />
     <Compile Include="EmailSubscription.cs" />
     <Compile Include="GetMsiDownloadLink.cs" />
+    <Compile Include="PBI\WranglePBISSAS.cs" />
     <Compile Include="PBI\WranglePBI.cs" />
     <Compile Include="PowerBiLogin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

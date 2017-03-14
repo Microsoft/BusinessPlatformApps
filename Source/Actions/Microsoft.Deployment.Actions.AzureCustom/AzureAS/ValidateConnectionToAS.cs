@@ -38,6 +38,7 @@ namespace Microsoft.Deployment.Actions.AzureCustom.AzureAS
             {
                 Server server = new Server();
                 server.Connect(connectionString);
+                
                 request.DataStore.AddToDataStore("ASConnectionString", connectionString, DataStoreType.Private);
             }
             catch (Exception ex)

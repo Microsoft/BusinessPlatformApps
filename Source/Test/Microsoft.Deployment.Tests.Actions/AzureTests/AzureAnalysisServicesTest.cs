@@ -12,6 +12,19 @@ namespace Microsoft.Deployment.Tests.Actions.AzureTests
     [TestClass]
     public class AzureAnalysisServicesTest
     {
+        [TestMethod]
+        public async Task OlapTest()
+        {
+            // Deploy AS Model based of the following pramaters
+            var dataStore = new DataStore();
+
+            dataStore.AddToDataStore("ASServerUrl", "asazure://westus.asazure.windows.net/ssastestserver2");
+            dataStore.AddToDataStore("ASAdmin", "");
+            dataStore.AddToDataStore("ASAdminPassword", "3213");
+
+            var response = await TestManager.ExecuteActionAsync("Microsoft-ValidateConnectionToAS", dataStore, "Microsoft-TwitterTemplate");
+            Assert.IsTrue(response.IsSuccess);
+        }
 
         [TestMethod]
         public async Task DeployASModelTest()

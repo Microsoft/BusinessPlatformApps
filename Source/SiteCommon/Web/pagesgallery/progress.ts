@@ -5,6 +5,8 @@ export class ProgressViewModel extends ViewModelBase {
     downloadPbiText: string = this.MS.Translate.PROGRESS_DOWNLOAD_PBIX_INFO;
     emailAddress: string = '';
     filename: string = 'report.pbix';
+    filenameSSAS: string = 'reportSSAS.pbix';
+    asDatabase: string = 'Sccm';
     finishedActionName: string = '';
     hasPowerApp: boolean = false;
     isDataPullDone: boolean = false;
@@ -42,9 +44,18 @@ export class ProgressViewModel extends ViewModelBase {
 
             if (!this.isUninstall) {
                 let body: any = {};
-                body.FileName = this.filename;
-                body.SqlServerIndex = this.sqlServerIndex;
-                let response = await this.MS.HttpService.executeAsync('Microsoft-WranglePBI', body);
+                let ssas = this.MS.DataStore.getValue("ssasDisabled");
+                let response = null;
+                if (ssas && ssas === 'false') {
+                    body.FileNameSSAS = this.filenameSSAS;
+                    body.ASDatabase = this.asDatabase;
+                    response = await this.MS.HttpService.executeAsync('Microsoft-WranglePBISSAS', body);
+                } else {
+                    body.FileName = this.filename;
+                    body.SqlServerIndex = this.sqlServerIndex;
+                    response = await this.MS.HttpService.executeAsync('Microsoft-WranglePBI', body);
+                }
+               
                 if (response.IsSuccess) {
                     this.pbixDownloadLink = response.Body.value;
                     this.isPbixReady = true;

@@ -13,6 +13,48 @@
         "SqlServerIndex": "0",
         "SqlConfigTable": "[smgt].[configuration]"
       },
+
+      // AS Set up
+      {
+        "name": "Microsoft-DeployAzureASModel",
+        "displayname": "Deploy AS Model",
+        "xmlaFilePath": "Service/AzureAS/SalesManagement.xmla",
+        "SqlConnectionString": "$dsall(SqlConnectionString)[0]",
+        "ASDatabase": "d365",
+        "skip": "$ds(ssasDisabled)"
+      },
+
+      {
+        "name": "Microsoft-DeployAzureFunction",
+        "displayname": "Deploying scheduler",
+        "DeploymentName": "ASFunction",
+        "FunctionName": "$save('asscheduler' + this.MS.DataStore.getValue('uniqueId'))",
+        "RepoUrl": "https://github.com/MohaaliMicrosoft/AnalysisServicesRefresh",
+        "sku": "Standard",
+        "skip": "$ds(ssasDisabled)"
+      },
+
+      {
+        "name": "Microsoft-WaitForArmDeploymentStatus",
+        "displayname": "Waiting for scheduler",
+        "DeploymentName": "ASFunction",
+        "skip": "$ds(ssasDisabled)"
+      },
+
+      {
+        "name": "Microsoft-DeployAzureFunctionConnectionStrings",
+        "displayname": "Setting up scheduler",
+        "DeploymentName": "ASFunction",
+        "skip": "$ds(ssasDisabled)",
+        "AppSettingKeys": {
+          "connStringAS": "$ds(ASConnectionString)",
+          "connStringSql": "$dsall(SqlConnectionString)[0]",
+          "schema": "[smgt]",
+          "databaseAS": "d365"
+        }
+      },
+      // AS Finish set up
+
       {
         "displayname": "Configuring Azure Key Vault",
         "name": "Microsoft-CrmCreateVaultSecret"
@@ -112,6 +154,22 @@
         "subtitle": "Set up a connection to SQL so we can bring in your Dynamics 365 data.",
         "title": "Connect to your SQL Database"
       },
+
+      // Adding azure pages
+      {
+        "name": "$SiteCommon$/pagesgallery/choose-analysis-server.html",
+        "displayname": "AAS",
+        "showDescription": true,
+        "skip": "$ds(ssasDisabled)"
+      },
+
+      {
+        "name": "$SiteCommon$/pagesgallery/ssas.html",
+        "displayname": "AAS Login",
+        "skip": "$ds(ssasDisabled)"
+      },
+      // Finish azure pages
+
       {
         "displayname": "Customize",
         "name": "$SiteCommon$/pagesgallery/customize.html",
@@ -125,7 +183,10 @@
         "name": "$SiteCommon$/pagesgallery/progress.html",
         "filename": "$save('SalesManagementReport.pbix')",
         "showCounts": true,
-        "finishedActionName": "Microsoft-CrmGetProfileStatus"
+        "finishedActionName": "Microsoft-CrmGetProfileStatus",
+        "asDatabase": "d365",
+        "filenameSSAS": "SalesManagementReportAS.pbix",
+        "uniqueId": "$save(this.MS.UtilityService.GetUniqueId(10))"
       }
     ]
   },

@@ -55,17 +55,22 @@
         "name": "$SiteCommon$/pagesgallery/twitter-handles.html",
         "displayname": "Twitter Handles"
       },
-      // Adding azure actions
-      //{
-      //  "name": "$SiteCommon$/pagesgallery/choose-analysis-server.html",
-      //  "displayname": "Use Analysis Services"
-      //},
 
-      //{
-      //  "name": "$SiteCommon$/pagesgallery/ssas.html",
-      //  "displayname": "SSAS",
-      //  "skip": "$ds(ssasEnabled)"
-      //},
+      // Adding azure pages
+      {
+        "name": "$SiteCommon$/pagesgallery/choose-analysis-server.html",
+        "displayname": "AAS",
+        "showDescription": true,
+        "ssasEnabled": "false",
+        "skip": "$ds(ssasDisabled)"
+      },
+
+      {
+        "name": "$SiteCommon$/pagesgallery/ssas.html",
+        "displayname": "AAS Login",
+        "skip": "$ds(ssasDisabled)"
+      },
+      // end azure pages
 
       {
         "name": "$SiteCommon$/pagesgallery/summary.html",
@@ -79,7 +84,7 @@
       {
         "name": "$SiteCommon$/pagesgallery/progress.html",
         "displayname": "Deploy",
-        "uniqueId": "$save(this.MS.UtilityService.GetUniqueId(18))",
+        "uniqueId": "$save(this.MS.UtilityService.GetUniqueId(10))",
         "uniqueIdFunction": "$save(this.MS.UtilityService.GetUniqueId(10))",
         "LogicAppHostingPlan": "$save(this.uniqueId)",
         "LogicAppName": "$save(this.uniqueId)",
@@ -88,7 +93,9 @@
         "functionAppHostingPlan": "$save(this.uniqueIdFunction)",
         "filename": "$save('TwitterTemplate.pbix')",
         "hasPowerApp": true,
-        "powerAppFileName": "TwitterTemplate.msapp"
+        "powerAppFileName": "TwitterTemplate.msapp",
+        "asDatabase": "twitter",
+        "filenameSSAS": "TwitterAS.pbix"
       }
     ],
 
@@ -192,46 +199,48 @@
         "name": "Microsoft-WaitForArmDeploymentStatus",
         "displayname": "Validating Twitter Logic App",
         "DeploymentName": "LogicApp"
+      },
+
+      // AS Set up
+      {
+        "name": "Microsoft-DeployAzureASModel",
+        "displayname": "Deploy AS Model",
+        "xmlaFilePath": "Service/SSAS/twitter.xmla",
+        "SqlConnectionString": "$dsall(SqlConnectionString)[0]",
+        "ASDatabase": "twitter",
+        "skip": "$ds(ssasDisabled)"
+      },
+
+      {
+        "name": "Microsoft-DeployAzureFunction",
+        "displayname": "Deploying scheduler",
+        "DeploymentName": "ASFunction",
+        "FunctionName": "$save('asscheduler' + this.MS.DataStore.getValue('uniqueId'))",
+        "RepoUrl": "https://github.com/MohaaliMicrosoft/AnalysisServicesRefresh",
+        "sku": "Standard",
+        "skip": "$ds(ssasDisabled)"
+      },
+
+      {
+        "name": "Microsoft-WaitForArmDeploymentStatus",
+        "displayname": "Waiting for scheduler",
+        "DeploymentName": "ASFunction",
+        "skip": "$ds(ssasDisabled)"
+      },
+
+      {
+        "name": "Microsoft-DeployAzureFunctionConnectionStrings",
+        "displayname": "Setting up scheduler",
+        "DeploymentName": "ASFunction",
+        "skip": "$ds(ssasDisabled)",
+        "AppSettingKeys": {
+          "connStringAS": "$ds(ASConnectionString)",
+          "connStringSql": "$dsall(SqlConnectionString)[0]",
+          "schema": "[pbist_twitter]",
+          "databaseAS": "twitter"
+        }
       }
-
-      //// AS Set up
-      //{
-      //  "name": "Microsoft-DeployAzureASModel",
-      //  "displayname": "Deploy AS Model",
-      //  "xmlaFilePath": "Service/SSAS/twitter.xmla",
-      //  "ASDatabase": "TwitterModel",
-      //  "skip": "$ds(ssasEnabled)"
-      //},
-
-      //{
-      //  "name": "Microsoft-DeployAzureFunction",
-      //  "displayname": "Deploying scheduler",
-      //  "DeploymentName": "ASFunction",
-      //  "FunctionName": "$run('asscheduler' + this.MS.DataStore.getValue('uniqueId'))",
-      //  "RepoUrl": "https://github.com/MohaaliMicrosoft/AnalysisServicesRefresh",
-      //  "sku": "Standard",
-      //  "skip": "$ds(ssasEnabled)"
-      //},
-
-      //{
-      //  "name": "Microsoft-WaitForArmDeploymentStatus",
-      //  "displayname": "Waiting for scheduler",
-      //  "DeploymentName": "ASFunction",
-      //  "skip": "$ds(ssasEnabled)"
-      //},
-
-      //{
-      //  "name": "Microsoft-DeployAzureFunctionConnectionStrings",
-      //  "displayname": "Setting up scheduler Logic App",
-      //  "DeploymentName": "ASFunction",
-      //  "skip": "$ds(ssasEnabled)",
-      //  "AppSettingKeys": {
-      //    "connStringAS": "$ds(ASConnectionString)",
-      //    "connStringSql": "$ds(SqlConnectionString)",
-      //    "schema": "[pbist_twitter]",
-      //    "databaseAS": "TwitterModel"
-      //  }
-      //}
+      // AS Finish set up
     ]
   }
 }

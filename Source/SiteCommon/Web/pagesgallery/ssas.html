@@ -11,13 +11,13 @@
     </div>
 
     <div class="st-float">
-        <p class="st-text">SSAS Server</p>
+        <p class="st-text">AAS Server</p>
         <input class="st-input" type="text" change.delegate="Invalidate()" disabled.bind="MS.HttpService.isServiceBusy" value.bind="server" />
 
-        <p class="st-text">SSAS Username (Email)</p>
+        <p class="st-text">Azure Email</p>
         <input class="st-input" type="text" change.delegate="Invalidate()" disabled.bind="MS.HttpService.isServiceBusy" value.bind="email" />
 
-        <p class="st-text">SSAS Password</p>
+        <p class="st-text">Azure Password</p>
         <input class="st-input" type="password" change.delegate="Invalidate()" disabled.bind="MS.HttpService.isServiceBusy" value.bind="password" />
 
     </div>
@@ -32,6 +32,7 @@
             <p class="st-text">SSAS SKU Type</p>
             <select class="btn btn-default dropdown-toggle st-input" disabled.bind="MS.HttpService.isServiceBusy" value.bind="sku">
                 <option value="D1">Developer</option>
+                <option value="S0">Standard 0</option>
                 <option value="S1">Standard 1</option>
                 <option value="S2">Standard 2</option>
             </select>

@@ -79,10 +79,10 @@ namespace Microsoft.Deployment.Common.AppLoad
         {
             var catalog = new AggregateCatalog();
             string path = System.AppDomain.CurrentDomain.BaseDirectory;
-            catalog.Catalogs.Add(new DirectoryCatalog(path));
+            catalog.Catalogs.Add(new DirectoryCatalog(path, "Microsoft.Deployment.*"));
             if (Directory.Exists(path + "bin"))
             {
-                catalog.Catalogs.Add(new DirectoryCatalog(path + "bin"));
+                catalog.Catalogs.Add(new DirectoryCatalog(path + "bin", "Microsoft.Deployment.*"));
             }
 
             container = new CompositionContainer(catalog);

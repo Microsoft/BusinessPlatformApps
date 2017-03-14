@@ -43,7 +43,11 @@ namespace Installer
 
 #if DEBUG
             var fullpath = appdir + @"\index.html?" + argsWithQuestionMark;
-            //var fullpath = appdir + @"\index.html?name=Microsoft-SCCMTemplate";
+
+            if (System.Diagnostics.Debugger.IsAttached)
+            {
+                fullpath = appdir + @"\index.html?name=Microsoft-SCCMTemplate";
+            }
 #else
             var fullpath = appdir + @"\index.html?" + argsWithQuestionMark;
 #endif

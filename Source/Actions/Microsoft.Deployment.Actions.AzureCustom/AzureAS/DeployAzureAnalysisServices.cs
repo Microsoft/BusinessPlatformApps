@@ -52,7 +52,7 @@ namespace Microsoft.Deployment.Actions.AzureCustom.AzureAS
             }
 
             JObject responseObj = JsonUtility.GetJObjectFromJsonString(responseBody);
-            request.DataStore.AddToDataStore("ASServerUrl", responseObj["properties"]["serverFullName"]);
+            request.DataStore.AddToDataStore("ASServerUrl", responseObj["properties"]["serverFullName"], DataStoreType.Public);
 
             return new ActionResponse(ActionStatus.Success, responseObj);
         }

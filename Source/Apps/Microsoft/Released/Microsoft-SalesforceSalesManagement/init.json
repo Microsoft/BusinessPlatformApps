@@ -43,6 +43,22 @@
         "newSqlDatabase": "SalesforceDB",
         "showGovAzure": true
       },
+
+      // Adding azure pages
+      {
+        "name": "$SiteCommon$/pagesgallery/choose-analysis-server.html",
+        "displayname": "AAS",
+        "showDescription": true,
+        "skip": "$ds(ssasDisabled)"
+      },
+
+      {
+        "name": "$SiteCommon$/pagesgallery/ssas.html",
+        "displayname": "AAS Login",
+        "skip": "$ds(ssasDisabled)"
+      },
+      // end azure pages
+
       {
         "name": "$SiteCommon$/pagesgallery/customize.html",
         "displayname": "Customize",
@@ -71,7 +87,10 @@
         "finishedActionName": "Microsoft-ADFSliceStatus",
         "targetSchema": "dbo",
         "filename": "$save('SalesManagementReport.pbix')",
-        "showCounts": true
+        "showCounts": true,
+        "asDatabase": "salesforce",
+        "filenameSSAS": "SalesManagementReportAS.pbix",
+        "uniqueId": "$save(this.MS.UtilityService.GetUniqueId(10))"
       }
     ],
     "Actions": [
@@ -95,6 +114,48 @@
         "SqlServerIndex": "0",
         "SqlConfigTable": "[smgt].[configuration]"
       },
+
+      // AS Set up
+      {
+        "name": "Microsoft-DeployAzureASModel",
+        "displayname": "Deploy AS Model",
+        "xmlaFilePath": "Service/AzureAS/SalesManagement.xmla",
+        "SqlConnectionString": "$dsall(SqlConnectionString)[0]",
+        "ASDatabase": "salesforce",
+        "skip": "$ds(ssasDisabled)"
+      },
+
+      {
+        "name": "Microsoft-DeployAzureFunction",
+        "displayname": "Deploying scheduler",
+        "DeploymentName": "ASFunction",
+        "FunctionName": "$save('asscheduler' + this.MS.DataStore.getValue('uniqueId'))",
+        "RepoUrl": "https://github.com/MohaaliMicrosoft/AnalysisServicesRefresh",
+        "sku": "Standard",
+        "skip": "$ds(ssasDisabled)"
+      },
+
+      {
+        "name": "Microsoft-WaitForArmDeploymentStatus",
+        "displayname": "Waiting for scheduler",
+        "DeploymentName": "ASFunction",
+        "skip": "$ds(ssasDisabled)"
+      },
+
+      {
+        "name": "Microsoft-DeployAzureFunctionConnectionStrings",
+        "displayname": "Setting up scheduler",
+        "DeploymentName": "ASFunction",
+        "skip": "$ds(ssasDisabled)",
+        "AppSettingKeys": {
+          "connStringAS": "$ds(ASConnectionString)",
+          "connStringSql": "$dsall(SqlConnectionString)[0]",
+          "schema": "[smgt]",
+          "databaseAS": "salesforce"
+        }
+      },
+      // AS Finish set up
+
       {
         "name": "Microsoft-ADFDeployLinkedServices",
         "displayname": "Creating data connections",

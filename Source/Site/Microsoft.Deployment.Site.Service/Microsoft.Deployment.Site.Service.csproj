@@ -48,12 +48,6 @@
       <HintPath>..\..\packages\Hyak.Common.1.1.0\lib\net45\Hyak.Common.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Microsoft.AnalysisServices.Core">
-      <HintPath>..\..\packages\Microsoft.AnalysisServices.Tabular.13.0.2150.3\lib\Microsoft.AnalysisServices.Core.DLL</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.AnalysisServices.Tabular">
-      <HintPath>..\..\packages\Microsoft.AnalysisServices.Tabular.13.0.2150.3\lib\Microsoft.AnalysisServices.Tabular.DLL</HintPath>
-    </Reference>
     <Reference Include="Microsoft.ApplicationInsights">
       <HintPath>..\..\packages\Microsoft.ApplicationInsights.2.3.0-beta1\lib\net45\Microsoft.ApplicationInsights.dll</HintPath>
     </Reference>
@@ -191,6 +185,14 @@
     <Reference Include="Microsoft.Owin.Hosting, Version=3.0.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\..\packages\Microsoft.Owin.Hosting.3.0.1\lib\net45\Microsoft.Owin.Hosting.dll</HintPath>
       <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.PowerBI.Amo.Core, Version=14.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\RefrencedAssemblies\Microsoft.PowerBI.Amo.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.PowerBI.Tabular, Version=14.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\RefrencedAssemblies\Microsoft.PowerBI.Tabular.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Rest.ClientRuntime">
       <HintPath>..\..\packages\Microsoft.Rest.ClientRuntime.2.3.4\lib\net45\Microsoft.Rest.ClientRuntime.dll</HintPath>

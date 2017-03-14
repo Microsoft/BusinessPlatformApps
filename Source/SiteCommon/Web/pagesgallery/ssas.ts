@@ -6,7 +6,7 @@ export class Customize extends ViewModelBase {
     server: string = '';
     email: string = '';
     password: string = '';
-    sku: string = 'D1';
+    sku: string = 'S0';
 
     Invalidate() {
         super.Invalidate();
@@ -41,6 +41,7 @@ export class Customize extends ViewModelBase {
             let response = await this.MS.HttpService.executeAsync('Microsoft-ValidateConnectionToAS', body);
             if (response.IsSuccess) {
                 this.isValidated = true;
+                this.MS.DataStore.addToDataStore("ASServerUrl", this.server, DataStoreType.Public);
                 return true;
             }
 
@@ -61,6 +62,9 @@ export class Customize extends ViewModelBase {
             if (!response.IsSuccess) {
                 return false;
             }
+
+            this.server = this.MS.DataStore.getValue("ASServerUrl");
+            this.ssasType = "Existing";
   
             // validate creds
             let body2: any = {};

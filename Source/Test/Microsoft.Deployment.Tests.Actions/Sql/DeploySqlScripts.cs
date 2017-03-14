@@ -42,7 +42,7 @@ namespace Microsoft.Deployment.Tests.Actions.Sql
             var dataStore = await TestManager.GetDataStore();
 
             // Deploy Twitter Database Scripts
-            dataStore.AddToDataStore("SqlConnectionString", SqlCreds.GetSqlPagePayload("modb2"));
+            dataStore.AddToDataStore("SqlConnectionString", SqlCreds.GetSqlPagePayload("modb1"));
             dataStore.AddToDataStore("SqlServerIndex", "0");
             dataStore.AddToDataStore("SqlScriptsFolder", "Service/Database/noetl");
 
