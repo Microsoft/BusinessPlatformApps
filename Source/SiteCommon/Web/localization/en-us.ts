@@ -50,7 +50,7 @@
     AZURE_LOGIN_UNKNOWN_ERROR: `You do not have any Azure subscriptions linked to your account. You can get started with a free trial by clicking the link at the top of the page.`,
     CHOOSE_SSAS_AZURE_ANALYSIS_SERVICES: `Yes`,
     CHOOSE_SSAS_DATA_STORAGE_MODE: `Use Azure Analysis Services (Optional):`,
-    CHOOSE_SSAS_DESCRIPTION: `Power BI with Azure Analysis Services is recommended for enterprise-grade deployments for larger installations (more than 100,000 rows), or to provide a more frequent refresh in Power BI (every 15 miniutes). The Azure Analysis Services standard tier incurs an additional cost of $0.605/hr.`,
+    CHOOSE_SSAS_DESCRIPTION: `Power BI with Azure Analysis Services is recommended for enterprise-grade deployments for larger installations (more than 100,000 rows), or to provide a more frequent refresh in Power BI (every 15 minutes). The Azure Analysis Services standard tier incurs an additional cost of $0.605/hr.`,
     CHOOSE_SSAS_DESCRIPTION2: `Importing data into Power BI is recommended for small to medium sized installations.`,
     CHOOSE_SSAS_IMPORT_TO_PBI: `No`,
     CHOOSE_SSAS_LEARN_MORE: `Learn more about Azure Analysis Services`,

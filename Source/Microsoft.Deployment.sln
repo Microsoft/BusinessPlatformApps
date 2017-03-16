@@ -1,9 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio 15
+VisualStudioVersion = 15.0.26228.9
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Actions", "Actions", "{3EBA98DF-986C-4F7E-97F1-B2BC0D1E231B}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Site", "Site", "{D0A7D024-9346-46B7-9626-562611A43142}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{B4804C9F-2092-4822-BD42-367C4A41AC13}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Microsoft.Deployment.Common", "Actions\Microsoft.Deployment.Common\Microsoft.Deployment.Common.csproj", "{38282763-A8DE-485E-A5EB-E5E969F4385B}"
 EndProject
@@ -42,8 +46,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Microsoft.Deployment.Action
 		{38282763-A8DE-485E-A5EB-E5E969F4385B} = {38282763-A8DE-485E-A5EB-E5E969F4385B}
 	EndProjectSection
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Site", "Site", "{D0A7D024-9346-46B7-9626-562611A43142}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Microsoft.Bpst.App.Msi", "Site\Microsoft.Deployment.Site.Msi\Microsoft.Bpst.App.Msi.csproj", "{55BCDD2B-279C-4C91-8ECF-E46282A6E2B0}"
 	ProjectSection(ProjectDependencies) = postProject
 		{B28BB976-B0FF-44CD-B042-125A3EA4545C} = {B28BB976-B0FF-44CD-B042-125A3EA4545C}
@@ -51,9 +53,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Microsoft.Bpst.App.Msi", "S
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Microsoft.Deployment.Site.Service", "Site\Microsoft.Deployment.Site.Service\Microsoft.Deployment.Site.Service.csproj", "{398721F5-390C-434D-94DA-6AC281CC7318}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Microsoft.Deployment.Site.Web", "Site\Microsoft.Deployment.Site.Web\Microsoft.Deployment.Site.Web.xproj", "{B28BB976-B0FF-44CD-B042-125A3EA4545C}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{B4804C9F-2092-4822-BD42-367C4A41AC13}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.Deployment.Site.Web", "Site\Microsoft.Deployment.Site.Web\Microsoft.Deployment.Site.Web.csproj", "{B28BB976-B0FF-44CD-B042-125A3EA4545C}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Microsoft.Deployment.Common.Test", "Test\Microsoft.Deployment.Common.Test\Microsoft.Deployment.Common.Test.csproj", "{ADC0E545-4162-4659-8E03-8EC30E714C3F}"
 EndProject

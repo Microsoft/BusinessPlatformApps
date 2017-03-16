@@ -56,7 +56,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="AzureMLPS">
-      <HintPath>..\..\RefrencedAssemblies\AzureMLPS.dll</HintPath>
+      <HintPath>..\..\ReferencedAssemblies\AzureMLPS.dll</HintPath>
     </Reference>
     <Reference Include="Hyak.Common">
       <HintPath>..\..\packages\Hyak.Common.1.1.0\lib\net45\Hyak.Common.dll</HintPath>
@@ -108,11 +108,11 @@
     </Reference>
     <Reference Include="Microsoft.PowerBI.Amo.Core, Version=14.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\RefrencedAssemblies\Microsoft.PowerBI.Amo.Core.dll</HintPath>
+      <HintPath>..\..\ReferencedAssemblies\Microsoft.PowerBI.Amo.Core.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.PowerBI.Tabular, Version=14.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\RefrencedAssemblies\Microsoft.PowerBI.Tabular.dll</HintPath>
+      <HintPath>..\..\ReferencedAssemblies\Microsoft.PowerBI.Tabular.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Rest.ClientRuntime">
       <HintPath>..\..\packages\Microsoft.Rest.ClientRuntime.2.3.4\lib\net45\Microsoft.Rest.ClientRuntime.dll</HintPath>
