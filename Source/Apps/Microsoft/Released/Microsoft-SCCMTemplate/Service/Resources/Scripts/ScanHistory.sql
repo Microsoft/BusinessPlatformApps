@@ -4,47 +4,34 @@ DECLARE @curdate DATE = GETDATE();
 
 WITH machines AS
 (
-    SELECT itemkey                    AS MachineID,
-           sitecode,
-           name0                      [NAME],
-           operating_system_name_and0 AS [Operating System],
-           client_type0               [Client Type]
-    FROM   vsms_r_system computer
-            LEFT JOIN v_clientmachines AS client  ON computer.itemkey=client.resourceid
-    WHERE  decommissioned0=0 AND obsolete0=0
-),
-missingupdates AS
-(
-    SELECT u.ci_id AS CI_ID,
-           [status].machineid,
-           [status],
-           severity,
-           laststatuschangetime
-    FROM   vsms_update_compliancestatus [status]
-               INNER JOIN vsms_softwareupdate u ON [status].ci_id=u.ci_id  AND [status].[status]<>3 AND isenabled=1 AND issuperseded=0 AND severity>=8
+    SELECT computer.ItemKey                    AS MachineID,
+           client.SiteCode,
+           computer.Name0                      AS [NAME],
+           computer.Operating_System_Name_and0 AS [Operating System],
+           computer.Client_Type0               AS [Client Type]
+    FROM   dbo.vsms_r_system computer LEFT OUTER JOIN dbo.v_clientmachines AS client ON computer.ItemKey=client.ResourceID
+    WHERE  computer.Decommissioned0=0 AND computer.Obsolete0=0
 ),
 missingupdatecount AS
 (
-    SELECT  machineid,
-            Count(CASE severity
-                    WHEN 10 THEN 1
-                    ELSE NULL
-                  END) AS [Missing Critical Update Count],
-            Count(CASE severity
-                    WHEN 8 THEN 1
-                    ELSE NULL
-                  END) AS [Missing Important Update Count]
-    FROM   missingupdates
-    GROUP  BY machineid
+    SELECT  [status].machineid,
+            SUM(CASE u.severity WHEN 10 THEN 1 ELSE 0 END) AS [Missing Critical Update Count],
+            SUM(CASE u.severity WHEN 8 THEN 1 ELSE 0 END)  AS [Missing Important Update Count]
+    FROM
+        dbo.vsms_update_compliancestatus [status] INNER JOIN dbo.vsms_softwareupdate u ON [status].ci_id=u.ci_id
+    WHERE
+        [status].[status]<>3 AND u.isenabled=1 AND u.issuperseded=0 AND u.severity>=8
+    GROUP BY
+        [status].machineid
 ),
 epcompliance AS
 (
-    SELECT  am.resourceid             AS MachineID,
+    SELECT  resourceid             AS MachineID,
             CASE
                 WHEN enabled = 1 THEN 1
                 ELSE 0
             END                       AS [Enabled],
-            version                   [Client Version],
+            [version]                 AS [Client Version],
             CASE
                 WHEN rtpenabled = 1 THEN 1
                 ELSE 0
@@ -87,7 +74,7 @@ epcompliance AS
             END                       AS [Signature Age (days)],
             engineversion             [Engine Version],
             antivirussignatureversion AS [Antivirus Signature Version]
-    FROM   vsms_g_system_antimalwarehealthstatus am
+    FROM   dbo.vsms_g_system_antimalwarehealthstatus
 ),
 healthsummary AS
 (
@@ -107,9 +94,9 @@ healthsummary AS
 ),
 scansummary AS
 (
-    SELECT uss.resourceid   AS MachineID,
-           uss.lastscantime [Last Scan Time]
-    FROM   v_updatescanstatus uss
+    SELECT resourceid   AS MachineID,
+           lastscantime AS [Last Scan Time]
+    FROM   dbo.v_updatescanstatus
 )
 SELECT
     c.machineid   AS MachineID,
@@ -144,8 +131,7 @@ SELECT
     hs.[last status message],
     hs.[last policy request],
     ss.[last scan time]
-FROM   machines c
-       LEFT OUTER JOIN epcompliance ep ON c.machineid = ep.machineid
-       LEFT OUTER JOIN missingupdatecount updates ON updates.machineid = c.machineid
-       INNER JOIN healthsummary hs ON hs.machineid = c.machineid
-       LEFT OUTER JOIN scansummary ss ON ss.machineid = c.machineid;
+FROM   machines c LEFT OUTER JOIN epcompliance ep ON c.machineid = ep.machineid
+                  LEFT OUTER JOIN missingupdatecount updates ON updates.machineid = c.machineid
+                  INNER JOIN healthsummary hs ON hs.machineid = c.machineid
+                  LEFT OUTER JOIN scansummary ss ON ss.machineid = c.machineid;

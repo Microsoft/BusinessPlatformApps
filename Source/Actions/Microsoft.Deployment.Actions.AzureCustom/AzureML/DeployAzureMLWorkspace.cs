@@ -75,7 +75,8 @@ namespace Microsoft.Deployment.Actions.AzureCustom.AzureML
 
             var deploymentItem = client.Deployments.CreateOrUpdateAsync(resourceGroup, deploymentName, deployment, new CancellationToken()).Result;
 
-            return new ActionResponse(ActionStatus.Success);
+            var status = await AzureUtility.WaitForArmDeployment(creds, resourceGroup, deploymentName);
+            return status;
         }
     }
 }

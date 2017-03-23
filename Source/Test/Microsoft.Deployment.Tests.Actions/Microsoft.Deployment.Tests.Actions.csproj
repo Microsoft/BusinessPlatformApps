@@ -144,6 +144,7 @@
   <ItemGroup>
     <Compile Include="AzureTests\AzureAnalysisServicesTest.cs" />
     <Compile Include="AzureTests\AzureFunctionsTest.cs" />
+    <Compile Include="AzureTests\AzureMLTests.cs" />
     <Compile Include="AzureTests\CognitiveServices.cs" />
     <Compile Include="OnPrem\VersionTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

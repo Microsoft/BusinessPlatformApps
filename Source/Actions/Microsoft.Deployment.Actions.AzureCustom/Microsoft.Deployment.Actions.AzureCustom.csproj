@@ -198,6 +198,7 @@
     <Compile Include="AzureAS\DeployAzureASModel.cs" />
     <Compile Include="AzureAS\CheckASServerNameAvailability.cs" />
     <Compile Include="AzureAS\ValidateConnectionToAS.cs" />
+    <Compile Include="AzureML\ExportAzureMLExperiment.cs" />
     <Compile Include="AzureML\DeployAzureMLExperiment.cs" />
     <Compile Include="AzureML\DeployAzureMLWebServiceFromFile.cs" />
     <Compile Include="AzureML\WaitForAzureMLWebServiceCreation.cs" />

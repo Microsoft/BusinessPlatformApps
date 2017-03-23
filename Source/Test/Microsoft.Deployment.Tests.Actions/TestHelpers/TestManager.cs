@@ -16,7 +16,7 @@ namespace Microsoft.Deployment.Tests.Actions.TestHelpers
     public class TestManager
     {
         public static string RandomString = RandomGenerator.GetRandomLowerCaseCharacters(8);
-        public static string ResourceGroup = Environment.MachineName + "test";
+        public static string ResourceGroup = Environment.MachineName.ToLower() + "test";
 
         private static CommonController Controller { get; set; }
         public static string TemplateName = "Microsoft-NewsTemplateTest";

@@ -102,7 +102,7 @@ namespace Microsoft.Deployment.Actions.AzureCustom.AzureToken
             return new ActionResponse(ActionStatus.Success, obj, true);
         }
 
-        private JObject RetrieveCrmToken(string refreshToken, string websiteRootUrl, DataStore dataStore)
+        public static JObject RetrieveCrmToken(string refreshToken, string websiteRootUrl, DataStore dataStore)
         {
             string tokenUrl = string.Format(Constants.AzureTokenUri, dataStore.GetValue("AADTenant"));
 
@@ -139,7 +139,7 @@ namespace Microsoft.Deployment.Actions.AzureCustom.AzureToken
             return builder;
         }
 
-        private string GetTokenUri2(string code, string uri, string rootUrl, string clientId)
+        private static string GetTokenUri2(string code, string uri, string rootUrl, string clientId)
         {
             return $"refresh_token={code}&" +
                    $"client_id={clientId}&" +
