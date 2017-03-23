@@ -7,6 +7,92 @@
 </head>
 
 <apex:includeScript value="{!$Resource.PBIJS}"/>
+
+    <apex:outputPanel rendered="{!NOT(hasToken)}"><a href='{!authUrl}'>Login</a></apex:outputPanel>
+
+    <apex:outputPanel rendered="{!hasToken}">Already has token</apex:outputPanel>
+
+<apex:form >
+<apex:actionFunction name="refreshAccessToken" action="{!refreshAccessToken}"/>
+</apex:form>
+<div id="myReport" style="height: 800px;"/>
+
+
+<script>
+
+let accessToken = '{!PBIaccess_token}';
+let refreshToken = '{!PBIrefresh_token}';
+let expires_on = '{!PBIexpires_on}';
+let validateResult = '{!validateResult}';
+
+let selectedGroup = '{!selectedGroup}';
+let selectedReport = 'YOURREPORTID';
+
+window.onload = function() {
+
+if(window.location.href.includes('code='))
+{
+    window.close();
+    window.opener.location.reload();
+}
+
+let expiresOn = parseInt(expires_on);
+let currentTime = Date.now()/1000;
+        
+    if(expiresOn <= currentTime || !accessToken)
+    { 
+        var loginWindow = window.open('{!authUrl}','Login','width=250,height=900,0,status=0');
+        
+    } else if((expiresOn - 2000) <= currentTime)
+           {
+                refreshAccessToken();
+           }
+ 
+var filter = {
+      $schema: "http://powerbi.com/product/schema#basic"
+    };
+
+var embedConfiguration = {
+
+    type: 'report',
+    
+    id: selectedReport,
+
+    embedUrl: 'https://app.powerbi.com/reportEmbed',
+
+    settings: {
+
+            filterPaneEnabled: true,
+
+            navContentPaneEnabled: true
+
+        }
+};
+
+powerbi.accessToken = '{!PBIaccess_token}';
+
+var element = document.getElementById('myReport');
+
+var report = powerbi.embed(element, embedConfiguration);
+}
+
+window.onbeforeclose = function()
+        {
+            window.opener.update(window.location.href);
+        }
+
+</script>
+</html>
+
+</apex:page><apex:page showHeader="true" controller="PowerBIController" action="{!redirectOnCallback}">
+
+<html>
+
+<head>
+
+</head>
+
+<apex:includeScript value="{!$Resource.PBIJS}"/>
 <apex:form >
 <apex:actionFunction name="refreshAccessToken" action="{!refreshAccessToken}"/>
 </apex:form>

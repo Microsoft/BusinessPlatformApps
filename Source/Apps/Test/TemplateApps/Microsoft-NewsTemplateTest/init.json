@@ -215,8 +215,8 @@
           "Data and search results enriched using machine learning techniques like topic modelling and entity extraction",
           "Full cloud solution with minimum set up and maintenance considerations"
         ],
-        "name": "$SiteCommon$/pagesgallery/getting-started.html",
-        "subtitle": "Welcome to the Bing News Adavanced Search solution template.",
+        "name": "$SiteCommon$/pages-gallery/getting-started.html",
+        "subtitle": "Welcome to the Bing News Advanced Search solution template.",
         "templateName": "Advanced Search with Bing News"
       },
       {
@@ -225,7 +225,7 @@
         ],
         "defaultLocation": "5",
         "displayname": "Login",
-        "name": "$SiteCommon$/pagesgallery/azure-login.html",
+        "name": "$SiteCommon$/pages-gallery/azure-login.html",
         "pricingCost": "$run('By clicking next and deploying the template, you authorize Microsoft to create Azure resources on your subscription and bill based on their respective pricing rates.  The approximate base cost of the Azure resources used by this template is $7 a day, and every 1,000 articles will incur an additional cost of approximately $12.  These costs are estimates only and subject to change.')",
         "pricingUrl": "https://github.com/Microsoft/BusinessPlatformApps/tree/master/Source/Apps/Microsoft/Released/Microsoft-TwitterTemplate#pricing",
         "pricingCalculatorUrl": "https://azure.microsoft.com/en-us/pricing/calculator/"
@@ -237,7 +237,7 @@
         "bingUrl": "placeholder"
       },
       {
-        "name": "$SiteCommon$/pagesgallery/sql-server.html",
+        "name": "$SiteCommon$/pages-gallery/sql-server.html",
         "displayname": "Source",
         "isAzureSql": true,
         "showAzureSql": false,
@@ -252,7 +252,7 @@
         "displayname": "Search Terms"
       },
       {
-        "name": "$SiteCommon$/pagesgallery/summary.html",
+        "name": "$SiteCommon$/pages-gallery/summary.html",
         "displayname": "Summary",
         "values": {
           "Target Server": "$(this.MS.DataStore.getValue('Server'))",
@@ -262,7 +262,7 @@
         }
       },
       {
-        "name": "$SiteCommon$/pagesgallery/progress.html",
+        "name": "$SiteCommon$/pages-gallery/progress.html",
         "displayname": "Deploy",
         "filename": "$save('BingNewsTemplate.pbix')",
         "uniqueId": "$save(this.MS.UtilityService.GetUniqueId(8))"

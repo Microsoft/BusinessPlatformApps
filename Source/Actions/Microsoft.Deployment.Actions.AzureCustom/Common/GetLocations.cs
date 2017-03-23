@@ -16,8 +16,8 @@ namespace Microsoft.Deployment.Actions.AzureCustom.Common
     {
         public override async Task<ActionResponse> ExecuteActionAsync(ActionRequest request)
         {
-            var token = request.DataStore.GetJson("AzureToken")["access_token"].ToString();
-            var subscription = request.DataStore.GetJson("SelectedSubscription")["SubscriptionId"].ToString();
+            var token = request.DataStore.GetJson("AzureToken", "access_token");
+            var subscription = request.DataStore.GetJson("SelectedSubscription", "SubscriptionId");
             CloudCredentials creds = new TokenCloudCredentials(token);
             SubscriptionClient client = new SubscriptionClient(creds);
             var locationsList = (await client.Subscriptions.ListLocationsAsync(subscription, new CancellationToken())).Locations.ToList();

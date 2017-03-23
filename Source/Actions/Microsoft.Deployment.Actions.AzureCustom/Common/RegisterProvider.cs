@@ -18,8 +18,8 @@ namespace Microsoft.Deployment.Actions.AzureCustom.Common
         public override async Task<ActionResponse> ExecuteActionAsync(ActionRequest request)
         {
             string azureProvider = request.DataStore.GetLastValue("AzureProvider");
-            string azureToken = request.DataStore.GetJson("AzureToken")["access_token"].ToString();
-            string subscriptionId = request.DataStore.GetJson("SelectedSubscription")["SubscriptionId"].ToString();
+            string azureToken = request.DataStore.GetJson("AzureToken", "access_token");
+            string subscriptionId = request.DataStore.GetJson("SelectedSubscription", "SubscriptionId");
 
             SubscriptionCloudCredentials creds = new TokenCloudCredentials(subscriptionId, azureToken);
 
@@ -37,7 +37,7 @@ namespace Microsoft.Deployment.Actions.AzureCustom.Common
                         return new ActionResponse(ActionStatus.Failure, JsonUtility.GetEmptyJObject(), "RegisterProviderError");
                     }
 
-                    // Temporary hack to wait for regiastration to complete
+                    // Temporary hack to wait for registration to complete
                     await Task.Delay(20000);
                 }
             }

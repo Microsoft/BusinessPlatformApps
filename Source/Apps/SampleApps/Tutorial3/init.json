@@ -2,7 +2,7 @@
   "Install": {
     "Pages": [
       {
-        "name": "$SiteCommon$/pagesgallery/getting-started.html",
+        "name": "$SiteCommon$/pages-gallery/getting-started.html",
         "displayname": "Getting Started",
         "showPrivacy": false,
         "subtitle": "This is my new template",
@@ -11,7 +11,7 @@
 
       // AzurePage
       {
-        "name": "$SiteCommon$/pagesgallery/azure-login.html",
+        "name": "$SiteCommon$/pages-gallery/azure-login.html",
         "displayname": "Login",
         "pricingUrl": "http://url",
         "pricingCost": "Cost goes here"

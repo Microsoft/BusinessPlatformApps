@@ -2,7 +2,7 @@
   "Install": {
     "Pages": [
       {
-        "name": "$SiteCommon$/pagesgallery/getting-started.html",
+        "name": "$SiteCommon$/pages-gallery/getting-started.html",
         "displayname": "Getting Started",
         "templateName": "Test Property",
         "subtitle": "Test Subtitle",
@@ -16,37 +16,37 @@
         ]
       },
       {
-        "name": "$SiteCommon$/pagesgallery/cognitive-services.html",
+        "name": "$SiteCommon$/pages-gallery/cognitive-services.html",
         "displayname": "Cognitive Api1",
         "skip": "$ds(skip)"
       },
       {
-        "name": "$SiteCommon$/pagesgallery/twitter.html",
+        "name": "$SiteCommon$/pages-gallery/twitter.html",
         "displayname": "Twitter1",
         "skip": "$ds(skip)"
       },
       {
-        "name": "$SiteCommon$/pagesgallery/search-terms.html",
+        "name": "$SiteCommon$/pages-gallery/search-terms.html",
         "displayname": "Search Terms1",
         "skip": "$ds(skip)"
       },
       {
-        "name": "$SiteCommon$/pagesgallery/cognitive-services.html",
+        "name": "$SiteCommon$/pages-gallery/cognitive-services.html",
         "displayname": "Cognitive Api2",
         "skip": "$ds(skip)"
       },
       {
-        "name": "$SiteCommon$/pagesgallery/twitter.html",
+        "name": "$SiteCommon$/pages-gallery/twitter.html",
         "displayname": "Twitter2",
         "skip": "$ds(skip)"
       },
       {
-        "name": "$SiteCommon$/pagesgallery/search-terms.html",
+        "name": "$SiteCommon$/pages-gallery/search-terms.html",
         "displayname": "Search Terms"
       },
       // Progress
       {
-        "name": "$SiteCommon$/pagesgallery/progress.html",
+        "name": "$SiteCommon$/pages-gallery/progress.html",
         "displayname": "Deploy"
       }
 

@@ -14,8 +14,8 @@ namespace Microsoft.Deployment.Actions.AzureCustom.AzureML
     {
         public override async Task<ActionResponse> ExecuteActionAsync(ActionRequest request)
         {
-            var azureToken = request.DataStore.GetJson("AzureToken")["access_token"].ToString();
-            var subscription = request.DataStore.GetJson("SelectedSubscription")["SubscriptionId"].ToString();
+            var azureToken = request.DataStore.GetJson("AzureToken", "access_token");
+            var subscription = request.DataStore.GetJson("SelectedSubscription", "SubscriptionId");
             var workspaceName = request.DataStore.GetValue("WorkspaceName");
 
             ManagementSDK azuremlClient = new ManagementSDK();

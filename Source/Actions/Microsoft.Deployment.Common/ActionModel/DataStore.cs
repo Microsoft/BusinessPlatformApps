@@ -130,11 +130,6 @@ namespace Microsoft.Deployment.Common.ActionModel
             return this.GetValueWithRouteAndKey(dataStoreType, route, key)?.ToString();
         }
 
-        public JToken GetJson(string route, string key, DataStoreType dataStoreType = DataStoreType.Any)
-        {
-            return this.GetValueWithRouteAndKey(dataStoreType, route, key);
-        }
-
         public string GetValue(string key, DataStoreType dataStoreType = DataStoreType.Any)
         {
             return this.GetFirstValueFromDataStore(key, dataStoreType)?.ToString();
@@ -147,17 +142,37 @@ namespace Microsoft.Deployment.Common.ActionModel
 
         public string GetValueAtIndex(string key, string index, DataStoreType dataStoreType = DataStoreType.Any)
         {
-            int i = 0;
+            string result = null;
             if (this.KeyExists(index))
             {
-                i = int.Parse(this.GetValue(index));
+                int i = int.Parse(this.GetValue(index));
+                IList<string> allValues = this.GetAllValues(key);
+                if (allValues.Count > i)
+                {
+                    result = this.GetAllValues(key)[i];
+                }
             }
-            return this.GetAllValues(key)[i];
+            return result;
         }
 
         public JToken GetJson(string key, DataStoreType dataStoreType = DataStoreType.Any)
         {
             return this.GetFirstValueFromDataStore(key, dataStoreType);
+        }
+
+        public string GetJson(string key, string property, DataStoreType dataStoreType = DataStoreType.Any)
+        {
+            string result = null;
+            JToken tokenKey = this.GetFirstValueFromDataStore(key, dataStoreType);
+            if (tokenKey != null)
+            {
+                JToken tokenProperty = tokenKey[property];
+                if (tokenProperty != null)
+                {
+                    result = tokenProperty.ToString();
+                }
+            }
+            return result;
         }
 
         public DataStoreItem GetDataStoreItem(string key, DataStoreType dataStoreType = DataStoreType.Any)

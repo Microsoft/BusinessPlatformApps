@@ -39,7 +39,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="AzureMLPS">
-      <HintPath>..\..\RefrencedAssemblies\AzureMLPS.dll</HintPath>
+      <HintPath>..\..\ReferencedAssemblies\AzureMLPS.dll</HintPath>
     </Reference>
     <Reference Include="Hyak.Common">
       <HintPath>..\..\packages\Hyak.Common.1.1.0\lib\net45\Hyak.Common.dll</HintPath>

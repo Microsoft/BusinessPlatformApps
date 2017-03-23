@@ -12,12 +12,14 @@ namespace Microsoft.Deployment.Site.Web.Tests
     {
         public static string Host { get; private set; }
         public static string Slot3 { get; private set; }
+        public static string Slot1 { get; private set; }
 
         [AssemblyInitialize()]
         public static void AssemblyInit(TestContext context)
         {
             Host = Environment.GetEnvironmentVariables()["TestHost"]?.ToString() ?? "https://bpsolutiontemplates.com";
             Slot3 = "https://bpst-slot3.azurewebsites.net";
+            Slot1 = "https://bpst-slot1.azurewebsites.net";
         }
     }
 }

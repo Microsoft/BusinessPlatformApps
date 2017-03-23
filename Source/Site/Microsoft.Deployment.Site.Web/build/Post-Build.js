@@ -10,10 +10,10 @@ var config = {
     bundles: {
         'dist/app-build': {
             includes: [
-              '*.js',
-              '*.html!text',
-              '*.css!text',
-              'bootstrap/css/bootstrap.css!text'
+                '*.js',
+                '*.html!text',
+                '*.css!text',
+                'bootstrap/css/bootstrap.css!text'
             ],
             options: {
                 inject: true,
@@ -37,7 +37,7 @@ var config = {
                 'aurelia-http-client',
                 'aurelia-polyfills'
             ],
-           
+
             options: {
                 'inject': true,
                 'minify': true,
@@ -49,13 +49,14 @@ var config = {
 
 gulp.task('Clean-Bundle', function () {
     return del([
-    'wwwroot/dist/aurelia.js',
-    'wwwroot/dist/app-build.js'
+        'wwwroot/dist/aurelia.js',
+        'wwwroot/dist/app-build.js'
     ]);
 });
 
 gulp.task('Post-Build', function (callback) {
     runSequence('bundle', callback);
+    //runSequence('unbundle', callback);
 });
 
 gulp.task('bundle', function () {

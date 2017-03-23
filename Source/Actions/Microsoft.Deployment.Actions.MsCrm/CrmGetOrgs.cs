@@ -22,7 +22,7 @@ namespace Microsoft.Deployment.Common.Actions.MsCrm
 
         public override async Task<ActionResponse> ExecuteActionAsync(ActionRequest request)
         {
-            string token = request.DataStore.GetJson("MsCrmToken")["access_token"].ToString();
+            string token = request.DataStore.GetJson("MsCrmToken", "access_token");
             AuthenticationHeaderValue bearer = new AuthenticationHeaderValue("Bearer", token);
 
             RestClient _rc = new RestClient(MsCrmEndpoints.ENDPOINT, bearer);

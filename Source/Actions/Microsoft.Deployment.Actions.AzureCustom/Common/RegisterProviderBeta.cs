@@ -18,8 +18,8 @@ namespace Microsoft.Deployment.Actions.AzureCustom.Common
         public override async Task<ActionResponse> ExecuteActionAsync(ActionRequest request)
         {
             string azureProvider = request.DataStore.GetValue("AzureProvider");
-            string azureToken = request.DataStore.GetJson("AzureToken")["access_token"].ToString();
-            string subscriptionId = request.DataStore.GetJson("SelectedSubscription")["SubscriptionId"].ToString();
+            string azureToken = request.DataStore.GetJson("AzureToken", "access_token");
+            string subscriptionId = request.DataStore.GetJson("SelectedSubscription", "SubscriptionId");
 
             SubscriptionCloudCredentials creds = new TokenCloudCredentials(subscriptionId, azureToken);
 

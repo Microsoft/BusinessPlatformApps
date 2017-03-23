@@ -15,7 +15,7 @@ namespace Microsoft.Deployment.Actions.AzureCustom.Common
 
         public override async Task<ActionResponse> ExecuteActionAsync(ActionRequest request)
         {
-            string azureToken = request.DataStore.GetJson("AzureToken")["access_token"].ToString();
+            string azureToken = request.DataStore.GetJson("AzureToken", "access_token");
             string bapiService = request.DataStore.GetLastValue("BapiService");
 
             AzureHttpClient client = new AzureHttpClient(azureToken);

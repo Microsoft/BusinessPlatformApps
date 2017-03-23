@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.Deployment.Site.Test.TestHelpers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
@@ -14,38 +15,84 @@ using OpenQA.Selenium.Support.UI;
 namespace Microsoft.Deployment.Site.Web.Tests
 {
     [TestClass]
-    [Ignore]
     public class SalesforceSalesManagementTests
     {
-        private string baseURL = Constants.Host + "?name=Microsoft-SalesforceSalesManagement";
+        private string baseURL = Constants.Slot3;
         private RemoteWebDriver driver;
-        //private string browser;
 
         [TestMethod]
-        public void NavigateToAzurePage()
+        public void Given_CorrectInformation_And_No_AS_When_RunSalesforce_ThenSuccess()
         {
-            OpenWebBrowserOnPage(string.Empty);
-            var element = driver.FindElementByTagName("Button");
-            element.Click();
+            Given_CorrectCredentials_When_AzureAuth_Then_Success();
+            HelperMethods.ClickNextButton();
+            Given_CorrectSalesforceCredentials_When_Validate_Then_PageValidatesSuccesfully();
+            HelperMethods.ClickNextButton();
+            Given_CorrectSqlCredentials_When_ExistingSqlSelected_Then_PageValidatesSuccessfully();
+            HelperMethods.ClickNextButton();
+            HelperMethods.NoAnalysisServices();
+            HelperMethods.ClickNextButton();
+            Thread.Sleep(new TimeSpan(0, 0, 3));
+            HelperMethods.ClickNextButton();
+            HelperMethods.ClickButton("Run");
+            HelperMethods.CheckDeploymentStatus();
+            HelperMethods.CleanSubscription(
+                          Credential.Instance.ServiceAccount.Username,
+                          Credential.Instance.ServiceAccount.Password,
+                          Credential.Instance.ServiceAccount.TenantId,
+                          Credential.Instance.ServiceAccount.ClientId,
+                          Credential.Instance.ServiceAccount.SubscriptionId);
+
         }
 
         [TestMethod]
-        public void Given_CorrectAzureCredentials_When_Connect_Then_Success()
+        public void Given_CorrectInformation_And_AS_When_RunSalesforce_ThenSuccess()
         {
-            OpenWebBrowserOnPage("azure");
-            string username = "mohaali@pbist.onmicrosoft.com";
-            string password = "Corp123!";
-            AzurePage(username, password);
+            Given_CorrectCredentials_When_AzureAuth_Then_Success();
+            HelperMethods.ClickNextButton();
+            Given_CorrectSalesforceCredentials_When_Validate_Then_PageValidatesSuccesfully();
+            HelperMethods.ClickNextButton();
+            Given_CorrectSqlCredentials_When_ExistingSqlSelected_Then_PageValidatesSuccessfully();
+            HelperMethods.ClickNextButton();
+            HelperMethods.NewAnalysisServices("salesforceas", Credential.Instance.ServiceAccount.Username, Credential.Instance.ServiceAccount.Password);
+            HelperMethods.ClickNextButton();
+            Thread.Sleep(new TimeSpan(0, 0, 3));
+            HelperMethods.ClickNextButton();
+            HelperMethods.ClickNextButton();
+            HelperMethods.ClickButton("Run");
+            HelperMethods.CheckDeploymentStatus();
+            HelperMethods.CleanSubscription(
+                          Credential.Instance.ServiceAccount.Username,
+                          Credential.Instance.ServiceAccount.Password,
+                          Credential.Instance.ServiceAccount.TenantId,
+                          Credential.Instance.ServiceAccount.ClientId,
+                          Credential.Instance.ServiceAccount.SubscriptionId);
+
         }
 
+
+        [TestMethod]
+        [Ignore]
+        public void Given_CorrectCredentials_When_AzureAuth_Then_Success()
+        {
+            HelperMethods.OpenWebBrowserOnPage("azure");
+            string username = Credential.Instance.ServiceAccount.Username;
+            string password = Credential.Instance.ServiceAccount.Password;
+            string subscriptionName = Credential.Instance.ServiceAccount.SubscriptionName;
+
+            HelperMethods.AzurePage(username, password, subscriptionName);
+
+            var validated = driver.FindElementByClassName("st-validated");
+
+            Assert.IsTrue(validated.Text == "Successfully validated");
+        }
+
+        [Ignore]
         [TestMethod]
         public void Given_CorrectSalesforceCredentials_When_Validate_Then_PageValidatesSuccesfully()
         {
-            OpenWebBrowserOnPage("salesforce");
-
-            string username = "cat@catinc.com";
-            string password = "P@ssw0rd";
-            string token = "d9grDLHpwPGmg0f5UewyZD11";
+            string username = Credential.Instance.Salesforce.Username;
+            string password = Credential.Instance.Salesforce.Password;
+            string token = Credential.Instance.Salesforce.Token;
 
             SalesforcePage(username, password, token);
 
@@ -54,10 +101,11 @@ namespace Microsoft.Deployment.Site.Web.Tests
             Assert.IsTrue(validated.Text == "Successfully validated");
         }
 
+        [Ignore]
         [TestMethod]
         public void Given_NoSalesforceCredentials_When_Validate_Then_PageFailsWithErrorMessage()
         {
-            OpenWebBrowserOnPage("salesforce");
+            HelperMethods.OpenWebBrowserOnPage("salesforce");
 
             SalesforcePage(string.Empty, string.Empty, string.Empty);
 
@@ -67,170 +115,89 @@ namespace Microsoft.Deployment.Site.Web.Tests
         }
 
         [TestMethod]
+        [Ignore]
         public void Given_CorrectSqlCredentials_When_ExistingSqlSelected_Then_PageValidatesSuccessfully()
         {
-            this.OpenWebBrowserOnPage("target");
+            string server = Credential.Instance.Sql.Server;
+            string username = Credential.Instance.Sql.Username;
+            string password = Credential.Instance.Sql.Password;
+            string database = Credential.Instance.Sql.SalesforceDatabase;
 
-            string server = "pbisttest";
-            string username = "pbiadmin";
-            string password = "Billing.26";
+            HelperMethods.SqlPageExistingDatabase(server, username, password);
 
-           SqlPageExistingDatabase(server, username, password);
+            Thread.Sleep(new TimeSpan(0, 0, 3));
 
             var validated = driver.FindElementByClassName("st-validated");
 
             Assert.IsTrue(validated.Text == "Successfully validated");
-        }
 
-        [TestMethod]
-        public void Given_WrongSqlCredentials_When_ExistingSqlSelected_Then_PageFailsWithErrorMessage()
-        {
-            this.OpenWebBrowserOnPage("target");
-
-            this.OpenWebBrowserOnPage("target");
-
-            string server = "pbist";
-            string username = "testuser";
-            string password = "testpassword";
-
-            SqlPageExistingDatabase(server, username, password);
-
-            var validated = driver.FindElementByClassName("st-validated");
-
-            Assert.IsTrue(validated.Text == "Login to SQL failed");
+            HelperMethods.SelectSqlDatabase(database);
         }
 
         [Ignore]
         [TestMethod]
-        public void Given_AllCorrectInformation_When_Deploying_Then_ExperienceCompletesSuccessfully()
+        public void Given_WrongSqlCredentials_When_ExistingSqlSelected_Then_PageFailsWithErrorMessage()
         {
-            OpenWebBrowserOnPage(string.Empty);
-            ClickNextButton();
+            HelperMethods.OpenWebBrowserOnPage("target");
 
-            Thread.Sleep(new TimeSpan(0, 0, 10));
+            string server = Credential.Instance.Sql.Server;
+            string username = Credential.Instance.Sql.Username;
+            string password = "wrongPassword";
 
-            string username = "mohaali@pbist.onmicrosoft.com";
-            string password = "Corp123!";
-            AzurePage(username, password);
-
-            Thread.Sleep(new TimeSpan(0, 0, 10));
-
-            var checkBox = driver.FindElementsByCssSelector("input[class='au-target']").First(e => e.GetAttribute("type") == "checkbox");
-            checkBox.Click();
-
-            ClickNextButton();
-
-            string sfusername = "cat@catinc.com";
-            string sfpassword = "P@ssw0rd";
-            string sftoken = "d9grDLHpwPGmg0f5UewyZD11";
-
-            SalesforcePage(sfusername, sfpassword, sftoken);
-
-            var sfvalidated = driver.FindElementByClassName("st-validated");
-
-            Assert.IsTrue(sfvalidated.Text == "Successfully validated");
-
-            ClickNextButton();
-
-            string sqlserver = "pbist";
-            string sqlusername = "pbiadmin";
-            string sqlpassword = "Billing.26";
-
-            SqlPageExistingDatabase(sqlserver, sqlusername, sqlpassword);
+            HelperMethods.SqlPageExistingDatabase(server, username, password);
 
             var validated = driver.FindElementByClassName("st-validated");
-
-            Assert.IsTrue(validated.Text == "Successfully validated");
-
-            ClickNextButton();
+            Assert.IsTrue(validated.Text == "Login to SQL failed");
         }
 
-        [TestCleanup]
-        public void Cleanup()
+        [TestCleanup()]
+        public void MyTestCleanup()
         {
-            driver.Quit();
+            HelperMethods.driver.Quit();
         }
 
         [TestInitialize]
-        public void MyTestInitialize()
+        public void Initialize()
         {
-        }
-
-        public void AzurePage(string username, string password)
-        {
-            var elements = driver.FindElementByTagName("Button");
-            elements.Click();
-
-            var usernameBox = driver.FindElementById("cred_userid_inputtext");
-            usernameBox.SendKeys(username);
-
-            var passwordBox = driver.FindElementById("cred_password_inputtext");
-            passwordBox.SendKeys(password);
-
-            Thread.Sleep(new TimeSpan(0, 0, 1));
-            var signInButton = driver.FindElementById("cred_sign_in_button");
-
-            var js = (IJavaScriptExecutor)driver;
-            js.ExecuteScript("arguments[0].click()", signInButton);
-
-            Thread.Sleep(new TimeSpan(0, 0, 1));
-            var acceptButton = driver.FindElementById("cred_accept_button");
-            acceptButton.Click();
+            Credential.Load();
+            HelperMethods.baseURL = baseURL + "?name=Microsoft-SalesforceSalesManagement";
+            var options = new ChromeOptions();
+            options.AddArgument("no-sandbox");
+            HelperMethods.driver = new ChromeDriver(options);
+            this.driver = HelperMethods.driver;
         }
 
         public void SalesforcePage(string username, string password, string token)
         {
+            Thread.Sleep(new TimeSpan(0, 0, 10));
+
             var usernameBox =
-                driver.FindElementsByTagName("Input").First(e => e.GetAttribute("placeholder") == "username");
-            usernameBox.SendKeys(username);
+                driver.FindElementsByTagName("Input").FirstOrDefault(e => e.GetAttribute("placeholder") == "username");
             var passwordBox =
-                driver.FindElementsByTagName("Input").First(e => e.GetAttribute("placeholder") == "password");
-            passwordBox.SendKeys(password);
+                driver.FindElementsByTagName("Input").FirstOrDefault(e => e.GetAttribute("placeholder") == "password");
             var tokenBox =
-                driver.FindElementsByTagName("Input").First(e => e.GetAttribute("placeholder") == "token");
+                driver.FindElementsByTagName("Input").FirstOrDefault(e => e.GetAttribute("placeholder") == "token");
+
+            while(usernameBox == null && passwordBox == null && tokenBox == null)                
+            {
+                usernameBox =
+                  driver.FindElementsByTagName("Input").FirstOrDefault(e => e.GetAttribute("placeholder") == "username");
+                passwordBox =
+                    driver.FindElementsByTagName("Input").FirstOrDefault(e => e.GetAttribute("placeholder") == "password");
+                tokenBox =
+                    driver.FindElementsByTagName("Input").FirstOrDefault(e => e.GetAttribute("placeholder") == "token");
+                Thread.Sleep(new TimeSpan(0, 0, 5));
+            }
+
+            while (usernameBox.Enabled != true && passwordBox.Enabled != true && tokenBox.Enabled != true)
+            {
+                Thread.Sleep(new TimeSpan(0, 0, 3));
+            }
+
             tokenBox.SendKeys(token);
-
-            ClickValidateButton();
-        }
-
-        public void SqlPageExistingDatabase(string server, string username, string password)
-        {
-            var option = driver.FindElementByCssSelector("select[class='btn btn-default dropdown-toggle st-input au-target']");
-            option.SendKeys("Existing SQL Instance");
-
-            var elements = driver.FindElementsByCssSelector("input[class='st-input au-target']");
-
-            var serverBox = elements.First(e => e.GetAttribute("value.bind").Contains("sqlServer"));
-            serverBox.SendKeys(server);
-
-            var usernameBox = elements.First(e => e.GetAttribute("value.bind").Contains("username"));
             usernameBox.SendKeys(username);
-
-            var passwordBox = elements.First(e => e.GetAttribute("value.bind").Contains("password"));
             passwordBox.SendKeys(password);
-
-            ClickValidateButton();
-        }
-
-        public void OpenWebBrowserOnPage(string page)
-        {
-            var url = this.baseURL + $"#/{page}";
-            driver = new ChromeDriver();
-            driver.Manage().Window.Maximize();
-            driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(30);
-            driver.Navigate().GoToUrl(url);
-        }
-
-        public void ClickValidateButton()
-        {
-            var button = driver.FindElementsByTagName("Button").First(e => e.Text == "Validate");
-            button.Click();
-        }
-
-        public void ClickNextButton()
-        {
-            var button = driver.FindElementsByTagName("Button").First(e => e.Text == "Next");
-            button.Click();
+            HelperMethods.ClickValidateButton();
         }
     }
 }

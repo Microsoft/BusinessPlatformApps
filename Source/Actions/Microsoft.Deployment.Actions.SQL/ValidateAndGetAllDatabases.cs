@@ -13,10 +13,10 @@ namespace Microsoft.Deployment.Actions.SQL
     {
         public override async Task<ActionResponse> ExecuteActionAsync(ActionRequest request)
         {
-            string server = request.DataStore.GetJson("SqlCredentials")["Server"].ToString();
+            string server = request.DataStore.GetJson("SqlCredentials", "Server");
             string user = request.DataStore.GetJson("SqlCredentials").SelectToken("User")?.ToString();
             string password = request.DataStore.GetJson("SqlCredentials").SelectToken("Password")?.ToString();
-            var auth = request.DataStore.GetJson("SqlCredentials")["AuthType"].ToString();
+            var auth = request.DataStore.GetJson("SqlCredentials", "AuthType");
 
             SqlCredentials credentials = new SqlCredentials()
             {

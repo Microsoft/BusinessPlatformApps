@@ -1,0 +1,17 @@
+﻿<template>
+    <require from="../templates/bpst-link.html"></require>
+
+    <h1 class="st-title">${MS.Translate.SSAS_TITLE}</h1>
+    <h4 class="st-subtitle">${MS.Translate.SSAS_SUBTITLE}</h4>
+
+    <p class="st-text">${MS.Translate.CHOOSE_SSAS_DATA_STORAGE_MODE}</p>
+    <select class="btn btn-default dropdown-toggle st-input" value.bind="ssasEnabled">
+        <option value="true">${MS.Translate.CHOOSE_SSAS_AZURE_ANALYSIS_SERVICES}</option>
+        <option value="false">${MS.Translate.CHOOSE_SSAS_IMPORT_TO_PBI}</option>
+    </select>
+
+    <div class="st-text">
+        <p if.bind="showDescription">${MS.Translate.CHOOSE_SSAS_DESCRIPTION}</p>
+        <bpst-link a-description="${MS.Translate.CHOOSE_SSAS_LEARN_MORE}" a-link="${MS.Translate.CHOOSE_SSAS_LEARN_MORE_LINK}" a-link-text="${MS.Translate.COMMON_HERE}"></bpst-link>
+    </div>
+</template>

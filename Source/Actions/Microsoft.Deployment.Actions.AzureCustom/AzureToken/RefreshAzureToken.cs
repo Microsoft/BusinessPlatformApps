@@ -22,7 +22,7 @@ namespace Microsoft.Deployment.Actions.AzureCustom.AzureToken
         public override async Task<ActionResponse> ExecuteActionAsync(ActionRequest request)
         {
             var token = request.DataStore.GetJson("AzureToken");
-            string refreshToken = request.DataStore.GetJson("AzureToken")["refresh_token"].ToString();
+            string refreshToken = request.DataStore.GetJson("AzureToken", "refresh_token");
             string aadTenant = request.DataStore.GetValue("AADTenant");
 
             string tokenUrl = string.Format(Constants.AzureTokenUri, aadTenant);

@@ -8,6 +8,10 @@
 
         public string Password { get; set; }
 
-        public string Database { get; set; }
+        public string TwitterDatabase { get; set; }
+
+        public string SalesforceDatabase { get; set; }
+
+        public string CRMDatabase { get; set; }
     }
 }

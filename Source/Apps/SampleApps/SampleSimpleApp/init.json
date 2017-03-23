@@ -3,7 +3,7 @@
   {
     "Pages": [
       {
-        "name": "$SiteCommon$/pagesgallery/getting-started.html",
+        "name": "$SiteCommon$/pages-gallery/getting-started.html",
         "displayname": "Getting Started",
         "templateName": "Test Property",
         "subtitle": "Test Subtitle",

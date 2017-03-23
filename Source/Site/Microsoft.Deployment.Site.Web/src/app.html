@@ -1,6 +1,6 @@
 <template>
-    <require from="SiteCommon/Web/controls/navbar"></require>
-    <require from="SiteCommon/Web/controls/navbuttons"></require>
+    <require from="SiteCommon/Web/templates/nav-bar"></require>
+    <require from="SiteCommon/Web/templates/nav-buttons"></require>
 
     <div class="st-header semiboldFont">
         <span class="powervisuals-glyph boxes-four boxes-stacked st-icon-ms"></span>
@@ -10,12 +10,12 @@
         <span class="glyphicon pbi-glyph-close glyph-small st-close" click.trigger="MS.HttpService.Close()" if.bind="MS.HttpService.isOnPremise"></span>
     </div>
     <div class="st-content regularFont">
-        <navbar router.bind="MS.NavigationService" viewmodel.bind="MS.NavigationService.currentViewModel"></navbar>
+        <nav-bar router.bind="MS.NavigationService" viewmodel.bind="MS.NavigationService.currentViewModel"></nav-bar>
         <div class="st-main">
             <div class="st-section">
                 <div class="st-section-wrapper">
                     <router-view></router-view>
-                    <navbuttons if.bind="MS.NavigationService.appName !== ''" viewmodel.bind="MS.NavigationService.currentViewModel"></navbuttons>
+                    <nav-buttons if.bind="MS.NavigationService.appName !== ''" viewmodel.bind="MS.NavigationService.currentViewModel"></nav-buttons>
                 </div>
                 <div class="st-footer">
                     <span><a class="st-footer-text" href="${MS.Translate.APP_CONTACT_US_LINK}" target="_top">${MS.Translate.APP_CONTACT_US}</a></span>

@@ -2,13 +2,13 @@ SET NOCOUNT ON;
 
 WITH hwplatform AS
 (
-    SELECT resourceid                   MachineID,
-           Max(cs.manufacturer0)        Manufacturer,
-           Max(cs.model0)               [Model],
-           Max(cs.systemtype0)          [Platform],
-           Max(cs.totalphysicalmemory0) [Physical Memory]
-    FROM   v_gs_computer_system cs
-    GROUP  BY resourceid
+    SELECT cs.resourceid           MachineID,
+           cs.manufacturer0        Manufacturer,
+           cs.model0               [Model],
+           cs.systemtype0          [Platform],
+           cs.totalphysicalmemory0 [Physical Memory]
+    FROM   dbo.v_gs_computer_system cs INNER JOIN (SELECT resourceid, MAX([TimeStamp]) AS [TimeStamp] FROM v_gs_computer_system GROUP BY resourceid) lts
+	          ON cs.[TimeStamp]=lts.[TimeStamp] AND cs.ResourceID=lts.ResourceID
 )
 SELECT itemkey                         machineid,
        client.sitecode                 sitecode,

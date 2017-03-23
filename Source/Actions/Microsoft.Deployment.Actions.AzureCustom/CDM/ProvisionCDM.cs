@@ -24,7 +24,7 @@ namespace Microsoft.Deployment.Actions.AzureCustom.CDM
     {
         public override async Task<ActionResponse> ExecuteActionAsync(ActionRequest request)
         {
-            var azureToken = request.DataStore.GetJson("AzureToken")["access_token"].ToString();
+            var azureToken = request.DataStore.GetJson("AzureToken", "access_token");
 
             var createEnvironment = await RequestUtility.CallAction(request,"Microsoft-CreateEnvironment");
             var createDatabase = await RequestUtility.CallAction(request, "Microsoft-CreateDatabase");

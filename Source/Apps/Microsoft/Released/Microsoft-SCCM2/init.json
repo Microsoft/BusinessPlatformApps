@@ -8,7 +8,7 @@
     "Pages": [
       // Getting Started
       {
-        "name": "$SiteCommon$/pagesgallery/getting-started.html",
+        "name": "$SiteCommon$/pages-gallery/getting-started.html",
         "displayname": "Getting Started",
         "architectureDiagram": "dist/Apps/Microsoft/Released/Microsoft-SCCM2/Web/Images/SCCMArchitectureDiagram.png",
         "list1": [
@@ -30,7 +30,7 @@
 
       // Login
       {
-        "name": "$SiteCommon$/pagesgallery/windows-auth.html",
+        "name": "$SiteCommon$/pages-gallery/windows-auth.html",
         "displayname": "Login",
         "subtitle": "Specify your windows credentials to create a recurring schedule. The credentials you specify will be used to also connect to the SCCM database",
         "onValidate": [
@@ -49,7 +49,7 @@
       //SQL Server
       {
         "credentialTarget": "pbi_sccm",
-        "name": "$SiteCommon$/pagesgallery/sql-server.html",
+        "name": "$SiteCommon$/pages-gallery/sql-server.html",
         "displayname": "Source",
         "hideSqlAuth": true,
         "title": "Connect to your System Center Configuration Manager database",
@@ -68,7 +68,7 @@
 
       // Target
       {
-        "name": "$SiteCommon$/pagesgallery/sql-server.html",
+        "name": "$SiteCommon$/pages-gallery/sql-server.html",
         "displayname": "Target",
         "credentialTarget": "pbi_sccm",
         "checkSqlVersion": true,
@@ -97,7 +97,7 @@
       // Summary
       {
         "displayname": "Summary",
-        "name": "$SiteCommon$/pagesgallery/summary.html",
+        "name": "$SiteCommon$/pages-gallery/summary.html",
         "values": {
           "Target Server": "$(this.MS.DataStore.getValue('Server'))",
           "Target Database": "$(this.MS.DataStore.getValue('Database'))",
@@ -107,7 +107,7 @@
 
       // Progress
       {
-        "name": "$SiteCommon$/pagesgallery/progress.html",
+        "name": "$SiteCommon$/pages-gallery/progress.html",
         "displayname": "Progress",
         "finishedActionName": "Microsoft-GetTaskStatus",
         "targetSchema": "pbist_sccm",
@@ -168,7 +168,7 @@
   "Uninstall": {
     "Pages": [
       {
-        "name": "$SiteCommon$/pagesgallery/uninstall.html",
+        "name": "$SiteCommon$/pages-gallery/uninstall.html",
         "displayname": "Uninstall",
         "architectureDiagram": "dist/Apps/Microsoft/Released/Microsoft-SCCM2/Web/Images/SCCMArchitectureDiagram.png",
         "templateName": "System Center Configuration Manager",
@@ -179,7 +179,7 @@
         ]
       },
       {
-        "name": "$SiteCommon$/pagesgallery/progress.html",
+        "name": "$SiteCommon$/pages-gallery/progress.html",
         "displayname": "Uninstall Progress",
         "successMessage": "Uninstall complete",
         "isUninstall": true,

@@ -1,4 +1,4 @@
-import { ViewModelBase } from '../../common/Web/services/viewmodelbase';
+import { ViewModelBase } from '../../common/Web/services/view-model-base';
 
 enum AzureConnection {
     Microsoft,

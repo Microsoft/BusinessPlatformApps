@@ -31,7 +31,7 @@
 
       // Login
       {
-        "name": "$SiteCommon$/pagesgallery/windows-auth.html",
+        "name": "$SiteCommon$/pages-gallery/windows-auth.html",
         "displayname": "Login",
         "subtitle": "Specify your windows credentials to create a recurring schedule. The credentials you specify will also be used to connect to the SCCM database",
         "onValidate": [
@@ -52,7 +52,7 @@
         "credentialTarget": "pbi_sccm",
         "displayname": "Source",
         "hideSqlAuth": true,
-        "name": "$SiteCommon$/pagesgallery/sql-server.html",
+        "name": "$SiteCommon$/pages-gallery/sql-server.html",
         "onNext": [
           {
             "name": "Microsoft-CheckSCCMVersion",
@@ -71,7 +71,7 @@
         "checkSqlVersion": true,
         "credentialTarget": "pbi_sccm",
         "displayname": "Target",
-        "name": "$SiteCommon$/pagesgallery/sql-server.html",
+        "name": "$SiteCommon$/pages-gallery/sql-server.html",
         "onNext": [
           {
             "name": "Microsoft-CheckSQLVersion",
@@ -90,20 +90,20 @@
 
       // Adding azure pages
       {
-        "name": "$SiteCommon$/pagesgallery/choose-analysis-server.html",
+        "name": "$SiteCommon$/pages-gallery/choose-analysis-server.html",
         "displayname": "AAS",
         "showDescription": true,
         "skip": "$dsall(azureSqlDisabled)[1]"
       },
 
       {
-        "name": "$SiteCommon$/pagesgallery/azure-login.html",
+        "name": "$SiteCommon$/pages-gallery/azure-login.html",
         "displayname": "Azure Login",
         "skip": "$run(this.MS.DataStore.getAllValues('azureSqlDisabled')[1] === 'true' || this.MS.DataStore.getValue('ssasDisabled') === 'true' ? 'true': 'false')"
       },
 
       {
-        "name": "$SiteCommon$/pagesgallery/ssas.html",
+        "name": "$SiteCommon$/pages-gallery/ssas.html",
         "displayname": "AAS Login",
         "skip": "$run(this.MS.DataStore.getAllValues('azureSqlDisabled')[1] === 'true' || this.MS.DataStore.getValue('ssasDisabled') === 'true' ? 'true': 'false')"
       },
@@ -118,7 +118,7 @@
       // Summary
       {
         "displayname": "Summary",
-        "name": "$SiteCommon$/pagesgallery/summary.html",
+        "name": "$SiteCommon$/pages-gallery/summary.html",
         "values": {
           "Source Server": "$(this.MS.DataStore.getValue('Server'))",
           "Source Database": "$(this.MS.DataStore.getValue('Database'))",
@@ -128,7 +128,7 @@
 
       // Progress
       {
-        "name": "$SiteCommon$/pagesgallery/progress.html",
+        "name": "$SiteCommon$/pages-gallery/progress.html",
         "displayname": "Progress",
         "finishedActionName": "Microsoft-GetTaskStatus",
         "filename": "$save('SCCMSolutionTemplate.pbix')",
@@ -250,7 +250,7 @@
   "Uninstall": {
     "Pages": [
       {
-        "name": "$SiteCommon$/pagesgallery/uninstall.html",
+        "name": "$SiteCommon$/pages-gallery/uninstall.html",
         "displayname": "Uninstall",
         "architectureDiagram": "dist/Apps/Microsoft/Released/Microsoft-SCCMTemplate/Web/Images/SCCMArchitectureDiagram.png",
         "templateName": "System Center Configuration Manager",
@@ -261,7 +261,7 @@
         ]
       },
       {
-        "name": "$SiteCommon$/pagesgallery/progress.html",
+        "name": "$SiteCommon$/pages-gallery/progress.html",
         "displayname": "Uninstall Progress",
         "successMessage": "Uninstall complete",
         "isUninstall": true,

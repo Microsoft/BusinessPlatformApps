@@ -25,8 +25,8 @@ namespace Microsoft.Deployment.Actions.Salesforce
         public override async Task<ActionResponse> ExecuteActionAsync(ActionRequest request)
         {
             List<Task<ActionResponse>> task = new List<Task<ActionResponse>>();
-            var token = request.DataStore.GetJson("AzureToken")["access_token"].ToString();
-            var subscription = request.DataStore.GetJson("SelectedSubscription")["SubscriptionId"].ToString();
+            var token = request.DataStore.GetJson("AzureToken", "access_token");
+            var subscription = request.DataStore.GetJson("SelectedSubscription", "SubscriptionId");
             var resourceGroup = request.DataStore.GetValue("SelectedResourceGroup");
 
             string postDeploymentPipelineType = request.DataStore.GetValue("postDeploymentPipelineType");

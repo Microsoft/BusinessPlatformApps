@@ -2,11 +2,8 @@
   "Install": {
     "Pages": [
       {
-        "name": "$SiteCommon$/pagesgallery/getting-started.html",
-        "templateName": "Salesforce Sales Management",
-        "subtitle": "Welcome to the Salesforce Sales Management solution template.",
-        "displayname": "Getting Started",
         "architectureDiagram": "dist/Apps/Microsoft/Released/Microsoft-SalesforceSalesManagement/Web/Images/salesforceArchitectureDiagram.png",
+        "displayname": "Getting Started",
         "list1": [
           "Azure Subscription",
           "Salesforce Subscription",
@@ -18,56 +15,56 @@
           "Full cloud solution with minimum set up and maintenance considerations",
           "Data pulled from Salesforce into an Azure SQL Database using Azure Data Factory",
           "Connect to Azure SQL and import data into Power BI"
-        ]
+        ],
+        "name": "$SiteCommon$/pages-gallery/getting-started.html",
+        "subtitle": "$translate(INIT_SALESFORCE_SUBTITLE)",
+        "templateName": "$translate(INIT_SALESFORCE_TITLE)"
       },
       {
-        "name": "$SiteCommon$/pagesgallery/azure-login.html",
         "displayname": "Azure",
-        "pricingCost": "$run('By clicking next and deploying the template, you authorize Microsoft to create Azure resources on your subscription and bill based on their respective pricing rates. The approximate base cost of the Azure resources used by this template is $1.50 a day. The cost will vary with the amount of data that will be moved. These costs are estimates only and subject to change.')",
-        "pricingCalculatorUrl": "https://azure.microsoft.com/en-us/pricing/calculator/",
-        "pricingUrl": "https://github.com/Microsoft/BusinessPlatformApps/tree/master/Source/Apps/Microsoft/Released/Microsoft-SalesforceSalesManagement#azure-data-factory-pricing"
+        "name": "$SiteCommon$/pages-gallery/azure-login.html",
+        "pricingCalculatorUrl": "$translate(INIT_SALESFORCE_PRICING_CALCULATOR_URL)",
+        "pricingCost": "$translate(INIT_SALESFORCE_PRICING_COST)",
+        "pricingUrl": "$translate(INIT_SALESFORCE_PRICING_URL)"
       },
       {
-        "name": "$SiteCommon$/pagesgallery/salesforce-login.html",
         "displayname": "Salesforce",
+        "name": "$SiteCommon$/pages-gallery/salesforce-login.html",
         "salesforceObjects": "Opportunity,Account,Lead,Product2,OpportunityLineItem,OpportunityStage,User,UserRole"
       },
       {
-        "name": "$SiteCommon$/pagesgallery/sql-server.html",
         "displayname": "Target",
         "isAzureSql": true,
-        "showAzureSql": false,
-        "showNewSqlOption": true,
-        "subtitle": "Set up a connection to SQL so we can bring in your Salesforce data.",
-        "title": "Connect to your SQL Database",
+        "name": "$SiteCommon$/pages-gallery/sql-server.html",
         "newSqlDatabase": "SalesforceDB",
-        "showGovAzure": true
+        "showAzureSql": false,
+        "showGovAzure": true,
+        "showNewSqlOption": true,
+        "sqlInstance": "NewSql",
+        "subtitle": "Set up a connection to SQL so we can bring in your Salesforce data.",
+        "title": "Connect to your SQL Database"
       },
-
-      // Adding azure pages
       {
-        "name": "$SiteCommon$/pagesgallery/choose-analysis-server.html",
         "displayname": "AAS",
+        "name": "$SiteCommon$/pages-gallery/choose-analysis-server.html",
         "showDescription": true,
         "skip": "$dsall(azureSqlDisabled)[0]"
       },
-
       {
-        "name": "$SiteCommon$/pagesgallery/ssas.html",
         "displayname": "AAS Login",
+        "name": "$SiteCommon$/pages-gallery/ssas.html",
         "skip": "$run(this.MS.DataStore.getAllValues('azureSqlDisabled')[0] === 'true' || this.MS.DataStore.getValue('ssasDisabled') === 'true' ? 'true': 'false')"
       },
-
       {
-        "name": "$SiteCommon$/pagesgallery/customize.html",
         "displayname": "Customize",
+        "name": "$SiteCommon$/pages-gallery/customize.html",
         "showEmails": true,
         "showRecurrenceOptions": true,
         "sourceApplication": "Salesforce"
       },
       {
-        "name": "$SiteCommon$/pagesgallery/summary.html",
         "displayname": "Summary",
+        "name": "$SiteCommon$/pages-gallery/summary.html",
         "values": {
           "Subscription": "$(this.MS.DataStore.getJson(\"SelectedSubscription\").SubscriptionId)",
           "ResourceGroup": "$(this.MS.DataStore.getValue(\"SelectedResourceGroup\"))",
@@ -81,7 +78,7 @@
         }
       },
       {
-        "name": "$SiteCommon$/pagesgallery/progress.html",
+        "name": "$SiteCommon$/pages-gallery/progress.html",
         "displayname": "Progress",
         "finishedActionName": "Microsoft-ADFSliceStatus",
         "targetSchema": "dbo",
@@ -113,9 +110,6 @@
         "SqlServerIndex": "0",
         "SqlConfigTable": "[smgt].[configuration]"
       },
-
-      // AS Set up
-
       {
         "name": "Microsoft-SetConfigValueInSql",
         "displayname": "Setting configuration",
@@ -127,7 +121,6 @@
         "SqlEntryValue": "$run('asscheduler' + this.MS.DataStore.getValue('uniqueId'))",
         "skip": "$run(this.MS.DataStore.getAllValues('azureSqlDisabled')[0] === 'true' || this.MS.DataStore.getValue('ssasDisabled') === 'true' ? 'true': 'false')"
       },
-
       {
         "name": "Microsoft-DeployAzureASModel",
         "displayname": "Deploy AS Model",
@@ -136,7 +129,6 @@
         "ASDatabase": "salesforce",
         "skip": "$run(this.MS.DataStore.getAllValues('azureSqlDisabled')[0] === 'true' || this.MS.DataStore.getValue('ssasDisabled') === 'true' ? 'true': 'false')"
       },
-
       {
         "name": "Microsoft-DeployAzureFunction",
         "displayname": "Deploying scheduler",
@@ -146,14 +138,12 @@
         "sku": "Standard",
         "skip": "$run(this.MS.DataStore.getAllValues('azureSqlDisabled')[0] === 'true' || this.MS.DataStore.getValue('ssasDisabled') === 'true' ? 'true': 'false')"
       },
-
       {
         "name": "Microsoft-WaitForArmDeploymentStatus",
         "displayname": "Waiting for scheduler",
         "DeploymentName": "ASFunction",
         "skip": "$run(this.MS.DataStore.getAllValues('azureSqlDisabled')[0] === 'true' || this.MS.DataStore.getValue('ssasDisabled') === 'true' ? 'true': 'false')"
       },
-
       {
         "name": "Microsoft-DeployAzureFunctionConnectionStrings",
         "displayname": "Setting up scheduler",
@@ -167,8 +157,6 @@
           "functionName": "$run('asscheduler' + this.MS.DataStore.getValue('uniqueId'))"
         }
       },
-      // AS Finish set up
-
       {
         "name": "Microsoft-ADFDeployLinkedServices",
         "displayname": "Creating data connections",
@@ -209,11 +197,11 @@
   "Uninstall": {
     "Pages": [
       {
-        "name": "$SiteCommon$/pagesgallery/getting-started.html",
+        "name": "$SiteCommon$/pages-gallery/getting-started.html",
         "displayname": "Uninstall Start"
       },
       {
-        "name": "$SiteCommon$/pagesgallery/azure-login.html",
+        "name": "$SiteCommon$/pages-gallery/azure-login.html",
         "displayname": " Uninstall Login"
       }
     ],

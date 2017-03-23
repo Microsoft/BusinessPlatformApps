@@ -50,3 +50,6 @@
 /Source/Apps/Microsoft/Released/Microsoft-SCCM2/Microsoft-SCCM2.msi
 
 /Source/Site/Microsoft.Deployment.Site.Web/global.json
+*.user
+*js.map
+/Source/SiteCommon/Web/**/*.js

@@ -1,8 +1,10 @@
-﻿import { ViewModelBase } from '../../../../../SiteCommon/Web/services/viewmodelbase';
-import { ActionResponse } from '../../../../../SiteCommon/Web/services/actionresponse';
-import { DataStoreType } from '../../../../../SiteCommon/Web/services/datastore';
+﻿import { QueryParameter } from '../../../../../SiteCommon/Web/constants/query-parameter';
 
-import { QueryParameter } from '../../../../../SiteCommon/Web/base/query-parameter';
+import { DataStoreType } from '../../../../../SiteCommon/Web/enums/data-store-type';
+
+import { ActionResponse } from '../../../../../SiteCommon/Web/models/action-response';
+
+import { ViewModelBase } from '../../../../../SiteCommon/Web/services/view-model-base';
 
 export class Gettingstarted extends ViewModelBase {
     architectureDiagram: string = '';

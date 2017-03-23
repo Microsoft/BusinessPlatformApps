@@ -128,7 +128,6 @@ If you provide the base Dynamics 365 URL, hyperlinks are created for each opport
 <https://pbist.crm.dynamics.com>.
 
 Click “Next” to continue.
-
 ## Step 7a: Track Progress
 The next several steps actually provision the soluution template. 
 ![Track Prog](Resources/Images/TrackProgress.png)
@@ -153,7 +152,7 @@ Click the “Download” button at the bottom of the page to download the instal
 The solution template for SQL Server requires an ETL agent to be installed to move data from Dynamics 365 to the on-premises SQL Server or to SQL Server on an Azure VM. The agent can be installed on any machine with access to the destination but it is recommended to install the agent on the same machine.
 
 New Scribe users must first create an account and install the Scribe Online Agent. Instructions for downloading and installing the Scribe Online Agent can be found [here](http://help.scribesoft.com/scribeonline/en/sol/agent/agentinstall.htm). Once the account is created, install the Scribe Online Agent.
-![Connect to Scribe](Resources/Images/ConnectScribe.png)
+o![Connect to Scribe](Resources/Images/ConnectScribe.png)
 
 _Note: the list of Scribe Online agents are those registered with this account – not those installed on the machine._
 
@@ -170,7 +169,7 @@ Click “Next” to continue.
 ## Step 4b: Connect to Dynamics 365
 Provide your Dynamics 365 credentials to gain access to Dynamics 365.  The Dynamics 365 login URL normally does not need to be changed from the default <https://pbist.crm.dynamics.com>
 
-![ConnectCRM](Resources/Images/ConnecttoCRM.png)
+![ConnectCRM](Resources/Images/ConnectToCRM.png)
 
  Validate your credentials and click ‘Next’.
 

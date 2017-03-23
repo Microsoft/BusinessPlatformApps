@@ -65,8 +65,8 @@ namespace Microsoft.Deployment.Actions.AzureCustom.AzureToken
                     resource = Constants.AzureManagementApi;
                     break;
                 case "keyvault":
-                    string azureToken = request.DataStore.GetJson("AzureToken")["access_token"].ToString();
-                    string subscriptionId = request.DataStore.GetJson("SelectedSubscription")["SubscriptionId"].ToString();
+                    string azureToken = request.DataStore.GetJson("AzureToken", "access_token");
+                    string subscriptionId = request.DataStore.GetJson("SelectedSubscription", "SubscriptionId");
                     string resourceGroup = request.DataStore.GetValue("SelectedResourceGroup");
 
 

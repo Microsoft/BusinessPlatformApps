@@ -8,8 +8,6 @@ System Center Configuration Manager Solution Template Documentation
 4. [How to Install](#how-to-install)
 5. [Reports Walkthrough](#report-walkthrough)
 6. [Technical Description](#technical-description)
-7. 
-
 
 # Introduction
 
@@ -24,13 +22,13 @@ The template lets you do things like:
 
 The following document provides a walkthrough of installation steps as well as information on cost. For any questions not covered in this document, please contact the team at <PBISolnTemplates@microsoft.com>
 
-# Architecture 
+# Architecture
 
 ![Architecture](Resources/Images/Arch.png)
 
 The flow of the SCCM solution template is as follows:
 
--   Windows task scheduler daily pulls data from your SCCM database
+-   Windows task scheduler pulls data from your SCCM database
 
 -   The task copies data into Azure SQL (or SQL server)
 
@@ -89,19 +87,19 @@ Note that the scheduled task will not be triggered if a machine goes to sleep. T
 
 ![Image5](Resources/Images/image5.png)
 
-**Step 4: Verify and run **
+**Step 4: Verify and run**
 
 Verify the information and click “Run”.
 
 ![Image6](Resources/Images/image6.png)
 
-**Step 5: Track your progress **
+**Step 5: Track your progress**
 
 The setup will create new tables, views, stored procedures in destination database, install required SQL tools if not found, create/run a new task.
 
 ![Image7](Resources/Images/image7.png)
 
-**Step 6: Start pulling data **
+**Step 6: Start pulling data**
 
 We'll show you progress while you wait. Please don't close the browser until all the steps are completed. This might take a while, depending on the size of your SCCM database.
 
@@ -117,7 +115,7 @@ Please click “Refresh” to import data from your destination database and ent
 
 ![Image10](Resources/Images/image10.png)
 
-**Step 8: Publish the report to PowerBI.com **
+**Step 8: Publish the report to PowerBI.com**
 
 At this point, you should be able to see your SCCM data. If you are interested in publishing the report to [Power BI](https://powerbi.microsoft.com/en-us/) and share it with colleagues, click “Publish” to Power BI.
 
@@ -129,19 +127,19 @@ At this point, you should be able to see your SCCM data. If you are interested i
 
 The report provides a high level overview of key SCCM metrics to quickly identify machines not up-to-date with software updates, failed mitigations to malware infections to be able to act promptly, failed updates and more.
 
-![Image12](Resources/Images/image12.png)
+![Image12](Resources/Images/image12.PNG)
 
 ### Protection:
 
 You can track key protection measures for the period you configured during the installation.
 
-![Image13](Resources/Images/image13.png)
+![Image13](Resources/Images/image13.PNG)
 
 ### Malware:
 
 The report shows trend of resolved/unresolved malware count by severity, OS, and remediation type. Malware Category chart (lower-left) shows numbers of resolved malware (color saturation by unresolved malware).
 
-![Image14](Resources/Images/image14.png)
+![Image14](Resources/Images/image14.PNG)
 
 Note that you can enable drill down by selecting the arrow icon in the top right corner of the bar chart. To drill down one field at a time, double-click one of the chart bars. For drill down in details, please click [here](https://powerbi.microsoft.com/en-us/documentation/powerbi-service-drill-down-in-a-visualization/).
 
@@ -151,7 +149,7 @@ Note that you can enable drill down by selecting the arrow icon in the top right
 
 The report lists missing updates by severity and device that can be used to take action.
 
-![Image16](Resources/Images/image16.png)
+![Image16](Resources/Images/image16.PNG)
 
 We provide hyperlinks for the missing updates in the table (lower-left). You can click the urls for more information.
 
@@ -161,7 +159,7 @@ We provide hyperlinks for the missing updates in the table (lower-left). You can
 
 The report allows users to select a machine to show installed programs or select a program to show related machines.
 
-![Image18](Resources/Images/image18.png)
+![Image18](Resources/Images/image18.PNG)
 
 
 # Technical Description
@@ -169,15 +167,15 @@ This section describes each component of the solution template in detail.
 
 ## Data Extraction and Load
 
-The powershell script dataload.ps1 found in the folder C:\ProgramData\Business Platform Solution Templates\Microsoft-SCCMTemplate 
+The powershell script dataload.ps1 found in the folder C:\ProgramData\Business Platform Solution Templates\Microsoft-SCCMTemplate
 executes a collection of scripts to pull data from the source SCCM datatbase into a flat file, bcp it to the
-destination database, and executes stored procedures in the destination database to merge this data with the results from 
+destination database, and executes stored procedures in the destination database to merge this data with the results from
 prior loads.
 
 The same data is pulled with each load. Destination database stored procedures merge the results.
 
 
-## SQL Server DB - SQL Server or Azure SQL Database 
+## SQL Server DB - SQL Server or Azure SQL Database
 ### Tables
 
 The following additional tables are created in to the target database.
@@ -205,8 +203,7 @@ The following additional tables are created in to the target database.
 
 </sub>
 
-Each table is accompanied by a corresponding staging table with the same name with _temp appended; for example, the site table
-has a site_temp table. The structure of the staging table is identical to its counterpart.
+Each table is accompanied by a corresponding staging table with the same name with \_temp appended; for example, the site table has a site_temp table. The structure of the staging table is identical to its counterpart.
 
 All tables are created in the pbist_sccm schema.
 
@@ -242,7 +239,7 @@ FROM   v_Collections
 | Column         | Datatype     |	Description |
 | ---------------|--------------|--------------|
 |	machineid    | int          |  |
-|	sitecode   |  nvarchar(3)   | The SCCM site the computer belongs to  | 
+|	sitecode   |  nvarchar(3)   | The SCCM site the computer belongs to  |
 |	[name]   |  nvarchar(256)          | Computer name |
 |	[operating system]    | nvarchar(256)   |  The operating system name. |
 |	[client type]    | tinyint          | 1: computer, 2: mobile |
@@ -412,19 +409,19 @@ Query to populate ComputerProgram:
 
 ```
 SELECT resourceid                                      MachineID,
-       Replace(Left(displayname0, 250), CHAR(9), ' ')  [Program Name],
-       Replace(Left(publisher0, 250), CHAR(9), ' ')    Publisher,
+       Replace(Left(p.displayname0, 250), CHAR(9), ' ')  [Program Name],
+       Replace(Left(p.publisher0, 250), CHAR(9), ' ')    Publisher,
        version0                                        [Version],
        NULL                                            [timestamp]
 FROM   v_gs_add_remove_programs p INNER JOIN vsms_r_system s ON p.resourceid = s.itemkey
 WHERE  s.obsolete0 = 0 AND
        s.decommissioned0 = 0 AND
        p.displayname0 IS NOT NULL AND
-       p.displayname0<>'' 
+       p.displayname0<>''
 UNION
 SELECT resourceid                                      MachineID,
-       Replace(Left(displayname0, 250), CHAR(9), ' ')  [Program Name],
-       Replace(Left(publisher0, 250), CHAR(9), ' ')    Publisher,
+       Replace(Left(p.displayname0, 250), CHAR(9), ' ')  [Program Name],
+       Replace(Left(p.publisher0, 250), CHAR(9), ' ')    Publisher,
        version0                                        [Version],
        NULL                                            [timestamp]
 FROM   v_gs_add_remove_programs_64 p INNER JOIN vsms_r_system s ON p.resourceid = s.itemkey
@@ -474,7 +471,7 @@ WHERE  c.obsolete0 = 0 AND c.decommissioned0 = 0;
 
 #### Date
 
-The Date table is autogenerated with the installation of the solution template from 2013 to 2020.
+The Date table is autogenerated with the installation of the solution template and it goes back 3 years from the first day of the current year and 3 years in the future from the last day of the current year.
 
 <sub>
 
@@ -619,7 +616,7 @@ Query to retrieve computer state:
 
 <sub>
 
-```<language>
+```
 DECLARE @curdate DATE = GETDATE();
 
 WITH machines AS
@@ -804,7 +801,7 @@ Query to retrieve site table:
 
 <sub>
 
-```<language>
+```
 WITH siteavcompliance AS
 (
     SELECT sms_assigned_sites0 AS SiteCode,
@@ -870,7 +867,7 @@ SELECT s.sitecode,
          WHEN sss.availabilitystate = 2 THEN 'Error'
          ELSE 'Available'
        END                                                   [Availability],
-       Isnull((SELECT TOP 1 Isnull(CONVERT(XML, value1).query('/ServerLocation/Address/text()'), 'No Data') AS Location
+       Isnull((SELECT TOP 1 CAST( Isnull(CONVERT(XML, value1).query('/ServerLocation/Address/text()'), 'No Data') AS NVARCHAR(100)) AS [Location]
                FROM   vsms_sc_property_sdk
                WHERE  propertyname = 'SiteLocation' AND sitecode = s.sitecode), 'No Data') [Location],
        CASE lnk.overalllinkstatus
@@ -924,7 +921,7 @@ Query to retreive updates:
 
 <sub>
 
-```<language>
+```
 SELECT su.ci_id,
        su.articleid,
        su.bulletinid,
@@ -955,11 +952,11 @@ Query to retreive users:
 
 <sub>
 
-```<language>
+```
 SELECT DISTINCT user_name0              AS userName,
                 unique_user_name0       AS [full name]       
 FROM   v_r_user
-WHERE  user_name0 IS NOT NULL AND 
+WHERE  user_name0 IS NOT NULL AND
        full_user_name0 NOT LIKE '%$%';
 ```
 
@@ -976,21 +973,21 @@ WHERE  user_name0 IS NOT NULL AND
 | 	[username]  | nvarchar(256) |  |
 | [full name]  | nvarchar(255) |  |
 
-    
+
 </sub>
 
 Query to retreive usercomputer:
 
 <sub>
 
-```<language>
+```
 SELECT resourceid                       AS machineid,
        user_name0                       AS username,
        user_domain0 + '\' + user_name0  AS [full name]
 FROM   v_r_system
 WHERE  user_domain0 IS NOT NULL AND
        user_name0 IS NOT NULL AND
-       decommissioned0=0 AND 
+       decommissioned0=0 AND
        obsolete0=0;
 ```
 
@@ -1005,15 +1002,15 @@ Exception to this is [pbist_sccm].[vw_computer] where an extra column [operating
 
 ### Stored Procedures
 
-Each table in the template populated with data from SCCM has a corresponding stored procedure 
-executed from the powershell that merges the most recent results. Each stored procedure has the name 
+Each table in the template populated with data from SCCM has a corresponding stored procedure
+executed from the powershell that merges the most recent results. Each stored procedure has the name
 pbist_sccm.sp_populate<TableName>, eg; pbist_sccm.sp_populateSite.
 
 With some exceptions noted below, the general approach for each stored procedure is:
 
 - start a transaction
 - truncate the target table
-- copy the resuls from the staging table into the target table
+- copy the results from the staging table into the target table
 - truncate the staging table
 - commit the transaction
 
@@ -1033,13 +1030,13 @@ is renamed as the destination table, and a new staging table is created.
 Once you set up the solution template you may want to modify your settings. In order to do this,
  you will the solution template configuration table. It should look something like this:
 
-![Image19](Resources/Images/image19.png)
+![Image19](Resources/Images/image19.PNG)
 
 If you want to change, for example, the data retention days from 120 days to 60 days, the SQL query will be following:
 
 <sub>
 
-```<language>
+```
 UPDATE [pbist_sccm].[configuration]
 	SET value=60
 	WHERE name='dataretentiondays'
@@ -1060,7 +1057,7 @@ To add columns to existing tables, take the following steps:
 To add a new table to the solution template:
 - Add the sql query to retrieve the data from the SCCM database to the template folder, foo.sql
 - Add the staging and destination tables to the destination database: pbist_sccm.foo_staging and pbist_sccm.foo
-- Add a view to the destination database, pbist_sccm.vw_foo (solution templates alway use a view abstraction from the table so later changes to the underlying table do not necessarily require changes downstream) 
+- Add a view to the destination database, pbist_sccm.vw_foo (solution templates alway use a view abstraction from the table so later changes to the underlying table do not necessarily require changes downstream)
 - Update the powershell hashtable file2table in dataload.ps1 in the template folder:
 
 ```<language>
@@ -1070,9 +1067,6 @@ $file2table = [ordered]@{ "site.sql"                = "pbist_sccm.site_staging";
                           ...
                          };
 ```
-
-
-
 
 ## Cost
 
@@ -1086,5 +1080,3 @@ Estimated Azure SQL database sizes with number of devices managed by SCCM are fo
 | 500,000           | 23,000                  |
 
 \* data retention is set at 180 days
-
-## Extending to add other information 

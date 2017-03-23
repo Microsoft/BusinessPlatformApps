@@ -42,7 +42,7 @@
 
         public override async Task<ActionResponse> ExecuteActionAsync(ActionRequest request)
         {
-            _token = request.DataStore.GetJson("MsCrmToken")["access_token"].ToString(); ;
+            _token = request.DataStore.GetJson("MsCrmToken", "access_token"); ;
             AuthenticationHeaderValue bearer = new AuthenticationHeaderValue("Bearer", _token);
             _rc = new RestClient(request.DataStore.GetValue("ConnectorUrl"), bearer);
 

@@ -195,7 +195,7 @@ namespace Microsoft.Deployment.Actions.AzureCustom.PowerApp
         {
             return (i == 0 && query.Length > 2 && IsTerminator(query[2])) || // OR is the first part of the query
                    (i > 0 && i < query.Length - 2 && IsTerminator(query[i - 1]) && IsTerminator(query[i + 2])) || // OR is somewhere in the middle
-                   (i == query.Length - 2 && IsTerminator(query[i - 1])); // OR is the last part of the query
+                   (i != 0 && i == query.Length - 2 && IsTerminator(query[i - 1])); // OR is the last part of the query
         }
 
         private bool IsTerminator(char c)

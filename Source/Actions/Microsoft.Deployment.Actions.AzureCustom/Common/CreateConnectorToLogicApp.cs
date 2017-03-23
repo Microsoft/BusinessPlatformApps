@@ -17,10 +17,10 @@ namespace Microsoft.Deployment.Actions.AzureCustom.Common
     {
         public override async Task<ActionResponse> ExecuteActionAsync(ActionRequest request)
         {
-            var azureToken = request.DataStore.GetJson("AzureToken")["access_token"].ToString();
-            var subscription = request.DataStore.GetJson("SelectedSubscription")["SubscriptionId"].ToString();
+            var azureToken = request.DataStore.GetJson("AzureToken", "access_token");
+            var subscription = request.DataStore.GetJson("SelectedSubscription", "SubscriptionId");
             var resourceGroup = request.DataStore.GetValue("SelectedResourceGroup");
-            var location = request.DataStore.GetJson("SelectedLocation")["Name"].ToString();
+            var location = request.DataStore.GetJson("SelectedLocation", "Name");
             var connectorName = request.DataStore.GetValue("ConnectorName");
 
             //Needs to be changed once Logic Apps makes it available

@@ -24,7 +24,7 @@ namespace Microsoft.Deployment.Actions.AzureCustom.CDM
     {
         public override async Task<ActionResponse> ExecuteActionAsync(ActionRequest request)
         {
-            var azureToken = request.DataStore.GetJson("AzureToken")["access_token"].ToString();
+            var azureToken = request.DataStore.GetJson("AzureToken", "access_token");
             AzureHttpClient client = new AzureHttpClient(azureToken);
 
             var response = await client.ExecuteGenericRequestWithHeaderAsync(HttpMethod.Post, "https://management.azure.com/providers/Microsoft.PowerApps/enroll?api-version=2016-11-01&id=@id", "{}");

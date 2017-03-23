@@ -21,7 +21,7 @@ namespace Microsoft.Deployment.Actions.AzureCustom.PowerApp
 
         public override async Task<ActionResponse> ExecuteActionAsync(ActionRequest request)
         {
-            var azureToken = request.DataStore.GetJson("AzureToken")["access_token"].ToString();
+            var azureToken = request.DataStore.GetJson("AzureToken", "access_token");
             AzureHttpClient client = new AzureHttpClient(azureToken);
 
             string newSqlConnectionId = GetNewSqlConnectionId();

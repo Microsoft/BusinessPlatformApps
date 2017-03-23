@@ -86,16 +86,16 @@
 
         public override async Task<ActionResponse> ExecuteActionAsync(ActionRequest request)
         {
-            string azureToken = request.DataStore.GetJson("AzureTokenKV")["access_token"].ToString();
-            string refreshToken = request.DataStore.GetJson("AzureTokenKV")["refresh_token"].ToString();
-            string crmToken = request.DataStore.GetJson("MsCrmToken")["access_token"].ToString();
+            string azureToken = request.DataStore.GetJson("AzureTokenKV", "access_token");
+            string refreshToken = request.DataStore.GetJson("AzureTokenKV", "refresh_token");
+            string crmToken = request.DataStore.GetJson("MsCrmToken", "access_token");
             string resourceGroup = request.DataStore.GetValue("SelectedResourceGroup");
             string vaultName = request.DataStore.GetValue("VaultName") ?? "bpstv-" + RandomGenerator.GetRandomLowerCaseCharacters(12) ;
             string secretName = request.DataStore.GetValue("SecretName") ?? "bpst-mscrm-secret";
             string connectionString = request.DataStore.GetAllValues("SqlConnectionString")[0];
             string organizationId = request.DataStore.GetValue("OrganizationId");
 
-            _subscriptionId = request.DataStore.GetJson("SelectedSubscription")["SubscriptionId"].ToString();
+            _subscriptionId = request.DataStore.GetJson("SelectedSubscription", "SubscriptionId");
 
             RetrieveKVToken(refreshToken, request.Info.WebsiteRootUrl, request.DataStore);
             RetrieveGraphToken(refreshToken, request.Info.WebsiteRootUrl, request.DataStore);

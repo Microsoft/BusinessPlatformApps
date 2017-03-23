@@ -24,7 +24,7 @@ namespace Microsoft.Deployment.Actions.AzureCustom.CDM
     {
         public override async Task<ActionResponse> ExecuteActionAsync(ActionRequest request)
         {
-            var azureToken = request.DataStore.GetJson("AzureToken")["access_token"].ToString();
+            var azureToken = request.DataStore.GetJson("AzureToken", "access_token");
             var objectIds = request.DataStore.GetValue("objectIds").ToString();
 
             AzureHttpClient client = new AzureHttpClient(azureToken);

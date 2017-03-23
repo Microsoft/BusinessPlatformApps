@@ -51,7 +51,7 @@
           "Data pulled daily from SAP & stored in a database optimized for reporting",
           "Import data into powerful Power BI reports"
         ],
-        "name": "$SiteCommon$/pagesgallery/getting-started.html",
+        "name": "$SiteCommon$/pages-gallery/getting-started.html",
         "registration": {
           "action": "Microsoft-PushToSimplement",
           "contactLink": "https://www.simplement.us/",
@@ -69,7 +69,7 @@
         "templateName": "Accounts Receivable Reporting for SAP"
       },
       {
-        "name": "$SiteCommon$/pagesgallery/windows-auth.html",
+        "name": "$SiteCommon$/pages-gallery/windows-auth.html",
         "displayname": "Login",
         "subtitle": "Specify your windows credentials to create a recurring schedule that will pull data from SAP.",
         "onValidate": [
@@ -83,13 +83,13 @@
       },
       {
         "displayname": "SAP",
-        "name": "$SiteCommon$/pagesgallery/sap.html",
+        "name": "$SiteCommon$/pages-gallery/sap.html",
         "useImpersonation": true
       },
       {
         "credentialTarget": "Simplement.SolutionTemplate.AR.SQL",
         "displayname": "Target",
-        "name": "$SiteCommon$/pagesgallery/sql-server.html",
+        "name": "$SiteCommon$/pages-gallery/sql-server.html",
         "onNext": [
           {
             "name": "Microsoft-WriteSAPJson"
@@ -105,7 +105,7 @@
       },
       {
         "displayname": "Summary",
-        "name": "$SiteCommon$/pagesgallery/summary.html",
+        "name": "$SiteCommon$/pages-gallery/summary.html",
         "values": {
           "Target Server": "$(this.MS.DataStore.getValue('Server'))",
           "Target Database": "$(this.MS.DataStore.getValue('Database'))",
@@ -113,7 +113,7 @@
         }
       },
       {
-        "name": "$SiteCommon$/pagesgallery/progress.html",
+        "name": "$SiteCommon$/pages-gallery/progress.html",
         "displayname": "Progress",
         "finishedActionName": "Microsoft-GetTaskStatus",
         "targetSchema": "sap",
@@ -125,7 +125,7 @@
   "Uninstall": {
     "Pages": [
       {
-        "name": "$SiteCommon$/pagesgallery/uninstall.html",
+        "name": "$SiteCommon$/pages-gallery/uninstall.html",
         "displayname": "Uninstall",
         "architectureDiagram": "dist/Apps/Microsoft/Released/Simplement-SAP-ARTemplate/Web/Images/sap-accounts-receivable.png",
         "templateName": "Accounts Receivable Reporting for SAP",
@@ -136,7 +136,7 @@
         ]
       },
       {
-        "name": "$SiteCommon$/pagesgallery/progress.html",
+        "name": "$SiteCommon$/pages-gallery/progress.html",
         "displayname": "Uninstall Progress",
         "successMessage": "Uninstall complete",
         "isUninstall": true,

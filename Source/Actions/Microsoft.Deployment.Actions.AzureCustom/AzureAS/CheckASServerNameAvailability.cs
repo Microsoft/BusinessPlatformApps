@@ -17,9 +17,8 @@ namespace Microsoft.Deployment.Actions.AzureCustom.AzureAS
     {
         public override async Task<ActionResponse> ExecuteActionAsync(ActionRequest request)
         {
-
-            string azureToken = request.DataStore.GetJson("AzureToken")["access_token"].ToString();
-            string subscription = request.DataStore.GetJson("SelectedSubscription")["SubscriptionId"].ToString();
+            string azureToken = request.DataStore.GetJson("AzureToken", "access_token");
+            string subscription = request.DataStore.GetJson("SelectedSubscription", "SubscriptionId");
             string name = request.DataStore.GetValue("ASServerName");
             string location = request.DataStore.GetValue("ASLocation") ?? "westus";
 

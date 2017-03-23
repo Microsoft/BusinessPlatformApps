@@ -1,5 +1,5 @@
 ﻿import { bindable } from 'aurelia-framework';
-import { ViewModelBase } from '../services/viewmodelbase';
+import { ViewModelBase } from '../services/view-model-base';
 
 export class summarytemplate {
     @bindable viewmodel = null;

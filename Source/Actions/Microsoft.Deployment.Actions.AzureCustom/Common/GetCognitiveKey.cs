@@ -28,10 +28,10 @@ namespace Microsoft.Deployment.Actions.AzureCustom.Common
                 }
             }
 
-            var azureToken = request.DataStore.GetJson("AzureToken")["access_token"].ToString();
-            var subscription = request.DataStore.GetJson("SelectedSubscription")["SubscriptionId"].ToString();
+            var azureToken = request.DataStore.GetJson("AzureToken", "access_token");
+            var subscription = request.DataStore.GetJson("SelectedSubscription", "SubscriptionId");
             var resourceGroup = request.DataStore.GetValue("SelectedResourceGroup");
-            var location = request.DataStore.GetJson("SelectedLocation")["Name"].ToString();
+            var location = request.DataStore.GetJson("SelectedLocation", "Name");
             var cognitiveServiceName = request.DataStore.GetValue("CognitiveServiceName");
             var cognitiveServiceType = request.DataStore.GetValue("CognitiveServiceType");
 
