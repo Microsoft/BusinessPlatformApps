@@ -18,28 +18,28 @@
           "$translate(INIT_GETTING_STARTED_CONNECT_AS_PBI)"
         ],
         "name": "$SiteCommon$/pages-gallery/getting-started.html",
-        //"selection": {
-        //  "choice": "$translate(INIT_GETTING_STARTED_AZURE_SQL)",
-        //  "choiceDownload": "$translate(INIT_GETTING_STARTED_SQL_ONPREMISE)",
-        //  "label": "$translate(INIT_GETTING_STARTED_WHERE)",
-        //  "list1": [
-        //    "$translate(INIT_GETTING_STARTED_SQL_SERVER)",
-        //    "$translate(INIT_GETTING_STARTED_AZURE_VM)",
-        //    "$translate(INIT_GETTING_STARTED_PBI_DESKTOP)",
-        //    "$translate(INIT_GETTING_STARTED_PBI_PRO)"
-        //  ],
-        //  "list2": [
-        //    "$translate(INIT_GETTING_STARTED_DEDICATED_SSAS)",
-        //    "$translate(INIT_GETTING_STARTED_PULL_DATA)",
-        //    "$translate(INIT_GETTING_STARTED_DATA_MODEL)",
-        //    "$translate(INIT_GETTING_STARTED_DATA_MODEL_EXCEED)",
-        //    "$translate(INIT_GETTING_STARTED_ENTERPRISE_GATEWAY)"
-        //  ],
-        //  "options": [
-        //    "$translate(INIT_GETTING_STARTED_AZURE_SQL)",
-        //    "$translate(INIT_GETTING_STARTED_SQL_ONPREMISE)"
-        //  ]
-        //},
+        "selection": {
+          "choice": "$translate(INIT_GETTING_STARTED_AZURE_SQL)",
+          "choiceDownload": "$translate(INIT_GETTING_STARTED_SQL_ONPREMISE)",
+          "label": "$translate(INIT_GETTING_STARTED_WHERE)",
+          "list1": [
+            "$translate(INIT_GETTING_STARTED_SQL_SERVER)",
+            "$translate(INIT_GETTING_STARTED_AZURE_VM)",
+            "$translate(INIT_GETTING_STARTED_PBI_DESKTOP)",
+            "$translate(INIT_GETTING_STARTED_PBI_PRO)"
+          ],
+          "list2": [
+            "$translate(INIT_GETTING_STARTED_DEDICATED_SSAS)",
+            "$translate(INIT_GETTING_STARTED_PULL_DATA)",
+            "$translate(INIT_GETTING_STARTED_DATA_MODEL)",
+            "$translate(INIT_GETTING_STARTED_DATA_MODEL_EXCEED)",
+            "$translate(INIT_GETTING_STARTED_ENTERPRISE_GATEWAY)"
+          ],
+          "options": [
+            "$translate(INIT_GETTING_STARTED_AZURE_SQL)",
+            "$translate(INIT_GETTING_STARTED_SQL_ONPREMISE)"
+          ]
+        },
         "subtitle": "$translate(INIT_SALESFORCE_SUBTITLE)",
         "templateName": "$translate(INIT_SALESFORCE_TITLE)"
       },

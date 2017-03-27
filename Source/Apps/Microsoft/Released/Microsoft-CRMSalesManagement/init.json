@@ -19,27 +19,27 @@
           "$translate(INIT_GETTING_STARTED_CONNECT_AS_PBI)"
         ],
         "name": "$SiteCommon$/pages-gallery/getting-started.html",
-        //"selection": {
-        //  "choice": "$translate(INIT_GETTING_STARTED_D365_ONLINE)",
-        //  "choiceDownload": "$translate(INIT_GETTING_STARTED_D365_ONPREMISE)",
-        //  "label": "$translate(INIT_GETTING_STARTED_WHAT_D365)",
-        //  "list1": [
-        //    "$translate(INIT_GETTING_STARTED_AZURE_SUBSCRIPTION)",
-        //    "$translate(INIT_GETTING_STARTED_AZURE_SQL)",
-        //    "$translate(INIT_GETTING_STARTED_PBI_DESKTOP)",
-        //    "$translate(INIT_GETTING_STARTED_PBI_PRO)"
-        //  ],
-        //  "list2": [
-        //    "$translate(INIT_GETTING_STARTED_CLOUD_SOLUTION)",
-        //    "$translate(INIT_GETTING_STARTED_D365_PULL)",
-        //    "$translate(INIT_GETTING_STARTED_CONNECT_AS_PBI)",
-        //    "$translate(INIT_GETTING_STARTED_DATA_MODEL_EXCEED)"
-        //  ],
-        //  "options": [
-        //    "$translate(INIT_GETTING_STARTED_D365_ONLINE)",
-        //    "$translate(INIT_GETTING_STARTED_D365_ONPREMISE)"
-        //  ]
-        //},
+        "selection": {
+          "choice": "$translate(INIT_GETTING_STARTED_D365_ONLINE)",
+          "choiceDownload": "$translate(INIT_GETTING_STARTED_D365_ONPREMISE)",
+          "label": "$translate(INIT_GETTING_STARTED_WHAT_D365)",
+          "list1": [
+            "$translate(INIT_GETTING_STARTED_AZURE_SUBSCRIPTION)",
+            "$translate(INIT_GETTING_STARTED_AZURE_SQL)",
+            "$translate(INIT_GETTING_STARTED_PBI_DESKTOP)",
+            "$translate(INIT_GETTING_STARTED_PBI_PRO)"
+          ],
+          "list2": [
+            "$translate(INIT_GETTING_STARTED_CLOUD_SOLUTION)",
+            "$translate(INIT_GETTING_STARTED_D365_PULL)",
+            "$translate(INIT_GETTING_STARTED_CONNECT_AS_PBI)",
+            "$translate(INIT_GETTING_STARTED_DATA_MODEL_EXCEED)"
+          ],
+          "options": [
+            "$translate(INIT_GETTING_STARTED_D365_ONLINE)",
+            "$translate(INIT_GETTING_STARTED_D365_ONPREMISE)"
+          ]
+        },
         "templateName": "$translate(INIT_D365_TITLE)"
       },
       {
