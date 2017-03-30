@@ -12,18 +12,17 @@ export class CognitiveService extends ViewModelBase {
         this.isValidated = true;
     }
 
-    onKeyTypeChange() {
+    onKeyTypeChange(): void {
         this.Invalidate();
         if (this.cognitiveSelectedType === 'ExistingKey') {
             this.isValidated = false;
-        }
-        else if (this.cognitiveSelectedType === 'NewKey') {
+        } else if (this.cognitiveSelectedType === 'NewKey') {
             this.cognitiveServiceKey = '';
             this.isValidated = true;
         }
     }
 
-    Invalidate() {
+    Invalidate(): void {
         super.Invalidate();
     }
 

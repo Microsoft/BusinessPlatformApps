@@ -14,7 +14,7 @@ export class WindowsAuth extends ViewModelBase {
         super();
     }
 
-    loginSelectionChanged() {
+    loginSelectionChanged(): void {
         this.Invalidate();
         if (this.logInAsCurrentUser) {
             this.enteredUsername = this.username;

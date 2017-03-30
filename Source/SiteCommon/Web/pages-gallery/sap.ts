@@ -45,7 +45,7 @@ export class SapSource extends ViewModelBase {
         return this.isValidated;
     }
 
-    private storeCredentials() {
+    private storeCredentials(): void {
         this.MS.DataStore.addToDataStore('CredentialTarget', 'Simplement.SolutionTemplate.AR.SAP', DataStoreType.Private);
         this.MS.DataStore.addToDataStore('CredentialUsername', this.user, DataStoreType.Private);
         this.MS.DataStore.addToDataStore('CredentialPassword', this.password, DataStoreType.Private);

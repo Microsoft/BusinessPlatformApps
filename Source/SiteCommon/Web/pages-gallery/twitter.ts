@@ -62,7 +62,7 @@ export class Twitter extends ViewModelBase {
         }
     }
 
-    async connect() {
+    async connect(): Promise<void> {
         if (!this.isAuthenticated) {
             let response = await this.MS.HttpService.executeAsync('Microsoft-CreateTwitterConnectionToLogicApp', {});
             if (response.IsSuccess) {

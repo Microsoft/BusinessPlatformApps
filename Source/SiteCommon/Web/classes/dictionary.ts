@@ -24,20 +24,19 @@
         return this.internalValues[index];
     }
 
-    getItem(index:number):[string,T] {
-        var key:string = this.internalKeys[index];
-        var value:T = this.internalValues[index];
-        return [ key, value ];
+    getItem(index: number): [string, T] {
+        var key: string = this.internalKeys[index];
+        var value: T = this.internalValues[index];
+        return [key, value];
     }
 
-    add(key: string, value: T) {
+    add(key: string, value: T): void {
         if (this.internalKeys.indexOf(key) > -1) {
             throw new Error("Key is already inside dictionary");
         }
 
         this.internalKeys.push(key);
         this.internalValues.push(value);
-
     }
 
     modify(key: string, value: T) {
@@ -65,7 +64,7 @@
         return true;
     }
 
-    toJSON() {
+    toJSON(): any {
         let toConvert: any = {};
 
         for (var i = 0; i < this.length(); i++) {

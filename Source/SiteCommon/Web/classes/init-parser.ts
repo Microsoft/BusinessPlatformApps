@@ -29,7 +29,7 @@ export class InitParser {
         return true;
     }
 
-    public static loadVariables(objToChange: any, obj: any, MS: MainService, self: any) {
+    public static loadVariables(objToChange: any, obj: any, MS: MainService, self: any): void {
         this.MS = MS;
         for (let propertyName in obj) {
             let val: any = obj[propertyName];
@@ -42,7 +42,7 @@ export class InitParser {
     }
 
     // The code to go ahead and parse the Variable
-    public static parseVariable(key: string, value: any, obj: any, MS: MainService, self: any) {
+    public static parseVariable(key: string, value: any, obj: any, MS: MainService, self: any): void {
         let variable: Variable = this.getVariableType(value);
         let result: string = '';
         let command: string = '';
@@ -86,7 +86,7 @@ export class InitParser {
         }
     }
 
-    public static translateInitValue(value: string, MS: MainService = null) {
+    public static translateInitValue(value: string, MS: MainService = null): any {
         if (MS !== null) {
             this.MS = MS;
         }

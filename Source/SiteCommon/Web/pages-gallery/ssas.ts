@@ -9,7 +9,7 @@ export class Customize extends ViewModelBase {
     password: string = '';
     sku: string = 'S0';
 
-    Invalidate() {
+    Invalidate(): void {
         super.Invalidate();
     }
 

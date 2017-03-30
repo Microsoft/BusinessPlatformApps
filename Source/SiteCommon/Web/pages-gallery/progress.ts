@@ -101,7 +101,7 @@ export class ProgressViewModel extends ViewModelBase {
         }
     }
 
-    SubmitEmailAddress() {
+    SubmitEmailAddress(): void {
         if (this.emailAddress && this.emailAddress.length > 0 && this.emailAddress.indexOf('@') !== -1) {
             this.showEmailSubmission = false;
             try {
@@ -117,7 +117,7 @@ export class ProgressViewModel extends ViewModelBase {
         }
     }
 
-    SubmitEmailLink() {
+    SubmitEmailLink(): void {
         window.open('https://www.microsoft.com/en-us/privacystatement/OnlineServices/Default.aspx', '_blank');
     }
 }

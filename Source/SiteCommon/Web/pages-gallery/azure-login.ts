@@ -82,16 +82,16 @@ export class AzureLogin extends ViewModelBase {
         }
     }
 
-    AzureTrialClicked(event: any) {
+    AzureTrialClicked(event: any): any {
         this.MS.LoggerService.TrackEvent('AzureTrialClicked');
         return event;
     }
 
-    AzurePricingClicked() {
+    AzurePricingClicked(): void {
         this.MS.LoggerService.TrackEvent('AzurePricingClicked');
     }
 
-    async connect() {
+    async connect(): Promise<void> {
         this.MS.DataStore.addToDataStore('oauthType', this.oauthType, DataStoreType.Public);
 
         if (this.connectionType.toString() === AzureConnection.Microsoft.toString()) {

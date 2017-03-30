@@ -11,7 +11,7 @@ export class SummaryViewModel extends ViewModelBase {
         super();
     }
 
-    loadSummaryObjectIntoRows() {
+    loadSummaryObjectIntoRows(): void {
         this.textNext = this.MS.Translate.COMMON_RUN;
         this.summaryRows = new Array<EntryRow>();
         let entryRow: EntryRow = new EntryRow();

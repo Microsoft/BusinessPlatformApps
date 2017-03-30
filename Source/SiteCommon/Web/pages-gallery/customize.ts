@@ -130,7 +130,7 @@ export class Customize extends ViewModelBase {
         return true;
     }
 
-    InvalidateEmails() {
+    InvalidateEmails(): void {
         this.Invalidate();
 
         this.isValidated = this.emails.length === 0 || this.isEmailValidated;

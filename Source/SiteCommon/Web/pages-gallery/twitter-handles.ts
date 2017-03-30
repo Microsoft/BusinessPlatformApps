@@ -32,7 +32,7 @@ export class TwitterHandles extends ViewModelBase {
         return response.IsSuccess;
     }
 
-    async Invalidate() {
+    async Invalidate(): Promise<void> {
         super.Invalidate();
         if (!this.accounts) {
             this.isValidated = true;
