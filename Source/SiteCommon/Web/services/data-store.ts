@@ -203,14 +203,14 @@ export class DataStore {
         var values: DataStoreItem[];
 
         if (dataStoreType === DataStoreType.Private || dataStoreType === DataStoreType.Any) {
-            values = DataStore.getValueAndRoutesFromDataStore(this.PrivateDataStore, key, DataStoreType.Private);
+            values = DataStore.getValueAndRoutesFromDataStore(this.PrivateDataStore, key);
             if (values.length > 0) {
                 return values[values.length - 1].value;
             }
         }
 
         if (dataStoreType === DataStoreType.Public || dataStoreType === DataStoreType.Any) {
-            values = DataStore.getValueAndRoutesFromDataStore(this.PublicDataStore, key, DataStoreType.Private);
+            values = DataStore.getValueAndRoutesFromDataStore(this.PublicDataStore, key);
             if (values.length > 0) {
                 return values[values.length - 1].value;
             }

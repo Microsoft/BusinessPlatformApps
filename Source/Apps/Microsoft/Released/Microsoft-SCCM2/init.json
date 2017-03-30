@@ -1,11 +1,10 @@
 ﻿{
-  //"MSI": {
-  //  "Guid": "88DC5CAB-D05D-4193-A432-30A09138D26D"
-  //},
+  "MSI": {
+    "Guid": "88DC5CAB-D05D-4193-A432-30A09138D26D"
+  },
 
   "Install": {
     "Pages": [
-      // Getting Started
       {
         "name": "$SiteCommon$/pages-gallery/getting-started.html",
         "displayname": "Getting Started",
@@ -26,8 +25,6 @@
         "templateName": "System Center Configuration Manager",
         "isDownload": "$(!this.MS.HttpService.isOnPremise)"
       },
-
-      // Login
       {
         "name": "$SiteCommon$/pages-gallery/windows-auth.html",
         "displayname": "Login",
@@ -44,8 +41,6 @@
           }
         ]
       },
-
-      //SQL Server
       {
         "credentialTarget": "pbi_sccm",
         "name": "$SiteCommon$/pages-gallery/sql-server.html",
@@ -64,8 +59,6 @@
           }
         ]
       },
-
-      // Target
       {
         "name": "$SiteCommon$/pages-gallery/sql-server.html",
         "displayname": "Target",
@@ -86,14 +79,10 @@
           }
         ]
       },
-
-      // Customize
       {
         "name": "customize.html",
         "displayname": "Customize"
       },
-
-      // Summary
       {
         "displayname": "Summary",
         "name": "$SiteCommon$/pages-gallery/summary.html",
@@ -103,8 +92,6 @@
           "Target Username": "$(this.MS.DataStore.getValue('Username'))"
         }
       },
-
-      // Progress
       {
         "name": "$SiteCommon$/pages-gallery/progress.html",
         "displayname": "Progress",
