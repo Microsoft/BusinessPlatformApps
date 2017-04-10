@@ -221,8 +221,18 @@
   "Uninstall": {
     "Pages": [
       {
+        "architectureDiagram": "dist/Apps/Microsoft/Released/Microsoft-SCCMTemplate/Web/Images/SCCMArchitectureDiagram.png",
+        "displayname": "Uninstall",
+        "isDownload": "$(!this.MS.HttpService.isOnPremise)",
+        "name": "$SiteCommon$/pages-gallery/uninstall.html",
+        "templateName": "$translate(INIT_SCCM_TITLE)",
+        "uninstallList": [
+          "$translate(INIT_UNINSTALL_SCCM)",
+          "$translate(INIT_UNINSTALL_SQL)"
+        ]
+      },
+      {
         "displayname": "Uninstall Progress",
-        "HasNavigated": "$save(true)",
         "isUninstall": true,
         "name": "$SiteCommon$/pages-gallery/progress.html",
         "showEmailSubmission": false,

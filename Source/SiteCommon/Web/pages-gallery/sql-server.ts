@@ -117,7 +117,6 @@ export class SqlServer extends ViewModelBase {
         let response: ActionResponse = null;
 
         if (this.sqlInstance === 'ExistingSql') {
-            this.MS.HttpService.executeAsync('Microsoft-ExistingSqlServer', body);
             response = await this.MS.HttpService.executeAsync('Microsoft-GetSqlConnectionString', body);
             this.MS.DataStore.addToDataStore('Database', this.database, DataStoreType.Public);
         } else if (this.sqlInstance === 'NewSql') {

@@ -1,13 +1,10 @@
 ﻿{
-  "MSI": {
-    "Guid": "2F142293-C7B5-4C57-8FFE-75F636688C9D"
-  },
-
   "Install": {
     "Pages": [
       {
         "architectureDiagram": "dist/Apps/Microsoft/Released/Microsoft-SalesforceSalesManagement/Web/Images/salesforceArchitectureDiagram.png",
         "displayname": "Getting Started",
+        "downloadLink": "https://pbistservice.azurewebsites.net/Installers/Salesforce_Template_Installer.exe",
         "list1": [
           "$translate(INIT_GETTING_STARTED_AZURE_SUBSCRIPTION)",
           "$translate(INIT_GETTING_STARTED_SALESFORCE_SUBSCRIPTION)",
@@ -51,14 +48,12 @@
         "name": "$SiteCommon$/pages-gallery/azure-login.html",
         "pricingCalculatorUrl": "$translate(INIT_SALESFORCE_PRICING_CALCULATOR_URL)",
         "pricingCost": "$translate(INIT_SALESFORCE_PRICING_COST)",
-        "pricingUrl": "$translate(INIT_SALESFORCE_PRICING_URL)",
-        "skip": "$(this.MS.HttpService.isOnPremise)"
+        "pricingUrl": "$translate(INIT_SALESFORCE_PRICING_URL)"
       },
       {
-        "dataMovement": "$run(this.MS.HttpService.isOnPremise ? 'Informatica' : 'ADF')",
+        "dataMovement": "ADF",
         "displayname": "Data Movement",
-        "name": "$SiteCommon$/pages-gallery/data-movement.html",
-        "showAdf": "$run(!this.MS.HttpService.isOnPremise)"
+        "name": "$SiteCommon$/pages-gallery/data-movement.html"
       },
       {
         "displayname": "Salesforce",
@@ -67,13 +62,13 @@
       },
       {
         "displayname": "Target",
-        "isAzureSql": "$run(!this.MS.HttpService.isOnPremise)",
+        "isAzureSql": true,
         "name": "$SiteCommon$/pages-gallery/sql-server.html",
         "newSqlDatabase": "SalesforceDB",
         "showAzureSql": false,
-        "showGovAzure": "$run(!this.MS.HttpService.isOnPremise)",
-        "showNewSqlOption": "$run(!this.MS.HttpService.isOnPremise)",
-        "sqlInstance": "$run(this.MS.HttpService.isOnPremise ? 'ExistingSql' : 'NewSql')",
+        "showGovAzure": true,
+        "showNewSqlOption": true,
+        "sqlInstance": "NewSql",
         "subtitle": "$translate(INIT_TARGET_SALESFORCE)",
         "title": "$translate(INIT_SQL_TITLE)"
       },
@@ -99,15 +94,15 @@
         "displayname": "Summary",
         "name": "$SiteCommon$/pages-gallery/summary.html",
         "values": {
-          "Subscription": "$(this.MS.DataStore.getValue('DataMovement') === 'ADF' ? this.MS.DataStore.getJson('SelectedSubscription').SubscriptionId : '')",
-          "ResourceGroup": "$(this.MS.DataStore.getValue('SelectedResourceGroup')",
-          "SqlServer": "$(this.MS.DataStore.getValue('Server'))",
-          "Database": "$(this.MS.DataStore.getValue('Database'))",
-          "Fiscal Start": "$(this.MS.DataStore.getValue('fiscalMonth'))",
-          "Emails": "$(this.MS.DataStore.getValue('EmailAddresses'))",
-          "Actuals": "$(this.MS.DataStore.getValue('actuals'))",
-          "Future data load frequency": "$(this.MS.DataStore.getValue('DataMovement') === 'ADF' ? this.MS.DataStore.getValue('postDeploymentPipelineFrequency') : '')",
-          "Future data load interval": "$(this.MS.DataStore.getValue('DataMovement') === 'ADF' ? this.MS.DataStore.getValue('postDeploymentPipelineInterval') : '')"
+          "Subscription": "$(this.MS.DataStore.getJson(\"SelectedSubscription\").SubscriptionId)",
+          "ResourceGroup": "$(this.MS.DataStore.getValue(\"SelectedResourceGroup\"))",
+          "SqlServer": "$(this.MS.DataStore.getValue(\"Server\"))",
+          "Database": "$(this.MS.DataStore.getValue(\"Database\"))",
+          "Fiscal Start": "$(this.MS.DataStore.getValue(\"fiscalMonth\"))",
+          "Emails": "$(this.MS.DataStore.getValue(\"EmailAddresses\"))",
+          "Actuals": "$(this.MS.DataStore.getValue(\"actuals\"))",
+          "Future data load frequency": "$(this.MS.DataStore.getValue(\"postDeploymentPipelineFrequency\"))",
+          "Future data load interval": "$(this.MS.DataStore.getValue(\"postDeploymentPipelineInterval\"))"
         }
       },
       {
@@ -310,31 +305,6 @@
         "skip": "$run(this.MS.DataStore.getValue('DataMovement') !== 'Scribe')",
         "SqlServerIndex": 0,
         "TargetSchema": "dbo"
-      }
-    ]
-  },
-
-  "Uninstall": {
-    "Pages": [
-      {
-        "displayname": "Uninstall Progress",
-        "HasNavigated": "$save(true)",
-        "isUninstall": true,
-        "name": "$SiteCommon$/pages-gallery/progress.html",
-        "showEmailSubmission": false,
-        "successMessage": "$translate(INIT_UNINSTALL_SUCCESS)"
-      }
-    ],
-
-    "Actions": [
-      {
-        "displayname": "$translate(INIT_ACTION_REMOVING_FILES)",
-        "name": "Microsoft-RemoveFiles"
-      },
-      {
-        "displayname": "$translate(INIT_ACTION_FINISHING_CLEANUP)",
-        "name": "Microsoft-RemoveFiles",
-        "TargetPath": "C:\\Program Files\\Microsoft Templates\\Microsoft-SalesforceSalesManagement\\Apps\\Microsoft\\Released\\Microsoft-SalesforceSalesManagement\\Temp"
       }
     ]
   }

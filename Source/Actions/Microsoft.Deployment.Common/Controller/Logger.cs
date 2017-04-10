@@ -4,7 +4,6 @@ using Microsoft.Deployment.Common.Helpers;
 
 using System;
 using System.Collections.Generic;
-using Microsoft.Deployment.Common.Enums;
 
 namespace Microsoft.Deployment.Common.Controller
 {
@@ -43,6 +42,7 @@ namespace Microsoft.Deployment.Common.Controller
 
             this.AddToDictionary(this.globalParams, this.telemetryClient.Context.Properties);
         }
+
 
         public void LogEvent(string eventName, Dictionary<string, string> properties)
         {
@@ -204,37 +204,7 @@ namespace Microsoft.Deployment.Common.Controller
             Dictionary<string, string> powerBiLogin = new Dictionary<string, string>();
             powerBiLogin.Add("Tenant ID", tenantId);
             powerBiLogin.Add("Directory Name", directory);
-            this.LogEvent("PowerBi-Login", powerBiLogin);
-        }
-
-        public void LogResource(
-            DataStore ds,
-            string resourceName,
-            DeployedResourceType type, 
-            CreatedBy createdBy, 
-            string createdAt, 
-            string resourceId = null,
-            string tier = null)
-        {
-            string tenantId = ds.GetValue("PowerBITenantId");
-            string subscriptionId = ds.GetJson("SelectedSubscription")?["SubscriptionId"]?.ToString();
-            string subscriptionName = ds.GetJson("SelectedSubscription")?["DisplayName"]?.ToString();
-            string resourceGroupName = ds.GetValue("SelectedResourceGroup");
-
-            Dictionary<string, string> resourceParams = new Dictionary<string, string>();
-            resourceParams.Add("tenantId", tenantId);
-            resourceParams.Add("subscriptionId", subscriptionId);
-            resourceParams.Add("subscriptionName", subscriptionName);
-            resourceParams.Add("resourceGroupName", resourceGroupName);
-
-            resourceParams.Add("resourceName", resourceName);
-            resourceParams.Add("resourceType", type.ToString());
-            resourceParams.Add("createdBy", createdBy.ToString());
-            resourceParams.Add("createdAt", createdAt);
-            resourceParams.Add("resourceId", resourceId);
-            resourceParams.Add("tier", tier);
-
-            this.LogEvent("LogResource", resourceParams);
+            this.LogEvent("PoweBi-Login", powerBiLogin);
         }
 
         internal void LogRequest(string request, TimeSpan duration, bool sucess, ActionRequest requestBody, ActionResponse responseToReturn)

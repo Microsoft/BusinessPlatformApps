@@ -11,13 +11,13 @@
         <option if.bind="showScribe" value.bind="dataMovementType.Scribe">${MS.Translate.DATA_MOVEMENT_SCRIBE}</option>
     </select>
 
-    <div if.bind="dataMovement == dataMovementType.ADF">
-        <div class="st-float st-text">
-            <p>${MS.Translate.DATA_MOVEMENT_AZURE_DATA_FACTORY_DESCRIPTION}</p>
-        </div>
-    </div>
-
     <div if.bind="dataMovement != dataMovementType.ADF && dataMovement != dataMovementType.D365">
+        <div if.bind="dataMovement == dataMovementType.ADF">
+            <div class="st-float st-text">
+                <p>${MS.Translate.DATA_MOVEMENT_AZURE_DATA_FACTORY_DESCRIPTION}</p>
+            </div>
+        </div>
+
         <div if.bind="dataMovement == dataMovementType.Informatica">
             <div class="st-float st-text">
                 <p>${MS.Translate.DATA_MOVEMENT_INFORMATICA_DESCRIPTION}</p>
@@ -43,34 +43,11 @@
 
         <button class="primary st-float" click.trigger="OnValidate()" if.bind="!MS.HttpService.isServiceBusy">${MS.Translate.COMMON_LOGIN}</button>
 
-        <div class="st-float" if.bind="informaticaAgents && informaticaAgents.length > 0">
-            <p class="st-text">${MS.Translate.DATA_MOVEMENT_INFORMATICA_AGENT}</p>
-            <select class="btn btn-default dropdown-toggle st-input" disabled.bind="MS.HttpService.isServiceBusy" value.bind="informaticaAgentId">
-                <option repeat.for="informaticaAgent of informaticaAgents" value.bind="informaticaAgent.id">${informaticaAgent.name}</option>
-            </select>
-        </div>
-
-        <div class="st-float" if.bind="informaticaAgentLocation">
-            <bpst-link class="st-float" a-description="${MS.Translate.DATA_MOVEMENT_INFORMATICA_ONPREMISE_AGENT}" a-link="informaticaAgentLocation" a-link-text="${MS.Translate.COMMON_HERE}"></bpst-link>
-        </div>
-
-        <div class="st-float" change.delegate="OnScribeOrganizationChanged()" if.bind="scribeOrganizations && scribeOrganizations.length > 0">
+        <div class="st-float" if.bind="scribeOrganizations && scribeOrganizations.length > 0">
             <p class="st-text">${MS.Translate.DATA_MOVEMENT_SCRIBE_ORGANIZATION}</p>
             <select class="btn btn-default dropdown-toggle st-input" disabled.bind="MS.HttpService.isServiceBusy" value.bind="scribeOrganizationId">
                 <option repeat.for="scribeOrganization of scribeOrganizations" value.bind="scribeOrganization.id">${scribeOrganization.name}</option>
             </select>
         </div>
-
-        <div class="st-float" if.bind="scribeAgents && scribeAgents.length > 0">
-            <p class="st-text">${MS.Translate.DATA_MOVEMENT_SCRIBE_AGENT}</p>
-            <select class="btn btn-default dropdown-toggle st-input" disabled.bind="MS.HttpService.isServiceBusy" value.bind="scribeAgentId">
-                <option repeat.for="scribeAgent of scribeAgents" value.bind="scribeAgent.id">${scribeAgent.name}</option>
-            </select>
-        </div>
-
-        <div class="st-float" if.bind="scribeAgentInstall && scribeAgentInstall.agentInstallationKey">
-            <bpst-link class="st-float" a-description="${MS.Translate.DATA_MOVEMENT_SCRIBE_ONPREMISE_AGENT}" a-link="scribeAgentInstall.agentInstallerLocation" a-link-text="${MS.Translate.COMMON_HERE}"></bpst-link>
-            <span>${MS.Translate.DATA_MOVEMENT_SCRIBE_ONPREMISE_AGENT_DESCRIPTION}</span>
-            <span>${scribeAgentInstall.agentInstallationKey}</span>
-        </div>
+    </div>
 </template>

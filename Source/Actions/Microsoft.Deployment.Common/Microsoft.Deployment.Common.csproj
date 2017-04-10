@@ -56,8 +56,6 @@
       <Link>Properties\SharedVersion.cs</Link>
     </Compile>
     <Compile Include="ActionModel\DictionaryIgnoreCase.cs" />
-    <Compile Include="Enums\CreatedBy.cs" />
-    <Compile Include="Enums\DeploymentResourceType.cs" />
     <Compile Include="Exceptions\ActionFailedException.cs" />
     <Compile Include="ActionModel\ActionRequest.cs" />
     <Compile Include="ActionModel\ActionResponse.cs" />
@@ -132,7 +130,6 @@
     <Compile Include="Model\QDEFF.cs" />
     <Compile Include="Model\Scribe\D365Organization.cs" />
     <Compile Include="Model\Scribe\ScribeAgent.cs" />
-    <Compile Include="Model\Scribe\ScribeAgentInstall.cs" />
     <Compile Include="Model\Scribe\ScribeConnection.cs" />
     <Compile Include="Model\Scribe\ScribeConnector.cs" />
     <Compile Include="Model\Scribe\ScribeKeyValue.cs" />

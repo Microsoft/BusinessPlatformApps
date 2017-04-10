@@ -1,14 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading;
+﻿using System.Collections.Generic;
 using System.Windows;
-
-using Newtonsoft.Json;
-
+using Microsoft.Deployment.Common;
 using Microsoft.Deployment.Common.ActionModel;
 using Microsoft.Deployment.Common.AppLoad;
 using Microsoft.Deployment.Common.Controller;
 using Microsoft.Deployment.Common.Helpers;
+using Newtonsoft.Json.Linq;
+using Newtonsoft.Json;
+using System;
+using System.Threading;
 
 namespace Microsoft.Deployment.Build
 {

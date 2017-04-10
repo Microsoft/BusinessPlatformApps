@@ -31,7 +31,7 @@ namespace Microsoft.Deployment.Actions.Custom.Informatica
                 Codepage = "UTF-8",
                 Schema = "dbo",
                 AuthenticationType = isWindowsAuth ? "Windows" : "SqlServer",
-                RuntimeEnvironmentId = await InformaticaUtility.GetRuntimeEnvironmentId(rc, request.DataStore.GetValue("InformaticaAgentName"))
+                RuntimeEnvironmentId = await InformaticaUtility.GetRuntimeEnvironmentId(rc)
             };
 
             string databaseName = request.DataStore.GetValue("Database");

@@ -108,7 +108,8 @@
       },
       {
         "displayname": "$translate(INIT_ACTION_DEPLOYING_LOGIC_APP_DATABASE)",
-        "name": "Microsoft-ConfigurePowerAppTables"
+        "name": "Microsoft-ConfigurePowerAppTables",
+        "SqlServerIndex": "0"
       },
       {
         "displayname": "$translate(INIT_ACTION_RETRIEVING_POWERAPP_ENVIRONMENT)",

@@ -171,7 +171,8 @@ export class ViewModelBase {
         this.isValidated = false;
         this.showValidation = false;
         this.validationText = null;
-        this.MS.ErrorService.Clear();
+        this.MS.ErrorService.details = '';
+        this.MS.ErrorService.message = '';
     }
 
     // Called when object is validating user input

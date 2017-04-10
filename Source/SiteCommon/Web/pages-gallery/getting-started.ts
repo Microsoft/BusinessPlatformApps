@@ -13,6 +13,7 @@ export class Gettingstarted extends ViewModelBase {
     list2: string[] = [];
     list1Title: string = this.MS.Translate.GETTING_STARTED_LIST_1;
     list2Title: string = this.MS.Translate.GETTING_STARTED_LIST_2;
+    upgrade: boolean = false;
     prerequisiteDescription: string = '';
     prerequisiteLink: string = '';
     prerequisiteLinkText: string = '';
@@ -22,7 +23,6 @@ export class Gettingstarted extends ViewModelBase {
     showSelection: boolean = false;
     subtitle: string = '';
     templateName: string = '';
-    upgrade: boolean = false;
 
     constructor() {
         super();
@@ -39,21 +39,17 @@ export class Gettingstarted extends ViewModelBase {
 
     async OnLoaded(): Promise<void> {
         this.isValidated = true;
-
-        if (this.MS.HttpService.isOnPremise) {
-            this.selection.label = '';
-            this.selection.choice = this.selection.choiceDownload;
-            this.SelectionChanged();
-            let res = await this.MS.HttpService.executeAsync('Microsoft-CheckVersion');
-            if (res.Body === true) {
-                this.upgrade = res.Body;
-            }
-        }
-
         if (this.isDownload) {
             this.GetDownloadLink();
         } else {
             this.registration.text = '';
+        }
+
+        if (this.MS.HttpService.isOnPremise) {
+            let res = await this.MS.HttpService.executeAsync('Microsoft-CheckVersion');
+            if (res.Body === true) {
+                this.upgrade = res.Body;
+            }
         }
     }
 
@@ -100,14 +96,11 @@ export class Gettingstarted extends ViewModelBase {
 
     SelectionChanged(): void {
         if (this.selection.choice === this.selection.choiceDownload) {
-            this.isDownload = !this.MS.HttpService.isOnPremise;
+            this.isDownload = true;
             this.selection.list1Previous = this.list1;
             this.selection.list2Previous = this.list2;
             this.list1 = this.selection.list1;
             this.list2 = this.selection.list2;
-            if (this.isDownload && !this.downloadLink) {
-                this.GetDownloadLink();
-            }
         } else {
             this.isDownload = false;
             this.list1 = this.selection.list1Previous;

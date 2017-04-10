@@ -2,6 +2,7 @@
 using System.Dynamic;
 using System.Net.Http;
 using System.Threading.Tasks;
+
 using Microsoft.Deployment.Common.ActionModel;
 using Microsoft.Deployment.Common.Actions;
 using Microsoft.Deployment.Common.Helpers;

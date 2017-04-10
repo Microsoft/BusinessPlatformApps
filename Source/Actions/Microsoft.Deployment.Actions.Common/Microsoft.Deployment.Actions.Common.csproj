@@ -101,7 +101,6 @@
     </Compile>
     <Compile Include="CheckVersion.cs" />
     <Compile Include="EmailSubscription.cs" />
-    <Compile Include="ExistingSqlServer.cs" />
     <Compile Include="GetMsiDownloadLink.cs" />
     <Compile Include="PBI\WranglePBISSAS.cs" />
     <Compile Include="PBI\WranglePBI.cs" />

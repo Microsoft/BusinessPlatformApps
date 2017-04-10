@@ -1,0 +1,21 @@
+﻿<template>
+    <h1 class="st-title">${MS.Translate.D365_LOGIN_TITLE}</h1>
+    <p class="st-subtitle">${MS.Translate.D365_LOGIN_SUBTITLE}</p>
+
+    <div class="st-float">
+        <p class="st-text">${MS.Translate.D365_LOGIN_USERNAME}</p>
+        <input class="st-input" type="text" change.delegate="Invalidate()" disabled.bind="MS.HttpService.isServiceBusy" value.bind="d365Username" />
+
+        <p class="st-text">${MS.Translate.D365_LOGIN_PASSWORD}</p>
+        <input class="st-input" type="password" change.delegate="Invalidate()" disabled.bind="MS.HttpService.isServiceBusy" value.bind="d365Password" />
+    </div>
+
+    <button class="primary st-float" click.trigger="OnValidate()" if.bind="!MS.HttpService.isServiceBusy">${MS.Translate.COMMON_LOGIN}</button>
+
+    <div class="st-float" if.bind="d365Organizations && d365Organizations.length > 0">
+        <p class="st-text">${MS.Translate.D365_LOGIN_ORGANIZATION}</p>
+        <select class="btn btn-default dropdown-toggle st-input" disabled.bind="MS.HttpService.isServiceBusy" value.bind="d365OrganizationId">
+            <option repeat.for="d365Organization of d365Organizations" value.bind="d365Organization.Id">${d365Organization.Name}</option>
+        </select>
+    </div>
+</template>

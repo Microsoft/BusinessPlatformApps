@@ -142,8 +142,6 @@
     <Compile Include="Informatica\CreateInformaticaConnectionSalesforce.cs" />
     <Compile Include="Informatica\CreateInformaticaConnectionSql.cs" />
     <Compile Include="Informatica\CreateInformaticaTask.cs" />
-    <Compile Include="Informatica\GetInformaticaAgentLocation.cs" />
-    <Compile Include="Informatica\GetInformaticaAgents.cs" />
     <Compile Include="Informatica\GetInformaticaTaskStatus.cs" />
     <Compile Include="Informatica\StartInformaticaTask.cs" />
     <Compile Include="Informatica\VerifyInformaticaCredentials.cs" />
@@ -160,8 +158,6 @@
     <Compile Include="Scribe\CreateScribeSolution.cs" />
     <Compile Include="Scribe\DeviceIdManager.cs" />
     <Compile Include="Scribe\GetD365Organizations.cs" />
-    <Compile Include="Scribe\GetScribeAgentInstall.cs" />
-    <Compile Include="Scribe\GetScribeAgents.cs" />
     <Compile Include="Scribe\GetScribeOrganizations.cs" />
     <Compile Include="Scribe\GetScribeSolutionStatus.cs" />
     <Compile Include="Scribe\ProcessScribeSolution.cs" />

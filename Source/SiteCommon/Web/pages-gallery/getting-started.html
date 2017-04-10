@@ -50,12 +50,16 @@
 
         <p>${MS.Translate.GETTING_STARTED_FIRST_NAME}</p>
         <input class="st-input" type="text" disabled.bind="MS.HttpService.isServiceBusy" value.bind="registration.nameFirst" />
+
         <p>${MS.Translate.GETTING_STARTED_LAST_NAME}</p>
         <input class="st-input" type="text" disabled.bind="MS.HttpService.isServiceBusy" value.bind="registration.nameLast" />
+
         <p>${MS.Translate.GETTING_STARTED_COMPANY}</p>
         <input class="st-input" type="text" disabled.bind="MS.HttpService.isServiceBusy" value.bind="registration.company" />
+
         <p>${MS.Translate.GETTING_STARTED_EMAIL}</p>
         <input class="st-input" type="text" disabled.bind="MS.HttpService.isServiceBusy" value.bind="registration.email" />
+
         <p>${MS.Translate.GETTING_STARTED_EMAIL_CONFIRMATION}</p>
         <input class="st-input" type="text" disabled.bind="MS.HttpService.isServiceBusy" value.bind="registration.emailConfirmation" />
 
@@ -83,4 +87,5 @@
             <button class="primary" click.trigger="OpenNewMSILink()">${MS.Translate.COMMON_DOWNLOAD}</button>
         </div>
     </div>
+
 </template>

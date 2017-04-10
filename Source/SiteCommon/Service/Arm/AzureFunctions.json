@@ -38,11 +38,11 @@
             "appSettings": [
               {
                 "name": "AzureWebJobsDashboard",
-                "value": "[concat('DefaultEndpointsProtocol=https;AccountName=',parameters('storageaccountname'),';AccountKey=',listKeys(resourceId('Microsoft.Storage/storageAccounts', parameters('storageaccountname')), '2015-05-01-preview').key1)]"
+                "value": "[concat('DefaultEndpointsProtocol=https;AccountName=',parameters('name'),';AccountKey=',listKeys(resourceId('Microsoft.Storage/storageAccounts', parameters('name')), '2015-05-01-preview').key1)]"
               },
               {
                 "name": "AzureWebJobsStorage",
-                "value": "[concat('DefaultEndpointsProtocol=https;AccountName=',parameters('storageaccountname'),';AccountKey=',listKeys(resourceId('Microsoft.Storage/storageAccounts', parameters('storageaccountname')), '2015-05-01-preview').key1)]"
+                "value": "[concat('DefaultEndpointsProtocol=https;AccountName=',parameters('name'),';AccountKey=',listKeys(resourceId('Microsoft.Storage/storageAccounts', parameters('name')), '2015-05-01-preview').key1)]"
               },
               {
                 "name": "FUNCTIONS_EXTENSION_VERSION",
@@ -50,7 +50,7 @@
               },
               {
                 "name": "WEBSITE_CONTENTAZUREFILECONNECTIONSTRING",
-                "value": "[concat('DefaultEndpointsProtocol=https;AccountName=',parameters('storageaccountname'),';AccountKey=',listKeys(resourceId('Microsoft.Storage/storageAccounts', parameters('storageaccountname')), '2015-05-01-preview').key1)]"
+                "value": "[concat('DefaultEndpointsProtocol=https;AccountName=',parameters('name'),';AccountKey=',listKeys(resourceId('Microsoft.Storage/storageAccounts', parameters('name')), '2015-05-01-preview').key1)]"
               },
               {
                 "name": "WEBSITE_CONTENTSHARE",
@@ -64,7 +64,7 @@
           }
         },
         "dependsOn": [
-          "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageaccountname'))]"
+          "[resourceId('Microsoft.Storage/storageAccounts', parameters('name'))]"
         ],
         "resources": [
           {
@@ -84,14 +84,14 @@
         "location": "[resourceGroup().location]",
         "kind": "functionapp"
       },
-      {
-        "apiVersion": "2015-05-01-preview",
-        "type": "Microsoft.Storage/storageAccounts",
-        "name": "[parameters('storageaccountname')]",
-        "location": "[resourceGroup().location]",
-        "properties": {
-          "accountType": "Standard_LRS"
+        {
+            "apiVersion": "2015-05-01-preview",
+            "type": "Microsoft.Storage/storageAccounts",
+            "name": "[parameters('name')]",
+            "location": "[resourceGroup().location]",
+            "properties": {
+                "accountType": "Standard_LRS"
+            }
         }
-      }
     ]
 }

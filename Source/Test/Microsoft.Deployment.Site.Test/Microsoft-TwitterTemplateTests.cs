@@ -24,15 +24,15 @@ namespace Microsoft.Deployment.Site.Web.Tests
             Thread.Sleep(new TimeSpan(0, 0, 5));
             HelperMethods.ClickButton("Next");
             Given_CorrectSqlCredentials_When_ExistingSqlSelected_Then_PageValidatesSuccessfully();
-            HelperMethods.WaitForPage();
+            Thread.Sleep(new TimeSpan(0, 0, 5));
             HelperMethods.ClickButton("Next");
             Given_CorrectTwitterCredentials_When_Authenticating_Then_Success();
-            HelperMethods.WaitForPage();
+            Thread.Sleep(new TimeSpan(0, 0, 5));
             Given_CorrectSearchTerms_When_Validating_Then_Success();
-            HelperMethods.WaitForPage();
+            Thread.Sleep(new TimeSpan(0, 0, 5));
             HelperMethods.ClickButton("Next");
             Given_CorrectHandles_When_Validating_Then_Success();
-            HelperMethods.WaitForPage();
+            Thread.Sleep(new TimeSpan(0, 0, 5));
             HelperMethods.ClickButton("Next");
             HelperMethods.NewAnalysisServices("twitteraas" + HelperMethods.resourceGroupName, Credential.Instance.ServiceAccount.Username, Credential.Instance.ServiceAccount.Password);
             HelperMethods.ClickButton("Next");
@@ -54,15 +54,15 @@ namespace Microsoft.Deployment.Site.Web.Tests
             Thread.Sleep(new TimeSpan(0, 0, 5));
             HelperMethods.ClickButton("Next");
             Given_CorrectSqlCredentials_When_ExistingSqlSelected_Then_PageValidatesSuccessfully();
-            HelperMethods.WaitForPage();
+            Thread.Sleep(new TimeSpan(0, 0, 5));
             HelperMethods.ClickButton("Next");
             Given_CorrectTwitterCredentials_When_Authenticating_Then_Success();
-            HelperMethods.WaitForPage();
+            Thread.Sleep(new TimeSpan(0, 0, 5));
             Given_CorrectSearchTerms_When_Validating_Then_Success();
-            HelperMethods.WaitForPage();
+            Thread.Sleep(new TimeSpan(0, 0, 5));
             HelperMethods.ClickButton("Next");
             Given_CorrectHandles_When_Validating_Then_Success();
-            HelperMethods.WaitForPage();
+            Thread.Sleep(new TimeSpan(0, 0, 5));
             HelperMethods.ClickButton("Next");
             HelperMethods.NoAnalysisServices();
             HelperMethods.ClickButton("Next");
@@ -77,6 +77,8 @@ namespace Microsoft.Deployment.Site.Web.Tests
                 Credential.Instance.ServiceAccount.SubscriptionId);
         }
 
+        [TestMethod]
+        [Ignore]
         public void Given_CorrectCredentials_When_AzureAuth_Then_Success()
         {
             HelperMethods.OpenWebBrowserOnPage("login");
@@ -91,6 +93,8 @@ namespace Microsoft.Deployment.Site.Web.Tests
             Assert.IsTrue(validated.Text == "Successfully validated");
         }
 
+        [TestMethod]
+        [Ignore]
         public void Given_CorrectSqlCredentials_When_ExistingSqlSelected_Then_PageValidatesSuccessfully()
         {
             string server = Credential.Instance.Sql.Server;
@@ -98,6 +102,7 @@ namespace Microsoft.Deployment.Site.Web.Tests
             string password = Credential.Instance.Sql.Password;
             string database = Credential.Instance.Sql.TwitterDatabase;
 
+            //HelperMethods.OpenWebBrowserOnPage("source");
             HelperMethods.SqlPageExistingDatabase(server, username, password);
 
             var validated = driver.FindElementByClassName("st-validated");
@@ -107,8 +112,11 @@ namespace Microsoft.Deployment.Site.Web.Tests
             HelperMethods.SelectSqlDatabase(database);
         }
 
+        [TestMethod]
+        [Ignore]
         public void Given_CorrectTwitterCredentials_When_Authenticating_Then_Success()
         {
+            //HelperMethods.OpenWebBrowserOnPage("twitter");
             HelperMethods.ClickButton("Connect to Twitter");
 
             string username = Credential.Instance.TwitterAccount.Username;
@@ -124,6 +132,8 @@ namespace Microsoft.Deployment.Site.Web.Tests
             authorizeButton.Click();
         }
 
+        [TestMethod]
+        [Ignore]
         public void Given_CorrectSearchTerms_When_Validating_Then_Success()
         {
             HelperMethods.OpenWebBrowserOnPage("searchterms");
@@ -145,9 +155,12 @@ namespace Microsoft.Deployment.Site.Web.Tests
             Assert.IsTrue(validated.Text == "Successfully validated");
         }
 
+        [TestMethod]
+        [Ignore]
         public void Given_CorrectHandles_When_Validating_Then_Success()
         {
             Thread.Sleep(new TimeSpan(0, 0, 10));
+            //HelperMethods.OpenWebBrowserOnPage("twitterhandles");
             string handles = "@MSPowerBI @Azure @Microsoft";
 
             var handlesInput = driver.FindElementByCssSelector("input[class='st-input au-target']");

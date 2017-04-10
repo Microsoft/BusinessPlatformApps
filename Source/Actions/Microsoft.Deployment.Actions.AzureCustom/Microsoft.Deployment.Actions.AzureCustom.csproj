@@ -190,16 +190,25 @@
     <Compile Include="..\..\SharedVersion.cs">
       <Link>Properties\SharedVersion.cs</Link>
     </Compile>
+    <Compile Include="Arm\DeployArmTemplate.cs" />
     <Compile Include="Arm\DeployAzureArmTemplate.cs" />
+    <Compile Include="Arm\GetArmDeploymentStatus.cs" />
     <Compile Include="Arm\WaitForArmDeploymentStatus.cs" />
+    <Compile Include="AzureAS\ProcessASModel.cs" />
     <Compile Include="AzureAS\DeployAzureASModel.cs" />
     <Compile Include="AzureAS\CheckASServerNameAvailability.cs" />
     <Compile Include="AzureAS\ValidateConnectionToAS.cs" />
     <Compile Include="AzureML\ExportAzureMLExperiment.cs" />
+    <Compile Include="AzureML\DeployAzureMLExperiment.cs" />
     <Compile Include="AzureML\DeployAzureMLWebServiceFromFile.cs" />
+    <Compile Include="AzureML\WaitForAzureMLWebServiceCreation.cs" />
+    <Compile Include="AzureML\GetAzureMLWorkspaceByName.cs" />
+    <Compile Include="AzureML\DeployAzureMLWebServiceOld.cs" />
+    <Compile Include="AzureML\InsertDatabaseCredentialsIntoExperiment.cs" />
     <Compile Include="AzureSql\CreateAzureSql.cs" />
     <Compile Include="AzureToken\GetAzureAuthUri.cs" />
     <Compile Include="AzureToken\GetAzureToken.cs" />
+    <Compile Include="AzureToken\GetManagementCoreUri.cs" />
     <Compile Include="AzureToken\RefreshAzureToken.cs" />
     <Compile Include="AzureUtility.cs" />
     <Compile Include="CDM\CheckCDMEntities.cs" />
@@ -213,6 +222,7 @@
     <Compile Include="CDM\ProvisionCDM.cs" />
     <Compile Include="CognitiveServices\RegisterCognitiveServices.cs" />
     <Compile Include="Common\GetEmail.cs" />
+    <Compile Include="Common\CheckAzureWebsiteExists.cs" />
     <Compile Include="Common\DeployAzureFunctionConnectionStrings.cs" />
     <Compile Include="Common\DeployPrivateAssemblyToFunction.cs" />
     <Compile Include="Common\RegisterBapiService.cs" />
@@ -225,13 +235,15 @@
     <Compile Include="Common\DeleteResourceGroup.cs" />
     <Compile Include="Common\DeployAzureFunction.cs" />
     <Compile Include="Common\DeployAzureFunctionAssets.cs" />
-    <Compile Include="CognitiveServices\DeployCognitiveService.cs" />
+    <Compile Include="Common\DeployCognitiveService.cs" />
     <Compile Include="Common\DeployStorageAccountContainer.cs" />
     <Compile Include="Common\GetAzureSubscriptions.cs" />
     <Compile Include="Common\GetCognitiveKey.cs" />
     <Compile Include="Common\GetLocations.cs" />
+    <Compile Include="Common\GetResource.cs" />
     <Compile Include="AzureAS\DeployAzureAnalysisServices.cs" />
     <Compile Include="Common\GetStorageAccountKey.cs" />
+    <Compile Include="AzureML\DeployAzureMLWorkspace.cs" />
     <Compile Include="FTPUtilityTest.cs" />
     <Compile Include="LogicApp\LogicAppConnector.cs" />
     <Compile Include="News\DeployAzureMLSchedulerLogicApp.cs" />
@@ -243,10 +255,13 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Twitter\ConsentTwitterConnectionToLogicApp.cs" />
     <Compile Include="Twitter\CreateTwitterConnectionToLogicApp.cs" />
+    <Compile Include="Twitter\DeployCognitiveServiceText.cs" />
+    <Compile Include="Twitter\DeployHistoricalTwitterFunction.cs" />
     <Compile Include="Twitter\DeployTwitterCSharpFunctionAssets.cs" />
     <Compile Include="Twitter\DeployTwitterFunction.cs" />
     <Compile Include="Twitter\DeployTwitterHistoricalLogicApp.cs" />
     <Compile Include="Twitter\DeployTwitterLogicApp.cs" />
+    <Compile Include="Twitter\GetCognitiveServiceKeys.cs" />
     <Compile Include="Twitter\GetTwitterConnection.cs" />
     <Compile Include="Twitter\RunLogicAppHistorical.cs" />
     <Compile Include="Twitter\ValidateCognitiveKey.cs" />

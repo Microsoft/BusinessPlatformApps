@@ -15,13 +15,13 @@ namespace Microsoft.Deployment.Common.Helpers
         public const string BPST_TARGET_NAME = "BPST Target";
         public const string BPST_TASK_NAME = "BPST Task";
 
+        private const string CLOUD_AGENT_NAME = "Informatica Cloud Hosted Agent";
         private const string MSG_MISSING_LICENSES = "You do not have the following required licenses: {0}. Contact Informatica Support to obtain them. Alternatively, you can choose to create a new Informatica account as a 90-day trial account.";
 
         private const string ENDPOINT_LOGIN = "https://app.informaticaondemand.com";
         //private const string ENDPOINT_LOGIN = "https://expo.informaticaondemand.com";
 
         private const string URL_AGENT = "api/v2/runtimeEnvironment";
-        private const string URL_AGENT_DOWNLOAD = "/saas/download/win64/installer/agent64_install.exe";
         private const string URL_CONNECTIONS = "api/v2/connection";
         private const string URL_LICENSE_INFO = "api/v2/licenseInfo";
         private const string URL_LOGIN = "ma/api/v2/user/login";
@@ -88,11 +88,6 @@ namespace Microsoft.Deployment.Common.Helpers
             throw new Exception(string.Format(CultureInfo.InvariantCulture, MSG_MISSING_LICENSES, licensesNeeded));
         }
 
-        public static string GetAgentDownloadLocation()
-        {
-            return ENDPOINT_LOGIN + URL_AGENT_DOWNLOAD;
-        }
-
         public static async Task<string> GetConnectionId(RestClient rc, string connectionName)
         {
             string response = await rc.Get(URL_CONNECTIONS);
@@ -111,7 +106,7 @@ namespace Microsoft.Deployment.Common.Helpers
             return connectionId;
         }
 
-        public static async Task<string> GetRuntimeEnvironmentId(RestClient rc, string name)
+        public static async Task<string> GetRuntimeEnvironmentId(RestClient rc)
         {
             string response = await rc.Get(URL_AGENT);
             InformaticaRuntimeEnvironment[] environments = JsonConvert.DeserializeObject<InformaticaRuntimeEnvironment[]>(response);
@@ -119,7 +114,7 @@ namespace Microsoft.Deployment.Common.Helpers
             string id = null;
             for (int i = 0; i < environments.Length; i++)
             {
-                if (environments[i].Name.EqualsIgnoreCase(name))
+                if (environments[i].Name.EqualsIgnoreCase(CLOUD_AGENT_NAME))
                 {
                     id = environments[i].Id;
                     break;

@@ -2,11 +2,11 @@
 using System.ComponentModel.Composition;
 using System.IO;
 using System.Threading.Tasks;
+
 using Microsoft.AnalysisServices;
 using Microsoft.AnalysisServices.Tabular;
 using Microsoft.Deployment.Common.ActionModel;
 using Microsoft.Deployment.Common.Actions;
-using Microsoft.Deployment.Common.Enums;
 using Microsoft.Deployment.Common.Helpers;
 
 namespace Microsoft.Deployment.Actions.AzureCustom.AzureAS
@@ -55,8 +55,6 @@ namespace Microsoft.Deployment.Actions.AzureCustom.AzureAS
 
                 server.Disconnect(true);
             }
-            request.Logger.LogResource(request.DataStore, asDatabase,
-                        DeployedResourceType.AzureAnalysisServicesModel, CreatedBy.BPST, DateTime.UtcNow.ToString("o"));
 
             return new ActionResponse(ActionStatus.Success);
         }

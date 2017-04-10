@@ -1,13 +1,10 @@
 ﻿{
-  "MSI": {
-    "Guid": "2F142293-C7B5-4C57-8FFE-75F636688C9E"
-  },
-
   "Install": {
     "Pages": [
       {
         "architectureDiagram": "dist/Apps/Microsoft/Released/Microsoft-CRMSalesManagement/Web/Images/crm-sales-management.png",
         "displayname": "Getting Started",
+        "downloadLink": "https://pbistservice.azurewebsites.net/Installers/Dynamics_Template_Installer.exe",
         "list1": [
           "$translate(INIT_GETTING_STARTED_D365_DECEMBER)",
           "$translate(INIT_GETTING_STARTED_D365_ADMIN)",
@@ -45,15 +42,15 @@
         },
         "templateName": "$translate(INIT_D365_TITLE)"
       },
-      {
-        "dataMovement": "$run(this.MS.HttpService.isOnPremise ? 'Scribe' : 'D365')",
-        "displayname": "Data Movement",
-        "name": "$SiteCommon$/pages-gallery/data-movement.html",
-        "showAdf": false,
-        "showD365": "$run(!this.MS.HttpService.isOnPremise)",
-        "showInformatica": false,
-        "subtitle": "$translate(DATA_MOVEMENT_SUBTITLE_D365)"
-      },
+      //{
+      //  "dataMovement": "D365",
+      //  "displayname": "Data Movement",
+      //  "name": "$SiteCommon$/pages-gallery/data-movement.html",
+      //  "showAdf": false,
+      //  "showD365": true,
+      //  "showInformatica": false,
+      //  "subtitle": "$translate(DATA_MOVEMENT_SUBTITLE_D365)"
+      //},
       {
         "displayname": "Dynamics 365 Login",
         "entities": "account,lead,opportunity,opportunityproduct,product,systemuser,systemusermanagermap,territory",
@@ -61,7 +58,8 @@
         "oauthType": "mscrm",
         "pricingCalculatorUrl": "$translate(INIT_D365_CALCULATOR)",
         "pricingCost": "$translate(INIT_D365_PRICING_COST)",
-        "pricingUrl": "$translate(INIT_D365_PRICING_URL)"
+        "pricingUrl": "$translate(INIT_D365_PRICING_URL)",
+        //"skip": "$run(this.MS.DataStore.getValue('DataMovement') !== 'D365')"
       },
       {
         "displayname": "Login to the Key Vault",
@@ -69,15 +67,20 @@
         "oauthType": "keyvault",
         "skip": "$run(this.MS.DataStore.getValue('DataMovement') !== 'D365')"
       },
+      //{
+      //  "displayname": "Dynamics 365",
+      //  "name": "$SiteCommon$/pages-gallery/d365-login.html",
+      //  "skip": "$run(this.MS.DataStore.getValue('DataMovement') !== 'Scribe')"
+      //},
       {
         "name": "$SiteCommon$/pages-gallery/sql-server.html",
         "displayname": "Target",
-        "isAzureSql": "$run(!this.MS.HttpService.isOnPremise)",
+        "isAzureSql": true,
         "newSqlDatabase": "$(this.MS.UtilityService.GetUniqueId(10))",
         "showAzureSql": false,
-        "showNewSqlOption": "$run(!this.MS.HttpService.isOnPremise)",
+        "showNewSqlOption": "$run(this.MS.DataStore.getValue('DataMovement') === 'D365')",
         "showSkuS1": false,
-        "sqlInstance": "$run(this.MS.HttpService.isOnPremise ? 'ExistingSql' : 'NewSql')",
+        "sqlInstance": "$run(this.MS.DataStore.getValue('DataMovement') === 'D365' ? 'NewSql' : 'ExistingSql')",
         "sqlSku": "S2",
         "subtitle": "$translate(INIT_SQL_SUBTITLE_D365)",
         "title": "$translate(INIT_SQL_TITLE)"
@@ -263,30 +266,6 @@
         "skip": "$run(this.MS.DataStore.getValue('DataMovement') !== 'Scribe')",
         "SqlServerIndex": 0,
         "TargetSchema": "dbo"
-      }
-    ]
-  },
-
-  "Uninstall": {
-    "Pages": [
-      {
-        "displayname": "Uninstall Progress",
-        "HasNavigated": "$save(true)",
-        "isUninstall": true,
-        "name": "$SiteCommon$/pages-gallery/progress.html",
-        "showEmailSubmission": false,
-        "successMessage": "$translate(INIT_UNINSTALL_SUCCESS)"
-      }
-    ],
-    "Actions": [
-      {
-        "displayname": "$translate(INIT_ACTION_REMOVING_FILES)",
-        "name": "Microsoft-RemoveFiles"
-      },
-      {
-        "displayname": "$translate(INIT_ACTION_FINISHING_CLEANUP)",
-        "name": "Microsoft-RemoveFiles",
-        "TargetPath": "C:\\Program Files\\Microsoft Templates\\Microsoft-CRMSalesManagement\\Apps\\Microsoft\\Released\\Microsoft-CRMSalesManagement\\Temp"
       }
     ]
   }

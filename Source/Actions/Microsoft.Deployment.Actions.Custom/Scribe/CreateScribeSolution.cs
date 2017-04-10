@@ -35,7 +35,7 @@ namespace Microsoft.Deployment.Actions.Custom.Scribe
                 ReplicationSettings = new ScribeReplicationSettings(request.DataStore.GetValue("Entities").Split(new[] { ',', ' ', '\t' }, StringSplitOptions.RemoveEmptyEntries)),
                 ConnectionIdForSource = await GetConnectionId(rc, orgId, ScribeUtility.BPST_SOURCE_NAME),
                 ConnectionIdForTarget = await GetConnectionId(rc, orgId, ScribeUtility.BPST_TARGET_NAME),
-                AgentId = await GetAgentId(rc, orgId, request.DataStore.GetValue("ScribeAgentName"))
+                AgentId = await GetAgentId(rc, orgId, "Cloud Agent")
             };
 
             string response = await rc.Post(string.Format(CultureInfo.InvariantCulture, URL_SOLUTIONS, orgId), JsonConvert.SerializeObject(solution));
