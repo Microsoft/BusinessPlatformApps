@@ -20,8 +20,14 @@ namespace Microsoft.Deployment.Tests.Actions.AzureTests
             Assert.IsTrue(subscriptionResult.IsSuccess);
             var subscriptionId = subscriptionResult.Body.GetJObject()["value"].FirstOrDefault(p => p["DisplayName"].ToString().StartsWith("Mohaali"));
             dataStore.AddToDataStore("SelectedSubscription", subscriptionId, DataStoreType.Public);
-
+            dataStore.AddToDataStore("CognitiveServices", "TextAnalytics");
+            dataStore.AddToDataStore("CognitiveLocation", "westus");
             var response = await TestManager.ExecuteActionAsync("Microsoft-RegisterCognitiveServices", dataStore);
+            Assert.IsTrue(response.Status == ActionStatus.Success);
+
+            dataStore.AddToDataStore("CognitiveServices", "Bing.Search");
+            dataStore.AddToDataStore("CognitiveLocation", "global");
+            response = await TestManager.ExecuteActionAsync("Microsoft-RegisterCognitiveServices", dataStore);
             Assert.IsTrue(response.Status == ActionStatus.Success);
         }
     }

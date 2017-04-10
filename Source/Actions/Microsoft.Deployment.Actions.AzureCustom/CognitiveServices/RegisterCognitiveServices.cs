@@ -36,12 +36,12 @@ namespace Microsoft.Deployment.Actions.AzureCustom.CognitiveServices
             bool passPermissionCheck = true;
             // Check if permissions are fine
             var getPermissionsResponse = await client.ExecuteWithSubscriptionAsync(HttpMethod.Get,
-                $"providers/Microsoft.CognitiveServices/locations/{location}/settings/accounts", "2016-02-01-preview",
+                $"providers/Microsoft.CognitiveServices/locations/{location}/accountsCreationSettings/current", "2016-02-01-preview",
                 string.Empty);
 
             var getPermissionsBody = JsonUtility.GetJsonObjectFromJsonString(await getPermissionsResponse.Content.ReadAsStringAsync());
 
-            foreach (var permission in getPermissionsBody["settings"])
+            foreach (var permission in getPermissionsBody["value"])
             {
                 if (cognitiveServicesToCheck.Contains(permission["kind"].ToString()) && permission["allowCreate"].ToString().ToLowerInvariant() == "false")
                 {
@@ -88,7 +88,7 @@ namespace Microsoft.Deployment.Actions.AzureCustom.CognitiveServices
             }
 
             var setPermissionsResponse = await client.ExecuteWithSubscriptionAsync(HttpMethod.Post,
-                $"providers/Microsoft.CognitiveServices/locations/{location}/updateSettings", "2016-02-01-preview",
+                $"providers/Microsoft.CognitiveServices/locations/{location}/updateAccountsCreationSettings", "2016-02-01-preview",
                JsonUtility.GetJObjectFromObject(obj).ToString());
             if (!setPermissionsResponse.IsSuccessStatusCode)
             {
