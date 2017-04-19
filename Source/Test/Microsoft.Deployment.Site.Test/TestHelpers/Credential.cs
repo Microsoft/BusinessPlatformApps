@@ -14,7 +14,10 @@ namespace Microsoft.Deployment.Site.Test.TestHelpers
         public ServiceAccount ServiceAccount { get; set; }
 
         public TwitterAccount TwitterAccount { get; set; }
+
         public SccmSql SccmSql { get; set; }
+
+        public PsaCreds PsaCreds { get; set; }
 
         public static void Load()
         {
