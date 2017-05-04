@@ -15,5 +15,7 @@
         public string CRMDatabase { get; set; }
 
         public string SCCMDatabase { get; set; }
+
+        public string PSADatabase { get; set; }
     }
 }

@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Data;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Threading;
 using Microsoft.Azure;
@@ -8,6 +10,9 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Remote;
 using OpenQA.Selenium.Support.UI;
+using Microsoft.Deployment.Common.Helpers;
+using Microsoft.Deployment.Common.Model;
+using System.Collections.Generic;
 
 namespace Microsoft.Deployment.Site.Web.Tests
 {
@@ -124,6 +129,78 @@ namespace Microsoft.Deployment.Site.Web.Tests
             }
         }
 
+        public static void Dynamics365Page(string username, string password, string organization)
+        {
+            ClickButton("Connect");
+            Thread.Sleep(new TimeSpan(0, 0, 10));
+
+            var usernameBox = driver.FindElementById("cred_userid_inputtext");
+            usernameBox.SendKeys(username);
+
+            var passwordBox = driver.FindElementById("cred_password_inputtext");
+            passwordBox.SendKeys(password);
+
+            try
+            {
+                Thread.Sleep(new TimeSpan(0, 0, 1));
+                var signInButton = driver.FindElementById("cred_sign_in_button");
+
+                var js = (IJavaScriptExecutor)driver;
+                js.ExecuteScript("arguments[0].click()", signInButton);
+            }
+            catch
+            {
+                //MSI ccase
+                var js = (IJavaScriptExecutor)driver;
+                var passLink = driver.FindElementsByClassName("normalText").First(e => e.Text == "Sign in with a username and password instead");
+                js.ExecuteScript("arguments[0].click()", passLink);
+
+                passwordBox = driver.FindElementById("passwordInput");
+                passwordBox.SendKeys(password);
+
+                Thread.Sleep(new TimeSpan(0, 0, 5));
+                var submitButton = driver.FindElementById("submitButton");
+                js.ExecuteScript("arguments[0].click()", submitButton);
+            }
+
+            var djs = (IJavaScriptExecutor)driver;
+            Thread.Sleep(new TimeSpan(0, 0, 5));
+            var acceptButton = driver.FindElementById("cred_accept_button");
+            djs.ExecuteScript("arguments[0].click()", acceptButton);
+
+            WaitForPage();
+
+            var azurePage = driver.FindElementsByClassName("st-text").FirstOrDefault(e => e.Text == "Dynamics 365 Organization:");
+
+            for (int i = 0; i < 10; i++)
+            {
+                azurePage = driver.FindElementsByClassName("st-text").FirstOrDefault(e => e.Text == "Dynamics 365 Organization:");
+                if (azurePage != null)
+                {
+                    Thread.Sleep(new TimeSpan(0, 0, 10));
+
+                    var org = driver.FindElementByCssSelector("select[class='btn btn-default dropdown-toggle st-input au-target']");
+                    org.SendKeys(organization);
+
+                    var advanced = driver.FindElementByCssSelector("p[class='st-float st-text au-target']");
+                    djs.ExecuteScript("arguments[0].click()", advanced);
+
+                    var resourceGroup = driver.FindElementsByCssSelector("input[class='st-input au-target']")
+                                        .First(e => e.GetAttribute("value.bind").Contains("selectedResourceGroup"));
+
+                    resourceGroupName = "delete_" + Guid.NewGuid().ToString().Replace("-", "");
+
+                    resourceGroup.Clear();
+                    resourceGroup.SendKeys(resourceGroupName);
+
+                    Thread.Sleep(new TimeSpan(0, 0, 50));
+
+                    return;
+                }
+                Thread.Sleep(new TimeSpan(0, 0, 10));
+            }
+        }
+
         public static void SqlPageExistingDatabase(string server, string username, string password)
         {
             Thread.Sleep(new TimeSpan(0, 0, 10));
@@ -149,6 +226,8 @@ namespace Microsoft.Deployment.Site.Web.Tests
 
             var usernameBox = elements.First(e => e.GetAttribute("value.bind").Contains("username"));
             usernameBox.SendKeys(username);
+
+            Thread.Sleep(new TimeSpan(0, 0, 2));
 
             var passwordBox = elements.First(e => e.GetAttribute("value.bind").Contains("password"));
             passwordBox.SendKeys(password);
@@ -252,28 +331,25 @@ namespace Microsoft.Deployment.Site.Web.Tests
             var progressText = driver.FindElementsByCssSelector("span[class='semiboldFont st-progress-text']")
                                      .FirstOrDefault(e => e.Text == "All done! You can now download your Power BI report and start exploring your data.");
             var error = driver.FindElementsByCssSelector("span[class='st-tab-text st-error']")
-                                     .FirstOrDefault(e => string.IsNullOrEmpty(e.Text));
+                                     .FirstOrDefault(e => !string.IsNullOrEmpty(e.Text));
 
-            int i = 0;
-
-            while (progressText == null && i < 60)
+            for (int i = 0; progressText == null && i < 60; i++)
             {
-                progressText = driver.FindElementsByCssSelector("span[class='semiboldFont st-progress-text']")
-                                     .FirstOrDefault(e => e.Text == "All done! You can now download your Power BI report and start exploring your data.");
-
-                error = driver.FindElementsByCssSelector("span[class='st-tab-text st-error']").FirstOrDefault(e => string.IsNullOrEmpty(e.Text));
+                error = driver.FindElementsByCssSelector("span[class='st-tab-text st-error']").FirstOrDefault(e => !string.IsNullOrEmpty(e.Text));
 
                 if (error != null && !string.IsNullOrEmpty(error.Text))
                 {
                     Assert.Fail(error.Text);
                 }
 
+                progressText = driver.FindElementsByCssSelector("span[class='semiboldFont st-progress-text']")
+                                    .FirstOrDefault(e => e.Text == "All done! You can now download your Power BI report and start exploring your data.");
+
                 if (progressText != null && !string.IsNullOrEmpty(progressText.Text))
                 {
                     break;
                 }
-
-                i++;
+                
                 Thread.Sleep(new TimeSpan(0, 0, 10));
             }
 
@@ -294,5 +370,61 @@ namespace Microsoft.Deployment.Site.Web.Tests
 
             client.ResourceGroups.Delete(resourceGroupName);
         }
+
+        public static void CreateDatabase(string server, string username, string password, string database)
+        {
+            string sqlConnectionString = getSqlConnectionString(server, username, password, "master");
+            string script = "CREATE DATABASE " + database;
+
+            SqlConnection connection = new SqlConnection(sqlConnectionString);
+            SqlCommand command = new SqlCommand(script, connection);
+            try
+            {
+                connection.Open();
+                command.ExecuteNonQuery();
+            }
+            catch { }
+            finally
+            {
+                if(connection.State == ConnectionState.Open)
+                {
+                    connection.Close();
+                }
+            }
+        }
+
+        public static void DeleteDatabase(string server, string username, string password, string database)
+        {
+            string sqlConnectionString = getSqlConnectionString(server, username, password, "master");
+            string script = "DROP DATABASE [psaSelenium]";
+
+            SqlConnection connection = new SqlConnection(sqlConnectionString);
+            SqlCommand command = new SqlCommand(script, connection);
+            try
+            {
+                connection.Open();
+                command.ExecuteNonQuery();
+            }
+            catch { }
+            finally
+            {
+                if (connection.State == ConnectionState.Open)
+                {
+                    connection.Close();
+                }
+            }
+        }
+   
+
+
+
+        public static string getSqlConnectionString(string server, string username, string password, string database)
+        {
+            string result = "Data Source=" + server + ";Initial Catalog=" + database + ";Integrated Security=False;" +
+                    "User ID=" + username + ";Password=" + password+ ";Connect Timeout=75;Encrypt=True;TrustServerCertificate=False";
+            return result;
+        }
+
+
     }
 }
