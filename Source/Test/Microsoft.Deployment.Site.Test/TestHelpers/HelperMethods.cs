@@ -269,6 +269,7 @@ namespace Microsoft.Deployment.Site.Web.Tests
             }
 
             newAas.SendKeys("New");
+            Thread.Sleep(new TimeSpan(0, 0, 2));
 
             var elements = driver.FindElementsByCssSelector("input[class='st-input au-target']");
 
@@ -327,7 +328,7 @@ namespace Microsoft.Deployment.Site.Web.Tests
                 //MSI scenario - carry on
             }
             var progressText = driver.FindElementsByCssSelector("span[class='semiboldFont st-progress-text']")
-                                     .FirstOrDefault(e => e.Text == "All done! You can now download your Power BI report and start exploring your data.");
+                                     .FirstOrDefault(e => e.Text.Contains("The deployment has been successfully completed!"));
             var error = driver.FindElementsByCssSelector("span[class='st-tab-text st-error']")
                                      .FirstOrDefault(e => !string.IsNullOrEmpty(e.Text));
 
@@ -341,7 +342,7 @@ namespace Microsoft.Deployment.Site.Web.Tests
                 }
 
                 progressText = driver.FindElementsByCssSelector("span[class='semiboldFont st-progress-text']")
-                                    .FirstOrDefault(e => e.Text == "All done! You can now download your Power BI report and start exploring your data.");
+                                    .FirstOrDefault(e => e.Text.Contains("The deployment has been successfully completed!"));
 
                 if (progressText != null && !string.IsNullOrEmpty(progressText.Text))
                 {
@@ -352,7 +353,7 @@ namespace Microsoft.Deployment.Site.Web.Tests
             }
 
             Assert.IsTrue(progressText != null);
-            Assert.IsTrue(progressText.Text == "All done! You can now download your Power BI report and start exploring your data.");
+            Assert.IsTrue(progressText.Text.Contains("The deployment has been successfully completed!"));
         }
 
         public static void CleanSubscription(string username, string password, string tenantId, string clientId, string subscriptionId)

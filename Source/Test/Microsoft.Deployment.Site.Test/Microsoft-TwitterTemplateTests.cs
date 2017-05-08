@@ -57,6 +57,7 @@ namespace Microsoft.Deployment.Site.Web.Tests
             Given_CorrectSqlCredentials_When_ExistingSqlSelected_Then_PageValidatesSuccessfully();
             HelperMethods.WaitForPage();
             HelperMethods.ClickButton("Next");
+            HelperMethods.WaitForPage();
             Given_CorrectTwitterCredentials_When_Authenticating_Then_Success();
             HelperMethods.WaitForPage();
             Given_CorrectSearchTerms_When_Validating_Then_Success();
