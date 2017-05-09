@@ -43,8 +43,7 @@ BEGIN
     SELECT ta.[name] AS EntityName, SUM(pa.[rows]) AS [Count] INTO #counts
     FROM sys.tables ta INNER JOIN sys.partitions pa ON pa.OBJECT_ID = ta.OBJECT_ID
                        INNER JOIN sys.schemas sc ON ta.schema_id = sc.schema_id
-    WHERE
-        sc.name='dbo' AND ta.is_ms_shipped = 0 AND pa.index_id IN (0,1) AND
+    WHERE        
 		    sc.name='pbist_sccm' AND ta.is_ms_shipped = 0 AND pa.index_id IN (0,1) AND
 		    ta.name IN ('computer', 'user', 'usercomputer', 'computerprogram', 'program', 'collection', 'computercollection', 'malware', 'computermalware', 'update', 'computerupdate', 'scanhistory' )
 	 GROUP BY ta.[name];

@@ -55,7 +55,10 @@ namespace Microsoft.Deployment.Actions.AzureCustom.AzureAS
 
                 // Process if there's a tag requesting it
                 if (db.Model.DataSources[0].Annotations.ContainsName("MustProcess"))
+                {
                     db.Model.RequestRefresh(AnalysisServices.Tabular.RefreshType.Full);
+                    db.Model.SaveChanges();
+                }
 
                 server.Disconnect(true);
 

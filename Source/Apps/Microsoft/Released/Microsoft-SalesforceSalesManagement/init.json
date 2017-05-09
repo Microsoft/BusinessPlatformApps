@@ -98,7 +98,7 @@
       {
         "displayname": "Summary",
         "name": "$SiteCommon$/pages-gallery/summary.html",
-        "sendCompletionNotification": "$run(this.MS.DataStore.getValue('DataMovement') !== 'Informatica')",
+        "displayCompletionNotification": "$run(this.MS.DataStore.getValue('DataMovement') !== 'Informatica')",
         "values": {
           "Subscription": "$(this.MS.DataStore.getValue('DataMovement') === 'ADF' ? this.MS.DataStore.getJson('SelectedSubscription').SubscriptionId : '')",
           "ResourceGroup": "$(this.MS.DataStore.getValue('SelectedResourceGroup'))",

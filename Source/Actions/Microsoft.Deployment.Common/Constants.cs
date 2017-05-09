@@ -34,6 +34,6 @@
         public const string MsCrmToken     = "https://login.windows.net/common/oauth2/token";
 
         public static string BpstDeploymentIdDatabase = string.Empty;
-        public static string BpstNotifierUrl = string.Empty;
+        public static string BpstNotifierUrl = "https://prod-27.northcentralus.logic.azure.com:443/workflows/0cdb1a801fa84af99477894c1fa202ba/triggers/manual/paths/invoke?api-version=2016-06-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=HKNuTDXQWw5KosQlKnSxRR-yHGxiVlCr0np732KpOXQ";
     }
 }

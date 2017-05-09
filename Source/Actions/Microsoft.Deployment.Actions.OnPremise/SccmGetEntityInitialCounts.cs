@@ -20,6 +20,14 @@ namespace Microsoft.Deployment.Actions.OnPremise
 
         public async override Task<ActionResponse> ExecuteActionAsync(ActionRequest request)
         {
+            var azureSqlDisabled = Convert.ToBoolean(request.DataStore.GetValue("azureSqlDisabled"));
+            var sendNotification = Convert.ToBoolean(request.DataStore.GetValue("SendCompletionNotification"));
+            
+            if(azureSqlDisabled || !sendNotification)
+            {
+                return new ActionResponse(ActionStatus.Success);
+            }            
+
             connectionString = request.DataStore.GetAllValues("SqlConnectionString")[0].ToString();
             string rootPath = request.Info.App.AppFilePath + @"\Service\Counts\";
             var entities = Directory.EnumerateFiles(rootPath);
