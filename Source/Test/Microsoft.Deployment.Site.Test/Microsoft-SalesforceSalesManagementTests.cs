@@ -35,6 +35,7 @@ namespace Microsoft.Deployment.Site.Web.Tests
             Given_CorrectSqlCredentials_When_ExistingSqlSelected_Then_PageValidatesSuccessfully();
             HelperMethods.WaitForPage();
             HelperMethods.ClickButton("Next");
+            HelperMethods.WaitForPage();
             HelperMethods.NoAnalysisServices();
             HelperMethods.WaitForPage();
             HelperMethods.ClickButton("Next");
@@ -194,10 +195,16 @@ namespace Microsoft.Deployment.Site.Web.Tests
             HelperMethods.baseURL = baseURL + "?name=Microsoft-SalesforceSalesManagement";
             var options = new ChromeOptions();
             options.AddArgument("no-sandbox");
-            HelperMethods.CreateDatabase(Credential.Instance.Sql.Server,
-                                            Credential.Instance.Sql.Username, Credential.Instance.Sql.Password,
-                                            Credential.Instance.Sql.SalesforceDatabase);
-
+            try
+            {
+                HelperMethods.CreateDatabase(Credential.Instance.Sql.Server,
+                                                Credential.Instance.Sql.Username, Credential.Instance.Sql.Password,
+                                                Credential.Instance.Sql.SalesforceDatabase);
+            }
+            catch
+            {
+                //probably the old DB is still there from last time
+            }
             HelperMethods.driver = new ChromeDriver(options);
             this.driver = HelperMethods.driver;
         }
