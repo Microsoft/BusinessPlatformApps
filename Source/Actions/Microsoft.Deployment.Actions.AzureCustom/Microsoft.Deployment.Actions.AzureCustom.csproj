@@ -205,6 +205,7 @@
     <Compile Include="CDM\ProvisionCDM.cs" />
     <Compile Include="CognitiveServices\RegisterCognitiveServices.cs" />
     <Compile Include="Common\ConfigureNotifier.cs" />
+    <Compile Include="Common\ExistsResourceGroup.cs" />
     <Compile Include="Common\DeployNotifierLogicApp.cs" />
     <Compile Include="Common\GetEmail.cs" />
     <Compile Include="Common\DeployAzureFunctionConnectionStrings.cs" />

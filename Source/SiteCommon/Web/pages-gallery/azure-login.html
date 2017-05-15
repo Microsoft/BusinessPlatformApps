@@ -48,7 +48,7 @@
         </p>
         <div class="st-float" if.bind="showAdvanced">
             <p class="st-text">${MS.Translate.AZURE_LOGIN_RESOURCE_GROUP}</p>
-            <input class="st-input" type="text" disabled.bind="MS.HttpService.isServiceBusy" value.bind="selectedResourceGroup" />
+            <input class="st-input" type="text" change.delegate="ValidateResourceGroup()" disabled.bind="MS.HttpService.isServiceBusy" value.bind="selectedResourceGroup" />
         </div>
     </div>
 

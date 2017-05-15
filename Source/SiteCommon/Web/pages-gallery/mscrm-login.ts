@@ -85,7 +85,20 @@ export class MsCrmLogin extends AzureLogin {
 
     async OnValidate(): Promise<boolean> {
         this.Invalidate();
+        //this.MS.ErrorService.Clear();
 
+        let isValidD365Org: boolean = await this.ValidateD365Organization();
+        let isValidResourceGroup: boolean = await this.ValidateResourceGroup();
+
+        if (isValidD365Org && isValidResourceGroup) {
+            this.isValidated = true;
+            this.showValidation = true;
+
+        }
+        return this.isValidated;
+    }
+
+    async ValidateD365Organization(): Promise<boolean> {
         this.MS.DataStore.addToDataStore('D365Username', this.d365Username, DataStoreType.Private);
         this.MS.DataStore.addToDataStore('D365Password', this.d365Password, DataStoreType.Private);
 
@@ -97,13 +110,13 @@ export class MsCrmLogin extends AzureLogin {
             if (this.d365Organizations && this.d365Organizations.length > 0) {
                 this.d365OrganizationId = this.d365Organizations[0].Id;
 
-                this.isValidated = true;
-                this.showValidation = true;
+                return true;
             }
         }
-
         return this.isValidated;
     }
+
+
 
     async connect(): Promise<void> {
         var tokenObj: any = { oauthType: this.oauthType };
@@ -163,4 +176,6 @@ export class MsCrmLogin extends AzureLogin {
             }
         }
     }
+
+
 }
