@@ -71,9 +71,12 @@ export class ProgressViewModel extends ViewModelBase {
                 let bodyPowerApp: any = {};
                 bodyPowerApp.PowerAppFileName = this.powerAppFileName;
                 let responsePowerApp = await this.MS.HttpService.executeAsync('Microsoft-WranglePowerApp', bodyPowerApp);
-                if (responsePowerApp.IsSuccess) {
+
+                if (responsePowerApp.IsSuccess && responsePowerApp.Body.value) {
                     this.isPowerAppReady = true;
                     this.powerAppDownloadLink = responsePowerApp.Body.value;
+                } else {
+                    this.hasPowerApp = false;
                 }
             }
 
