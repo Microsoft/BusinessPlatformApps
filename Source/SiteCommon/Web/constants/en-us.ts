@@ -320,7 +320,7 @@
     NAVBAR_MICROSOFT_PRIVACY_STATEMENT: `Microsoft's Privacy Statement`,
     NAVBAR_MICROSOFT_PRIVACY_STATEMENT_LINK: `https://www.microsoft.com/en-us/privacystatement/OnlineServices/Default.aspx`,
     NAVBAR_TERMS_USE: `Terms of Use`,
-    NAVBAR_TERMS_USE_LINK: `https://pbist.azurewebsites.net/pages/termsOfUse.html`,
+    NAVBAR_TERMS_USE_LINK: `https://bpsolutiontemplates.com/terms-of-use.html`,
     NAVIGATION_BACK: `Back`,
     NAVIGATION_LOGS: `Navigate here to view logs:`,
     NAVIGATION_MS_PRIVACY: `Information gathered is used by Microsoft to replicate information from the source application to the destination database. By using this solution template, you agree to Microsoft’s terms and privacy statement. Read the Microsoft privacy statement to learn more about how your information is used.`,
