@@ -4,6 +4,8 @@ using System.ComponentModel.Composition;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
+using Microsoft.WindowsAzure.Storage.Auth;
+
 using Microsoft.Win32.TaskScheduler;
 
 using Microsoft.Deployment.Common.ActionModel;
@@ -12,6 +14,8 @@ using Microsoft.Deployment.Common.Helpers;
 
 using Task = Microsoft.Win32.TaskScheduler.Task;
 using System.IO.Compression;
+using Microsoft.WindowsAzure.Storage.Blob;
+using System.Text;
 
 namespace Microsoft.Deployment.Actions.OnPremise.TaskScheduler
 {
@@ -25,6 +29,7 @@ namespace Microsoft.Deployment.Actions.OnPremise.TaskScheduler
         public override async Task<ActionResponse> ExecuteActionAsync(ActionRequest request)
         {
             string taskName = request.DataStore.GetValue("TaskName");
+            
 
             TaskCollection tasks = null;
 
@@ -37,9 +42,10 @@ namespace Microsoft.Deployment.Actions.OnPremise.TaskScheduler
                 {
                     switch (task.LastTaskResult)
                     {
-                        case 0: return new ActionResponse(ActionStatus.Success, JsonUtility.GetEmptyJObject());
+                        case 0:
+                            return new ActionResponse(ActionStatus.Success, JsonUtility.GetEmptyJObject());
                         case 267014:
-                            //zipLogs();
+                            await uploadLogs(request);
                             return new ActionResponse(ActionStatus.Failure, JsonUtility.GetEmptyJObject(),
                                                                 new Exception("The scheduled task was terminated by the user."),
                                                                 "TaskSchedulerRunFailed");
@@ -56,7 +62,7 @@ namespace Microsoft.Deployment.Actions.OnPremise.TaskScheduler
                         return new ActionResponse(ActionStatus.Failure, JsonUtility.GetEmptyJObject(), "CredentialGuardEnabled");
 
                     //If we've encountered an error, copy the logs, zip them up, and send to blob
-                    //zipLogs();
+                    await uploadLogs(request);
 
                     ActionResponse response = new ActionResponse(ActionStatus.Failure, JsonUtility.GetEmptyJObject(),
                         new Exception($"Scheduled task exited with code {task.LastTaskResult}"), "TaskSchedulerRunFailed");
@@ -70,28 +76,74 @@ namespace Microsoft.Deployment.Actions.OnPremise.TaskScheduler
             return new ActionResponse(ActionStatus.Failure, JsonUtility.GetEmptyJObject(), "SccmTaskNotFound");
         }
 
+
+
+        private async Task<ActionResponse> uploadLogs(ActionRequest request)
+        {
+            zipLogs();
+            string token = "?sv=2016-05-31&ss=b&srt=o&sp=w&se=2017-06-30T23:00:00Z&st=2017-05-30T17:00:00Z&spr=https&sig=%2BjrwUwZFO2oCn8m3NeAX3y5q7X%2Fu4EHQesDmHk1sHhA%3D";
+            string url = "https://pbiststorage.blob.core.windows.net/sccmlogs/";
+
+            string username = request.Info.UserGenId;
+
+            try
+            {
+                if (Directory.Exists(exportLogDir))
+                {
+                    System.Collections.Generic.IEnumerable<string> logFiles = Directory.EnumerateFiles(exportLogDir);
+                    foreach (string filePath in logFiles)
+                    {
+                        string[] pathBits = filePath.Split('\\');
+                        string filename = pathBits[pathBits.Length - 1];
+                        string cloudFilename = filename.Replace("_", "." + username + "." );
+                        string sasUri = url + cloudFilename + token;
+                        FileStream writeStream = new FileStream(filePath, FileMode.Open);
+                        writeStream.Position = 0;
+                        CloudBlockBlob blob = new CloudBlockBlob(new Uri(sasUri));
+                        await blob.UploadFromStreamAsync(writeStream);
+                    }
+                    return new ActionResponse(ActionStatus.Success);
+                }
+            }
+            catch (Exception e)
+            { 
+                request.Logger.LogException(e);
+                return new ActionResponse(ActionStatus.Failure);
+            }
+            return new ActionResponse(ActionStatus.Failure);
+        }
+
+
         private void zipLogs()
         {
-
             if (Directory.Exists(userLogDir))
             {
-                if (File.Exists(exportLogDir))
+                if (Directory.Exists(exportLogDir))
                 {
-                    File.Delete(exportLogDir);
+                    Directory.Delete(exportLogDir, true);
                 }
                 Directory.CreateDirectory(exportLogDir);
-                
+
                 //copy the logs first.  (If you try to do a read on the original log file, you get an error saying another process is using it.)
                 System.Collections.Generic.IEnumerable<string> logFiles = Directory.EnumerateFiles(userLogDir);
                 foreach (string filePath in logFiles)
                 {
                     string[] pathBits = filePath.Split('\\');
                     string fileName = pathBits[pathBits.Length - 1];
-                    string newFilePath = Path.Combine(exportLogDir, fileName);
-                    File.Copy(filePath, newFilePath, true);
+                    int year = int.Parse(fileName.Substring(9, 4));
+                    int month = int.Parse(fileName.Substring(13, 2));
+                    int day = int.Parse(fileName.Substring(15, 2));
+                    DateTime fileDate = new DateTime(year, month, day);
+                    DateTime wantNewer = DateTime.Now.AddDays(-7);
+                    if (fileDate > wantNewer)
+                    {
+                        string newFilePath = Path.Combine(exportLogDir, fileName);
+                        File.Copy(filePath, newFilePath, true);
+                    }
                 }
 
-                foreach (FileInfo fileToCompress in new DirectoryInfo(exportLogDir).GetFiles()) { 
+                foreach (FileInfo fileToCompress in new DirectoryInfo(exportLogDir).GetFiles())
+                {
                     using (FileStream originalFileStream = fileToCompress.OpenRead())
                     {
                         if ((File.GetAttributes(fileToCompress.FullName) & FileAttributes.Hidden) != FileAttributes.Hidden & fileToCompress.Extension != ".gz")
