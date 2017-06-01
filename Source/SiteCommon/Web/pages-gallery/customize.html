@@ -18,6 +18,15 @@
         <option value="12">${MS.Translate.COMMON_MONTH_11}</option>
     </select>
 
+    <div class="st-float-clear" if.bind="showRefreshSchedule">
+        <p class="st-text">${MS.Translate.CUSTOMIZE_REFRESH_SCHEDULE}</p>
+        <select class="btn btn-default dropdown-toggle st-input" value.bind="refreshSchedule">
+            <option value="Daily">${MS.Translate.CUSTOMIZE_REFRESH_SCHEDULE_DAILY}</option>
+            <option value="Hourly">${MS.Translate.CUSTOMIZE_REFRESH_SCHEDULE_HOURLY}</option>
+            <option value="None">${MS.Translate.CUSTOMIZE_REFRESH_SCHEDULE_NONE}</option>
+        </select>
+    </div>
+
     <!-- CRM url -->
     <div class="st-float-clear" if.bind="showCrmUrl">
         <p class="st-text" title="${MS.Translate.CUSTOMIZE_BASE_URL_DESCRIPTION}">${MS.Translate.CUSTOMIZE_BASE_URL} ${MS.Translate.COMMON_OPTIONAL}</p>

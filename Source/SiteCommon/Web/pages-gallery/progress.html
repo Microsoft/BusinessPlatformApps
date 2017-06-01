@@ -24,6 +24,10 @@
             <span class="semiboldFont st-progress-text">${successMessage}</span>
         </div>
 
+        <div class="st-progress" if.bind="MS.DeploymentService.isFinished && !MS.DeploymentService.hasError">
+            <span class="semiboldFont st-progress-text">${successMessage2}</span>
+        </div>
+
         <!-- Get Status -->
         <ul class="smallFontSize st-tabs" if.bind="recordCounts && recordCounts.length > 0 && !MS.DeploymentService.hasError">
             <li class="st-import" repeat.for="recordCount of recordCounts">

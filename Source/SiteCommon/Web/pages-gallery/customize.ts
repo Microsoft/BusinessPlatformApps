@@ -12,8 +12,10 @@ export class Customize extends ViewModelBase {
     pipelineFrequency: string = 'Week';
     pipelineInterval: string = '1';
     recurrent: string = 'Never';
+    refreshSchedule: string = 'Daily';
     showEmails: boolean = false;
     showCrmUrl: boolean = false;
+    showRefreshSchedule: boolean = false;
     showRecurrenceOptions: boolean = false;
     sourceApplication: string = '';
 
@@ -126,6 +128,10 @@ export class Customize extends ViewModelBase {
         this.MS.DataStore.addToDataStoreWithCustomRoute('CustomizeSourceApplication', 'SqlSubGroup', 'SalesManagement', DataStoreType.Public);
         this.MS.DataStore.addToDataStoreWithCustomRoute('CustomizeSourceApplication', 'SqlEntryName', 'SourceApplication', DataStoreType.Public);
         this.MS.DataStore.addToDataStoreWithCustomRoute('CustomizeSourceApplication', 'SqlEntryValue', this.sourceApplication, DataStoreType.Public);
+
+        if (this.showRefreshSchedule) {
+            this.MS.DataStore.addToDataStore('RefreshSchedule', this.refreshSchedule, DataStoreType.Public);
+        }
 
         return true;
     }

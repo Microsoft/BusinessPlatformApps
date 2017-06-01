@@ -36,17 +36,13 @@ namespace Microsoft.Deployment.Actions.Custom.Scribe
                 Properties = new List<ScribeKeyValue>()
             };
 
-            string username = request.DataStore.GetValue("D365Username");
-
             // Set authentication
             ScribeKeyValue kvp = new ScribeKeyValue { Key = "DeploymentType", Value = ScribeUtility.AesEncrypt(apiToken, request.DataStore.GetValue("ScribeDeploymentType")) };
             connection.Properties.Add(kvp);
             kvp = new ScribeKeyValue { Key = "Url", Value = ScribeUtility.AesEncrypt(apiToken, request.DataStore.GetValue("ConnectorUrl")) };
             connection.Properties.Add(kvp);
             // Set CRM user name
-            kvp = new ScribeKeyValue { Key = "UserId", Value = ScribeUtility.AesEncrypt(apiToken, username) };
-            connection.Properties.Add(kvp);
-            kvp = new ScribeKeyValue { Key = "Domain", Value = ScribeUtility.AesEncrypt(apiToken, username.Split('\\').First()) };
+            kvp = new ScribeKeyValue { Key = "UserId", Value = ScribeUtility.AesEncrypt(apiToken, request.DataStore.GetValue("D365Username")) };
             connection.Properties.Add(kvp);
             // Set CRM user password
             kvp = new ScribeKeyValue { Key = "Password", Value = ScribeUtility.AesEncrypt(apiToken, request.DataStore.GetValue("D365Password")) };
