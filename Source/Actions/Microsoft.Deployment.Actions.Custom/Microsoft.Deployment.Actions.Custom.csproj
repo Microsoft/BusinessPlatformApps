@@ -137,6 +137,9 @@
     </Compile>
     <Compile Include="CustomerData\CustomerInfo.cs" />
     <Compile Include="CustomerData\PushToSimplement.cs" />
+    <Compile Include="Facebook\ValidateFacebookDeveloperAccount.cs" />
+    <Compile Include="Facebook\SearchFacebookPage.cs" />
+    <Compile Include="Facebook\ValidateFacebookPage.cs" />
     <Compile Include="Informatica\CleanInformaticaEnvironment.cs" />
     <Compile Include="Informatica\CreateInformaticaConnectionSalesforce.cs" />
     <Compile Include="Informatica\CreateInformaticaConnectionSql.cs" />
