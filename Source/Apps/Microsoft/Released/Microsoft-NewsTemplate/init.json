@@ -52,6 +52,15 @@
                 "name": "search-terms.html"
             },
             {
+                "displayname": "Bring Your Own Entities",
+                "name": "bring-your-own-entities.html"
+            },
+            {
+                "displayname": "Customize",
+                "name": "customize.html",
+                "skip": "$run(this.MS.DataStore.getValue('BringYourOwnEntities') === this.MS.Option.NO)"
+            },
+            {
                 "displayname": "Summary",
                 "name": "$SiteCommon$/pages-gallery/summary.html",
                 "values": {
@@ -130,14 +139,14 @@
                 "name": "Microsoft-DeployPrivateAssemblyToFunction"
             },
             {
+                "apiKey": "$dsall(CognitiveServiceKey)[1]",
                 "displayname": "$translate(INIT_ACTION_DEPLOYING_NEWS_ASSETS)",
                 "name": "Microsoft-DeployNewsFunctionAsset",
-                "apiKey": "$dsall(CognitiveServiceKey)[1]",
                 "subscriptionKey": "$dsall(CognitiveServiceKey)[0]"
             },
             {
-                "displayname": "$translate(INIT_ACTION_DEPLOYING_STORAGE_ACCOUNT)",
                 "DeploymentName": "StorageAccount",
+                "displayname": "$translate(INIT_ACTION_DEPLOYING_STORAGE_ACCOUNT)",
                 "name": "Microsoft-CreateAzureStorageAccount",
                 "StorageAccountEncryptionEnabled": "false",
                 "StorageAccountName": "$save('storage' + this.MS.DataStore.getValue('uniqueId'))",
@@ -299,28 +308,28 @@
             {
                 "DeploymentName": "LogicAppNewsHistorical",
                 "displayname": "$translate(INIT_ACTION_RUNNING_LOGIC_APP_HISTORICAL)",
-                "name": "Microsoft-RunNewsHistorical",
-                "LogicAppNameHistorical": "LogicAppHistoricalNews"
+                "LogicAppNameHistorical": "LogicAppHistoricalNews",
+                "name": "Microsoft-RunNewsHistorical"
             },
             {
+                "ApiConnectionName": "$save('sqlNotifierConnection')",
                 "DeploymentName": "SqlConnectionDeployment",
                 "displayname": "$translate(NOTIFIER_CREATING_DATABASE_CONNECTION)",
                 "name": "Microsoft-CreateSqlConnector",
-                "ApiConnectionName": "$save('sqlNotifierConnection')",
                 "skip": "$run(!this.MS.DataStore.getValue('SendCompletionNotification'))"
             },
             {
                 "DeploymentName": "NotifierLogicApp",
                 "displayname": "$translate(NOTIFIER_CREATING_NOTIFIER_APP)",
-                "name": "Microsoft-DeployNotifierLogicApp",
                 "logicAppName": "notifierLogicApp",
+                "name": "Microsoft-DeployNotifierLogicApp",
                 "skip": "$run(!this.MS.DataStore.getValue('SendCompletionNotification'))"
             },
             {
                 "displayname": "$translate(NOTIFIER_CONFIGURE_NOTIFIER_APP)",
                 "name": "Microsoft-ConfigureNotifier",
-                "SqlConfigTable": "[bpst_news].[configuration]",
-                "skip": "$run(!this.MS.DataStore.getValue('SendCompletionNotification'))"
+                "skip": "$run(!this.MS.DataStore.getValue('SendCompletionNotification'))",
+                "SqlConfigTable": "[bpst_news].[configuration]"
             }
         ]
     }

@@ -1,17 +1,19 @@
 ﻿<template>
+    <require from="../../../../../SiteCommon/Web/templates/bpst-link.html"></require>
+
     <h1 class="st-title">${MS.Translate.SEARCH_TERMS_TITLE}</h1>
-    <p class="st-subtitle">Input the search terms you want to track. We will use advanced techniques to search for articles relevant to your query.</p>
+    <p class="st-subtitle">${MS.Translate.SEARCH_TERMS_NEWS_SUBTITLE}</p>
+
     <p>
-        <span>Preview your news results</span>
-        <a href="https://www.microsoft.com/cognitive-services/en-us/bing-news-search-api" target="_blank">here</a>
+        <bpst-link a-description="${MS.Translate.SEARCH_TERMS_NEWS_LINK_DESCRIPTION}" a-link="${MS.Translate.SEARCH_TERMS_NEWS_LINK}" a-link-text="${MS.Translate.COMMON_HERE}"></bpst-link>
     </p>
 
     <div class="st-float">
         <p class="st-text">${MS.Translate.SEARCH_TERMS_QUERY}</p>
-        <input class="st-input" type="text" placeholder="Microsoft OR Azure" change.delegate="viewmodel.Invalidate()" disabled.bind="MS.HttpService.isServiceBusy" value.bind="viewmodel.searchQuery" />
+        <input class="st-input" type="text" placeholder.bind="MS.Translate.SEARCH_TERMS_QUERY_EXAMPLE_NEWS" change.delegate="Invalidate()" disabled.bind="MS.HttpService.isServiceBusy" value.bind="searchQuery" />
     </div>
 
     <p class="st-float">
-        <button class="primary" click.trigger="viewmodel.OnValidate()" if.bind="!MS.HttpService.isServiceBusy">${MS.Translate.COMMON_VALIDATE}</button>
+        <button class="primary" click.trigger="OnValidate()" if.bind="!MS.HttpService.isServiceBusy">${MS.Translate.COMMON_VALIDATE}</button>
     </p>
 </template>

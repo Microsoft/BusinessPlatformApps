@@ -1,25 +1,21 @@
 ﻿<template>
-    <require from="../../../../../SiteCommon/Web/templates/bpst-link.html"></require>
+    <h1 class="st-title">${MS.Translate.COGNITIVE_SERVICES_TITLE}</h1>
+    <p class="st-subtitle">${MS.Translate.COGNITIVE_SERVICES_SUBTITLE}</p>
 
-    <h1 class="st-title">Connect to Cognitive Services</h1>
-    <p class="st-subtitle">
-        This solution template deploys the Text Analytics API and the Bing News Search API of Cognitive Services.  The Text Analytics API enriches data through sentiment analysis and key phrase extraction.  The Bing News Search API finds articles based on a user’s search query. Together these services provide an advanced search solution.
-    </p>
     <p>
         <label class="st-text">
             <input type="checkbox" tabindex="-1" change.delegate="verifyBing()" checked.bind="isBingChecked" disabled.bind="MS.HttpService.isServiceBusy">
-            <span class="st-text">
-                I confirm I have read and understood the notice below.
-            </span>
+            <span class="st-text">${MS.Translate.COGNITIVE_SERVICES_CONFIRMATION}</span>
         </label>
     </p>
-    <div>
-        <p class="st-privacy smallFontSize">
-            Your use of the Microsoft Cognitive Services is governed by your existing Azure customer agreement, which incorporates the <a href="https://www.microsoft.com/en-us/Licensing/product-licensing/products.aspx" target="_blank">Online Services Terms</a> including the Microsoft Cognitive Services section.  You must comply with those terms, including the use and display requirements for the Bing Search APIs available <a href="https://aka.ms/r1j7jq" target="_blank">here</a>.  For example, results you obtain through the Bing Search APIs must only be used in Internet search experiences (as defined in the use and display requirements).  You are responsible for ensuring that your use of data received from the Bing Search APIs does not violate any applicable laws or third party rights.
 
-        </p>
-        <p class="st-privacy smallFontSize">
-            Microsoft will use data you send to the Cognitive Services to improve Microsoft products and services. Where you send personal data to the Cognitive Services, you are responsible for obtaining sufficient consent from the data subjects. The General Privacy and Security Terms in the Online Services Terms do not apply to the Cognitive Services. Please refer to the Microsoft Cognitive Services section in the Online Services Terms for details. Microsoft offers policy controls that may be used to disable new Cognitive Services deployments.
-        </p>
-    </div>
+    <p class="st-privacy smallFontSize">
+        <span>${MS.Translate.COGNITIVE_SERVICES_PRIVACY_1_A}</span>
+        <a href.bind="MS.Translate.COGNITIVE_SERVICES_TERMS_LINK" target="_blank">${MS.Translate.COGNITIVE_SERVICES_TERMS}</a>
+        <span>${MS.Translate.COGNITIVE_SERVICES_PRIVACY_1_B}</span>
+        <a href="https://aka.ms/r1j7jq" target="_blank">${MS.Translate.COMMON_HERE}</a>
+        <span>${MS.Translate.COGNITIVE_SERVICES_PRIVACY_1_C}</span>
+    </p>
+
+    <p class="st-privacy smallFontSize">${MS.Translate.COGNITIVE_SERVICES_PRIVACY_2}</p>
 </template>

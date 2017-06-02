@@ -40,21 +40,15 @@ export class ViewModelBase {
 
         try {
             this.isValidated = false;
-
             this.MS.NavigationService.isCurrentlyNavigating = true;
-
             let isNavigationSuccessful: boolean = await this.NavigatingNext();
             let isExtendedNavigationSuccessful: boolean = false;
             if (isNavigationSuccessful) {
                 isExtendedNavigationSuccessful = await InitParser.executeActions(this.onNext, this);
             }
-
             this.navigationMessage = '';
-
             if (isNavigationSuccessful && isExtendedNavigationSuccessful) {
-                let currentRoute = this.MS.NavigationService
-                    .getCurrentSelectedPage()
-                    .RoutePageName.toLowerCase();
+                let currentRoute = this.MS.NavigationService.getCurrentSelectedPage().RoutePageName.toLowerCase();
                 let viewmodelPreviousSave = window.sessionStorage.getItem(currentRoute);
 
                 // Save view model state
@@ -62,11 +56,7 @@ export class ViewModelBase {
                     window.sessionStorage.removeItem(currentRoute);
                 }
 
-                this.viewmodel = null;
-                this.MS = null;
-                window.sessionStorage.setItem(currentRoute, JSON.stringify(this));
-                this.viewmodel = this;
-                this.MS = (<any>window).MainService;
+                window.sessionStorage.setItem(currentRoute, JSON.stringify(this.saveViewModel()));
                 this.MS.NavigationService.NavigateNext();
                 this.NavigatedNext();
                 this.isValidated = true;
@@ -87,29 +77,18 @@ export class ViewModelBase {
         }
 
         this.MS.NavigationService.isCurrentlyNavigating = true;
-        let currentRoute = this.MS.NavigationService
-            .getCurrentSelectedPage()
-            .RoutePageName.toLowerCase();
+        let currentRoute = this.MS.NavigationService.getCurrentSelectedPage().RoutePageName.toLowerCase();
 
         let viewmodelPreviousSave = window.sessionStorage.getItem(currentRoute);
-        // Save view model state
         if (viewmodelPreviousSave) {
             window.sessionStorage.removeItem(currentRoute);
         }
 
-        this.viewmodel = null;
-        this.MS = null;
-        window.sessionStorage.setItem(currentRoute, JSON.stringify(this));
-        this.viewmodel = this;
-        this.MS = (<any>window).MainService;
+        window.sessionStorage.setItem(currentRoute, JSON.stringify(this.saveViewModel()));
 
-        // Persistence is lost here for maintaining pages the user has visited
         this.MS.NavigationService.NavigateBack();
-        //this.MS.DeploymentService.hasError = false;
         this.MS.ErrorService.Clear();
-
         this.MS.NavigationService.isCurrentlyNavigating = false;
-
         this.VerifyNavigation();
     }
 
@@ -155,6 +134,18 @@ export class ViewModelBase {
 
     determineActivationStrategy(): any {
         return activationStrategy.replace; //replace the viewmodel with a new instance
+    }
+
+    saveViewModel(): any {
+        let cleanedViewModel: any = {};
+        let vmKeys: string[] = Object.keys(this);
+        for (let i = 0; i < vmKeys.length; i++) {
+            let vmKey: string = vmKeys[i];
+            if (this.hasOwnProperty(vmKey) && vmKey !== 'MS' && vmKey !== 'viewmodel') {
+                cleanedViewModel[vmKey] = (<any>this)[vmKey];
+            }
+        }
+        return cleanedViewModel;
     }
 
     ///////////////////////////////////////////////////////////////////////

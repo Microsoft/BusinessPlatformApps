@@ -30,5 +30,4 @@ export class CognitiveText extends ViewModelBase {
 
         return true;
     }
-
 }

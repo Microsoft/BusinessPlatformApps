@@ -110,7 +110,7 @@
                 "name": "$SiteCommon$/pages-gallery/summary.html",
                 "displayCompletionNotification": "$run(this.MS.DataStore.getValue('DataMovement') !== 'Informatica')",
                 "values": {
-                    "Subscription": "$(this.MS.DataStore.getValue('DataMovement') === 'ADF' ? this.MS.DataStore.getJson('SelectedSubscription').SubscriptionId : '')",
+                    "Subscription": "$(this.MS.DataStore.getValue('DataMovement') === 'ADF' ? this.MS.DataStore.getJson('SelectedSubscription').DisplayName : '')",
                     "ResourceGroup": "$(this.MS.DataStore.getValue('SelectedResourceGroup'))",
                     "SqlServer": "$(this.MS.DataStore.getValue('Server'))",
                     "Database": "$(this.MS.DataStore.getValue('Database'))",

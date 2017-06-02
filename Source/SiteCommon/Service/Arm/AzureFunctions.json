@@ -25,6 +25,10 @@
     "subscription": {
       "defaultValue": "idrequired",
       "type": "string"
+    },
+    "branch": {
+      "defaultValue": "master",
+      "type": "string"
     }
   },
     "resources": [
@@ -76,7 +80,7 @@
             ],
             "properties": {
               "RepoUrl": "[parameters('repoUrl')]",
-              "branch": "master",
+              "branch": "[parameters('branch')]",
               "IsManualIntegration": "true"
             }
           }

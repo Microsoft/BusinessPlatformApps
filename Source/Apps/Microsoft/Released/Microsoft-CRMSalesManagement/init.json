@@ -107,9 +107,10 @@
             },
             {
                 "displayname": "Customize",
+                "isValidated": true,
                 "name": "$SiteCommon$/pages-gallery/customize.html",
                 "showCrmUrl": true,
-                "isValidated": true,
+                "showRefreshSchedule": "$run(this.MS.DataStore.getValue('DataMovement') === 'Scribe')",
                 "showValidation": false,
                 "sourceApplication": "DynamicsCRM"
             },
@@ -117,6 +118,8 @@
                 "displayname": "Summary",
                 "name": "$SiteCommon$/pages-gallery/summary.html",
                 "values": {
+                    "Subscription": "$(this.MS.DataStore.getValue('DataMovement') === 'D365' ? this.MS.DataStore.getJson('SelectedSubscription').DisplayName : '')",
+                    "ResourceGroup": "$(this.MS.DataStore.getValue('SelectedResourceGroup'))",
                     "Organization URL": "$(this.MS.DataStore.getValue('OrganizationUrl'))",
                     "Target Server": "$(this.MS.DataStore.getValue('Server'))",
                     "Target Database": "$(this.MS.DataStore.getValue('Database'))",

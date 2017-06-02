@@ -64,33 +64,48 @@
             }
           },
           "actions": {
-            "For_each": {
-              "actions": {
-                "historicalcsharptweets": {
-                  "inputs": {
-                    "body": "@item()",
-                    "function": {
-                      "id": "[concat('/subscriptions/', parameters('subscription'), '/resourceGroups/',parameters('resourcegroup'),'/providers/Microsoft.Web/sites/', parameters('sitename'), '/Functions/TweetProcessingFunction')]"
-                    }
-                  },
-                  "runAfter": { },
-                  "type": "Function"
+            "TweetProcessingFunction": {
+              "inputs": {
+                "body": "@body('Search_tweets')",
+                "function": {
+                  "id": "[concat('/subscriptions/', parameters('subscription'), '/resourceGroups/',parameters('resourcegroup'),'/providers/Microsoft.Web/sites/', parameters('sitename'), '/Functions/TweetProcessingFunction')]"
                 }
               },
-              "foreach": "@body('Search_tweets')",
               "runAfter": {
                 "Search_tweets": [
                   "Succeeded"
                 ]
               },
-              "type": "Foreach"
+              "type": "Function"
+            },
+            "Until": {
+              "actions": {
+                "TriggerHistory": {
+                  "inputs": {
+                    "body": {},
+                    "function": {
+                      "id": "[concat('/subscriptions/', parameters('subscription'), '/resourceGroups/',parameters('resourcegroup'),'/providers/Microsoft.Web/sites/', parameters('sitename'), '/Functions/TriggerHistory')]"
+                    }
+                  },
+                  "runAfter": {},
+                  "type": "Function"
+                }
+              },
+              "expression": "@equals(body('TriggerHistory'), 'true')",
+              "limit": {
+                "count": 60,
+                "timeout": "PT1H"
+              },
+              "runAfter": {
+                "Get_row": [
+                  "Succeeded"
+                ]
+              },
+              "type": "Until"
             },
             "Search_tweets": {
               "inputs": {
                 "host": {
-                  "api": {
-                    "runtimeUrl": "[concat('https://logic-apis-', resourceGroup().location ,'.azure-apim.net/apim/twitter')]"
-                  },
                   "connection": {
                     "name": "@parameters('$connections')['twitter']['connectionId']"
                   }
@@ -99,15 +114,34 @@
                 "path": "/searchtweets",
                 "queries": {
                   "maxResults": 100,
-                  "searchQuery": "[parameters('search')]"
+                  "searchQuery": "@{body('Get_row')['QueryString']}",
+                  "sinceId": "@{body('Get_row')?['TweetId']}"
                 }
               },
-              "runAfter": { },
+              "runAfter": {
+                "Until": [
+                  "Succeeded"
+                ]
+              },
+              "type": "ApiConnection"
+            },
+            "Get_row": {
+              "inputs": {
+                "host": {
+                  "connection": {
+                    "name": "@parameters('$connections')['sql']['connectionId']"
+                  }
+                },
+                "method": "get",
+                "path": "/datasets/default/tables/@{encodeURIComponent(encodeURIComponent('[pbist_twitter].[twitter_query]'))}/items/@{encodeURIComponent(encodeURIComponent('1'))}"
+              },
+              "runAfter": {
+              },
               "type": "ApiConnection"
             }
           },
-          "outputs": { }
-        },
+            "outputs": {}
+          },
         "parameters": {
           "$connections": {
             "value": {
@@ -115,6 +149,16 @@
                 "connectionId": "[concat('/subscriptions/', parameters('subscription'), '/resourceGroups/' ,parameters('resourceGroup'),'/providers/Microsoft.Web/connections/twitter')]",
                 "connectionName": "twitter",
                 "id": "[concat('/subscriptions/' , parameters('subscription'), '/providers/Microsoft.Web/locations/',resourceGroup().location , '/managedApis/twitter')]"
+              },
+              "cognitiveservicestextanalytics": {
+                "connectionId": "[concat('/subscriptions/', parameters('subscription'), '/resourceGroups/' ,parameters('resourceGroup'),'/providers/Microsoft.Web/connections/cognitiveservicestextanalytics')]",
+                "connectionName": "cognitiveservicestextanalytics",
+                "id": "[concat('/subscriptions/' , parameters('subscription'), '/providers/Microsoft.Web/locations/',resourceGroup().location , '/managedApis/cognitiveservicestextanalytics')]"
+              },
+              "sql": {
+                "connectionId": "[concat('/subscriptions/', parameters('subscription'), '/resourceGroups/' ,parameters('resourceGroup'),'/providers/Microsoft.Web/connections/sql')]",
+                "connectionName": "sql",
+                "id": "[concat('/subscriptions/' , parameters('subscription'), '/providers/Microsoft.Web/locations/',resourceGroup().location , '/managedApis/sql')]"
               }
             }
           }

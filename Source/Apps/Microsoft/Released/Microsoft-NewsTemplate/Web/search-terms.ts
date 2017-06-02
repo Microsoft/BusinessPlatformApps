@@ -5,16 +5,11 @@ import { ViewModelBase } from '../../../../../SiteCommon/Web/services/view-model
 export class SearchTerms extends ViewModelBase {
     searchQuery: string = '';
 
-    constructor() {
-        super();
+    async OnLoaded(): Promise<void> {
         this.isValidated = false;
     }
 
     async OnValidate(): Promise<boolean> {
-        if (!super.OnValidate()) {
-            return false;
-        }
-
         if (this.searchQuery.length > 0) {
             this.isValidated = true;
             this.showValidation = true;

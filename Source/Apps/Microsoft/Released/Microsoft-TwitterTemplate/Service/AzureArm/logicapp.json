@@ -34,7 +34,7 @@
       "type": "string"
     }
   },
-  "variables": { },
+  "variables": {},
   "resources": [
     {
       "type": "Microsoft.Logic/workflows",
@@ -54,15 +54,28 @@
             }
           },
           "triggers": {
-            "Recurrence": {
-              "recurrence": {
-                "frequency": "Minute",
-                "interval": 3
+            "manual": {
+              "inputs": {
+                "schema": {
+                  "Delay": "3",
+                  "PreviousCount": "1"
+                }
               },
-              "type": "Recurrence"
+              "kind": "Http",
+              "type": "Request"
             }
           },
           "actions": {
+            "Delay": {
+              "inputs": {
+                "interval": {
+                  "count": "@{triggerBody()['Delay']}",
+                  "unit": "Minute"
+                }
+              },
+              "runAfter": {},
+              "type": "Wait"
+            },
             "Get_row": {
               "inputs": {
                 "host": {
@@ -76,8 +89,30 @@
                 "method": "get",
                 "path": "/datasets/default/tables/@{encodeURIComponent(encodeURIComponent('[pbist_twitter].[twitter_query]'))}/items/@{encodeURIComponent(encodeURIComponent('1'))}"
               },
-              "runAfter": {},
+              "runAfter": {
+                "Delay": [
+                  "Succeeded"
+                ]
+              },
               "type": "ApiConnection"
+            },
+            "CalculateDelay": {
+              "inputs": {
+                "body": {
+                  "CurrentCount": "@{body('TweetProcessingFunction')}",
+                  "Delay": "@{triggerBody()['Delay']}",
+                  "PreviousCount": "@{triggerBody()['PreviousCount']}"
+                },
+                "function": {
+                  "id": "[concat('/subscriptions/', parameters('subscription'), '/resourceGroups/',parameters('resourcegroup'),'/providers/Microsoft.Web/sites/', parameters('sitename'), '/Functions/CalculateDelay')]"
+                }
+              },
+              "runAfter": {
+                "TweetProcessingFunction": [
+                  "Succeeded"
+                ]
+              },
+              "type": "Function"
             },
             "Search_tweets": {
               "inputs": {
@@ -116,8 +151,8 @@
               "type": "Function"
             }
           },
-            "outputs": {}
-          },
+          "outputs": {}
+        },
         "parameters": {
           "$connections": {
             "value": {
@@ -135,10 +170,10 @@
           }
         }
       },
-      "resources": [ ],
+      "resources": [],
       "dependsOn": [
       ]
     }
   ],
-  "outputs": { }
+  "outputs": {}
 }

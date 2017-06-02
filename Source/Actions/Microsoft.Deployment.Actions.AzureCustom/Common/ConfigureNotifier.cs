@@ -91,7 +91,7 @@ namespace Microsoft.Deployment.Actions.AzureCustom.Common
         {
             HttpClient client = new HttpClient();
             client.BaseAddress = new Uri(Constants.ServiceUrl);
-            
+
             dynamic payload = new ExpandoObject();
             payload.tokens = new ExpandoObject();
             payload.tokens.access = accessToken;

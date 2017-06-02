@@ -8,6 +8,8 @@ import { QueryParameter } from '../constants/query-parameter';
 
 import { ExperienceType } from '../enums/experience-type';
 
+import { Option } from '../models/option';
+
 import { DataStore } from './data-store';
 import { DeploymentService } from './deployment-service';
 import { ErrorService } from './error-service';
@@ -28,6 +30,7 @@ export class MainService {
     LoggerService: LoggerService;
     MS: MainService;
     NavigationService: NavigationService;
+    Option: Option = new Option();
     Router: Router;
     Translate: any;
     UtilityService: UtilityService;

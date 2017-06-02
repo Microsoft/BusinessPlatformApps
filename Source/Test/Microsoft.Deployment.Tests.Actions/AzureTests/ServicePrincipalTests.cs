@@ -1,16 +1,11 @@
-﻿using Microsoft.AnalysisServices;
+﻿using System;
+using System.Threading.Tasks;
+
+using Microsoft.AnalysisServices;
 using Microsoft.AnalysisServices.Tabular;
-using Microsoft.Deployment.Common;
 using Microsoft.Deployment.Tests.Actions.TestHelpers;
 using Microsoft.IdentityModel.Clients.ActiveDirectory;
-using Microsoft.IdentityModel.Clients.ActiveDirectory.Internal;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
 
 namespace Microsoft.Deployment.Tests.Actions.AzureTests
 {
@@ -37,7 +32,6 @@ namespace Microsoft.Deployment.Tests.Actions.AzureTests
             string serverName = "asazure://westus.asazure.windows.net/motestdbsdasd";
 
             Uri test = new Uri(serverName);
-            string username = ""; 
             string password = token.AccessToken;
 
             string connectionString = string.Empty;
@@ -48,25 +42,18 @@ namespace Microsoft.Deployment.Tests.Actions.AzureTests
             }
 
             connectionString += $"Data Source={serverName};";
-
-            //if (!string.IsNullOrEmpty(password))
-            //{
-                connectionString +=
-                    $"Password={password};";
-            //}
+            connectionString += $"Password={password};";
 
             try
             {
                 ConnectionInfo info = new ConnectionInfo(connectionString);
-                
                 Server server = new Server();
                 server.Connect(connectionString);
-                
             }
-            catch (Exception ex)
+            catch
             {
+                // Do nothing
             }
-
         }
     }
 }

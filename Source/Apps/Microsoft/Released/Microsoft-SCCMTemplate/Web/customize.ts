@@ -9,13 +9,6 @@ export class Customize extends ViewModelBase {
     endpointComplianceTarget: string = '0.99';
     healthEvaluationTarget: string = '0.99';
 
-    constructor() {
-        super();
-        this.dailyTriggers = this.MS.UtilityService.GenerateDailyTriggers();
-        this.isValidated = false;
-        this.useDefaultValidateButton = true;
-    }
-
     async NavigatingNext(): Promise<boolean> {
         let sourceServer = this.MS.DataStore.getAllValues('Server')[0];
         let sourceDatabase = this.MS.DataStore.getAllValues('Database')[0];
@@ -46,6 +39,12 @@ export class Customize extends ViewModelBase {
         this.MS.DataStore.addToDataStoreWithCustomRoute('Customize2', 'SqlEntryValue', this.dataRetentionDays, DataStoreType.Public);
 
         return super.NavigatingNext();
+    }
+
+    async OnLoaded(): Promise<void> {
+        this.dailyTriggers = this.MS.UtilityService.GenerateDailyTriggers();
+        this.isValidated = false;
+        this.useDefaultValidateButton = true;
     }
 
     async OnValidate(): Promise<boolean> {

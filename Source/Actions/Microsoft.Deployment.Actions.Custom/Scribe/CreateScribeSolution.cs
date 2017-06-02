@@ -41,7 +41,7 @@ namespace Microsoft.Deployment.Actions.Custom.Scribe
             string response = await rc.Post(string.Format(CultureInfo.InvariantCulture, URL_SOLUTIONS, orgId), JsonConvert.SerializeObject(solution));
             ScribeSolution result = JsonConvert.DeserializeObject<ScribeSolution>(response);
 
-            ScribeSolutionSchedule schedule = new ScribeSolutionSchedule("Daily");
+            ScribeSolutionSchedule schedule = new ScribeSolutionSchedule(request.DataStore.GetValue("RefreshSchedule"));
             await rc.Put(string.Format(CultureInfo.InvariantCulture, URL_SOLUTION_SCHEDULE, orgId, result.Id), JsonConvert.SerializeObject(schedule));
 
             return new ActionResponse(ActionStatus.Success, JsonUtility.GetEmptyJObject());

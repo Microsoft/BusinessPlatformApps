@@ -3,7 +3,7 @@
     "windowsAuthentication": false,
     "anonymousAuthentication": true,
     "iisExpress": {
-      "applicationUrl": "http://localhost:1503/index.html?name=Microsoft-TwitterTemplate",
+      "applicationUrl": "http://localhost:1503/index.html?name=Microsoft-NewsTemplate",
       "sslPort": 0
     }
   },

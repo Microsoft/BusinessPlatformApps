@@ -163,40 +163,36 @@ public class TweetHandler
         //log.Info("********************ParseTweet************************** Handle IDs: " + twitterHandleId);
         //log.Info("********************ParseTweet************************** Tweet Language: " + tweet.TweetLanguageCode.ToString());
         // Check if language of tweet is supported for sentiment analysis
-        string[] languagesSupported = { "en", "fr", "es", "pt", "da", "de", "el", "fi", "it", "nl", "no", "pl", "ru", "sv", "tr" };
 
         originalTweets["lang"] = tweet.TweetLanguageCode.ToString();
         originalTweets["sentimentPosNeg"] = "Undefined";
-        foreach (string language in languagesSupported)
-        {
-            if(language == originalTweets["lang"])
-            {
-                {
-                    //log.Info("********************ParseTweet**************************" + tweet.TweetId.ToString());
-                    string sentiment = await MakeSentimentRequest(tweet);
-                    //log.Info("********************ParseTweet************************** Sentiment: " + sentiment);
-                    sentiment = (double.Parse(sentiment) * 2 - 1).ToString(CultureInfo.InvariantCulture);
-                    string sentimentBin = (Math.Floor(double.Parse(sentiment) * 10) / 10).ToString(CultureInfo.InvariantCulture);
-                    string sentimentPosNeg = String.Empty;
-                    if (double.Parse(sentimentBin) > 0.1)
-                    {
-                        sentimentPosNeg = "Positive";
-                    }
-                    else if (double.Parse(sentimentBin) < -0.1)
-                    {
-                        sentimentPosNeg = "Negative";
-                    }
-                    else
-                    {
-                        sentimentPosNeg = "Neutral";
-                    }
+        originalTweets["sentiment"] = null;
+        originalTweets["sentimentBin"] = null;
+        
+		string sentiment = await MakeSentimentRequest(tweet);
 
-                    //Save sentiment and language metadata into dictionary
-                    originalTweets["sentiment"] = sentiment;
-                    originalTweets["sentimentBin"] = sentimentBin;
-                    originalTweets["sentimentPosNeg"] = sentimentPosNeg;
-                }
+		
+		if (sentiment != null)
+        {
+            sentiment = (double.Parse(sentiment) * 2 - 1).ToString(CultureInfo.InvariantCulture);
+            string sentimentBin = (Math.Floor(double.Parse(sentiment) * 10) / 10).ToString(CultureInfo.InvariantCulture);
+            string sentimentPosNeg = String.Empty;
+            if (double.Parse(sentimentBin) > 0.1)
+            {
+                sentimentPosNeg = "Positive";
             }
+            else if (double.Parse(sentimentBin) < -0.1)
+            {
+                sentimentPosNeg = "Negative";
+            }
+            else
+            {
+                sentimentPosNeg = "Neutral";
+            }
+            //Save sentiment and language metadata into dictionary
+            originalTweets["sentiment"] = sentiment;
+            originalTweets["sentimentBin"] = sentimentBin;
+            originalTweets["sentimentPosNeg"] = sentimentPosNeg;
         }
 
         // Work out account and tweet direction for retweets
@@ -508,8 +504,13 @@ public class TweetHandler
 
         var sentimentResponseBody = await sentimentResponse.Content.ReadAsStringAsync();
         dynamic sentimentDeserialized = JsonConvert.DeserializeObject(sentimentResponseBody);
-        string sentimentScore = sentimentDeserialized.documents[0].score.ToString();
-
+		
+	    string sentimentScore = null;
+        if (sentimentDeserialized.documents.ToString() != "[]")
+        {
+            sentimentScore = sentimentDeserialized.documents[0].score.ToString();
+        }
+		
         return sentimentScore;
 
 

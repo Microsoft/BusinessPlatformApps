@@ -49,7 +49,7 @@ ul {
 * BPST
 ********************************************************************************************/
 
-.st-button-powerbi-login{
+.st-button-powerbi-login {
     margin-right: 12px;
 }
 
@@ -59,6 +59,23 @@ ul {
     clear: both;
     float: left;
     margin-right: 12px;
+}
+
+.st-byoe-preview {
+    margin-left: 500px;
+    position: fixed;
+}
+
+.st-byoe-preview-entities {
+    height: 500px;
+    overflow-x: hidden;
+    overflow-y: auto;
+    width: 200px;
+}
+
+.st-byoe-preview-list {
+    list-style-type: none;
+    margin-left: 1em;
 }
 
 .st-center-inner {
@@ -110,6 +127,46 @@ ul {
 .st-diagram {
     margin-top: 15px;
     width: 750px;
+}
+
+.st-dropdown {
+    border: 1px solid rgb(169, 169, 169);
+    display: inline-block;
+    padding: 0 5px;
+    position: relative;
+}
+
+.st-dropdown:hover .st-dropdown-content {
+    display: block;
+}
+
+.st-dropdown-content {
+    background-color: #F9F9F9;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    display: none;
+    height: 200px;
+    min-width: 210px;
+    overflow: auto;
+    position: absolute;
+    z-index: 1;
+}
+
+.st-dropdown-content i {
+    height: 24px;
+    padding: 12px 0 0 16px;
+    width: 32px;
+}
+
+.st-dropdown-content i:hover {
+    background-color: #F1F1F1;
+}
+
+.st-dropdown-content-selected {
+    background-color: #F1F1F1;
+}
+
+.st-dropdown-i {
+    padding: 5px 5px;
 }
 
 .st-email-background {
@@ -296,8 +353,17 @@ ul {
     margin-right: 10px;
 }
 
+.st-input-float {
+    display: inline-block;
+    margin-right: 50px;
+}
+
 .st-input-small {
     width: 200px;
+}
+
+.st-input-tiny {
+    width: 6em;
 }
 
 .st-label {

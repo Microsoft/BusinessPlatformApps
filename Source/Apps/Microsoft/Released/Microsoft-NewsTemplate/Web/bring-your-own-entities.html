@@ -1,0 +1,10 @@
+﻿<template>
+    <h1 class="st-title">${MS.Translate.BYOE_TITLE}</h1>
+    <p class="st-subtitle">${MS.Translate.BYOE_SUBTITLE}</p>
+
+    <p class="st-text">${MS.Translate.BYOE_OPTION}</p>
+    <select class="btn btn-default dropdown-toggle st-input" value.bind="bringYourOwnEntities">
+        <option value.bind="MS.Option.NO">${MS.Translate.COMMON_NO}</option>
+        <option value.bind="MS.Option.YES">${MS.Translate.COMMON_YES}</option>
+    </select>
+</template>

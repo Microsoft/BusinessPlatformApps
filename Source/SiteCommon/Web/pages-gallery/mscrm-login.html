@@ -11,6 +11,22 @@
 
             <p class="st-text">${MS.Translate.D365_LOGIN_PASSWORD}</p>
             <input class="st-input" type="password" change.delegate="Invalidate()" disabled.bind="MS.HttpService.isServiceBusy" value.bind="d365Password" />
+
+            <div if.bind="MS.HttpService.isOnPremise">
+                <p class="st-float st-text" click.trigger="showAdvanced = !showAdvanced">
+                    <span class="glyphicon pbi-glyph-circlering glyph-small st-toggle" if.bind="showAdvanced"></span>
+                    <span class="st-toggle-collapse" if.bind="showAdvanced">-</span>
+                    <span class="glyphicon pbi-glyph-addcircle glyph-small st-toggle" if.bind="!showAdvanced"></span>
+                    <span>${MS.Translate.COMMON_ADVANCED_OPTIONAL}</span>
+                </p>
+                <div class="st-float" if.bind="showAdvanced">
+                    <p class="st-text">${MS.Translate.D365_LOGIN_ORGANIZATION_NAME}</p>
+                    <input class="st-input" type="text" change.delegate="Invalidate()" disabled.bind="MS.HttpService.isServiceBusy" value.bind="d365OnPremiseOrganizationName" />
+
+                    <p class="st-text">${MS.Translate.D365_LOGIN_ORGANIZATION_URL}</p>
+                    <input class="st-input" type="text" change.delegate="Invalidate()" disabled.bind="MS.HttpService.isServiceBusy" value.bind="d365OnPremiseUrl" />
+                </div>
+            </div>
         </div>
 
         <button class="primary st-float" click.trigger="OnValidate()" if.bind="!MS.HttpService.isServiceBusy">${MS.Translate.COMMON_LOGIN}</button>
@@ -56,7 +72,7 @@
             </p>
             <div class="st-float" if.bind="showAdvanced">
                 <p class="st-text">${MS.Translate.AZURE_LOGIN_RESOURCE_GROUP}</p>
-                <input class="st-input" type="text" disabled.bind="MS.HttpService.isServiceBusy" value.bind="selectedResourceGroup" />
+                <input class="st-input" type="text" change.delegate="ValidateResourceGroup()" disabled.bind="MS.HttpService.isServiceBusy" value.bind="selectedResourceGroup" />
             </div>
         </div>
 

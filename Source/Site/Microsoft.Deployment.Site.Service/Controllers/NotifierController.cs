@@ -1,19 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
-using System.Web;
 using System.Web.Http;
-using Microsoft.Deployment.Common;
-using Microsoft.Deployment.Common.ActionModel;
-using Microsoft.Deployment.Common.Helpers;
-using System.Net.Http.Headers;
-using Newtonsoft.Json;
+
 using Newtonsoft.Json.Linq;
-using System.IdentityModel.Tokens.Jwt;
+
+using Microsoft.Deployment.Common;
+using Microsoft.Deployment.Common.Helpers;
 
 namespace Microsoft.Deployment.Site.Service.Controllers
 {
@@ -22,7 +21,7 @@ namespace Microsoft.Deployment.Site.Service.Controllers
     {
         [HttpPost]
         public async Task<HttpResponseMessage> PostDeploymentId()
-        {           
+        {
             try
             {
                 var resp = new HttpResponseMessage();
@@ -42,56 +41,38 @@ namespace Microsoft.Deployment.Site.Service.Controllers
 
                 if (string.IsNullOrEmpty(refreshToken) || string.IsNullOrEmpty(accessToken) || string.IsNullOrEmpty(deploymentId))
                 {
-                    resp = new HttpResponseMessage(HttpStatusCode.Forbidden); 
+                    resp = new HttpResponseMessage(HttpStatusCode.Forbidden);
                     resp.ReasonPhrase = "Refresh token, access token or deployment id is null.";
                     return resp;
                 }
 
-                var originalClaim = new JwtSecurityToken(accessToken).Claims.First(e => e.Type == "_claim_sources").Value;
 
                 string tokenUrl = string.Format(Constants.AzureTokenUri, "common");
 
-                string newClaim;
-
-                try
-                {
-
-                    var primaryResponse = await GetToken(refreshToken, tokenUrl, Constants.MicrosoftClientId);
-
-                    var access = new JwtSecurityToken(primaryResponse["access_token"].ToString());
-                    newClaim = access.Claims.First(e => e.Type == "_claim_sources").Value;
-                }
-                catch(Exception e)
+                var refreshResponse = await GetToken(refreshToken, tokenUrl, Constants.MicrosoftClientId);
+                if (!refreshResponse.IsSuccessStatusCode)
                 {
                     resp = new HttpResponseMessage(HttpStatusCode.Forbidden);
-                    resp.ReasonPhrase = "Access token could not be refreshed, or claim does not exist.";
+                    resp.ReasonPhrase = "Access token could not be refreshed.";
                     return resp;
                 }
 
-                if (originalClaim == newClaim)
-                {
-                    string deploymentIdsConnection = Constants.BpstDeploymentIdDatabase;
-                    var cmd = $"INSERT INTO deploymentids VALUES('{deploymentId}','{DateTime.UtcNow.ToString("o")}')";
-                    SqlUtility.InvokeSqlCommand(deploymentIdsConnection, cmd, new Dictionary<string, string>());
-                }
-                else
-                {
-                    resp = new HttpResponseMessage(HttpStatusCode.Forbidden);
-                    resp.ReasonPhrase = "Claims could not be verified.";
-                    return resp;
-                }
-                                
-                return new HttpResponseMessage(HttpStatusCode.OK);
+                string deploymentIdsConnection = Constants.BpstDeploymentIdDatabase;
+                var cmd = $"INSERT INTO deploymentids VALUES('{deploymentId}','{DateTime.UtcNow.ToString("o")}')";
+                SqlUtility.InvokeSqlCommand(deploymentIdsConnection, cmd, new Dictionary<string, string>());
+
+                resp = new HttpResponseMessage(HttpStatusCode.OK);
+                return resp;
             }
             catch
             {
                 var resp = new HttpResponseMessage(HttpStatusCode.InternalServerError);
                 resp.ReasonPhrase = "An internal error has occurred ";
-                return resp;               
+                return resp;
             }
         }
 
-        private static async Task<JObject> GetToken(string refreshToken, string tokenUrl, string clientId)
+        private static async Task<HttpResponseMessage> GetToken(string refreshToken, string tokenUrl, string clientId)
         {
             HttpClient client = new HttpClient();
 
@@ -99,9 +80,7 @@ namespace Microsoft.Deployment.Site.Service.Controllers
             var content = new StringContent(builder.ToString());
             content.Headers.ContentType = new MediaTypeHeaderValue("application/x-www-form-urlencoded");
             var response = await client.PostAsync(new Uri(tokenUrl), content);
-
-            var primaryResponse = JsonUtility.GetJsonObjectFromJsonString(response.Content.ReadAsStringAsync().Result);
-            return primaryResponse;
+            return response;
         }
 
         private static StringBuilder GetTokenUri(string refresh_token, string uri, string clientId)
