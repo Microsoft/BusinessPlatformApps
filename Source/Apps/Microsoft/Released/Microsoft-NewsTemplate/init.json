@@ -51,15 +51,15 @@
                 "displayname": "Search Terms",
                 "name": "search-terms.html"
             },
-            {
-                "displayname": "Bring Your Own Entities",
-                "name": "bring-your-own-entities.html"
-            },
-            {
-                "displayname": "Customize",
-                "name": "customize.html",
-                "skip": "$run(this.MS.DataStore.getValue('BringYourOwnEntities') === this.MS.Option.NO)"
-            },
+            //{
+            //    "displayname": "Bring Your Own Entities",
+            //    "name": "bring-your-own-entities.html"
+            //},
+            //{
+            //    "displayname": "Customize",
+            //    "name": "customize.html",
+            //    "skip": "$run(this.MS.DataStore.getValue('BringYourOwnEntities') === this.MS.Option.NO)"
+            //},
             {
                 "displayname": "Summary",
                 "name": "$SiteCommon$/pages-gallery/summary.html",
