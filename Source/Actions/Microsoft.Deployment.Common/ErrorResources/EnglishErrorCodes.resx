@@ -261,4 +261,7 @@
   <data name="ResourceGroupAlreadyExists" xml:space="preserve">
     <value>A resource group with this name already exists.  Please choose another name for a new resource group.</value>
   </data>
+  <data name="NotPSAInstance" xml:space="preserve">
+    <value>This does not look like a PSA instance.</value>
+  </data>
 </root>

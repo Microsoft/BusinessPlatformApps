@@ -15,6 +15,7 @@ using Newtonsoft.Json.Linq;
 using Microsoft.Deployment.Common.ActionModel;
 using Microsoft.Deployment.Common.Controller;
 using Microsoft.Deployment.Common.Helpers;
+using System.Threading;
 
 namespace Microsoft.Deployment.Common.Actions.MsCrm
 {
@@ -37,50 +38,40 @@ namespace Microsoft.Deployment.Common.Actions.MsCrm
             };
 
             Dictionary<string, bool> entitiesToReprocess = new Dictionary<string, bool>();
-            
-            for (int i = 0; i < maxRetries; i++)
+
+            bool retryNeeded = true;
+            for (int i = 0; i < maxRetries && retryNeeded; i++)
             {
                 try
                 {
-                    Parallel.ForEach(entities, (entity) =>
-                    {
-                        try
-                        {
-                            entitiesToReprocess.Add(entity, this.CheckAndUpdateEntity(entity, proxy, request.Logger));
-                        }
-                        catch (Exception e)
-                        {
-                            e.Data.Add("entity", entity);
-                            throw;
-                        }
-                    });
-                }
-                catch(Exception e)
-                {
-                    if (e.GetType() == typeof(AggregateException))
-                    {
-                        string output = string.Empty;
-                        foreach (var ex in (e as AggregateException).InnerExceptions)
-                        {
-                            output += ex.Message + $"[{ex.Data["entity"]}]. ";
-                        }
-                        
-                        return new ActionResponse(ActionStatus.Failure, JsonUtility.GetJObjectFromObject(e), e, "DefaultErrorCode", output);
-                    }
-                    else
-                        return new ActionResponse(ActionStatus.Failure, JsonUtility.GetJObjectFromObject(e), e, "DefaultErrorCode", e.Message);
-                }
+                    //Parallel.ForEach(entities, (e) => { this.CheckAndUpdateEntity(e, proxy, request.Logger); });
 
-                if (!entitiesToReprocess.Values.Contains(false))
+                    foreach (var entity in entities)
+                    {
+                        this.CheckAndUpdateEntity(entity, proxy, request.Logger);
+                    }
+                    retryNeeded = false;
+                }
+                catch (AggregateException aex)
                 {
-                    break;
+                    string output = string.Empty;
+                    foreach (var ex in aex.InnerExceptions)
+                    {
+                        output += ex.Message + $"[{ex.Data["entity"]}]. ";
+                    }
+
+                    return new ActionResponse(ActionStatus.Failure, JsonUtility.GetJObjectFromObject(aex), aex, "DefaultErrorCode", output);
+                }
+                catch (Exception e)
+                {
+                    return new ActionResponse(ActionStatus.Failure, JsonUtility.GetJObjectFromObject(e), e, "DefaultErrorCode", e.Message);
                 }
             }
 
             return new ActionResponse(ActionStatus.Success);
         }
 
-        public bool CheckAndUpdateEntity(string entity, OrganizationWebProxyClient proxy, Logger logger)
+        public void CheckAndUpdateEntity(string entity, OrganizationWebProxyClient proxy, Logger logger)
         {
             var checkRequest = new RetrieveEntityRequest()
             {
@@ -88,32 +79,40 @@ namespace Microsoft.Deployment.Common.Actions.MsCrm
                 EntityFilters = EntityFilters.Entity
             };
 
-            var checkResponse = new RetrieveEntityResponse();
-            checkResponse = (RetrieveEntityResponse)proxy.Execute(checkRequest);
 
-            if (checkResponse.EntityMetadata.ChangeTrackingEnabled != null &&
-                !(bool)checkResponse.EntityMetadata.ChangeTrackingEnabled &&
-                checkResponse.EntityMetadata.CanChangeTrackingBeEnabled.Value)
+            RetrieveEntityResponse checkResponse = (RetrieveEntityResponse)proxy.Execute(checkRequest);
+
+            // Check if entity exists
+            if (checkResponse == null || checkResponse.EntityMetadata == null)
             {
-                var updateRequest = new UpdateEntityRequest()
+                logger.LogCustomProperty("PSAEntity", $"The {entity} entity could not be retrieved from the PSA instance.");
+            }
+            else
+            {
+                // Raise and error if we can't enable it, but we need to
+                if (!checkResponse.EntityMetadata.CanChangeTrackingBeEnabled.Value)
                 {
-                    Entity = checkResponse.EntityMetadata
-                };
+                    throw new Exception($"The {entity} entity can not be enabled for change tracking.");
+                }
+                else
+                {
+                    // Nothing to do further, try changing
+                    if (!(bool)checkResponse.EntityMetadata.ChangeTrackingEnabled)
+                    {
+                        UpdateEntityRequest updateRequest = new UpdateEntityRequest() { Entity = checkResponse.EntityMetadata };
+                        updateRequest.Entity.ChangeTrackingEnabled = true;
+                        
+                        UpdateEntityResponse updateResponse = (UpdateEntityResponse)proxy.Execute(updateRequest);
 
-                updateRequest.Entity.ChangeTrackingEnabled = true;
-                var updateResponse = new UpdateEntityResponse();
-                updateResponse = (UpdateEntityResponse)proxy.Execute(updateRequest);
-
-                return true;
+                        Thread.Sleep(new TimeSpan(0, 0, 2));
+                        RetrieveEntityResponse verifyChange = (RetrieveEntityResponse)proxy.Execute(checkRequest);
+                        if(!(bool)verifyChange.EntityMetadata.ChangeTrackingEnabled)
+                        {
+                            logger.LogCustomProperty("PSAEntity", $"Warning: Change tracking for {entity} has been enabled, but is not yet active.");
+                        }
+                    }
+                }
             }
-
-            if (checkResponse.EntityMetadata.ChangeTrackingEnabled != null &&
-                (bool)checkResponse.EntityMetadata.ChangeTrackingEnabled)
-            {
-                return true;
-            }
-
-            return false;
         }
     }
 }

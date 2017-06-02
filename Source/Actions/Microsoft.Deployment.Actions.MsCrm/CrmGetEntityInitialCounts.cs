@@ -63,6 +63,11 @@ namespace Microsoft.Deployment.Common.Actions.MsCrm
                 }
                 catch (Exception e)
                 {
+                    if(e.Message == $"The entity with a name = '{entry}' was not found in the MetadataCache.")
+                    {
+                        return new ActionResponse(ActionStatus.Failure, null, e, "NotPSAInstance");
+                    }
+
                     if (e.Message == "AggregateQueryRecordLimit exceeded. Cannot perform this operation.")
                     {
                         count = "-1";
@@ -70,12 +75,12 @@ namespace Microsoft.Deployment.Common.Actions.MsCrm
                     else throw;
                 }
 
-                if(Convert.ToInt16(count) > max)
+                if(Convert.ToInt32(count) > max)
                 {
-                    max = Convert.ToInt16(count);
+                    max = Convert.ToInt32(count);
                 }
 
-                initialCounts.Add(entry.ToLowerInvariant(), Convert.ToInt16(count));
+                initialCounts.Add(entry.ToLowerInvariant(), Convert.ToInt32(count));
             }
             var missingCounts = new List<string>();
 
