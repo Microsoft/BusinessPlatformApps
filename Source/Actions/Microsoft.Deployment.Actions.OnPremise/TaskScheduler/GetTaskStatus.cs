@@ -45,7 +45,11 @@ namespace Microsoft.Deployment.Actions.OnPremise.TaskScheduler
                         case 0:
                             return new ActionResponse(ActionStatus.Success, JsonUtility.GetEmptyJObject());
                         case 267014:
-                            await uploadLogs(request);
+                            var uploaded = await uploadLogs(request);
+                            if (!uploaded.IsSuccess)
+                            {
+                                request.Logger.LogCustomProperty("UploadLogs", "Upload of Logs Failed.");
+                            }
                             return new ActionResponse(ActionStatus.Failure, JsonUtility.GetEmptyJObject(),
                                                                 new Exception("The scheduled task was terminated by the user."),
                                                                 "TaskSchedulerRunFailed");
@@ -62,7 +66,11 @@ namespace Microsoft.Deployment.Actions.OnPremise.TaskScheduler
                         return new ActionResponse(ActionStatus.Failure, JsonUtility.GetEmptyJObject(), "CredentialGuardEnabled");
 
                     //If we've encountered an error, copy the logs, zip them up, and send to blob
-                    await uploadLogs(request);
+                    var uploadedLogs = await uploadLogs(request);
+                    if (!uploadedLogs.IsSuccess)
+                    {
+                        request.Logger.LogCustomProperty("UploadLogs", "Upload of Logs Failed.");
+                    }
 
                     ActionResponse response = new ActionResponse(ActionStatus.Failure, JsonUtility.GetEmptyJObject(),
                         new Exception($"Scheduled task exited with code {task.LastTaskResult}"), "TaskSchedulerRunFailed");
