@@ -159,7 +159,7 @@ namespace Microsoft.Deployment.Common.Helpers
             return RunCommand(connectionString, script, SqlCommandType.ExecuteWithData);
         }
 
-        public static DataTable RunCommand(string connectionString, string rawScript, SqlCommandType commandType)
+        public static DataTable RunCommand(string connectionString, string rawScript, SqlCommandType commandType, SqlParameter[] parameters = null)
         {
             DataTable table = null;
 
@@ -181,6 +181,9 @@ namespace Microsoft.Deployment.Common.Helpers
                         command.CommandText = rawScript;
                         command.CommandType = CommandType.Text;
                         command.CommandTimeout = 0;
+
+                        if (parameters != null)
+                            command.Parameters.AddRange(parameters);
 
                         switch (commandType)
                         {

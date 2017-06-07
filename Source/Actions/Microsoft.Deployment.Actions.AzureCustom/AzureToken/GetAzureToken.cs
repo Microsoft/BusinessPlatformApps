@@ -18,7 +18,10 @@ namespace Microsoft.Deployment.Actions.AzureCustom.AzureToken
             string code = request.DataStore.GetValue("code");
             string aadTenant = request.DataStore.GetValue("AADTenant");
             string oauthType = (request.DataStore.GetValue("oauthType") ?? string.Empty).ToLowerInvariant();
-            var token = AzureTokenUtility.GetTokenForResourceFromCode(oauthType, aadTenant, request.Info.WebsiteRootUrl, code);
+            JObject token = new JObject();
+
+            token = oauthType == "mscrm" ? AzureTokenUtility.GetTokenForResourceFromCode(Constants.AzureManagementCoreApi, Constants.MsCrmClientId, aadTenant, request.Info.WebsiteRootUrl, code) :
+                                           AzureTokenUtility.GetTokenForResourceFromCode(oauthType, aadTenant, request.Info.WebsiteRootUrl, code);
 
             if (token.SelectToken("error") != null)
             {

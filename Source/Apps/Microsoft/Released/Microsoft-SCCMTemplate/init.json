@@ -118,12 +118,7 @@
                     "Target Server": "$(this.MS.DataStore.getValue('Server'))",
                     "Target Database": "$(this.MS.DataStore.getValue('Database'))",
                     "Target Username": "$(this.MS.DataStore.getValue('Username'))"
-                },
-                "onNext": [
-                    {
-                        "name": "Microsoft-SccmGetEntityInitialCounts"
-                    }
-                ]
+                }
             },
             {
                 "asDatabase": "Sccm",
@@ -164,6 +159,11 @@
                 "SqlGroup": "SolutionTemplate",
                 "SqlServerIndex": "1",
                 "SqlSubGroup": "SSAS",
+                "useImpersonation": true
+            },
+            {
+                "displayname": "$translate(INIT_ACTION_DEPLOYING_DATABASE_CONFIGURATION)",
+                "name": "Microsoft-SccmGetEntityInitialCounts",
                 "useImpersonation": true
             },
             {

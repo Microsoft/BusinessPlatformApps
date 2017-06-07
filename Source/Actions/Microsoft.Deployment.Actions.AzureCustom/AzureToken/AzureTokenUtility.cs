@@ -24,7 +24,7 @@ namespace Microsoft.Deployment.Actions.AzureCustom.AzureToken
                 string refreshToken = AzureUtility.GetRefreshToken(tokenWithRefresh);
                 string tokenUrl = string.Format(Constants.AzureTokenUri, tenantId);
 
-                var tokenMeta  = GetMetaFromOAuthType(oauthType);
+                var tokenMeta = GetMetaFromOAuthType(oauthType);
                 string token = AzureTokenUtility.GetTokenBodyFromRefreshToken(refreshToken, resource, redirect, tokenMeta.ClientId);
                 StringContent content = new StringContent(token);
                 content.Headers.ContentType = new MediaTypeHeaderValue("application/x-www-form-urlencoded");
@@ -35,14 +35,26 @@ namespace Microsoft.Deployment.Actions.AzureCustom.AzureToken
             return tokenObj;
         }
 
+        public static JObject GetTokenForResourceFromCode(string resource, string client, string tenantId, string redirect, string code)
+        {
+            var meta = new AzureTokenRequestMeta(resource, client);
+            return GetTokenForResourceFromCode(meta, tenantId, redirect, code);
+        }
+
         public static JObject GetTokenForResourceFromCode(string oauthType, string tenantId, string redirect, string code)
+        {
+            var meta = AzureTokenUtility.GetMetaFromOAuthType(oauthType);
+            return GetTokenForResourceFromCode(meta, tenantId, redirect, code);
+        }
+
+
+        public static JObject GetTokenForResourceFromCode(AzureTokenRequestMeta meta, string tenantId, string redirect, string code)
         {
             JObject tokenObj;
             using (HttpClient httpClient = new HttpClient())
             {
 
                 string tokenUrl = string.Format(Constants.AzureTokenUri, tenantId);
-                var meta = GetMetaFromOAuthType(oauthType);
                 string token = AzureTokenUtility.GetTokenBodyFromCode(code, meta.Resource, redirect, meta.ClientId);
                 StringContent content = new StringContent(token);
                 content.Headers.ContentType = new MediaTypeHeaderValue("application/x-www-form-urlencoded");
@@ -95,7 +107,7 @@ namespace Microsoft.Deployment.Actions.AzureCustom.AzureToken
                     clientId = Constants.MicrosoftClientIdPowerBI;
                     break;
                 case "mscrm":
-                    resource = Constants.AzureManagementCoreApi;
+                    resource = Constants.MsCrmResource;
                     clientId = Constants.MsCrmClientId;
                     break;
                 case "keyvault":

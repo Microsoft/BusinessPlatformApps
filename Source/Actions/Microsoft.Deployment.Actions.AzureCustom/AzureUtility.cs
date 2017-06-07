@@ -99,7 +99,7 @@ namespace Microsoft.Deployment.Actions.AzureCustom
 
         public static string GetTenantFromToken(JToken azureToken)
         {
-            var tenantId = new JwtSecurityToken(azureToken["id_token"].ToString())
+            var tenantId = new JwtSecurityToken(azureToken["access_token"].ToString())
                                         .Claims.First(e => e.Type.ToLowerInvariant() == "tid")
                                         .Value;
             return tenantId;
