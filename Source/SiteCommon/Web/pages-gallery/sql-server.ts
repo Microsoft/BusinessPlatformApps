@@ -76,7 +76,11 @@ export class SqlServer extends ViewModelBase {
 
     onAuthChange(): void {
         this.isWindowsAuth = this.auth.toLowerCase() === 'windows';
-    }
+        if (this.isWindowsAuth) {
+            this.username = '';
+            this.password = '';
+        }
+    } 
 
     async OnValidate(): Promise<boolean> {
         this.Invalidate();
