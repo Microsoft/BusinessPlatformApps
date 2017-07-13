@@ -138,6 +138,8 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="AzureTests\ActivityLogTests.cs" />
+    <Compile Include="AzureTests\GetAppWorkspacesTest.cs" />
     <Compile Include="AxTests\AxConnectorTests.cs" />
     <Compile Include="AzureTests\AzureAnalysisServicesTest.cs" />
     <Compile Include="AzureTests\AzureStorageTests.cs" />
@@ -145,6 +147,8 @@
     <Compile Include="AzureTests\ConnectorTest.cs" />
     <Compile Include="AzureTests\AzureMLTest.cs" />
     <Compile Include="AzureTests\CognitiveServices.cs" />
+    <Compile Include="AzureTests\EventHubTests.cs" />
+    <Compile Include="AzureTests\StreamAnalyticsTests.cs" />
     <Compile Include="AzureTests\LogicAppTests.cs" />
     <Compile Include="FacebookTests\FacebookTests.cs" />
     <Compile Include="NewsTests\NewsTests.cs" />
