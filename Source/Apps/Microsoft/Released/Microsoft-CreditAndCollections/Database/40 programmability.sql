@@ -35,7 +35,7 @@ BEGIN
 		SET @StatusCode = 2; --Data pull complete
 
     -- AS Flow
-    IF @ASDeployment=1 AND DATEDIFF(HOUR, @DeploymentTimestamp, Sysdatetime()) < 24 AND NOT EXISTS (SELECT * FROM cc.ssas_jobs WHERE [statusMessage] = 'Success')
+    IF @ASDeployment=1 AND DATEDIFF(HOUR, @DeploymentTimestamp, Sysdatetime()) > 24 AND NOT EXISTS (SELECT * FROM cc.ssas_jobs WHERE [statusMessage] = 'Success')
 		SET @StatusCode = 1;
 	ELSE 			
 	BEGIN
