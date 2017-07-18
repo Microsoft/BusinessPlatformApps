@@ -358,6 +358,15 @@ namespace Microsoft.Deployment.Common.ErrorResources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to You may not have read access to one of the following objects: Opportunity, Account, Lead, Product2, OpportunityLineItem, OpportunityStage, User, UserRole. Please check..
+        /// </summary>
+        public static string SalesforceInvalidType {
+            get {
+                return ResourceManager.GetString("SalesforceInvalidType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Login failed, check that you have entered the correct username, password and token..
         /// </summary>
         public static string SalesforceLoginInvalid {

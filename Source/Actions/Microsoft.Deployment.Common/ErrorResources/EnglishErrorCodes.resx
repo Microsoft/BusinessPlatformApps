@@ -273,4 +273,7 @@
   <data name="MsCrm_No_Organizations" xml:space="preserve">
     <value>No Dynamics 365 organizations were found, verify that your username and password are correct</value>
   </data>
+  <data name="SalesforceInvalidType" xml:space="preserve">
+    <value>You may not have read access to one of the following objects: Opportunity, Account, Lead, Product2, OpportunityLineItem, OpportunityStage, User, UserRole. Please check.</value>
+  </data>
 </root>
