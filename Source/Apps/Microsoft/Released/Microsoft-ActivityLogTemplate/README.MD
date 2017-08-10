@@ -93,7 +93,7 @@ Azure Resources:
 
 You can access all of the resources that have been spun up by logging into the Azure portal. Everything should be under one resource group (unless a user was using an existing SQL server. In this case the SQL Server will appear in whatever resource group it already existed in).
 
-![Image](Resources/media/resources.png)
+![Image](Resources/media/resources.PNG)
 
 
 ### Model Schema
