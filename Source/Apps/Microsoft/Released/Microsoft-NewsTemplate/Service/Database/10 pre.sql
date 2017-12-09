@@ -48,8 +48,6 @@ IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA='bpst_news
 	DROP TABLE bpst_news.documenttopics;
 IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA='bpst_news' AND TABLE_NAME='documenttopicimages' AND TABLE_TYPE='BASE TABLE')
 	DROP TABLE bpst_news.documenttopicimages;
-IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA='bpst_news' AND TABLE_NAME='documentcompressedentities' AND TABLE_TYPE='BASE TABLE')
-    DROP TABLE bpst_news.documentcompressedentities;
 IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA='bpst_news' AND TABLE_NAME='entities' AND TABLE_TYPE='BASE TABLE')
 	DROP TABLE bpst_news.entities;
 IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA='bpst_news' AND TABLE_NAME='documents' AND TABLE_TYPE='BASE TABLE')
@@ -68,15 +66,22 @@ IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA='bpst_news
 	DROP TABLE bpst_news.entityinitialcount;
 
 -- Staging tables here
-IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA='bpst_news' AND TABLE_NAME='stg_documentcompressedentities' AND TABLE_TYPE='BASE TABLE')
-    DROP TABLE bpst_news.stg_documentcompressedentities;
 IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA='bpst_news' AND TABLE_NAME='stg_entities' AND TABLE_TYPE='BASE TABLE')
     DROP TABLE bpst_news.stg_entities;
 IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA='bpst_news' AND TABLE_NAME='stg_documenttopics' AND TABLE_TYPE='BASE TABLE')
     DROP TABLE bpst_news.stg_documenttopics;
 IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA='bpst_news' AND TABLE_NAME='stg_documenttopicimages' AND TABLE_TYPE='BASE TABLE')
     DROP TABLE bpst_news.stg_documenttopicimages;
+IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA='bpst_news' AND TABLE_NAME='stg_documentcompressedentities' AND TABLE_TYPE='BASE TABLE')
+    DROP TABLE bpst_news.stg_documentcompressedentities;
 
+-- Bring-Your-Own Entities tables here
+IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA='bpst_news' AND TABLE_NAME='userdefinedentities' AND TABLE_TYPE='BASE TABLE')
+    DROP TABLE bpst_news.userdefinedentities;
+IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA='bpst_news' AND TABLE_NAME='userdefinedentitydefinitions' AND TABLE_TYPE='BASE TABLE')
+    DROP TABLE bpst_news.userdefinedentitydefinitions;
+IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA='bpst_news' AND TABLE_NAME='typedisplayinformation' AND TABLE_TYPE='BASE TABLE')
+    DROP TABLE bpst_news.typedisplayinformation;
 
 -- Stored procedures
 IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.ROUTINES WHERE ROUTINE_SCHEMA='bpst_news' AND ROUTINE_NAME='sp_get_replication_counts' AND ROUTINE_TYPE='PROCEDURE')

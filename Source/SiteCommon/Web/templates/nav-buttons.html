@@ -26,16 +26,14 @@
     <!-- Spinner -->
     <div class="st-float">
         <span class="st-loader st-loader-small" if.bind="viewmodel.MS.HttpService.isServiceBusy"></span>
-        <span class="st-text" if.bind="viewmodel.isCurrentlyNavigating">${viewmodel.navigationMessage}</span>
+        <span class="st-text" if.bind="viewmodel.MS.NavigationService.isCurrentlyNavigating">${viewmodel.navigationMessage}</span>
     </div>
 
     <!-- Navigation Buttons -->
     <p class="st-nav-buttons" if.bind="viewmodel && viewmodel.DeploymentService.NavigationService.templateName !== ''">
         <button class="default st-buttons-back" click.trigger="viewmodel.navigateBack()" disabled.bind="viewmodel.MS.HttpService.isServiceBusy || viewmodel.MS.NavigationService.isCurrentlyNavigating" if.bind="!viewmodel.MS.NavigationService.isFirstPage()">${viewmodel.MS.Translate.NAVIGATION_BACK}</button>
         <button class="primary" click.trigger="viewmodel.navigateNext()" disabled.bind="!viewmodel.isValidated || viewmodel.MS.HttpService.isServiceBusy || viewmodel.MS.NavigationService.isCurrentlyNavigating" if.bind="!viewmodel.isDownload && !viewmodel.MS.NavigationService.isLastPage()">${viewmodel.textNext}</button>
-        <a target="_blank" href.bind="viewmodel.downloadLink" if.bind="viewmodel.isDownload && (viewmodel.downloadLink || !viewmodel.isAuthenticated)">
-            <button class="primary" disabled.bind="!viewmodel.isValidated || !viewmodel.isAuthenticated || viewmodel.MS.HttpService.isServiceBusy">${viewmodel.MS.Translate.COMMON_DOWNLOAD}</button>
-        </a>
+        <button class="primary" click.trigger="viewmodel.downloadMsi()" disabled.bind="!viewmodel.isValidated || !viewmodel.isAuthenticated || viewmodel.MS.HttpService.isServiceBusy" if.bind="viewmodel.isDownload && (viewmodel.downloadLink || !viewmodel.isAuthenticated)">${viewmodel.MS.Translate.COMMON_DOWNLOAD}</button>
     </p>
 
     <!-- Privacy Statement -->

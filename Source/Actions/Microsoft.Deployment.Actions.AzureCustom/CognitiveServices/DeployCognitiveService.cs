@@ -43,7 +43,7 @@ namespace Microsoft.Deployment.Actions.AzureCustom.CognitiveServices
             param.AddStringParam("CognitiveServiceName", cognitiveServiceName);
             param.AddStringParam("CognitiveServiceType", cognitiveServiceType);
 
-            if (cognitiveServiceType == "Bing.Search")
+            if (cognitiveServiceType == "Bing.Search.v7")
             {
                 param.AddStringParam("Location", "global");
             }

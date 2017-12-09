@@ -3,7 +3,7 @@
     "windowsAuthentication": false,
     "anonymousAuthentication": true,
     "iisExpress": {
-      "applicationUrl": "http://localhost:1503/index.html?name=Microsoft-CRMSalesManagement",
+      "applicationUrl": "http://localhost:1503/index.html?name=Microsoft-TwitterTemplate",
       "sslPort": 0
     }
   },

@@ -1,0 +1,1165 @@
+{
+  "create": {
+    "database": {
+      "name": "AzureActivityLogAS_t-lalamo_f86f15d2-5c70-4f8f-8c4b-c36d567968b9",
+      "compatibilityLevel": 1200,
+      "model": {
+        "culture": "en-US",
+        "dataSources": [
+          {
+            "name": "SqlAzure pbisttest.database.windows.net LancesSQLDB",
+            "connectionString": "Data Source=pbisttest.database.windows.net;Initial Catalog=LancesSQLDB;User ID=pbiadmin;Persist Security Info=true;Encrypt=true;TrustServerCertificate=false",
+            "impersonationMode": "impersonateAccount",
+            "account": "REDMOND\\t-lalamo",
+            "provider": "System.Data.SqlClient",
+            "annotations": [
+              {
+                "name": "ConnectionEditUISource",
+                "value": "SqlAzure"
+              }
+            ]
+          }
+        ],
+        "tables": [
+          {
+            "name": "Events",
+            "columns": [
+              {
+                "name": "Event ID",
+                "dataType": "int64",
+                "sourceColumn": "Event ID",
+                "sourceProviderType": "int"
+              },
+              {
+                "name": "Caller",
+                "dataType": "string",
+                "sourceColumn": "Caller",
+                "sourceProviderType": "varchar"
+              },
+              {
+                "name": "Correlation ID",
+                "dataType": "string",
+                "sourceColumn": "Correlation ID",
+                "sourceProviderType": "varchar"
+              },
+              {
+                "name": "Description",
+                "dataType": "string",
+                "sourceColumn": "Description",
+                "sourceProviderType": "varchar"
+              },
+              {
+                "name": "Event Category",
+                "dataType": "string",
+                "sourceColumn": "Event Category",
+                "sourceProviderType": "varchar"
+              },
+              {
+                "name": "Level",
+                "dataType": "string",
+                "sourceColumn": "Level",
+                "sourceProviderType": "varchar"
+              },
+              {
+                "name": "Operation Category",
+                "dataType": "string",
+                "sourceColumn": "Operation Category",
+                "sourceProviderType": "varchar"
+              },
+              {
+                "name": "Operation ID",
+                "dataType": "string",
+                "sourceColumn": "Operation ID",
+                "sourceProviderType": "varchar"
+              },
+              {
+                "name": "Operation Name",
+                "dataType": "string",
+                "sourceColumn": "Operation Name",
+                "sourceProviderType": "varchar"
+              },
+              {
+                "name": "Resource Group",
+                "dataType": "string",
+                "sourceColumn": "Resource Group",
+                "sourceProviderType": "varchar"
+              },
+              {
+                "name": "Resource ID",
+                "dataType": "string",
+                "sourceColumn": "Resource ID",
+                "sourceProviderType": "varchar"
+              },
+              {
+                "name": "Resource Provider",
+                "dataType": "string",
+                "sourceColumn": "Resource Provider",
+                "sourceProviderType": "varchar"
+              },
+              {
+                "name": "Status",
+                "dataType": "string",
+                "sourceColumn": "Status",
+                "sourceProviderType": "varchar"
+              },
+              {
+                "name": "Timestamp",
+                "dataType": "string",
+                "sourceColumn": "Timestamp",
+                "sourceProviderType": "varchar"
+              },
+              {
+                "type": "calculated",
+                "name": "Date",
+                "dataType": "dateTime",
+                "isDataTypeInferred": false,
+                "expression": "FORMAT(VALUE(LEFT(Events[Timestamp], 10)), \"M/d/yyyy\")",
+                "formatString": "Short Date",
+                "annotations": [
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"DateTimeShortDatePattern\" />"
+                  }
+                ]
+              },
+              {
+                "type": "calculated",
+                "name": "User or Application",
+                "dataType": "string",
+                "isDataTypeInferred": true,
+                "expression": "if (ISBLANK('Events'[Caller]) = true, \"Application\", \"User\")"
+              },
+              {
+                "type": "calculated",
+                "name": "Level1",
+                "dataType": "string",
+                "isDataTypeInferred": true,
+                "expression": "PATHITEM(SUBSTITUTE(Events[Resource ID], \"/\", \"|\"), 4)"
+              },
+              {
+                "type": "calculated",
+                "name": "Level2",
+                "dataType": "string",
+                "isDataTypeInferred": true,
+                "expression": "PATHITEM(SUBSTITUTE(Events[Resource ID], \"/\", \"|\"), 5)"
+              },
+              {
+                "type": "calculated",
+                "name": "Level3",
+                "dataType": "string",
+                "isDataTypeInferred": true,
+                "expression": "PATHITEM(SUBSTITUTE(Events[Resource ID], \"/\", \"|\"), 6)"
+              },
+              {
+                "type": "calculated",
+                "name": "Level4",
+                "dataType": "string",
+                "isDataTypeInferred": true,
+                "expression": "PATHITEM(SUBSTITUTE(Events[Resource ID], \"/\", \"|\"), 7)"
+              },
+              {
+                "type": "calculated",
+                "name": "Level5",
+                "dataType": "string",
+                "isDataTypeInferred": true,
+                "expression": "PATHITEM(SUBSTITUTE(Events[Resource ID], \"/\", \"|\"), 8)"
+              },
+              {
+                "type": "calculated",
+                "name": "Level6",
+                "dataType": "string",
+                "isDataTypeInferred": true,
+                "expression": "PATHITEM(SUBSTITUTE(Events[Resource ID], \"/\", \"|\"), 9)"
+              },
+              {
+                "type": "calculated",
+                "name": "Level7",
+                "dataType": "string",
+                "isDataTypeInferred": true,
+                "expression": "PATHITEM(SUBSTITUTE(Events[Resource ID], \"/\", \"|\"), 10)"
+              },
+              {
+                "type": "calculated",
+                "name": "Level8",
+                "dataType": "string",
+                "isDataTypeInferred": true,
+                "expression": "PATHITEM(SUBSTITUTE(Events[Resource ID], \"/\", \"|\"), 11)"
+              },
+              {
+                "type": "calculated",
+                "name": "Level9",
+                "dataType": "string",
+                "isDataTypeInferred": true,
+                "expression": "PATHITEM(SUBSTITUTE(Events[Resource ID], \"/\", \"|\"), 12)"
+              },
+              {
+                "type": "calculated",
+                "name": "Level10",
+                "dataType": "string",
+                "isDataTypeInferred": true,
+                "expression": "PATHITEM(SUBSTITUTE(Events[Resource ID], \"/\", \"|\"), 13)"
+              },
+              {
+                "type": "calculated",
+                "name": "Hour",
+                "dataType": "int64",
+                "isDataTypeInferred": true,
+                "expression": [
+                  "INT(VALUE(MID(Events[Timestamp], 12, 2))) ",
+                  ""
+                ]
+              }
+            ],
+            "partitions": [
+              {
+                "name": "AdministrativeView",
+                "dataView": "full",
+                "source": {
+                  "query": " SELECT [bpst_aal].[AdministrativeView].* FROM [bpst_aal].[AdministrativeView] ",
+                  "dataSource": "SqlAzure pbisttest.database.windows.net LancesSQLDB"
+                }
+              }
+            ],
+            "measures": [
+              {
+                "name": "% Failures Last 14 Days",
+                "expression": "CALCULATE(COUNTA(Events[Event ID]),Events[Status] = \"Failed\", DATESINPERIOD(Events[Date], [Current Date]-7, -7,DAY)) / CALCULATE(COUNTA(Events[Event ID]), DATESINPERIOD(Events[Date], [Current Date]-7, -7,DAY)) ",
+                "formatString": "0.00 %;-0.00 %;0.00 %"
+              },
+              {
+                "name": "% Failures Last 7 Days",
+                "expression": [
+                  "CALCULATE(COUNTA(Events[Event ID]),Events[Status] = \"Failed\", DATESINPERIOD(Events[Date], ",
+                  "[Current Date], -7,DAY)) / CALCULATE(COUNTA(Events[Event ID]), DATESINPERIOD(Events[Date], [Current Date], -7,DAY)) "
+                ],
+                "formatString": "0.00 %;-0.00 %;0.00 %"
+              },
+              {
+                "name": "Alert Failures 1",
+                "expression": "1"
+              },
+              {
+                "name": "Failures",
+                "expression": "COUNT('Events'[Event ID])+0",
+                "formatString": "0"
+              },
+              {
+                "name": "Total Failures",
+                "expression": "CALCULATE(DISTINCTCOUNT(Events[Event ID]), Events[Status] = \"Failed\")"
+              },
+              {
+                "name": "Total Failures Last 14 Days",
+                "expression": "CALCULATE(COUNTA(Events[Event ID]),Events[Status] = \"Failed\", DATESINPERIOD(Events[Date], [Current Date]-7, -7,DAY)) + 0",
+                "formatString": "0"
+              },
+              {
+                "name": "Total Failures Last 7 Days",
+                "expression": "CALCULATE(COUNTA(Events[Event ID]),Events[Status] = \"Failed\", DATESINPERIOD(Events[Date], [Current Date], -7,DAY)) + 0"
+              },
+              {
+                "name": "Total Success Percentage Last 14 Days",
+                "expression": "CALCULATE(COUNTA(Events[Event ID]),Events[Status] <> \"Failed\", DATESINPERIOD(Events[Date], [Current Date]-7, -7,DAY)) / CALCULATE(COUNT(Events[Event ID]), DATESINPERIOD(Events[Date], [Current Date]-7, -7,DAY))",
+                "formatString": "0.0 %;-0.0 %;0.0 %"
+              },
+              {
+                "name": "Total Success Percentage Last 7 Days",
+                "expression": "CALCULATE(COUNTA(Events[Event ID]),Events[Status] <> \"Failed\", DATESINPERIOD(Events[Date], [Current Date], -7,DAY)) / CALCULATE(COUNT(Events[Event ID]), DATESINPERIOD(Events[Date], [Current Date], -7,DAY))",
+                "formatString": "0.0 %;-0.0 %;0.0 %"
+              },
+              {
+                "name": "Total Successful",
+                "expression": "CALCULATE(DISTINCTCOUNT(Events[Event ID]), Events[Status] <> \"Failed\")"
+              },
+              {
+                "name": "ThisWeekMeasure",
+                "expression": "IF(DATEDIFF('Date'[Current Date], TODAY(), DAY) <= 7, \"Yes\", \"No\")"
+              }
+            ],
+            "annotations": [
+              {
+                "name": "_TM_ExtProp_QueryDefinition",
+                "value": " SELECT [bpst_aal].[AdministrativeView].* FROM [bpst_aal].[AdministrativeView] "
+              },
+              {
+                "name": "_TM_ExtProp_DbTableName",
+                "value": "AdministrativeView"
+              },
+              {
+                "name": "_TM_ExtProp_DbSchemaName",
+                "value": "bpst_aal"
+              }
+            ]
+          },
+          {
+            "name": "Date",
+            "columns": [
+              {
+                "name": "date_key",
+                "dataType": "int64",
+                "sourceColumn": "date_key",
+                "sourceProviderType": "int"
+              },
+              {
+                "name": "full_date",
+                "dataType": "dateTime",
+                "sourceColumn": "full_date",
+                "formatString": "Short Date",
+                "sourceProviderType": "date",
+                "annotations": [
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"DateTimeShortDatePattern\" />"
+                  }
+                ]
+              },
+              {
+                "name": "day_of_week",
+                "dataType": "int64",
+                "sourceColumn": "day_of_week",
+                "sourceProviderType": "tinyint"
+              },
+              {
+                "name": "day_num_in_month",
+                "dataType": "int64",
+                "sourceColumn": "day_num_in_month",
+                "sourceProviderType": "tinyint"
+              },
+              {
+                "name": "day_name",
+                "dataType": "string",
+                "sourceColumn": "day_name",
+                "sourceProviderType": "nvarchar"
+              },
+              {
+                "name": "day_abbrev",
+                "dataType": "string",
+                "sourceColumn": "day_abbrev",
+                "sourceProviderType": "nvarchar"
+              },
+              {
+                "name": "weekday_flag",
+                "dataType": "string",
+                "sourceColumn": "weekday_flag",
+                "sourceProviderType": "char"
+              },
+              {
+                "name": "week_num_in_year",
+                "dataType": "int64",
+                "sourceColumn": "week_num_in_year",
+                "sourceProviderType": "tinyint"
+              },
+              {
+                "name": "week_begin_date",
+                "dataType": "dateTime",
+                "sourceColumn": "week_begin_date",
+                "formatString": "General Date",
+                "sourceProviderType": "date"
+              },
+              {
+                "name": "month",
+                "dataType": "int64",
+                "sourceColumn": "month",
+                "sourceProviderType": "tinyint"
+              },
+              {
+                "name": "month_name",
+                "dataType": "string",
+                "sourceColumn": "month_name",
+                "sourceProviderType": "nvarchar"
+              },
+              {
+                "name": "month_abbrev",
+                "dataType": "string",
+                "sourceColumn": "month_abbrev",
+                "sourceProviderType": "nvarchar"
+              },
+              {
+                "name": "quarter",
+                "dataType": "int64",
+                "sourceColumn": "quarter",
+                "sourceProviderType": "tinyint"
+              },
+              {
+                "name": "year",
+                "dataType": "int64",
+                "sourceColumn": "year",
+                "sourceProviderType": "smallint"
+              },
+              {
+                "name": "yearmo",
+                "dataType": "int64",
+                "sourceColumn": "yearmo",
+                "sourceProviderType": "int"
+              },
+              {
+                "name": "same_day_year_ago_date",
+                "dataType": "dateTime",
+                "sourceColumn": "same_day_year_ago_date",
+                "formatString": "General Date",
+                "sourceProviderType": "date"
+              },
+              {
+                "type": "calculated",
+                "name": "LastXDays",
+                "dataType": "int64",
+                "isDataTypeInferred": true,
+                "expression": "IF([Current Date] <= 'Date'[full_date], DATEDIFF([Current Date], 'Date'[full_date], DAY), DATEDIFF('Date'[full_date], [Current Date], DAY)) "
+              },
+              {
+                "type": "calculated",
+                "name": "Past Or Future",
+                "dataType": "string",
+                "isDataTypeInferred": true,
+                "expression": "if('Date'[full_date] <= [Current Date], \"Past\", \"Future\") "
+              }
+            ],
+            "partitions": [
+              {
+                "name": "DateView",
+                "dataView": "full",
+                "source": {
+                  "query": " SELECT [bpst_aal].[DateView].* FROM [bpst_aal].[DateView] ",
+                  "dataSource": "SqlAzure pbisttest.database.windows.net LancesSQLDB"
+                },
+                "annotations": [
+                  {
+                    "name": "TableWidgetSerialization",
+                    "value": [
+                      "<?xml version=\"1.0\" encoding=\"UTF-16\"?><Gemini xmlns=\"TableWidgetSerialization\"><AnnotationContent><![CDATA[<?xml version=\"1.0\"?>",
+                      "<TableWidgetGridSerialization xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\">",
+                      "  <ColumnSuggestedType />",
+                      "  <ColumnFormat />",
+                      "  <ColumnAccuracy />",
+                      "  <ColumnCurrencySymbol />",
+                      "  <ColumnPositivePattern />",
+                      "  <ColumnNegativePattern />",
+                      "  <ColumnWidths>",
+                      "    <item>",
+                      "      <key>",
+                      "        <string>date_key</string>",
+                      "      </key>",
+                      "      <value>",
+                      "        <int>137</int>",
+                      "      </value>",
+                      "    </item>",
+                      "    <item>",
+                      "      <key>",
+                      "        <string>full_date</string>",
+                      "      </key>",
+                      "      <value>",
+                      "        <int>240</int>",
+                      "      </value>",
+                      "    </item>",
+                      "    <item>",
+                      "      <key>",
+                      "        <string>day_of_week</string>",
+                      "      </key>",
+                      "      <value>",
+                      "        <int>177</int>",
+                      "      </value>",
+                      "    </item>",
+                      "    <item>",
+                      "      <key>",
+                      "        <string>day_num_in_month</string>",
+                      "      </key>",
+                      "      <value>",
+                      "        <int>239</int>",
+                      "      </value>",
+                      "    </item>",
+                      "    <item>",
+                      "      <key>",
+                      "        <string>day_name</string>",
+                      "      </key>",
+                      "      <value>",
+                      "        <int>149</int>",
+                      "      </value>",
+                      "    </item>",
+                      "    <item>",
+                      "      <key>",
+                      "        <string>day_abbrev</string>",
+                      "      </key>",
+                      "      <value>",
+                      "        <int>162</int>",
+                      "      </value>",
+                      "    </item>",
+                      "    <item>",
+                      "      <key>",
+                      "        <string>weekday_flag</string>",
+                      "      </key>",
+                      "      <value>",
+                      "        <int>182</int>",
+                      "      </value>",
+                      "    </item>",
+                      "    <item>",
+                      "      <key>",
+                      "        <string>week_num_in_year</string>",
+                      "      </key>",
+                      "      <value>",
+                      "        <int>237</int>",
+                      "      </value>",
+                      "    </item>",
+                      "    <item>",
+                      "      <key>",
+                      "        <string>week_begin_date</string>",
+                      "      </key>",
+                      "      <value>",
+                      "        <int>219</int>",
+                      "      </value>",
+                      "    </item>",
+                      "    <item>",
+                      "      <key>",
+                      "        <string>month</string>",
+                      "      </key>",
+                      "      <value>",
+                      "        <int>109</int>",
+                      "      </value>",
+                      "    </item>",
+                      "    <item>",
+                      "      <key>",
+                      "        <string>month_name</string>",
+                      "      </key>",
+                      "      <value>",
+                      "        <int>175</int>",
+                      "      </value>",
+                      "    </item>",
+                      "    <item>",
+                      "      <key>",
+                      "        <string>month_abbrev</string>",
+                      "      </key>",
+                      "      <value>",
+                      "        <int>188</int>",
+                      "      </value>",
+                      "    </item>",
+                      "    <item>",
+                      "      <key>",
+                      "        <string>quarter</string>",
+                      "      </key>",
+                      "      <value>",
+                      "        <int>119</int>",
+                      "      </value>",
+                      "    </item>",
+                      "    <item>",
+                      "      <key>",
+                      "        <string>year</string>",
+                      "      </key>",
+                      "      <value>",
+                      "        <int>91</int>",
+                      "      </value>",
+                      "    </item>",
+                      "    <item>",
+                      "      <key>",
+                      "        <string>yearmo</string>",
+                      "      </key>",
+                      "      <value>",
+                      "        <int>121</int>",
+                      "      </value>",
+                      "    </item>",
+                      "    <item>",
+                      "      <key>",
+                      "        <string>same_day_year_ago_date</string>",
+                      "      </key>",
+                      "      <value>",
+                      "        <int>305</int>",
+                      "      </value>",
+                      "    </item>",
+                      "  </ColumnWidths>",
+                      "  <ColumnDisplayIndex>",
+                      "    <item>",
+                      "      <key>",
+                      "        <string>date_key</string>",
+                      "      </key>",
+                      "      <value>",
+                      "        <int>0</int>",
+                      "      </value>",
+                      "    </item>",
+                      "    <item>",
+                      "      <key>",
+                      "        <string>full_date</string>",
+                      "      </key>",
+                      "      <value>",
+                      "        <int>1</int>",
+                      "      </value>",
+                      "    </item>",
+                      "    <item>",
+                      "      <key>",
+                      "        <string>day_of_week</string>",
+                      "      </key>",
+                      "      <value>",
+                      "        <int>2</int>",
+                      "      </value>",
+                      "    </item>",
+                      "    <item>",
+                      "      <key>",
+                      "        <string>day_num_in_month</string>",
+                      "      </key>",
+                      "      <value>",
+                      "        <int>3</int>",
+                      "      </value>",
+                      "    </item>",
+                      "    <item>",
+                      "      <key>",
+                      "        <string>day_name</string>",
+                      "      </key>",
+                      "      <value>",
+                      "        <int>4</int>",
+                      "      </value>",
+                      "    </item>",
+                      "    <item>",
+                      "      <key>",
+                      "        <string>day_abbrev</string>",
+                      "      </key>",
+                      "      <value>",
+                      "        <int>5</int>",
+                      "      </value>",
+                      "    </item>",
+                      "    <item>",
+                      "      <key>",
+                      "        <string>weekday_flag</string>",
+                      "      </key>",
+                      "      <value>",
+                      "        <int>6</int>",
+                      "      </value>",
+                      "    </item>",
+                      "    <item>",
+                      "      <key>",
+                      "        <string>week_num_in_year</string>",
+                      "      </key>",
+                      "      <value>",
+                      "        <int>7</int>",
+                      "      </value>",
+                      "    </item>",
+                      "    <item>",
+                      "      <key>",
+                      "        <string>week_begin_date</string>",
+                      "      </key>",
+                      "      <value>",
+                      "        <int>8</int>",
+                      "      </value>",
+                      "    </item>",
+                      "    <item>",
+                      "      <key>",
+                      "        <string>month</string>",
+                      "      </key>",
+                      "      <value>",
+                      "        <int>9</int>",
+                      "      </value>",
+                      "    </item>",
+                      "    <item>",
+                      "      <key>",
+                      "        <string>month_name</string>",
+                      "      </key>",
+                      "      <value>",
+                      "        <int>10</int>",
+                      "      </value>",
+                      "    </item>",
+                      "    <item>",
+                      "      <key>",
+                      "        <string>month_abbrev</string>",
+                      "      </key>",
+                      "      <value>",
+                      "        <int>11</int>",
+                      "      </value>",
+                      "    </item>",
+                      "    <item>",
+                      "      <key>",
+                      "        <string>quarter</string>",
+                      "      </key>",
+                      "      <value>",
+                      "        <int>12</int>",
+                      "      </value>",
+                      "    </item>",
+                      "    <item>",
+                      "      <key>",
+                      "        <string>year</string>",
+                      "      </key>",
+                      "      <value>",
+                      "        <int>13</int>",
+                      "      </value>",
+                      "    </item>",
+                      "    <item>",
+                      "      <key>",
+                      "        <string>yearmo</string>",
+                      "      </key>",
+                      "      <value>",
+                      "        <int>14</int>",
+                      "      </value>",
+                      "    </item>",
+                      "    <item>",
+                      "      <key>",
+                      "        <string>same_day_year_ago_date</string>",
+                      "      </key>",
+                      "      <value>",
+                      "        <int>15</int>",
+                      "      </value>",
+                      "    </item>",
+                      "  </ColumnDisplayIndex>",
+                      "  <ColumnFrozen />",
+                      "  <ColumnChecked />",
+                      "  <ColumnFilter />",
+                      "  <SelectionFilter />",
+                      "  <FilterParameters />",
+                      "  <IsSortDescending>false</IsSortDescending>",
+                      "</TableWidgetGridSerialization>]]></AnnotationContent></Gemini>"
+                    ]
+                  }
+                ]
+              }
+            ],
+            "measures": [
+              {
+                "name": "Current Date",
+                "expression": "TODAY()"
+              }
+            ],
+            "annotations": [
+              {
+                "name": "_TM_ExtProp_QueryDefinition",
+                "value": " SELECT [bpst_aal].[DateView].* FROM [bpst_aal].[DateView] "
+              },
+              {
+                "name": "_TM_ExtProp_DbTableName",
+                "value": "DateView"
+              },
+              {
+                "name": "_TM_ExtProp_DbSchemaName",
+                "value": "bpst_aal"
+              },
+              {
+                "name": "TableWidgetSerialization",
+                "value": [
+                  "<?xml version=\"1.0\" encoding=\"UTF-16\"?><Gemini xmlns=\"TableWidgetSerialization\"><AnnotationContent><![CDATA[<?xml version=\"1.0\"?>",
+                  "<TableWidgetGridSerialization xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\">",
+                  "  <ColumnSuggestedType />",
+                  "  <ColumnFormat />",
+                  "  <ColumnAccuracy />",
+                  "  <ColumnCurrencySymbol />",
+                  "  <ColumnPositivePattern />",
+                  "  <ColumnNegativePattern />",
+                  "  <ColumnWidths>",
+                  "    <item>",
+                  "      <key>",
+                  "        <string>date_key</string>",
+                  "      </key>",
+                  "      <value>",
+                  "        <int>137</int>",
+                  "      </value>",
+                  "    </item>",
+                  "    <item>",
+                  "      <key>",
+                  "        <string>full_date</string>",
+                  "      </key>",
+                  "      <value>",
+                  "        <int>240</int>",
+                  "      </value>",
+                  "    </item>",
+                  "    <item>",
+                  "      <key>",
+                  "        <string>day_of_week</string>",
+                  "      </key>",
+                  "      <value>",
+                  "        <int>177</int>",
+                  "      </value>",
+                  "    </item>",
+                  "    <item>",
+                  "      <key>",
+                  "        <string>day_num_in_month</string>",
+                  "      </key>",
+                  "      <value>",
+                  "        <int>239</int>",
+                  "      </value>",
+                  "    </item>",
+                  "    <item>",
+                  "      <key>",
+                  "        <string>day_name</string>",
+                  "      </key>",
+                  "      <value>",
+                  "        <int>149</int>",
+                  "      </value>",
+                  "    </item>",
+                  "    <item>",
+                  "      <key>",
+                  "        <string>day_abbrev</string>",
+                  "      </key>",
+                  "      <value>",
+                  "        <int>162</int>",
+                  "      </value>",
+                  "    </item>",
+                  "    <item>",
+                  "      <key>",
+                  "        <string>weekday_flag</string>",
+                  "      </key>",
+                  "      <value>",
+                  "        <int>182</int>",
+                  "      </value>",
+                  "    </item>",
+                  "    <item>",
+                  "      <key>",
+                  "        <string>week_num_in_year</string>",
+                  "      </key>",
+                  "      <value>",
+                  "        <int>237</int>",
+                  "      </value>",
+                  "    </item>",
+                  "    <item>",
+                  "      <key>",
+                  "        <string>week_begin_date</string>",
+                  "      </key>",
+                  "      <value>",
+                  "        <int>219</int>",
+                  "      </value>",
+                  "    </item>",
+                  "    <item>",
+                  "      <key>",
+                  "        <string>month</string>",
+                  "      </key>",
+                  "      <value>",
+                  "        <int>109</int>",
+                  "      </value>",
+                  "    </item>",
+                  "    <item>",
+                  "      <key>",
+                  "        <string>month_name</string>",
+                  "      </key>",
+                  "      <value>",
+                  "        <int>175</int>",
+                  "      </value>",
+                  "    </item>",
+                  "    <item>",
+                  "      <key>",
+                  "        <string>month_abbrev</string>",
+                  "      </key>",
+                  "      <value>",
+                  "        <int>188</int>",
+                  "      </value>",
+                  "    </item>",
+                  "    <item>",
+                  "      <key>",
+                  "        <string>quarter</string>",
+                  "      </key>",
+                  "      <value>",
+                  "        <int>119</int>",
+                  "      </value>",
+                  "    </item>",
+                  "    <item>",
+                  "      <key>",
+                  "        <string>year</string>",
+                  "      </key>",
+                  "      <value>",
+                  "        <int>91</int>",
+                  "      </value>",
+                  "    </item>",
+                  "    <item>",
+                  "      <key>",
+                  "        <string>yearmo</string>",
+                  "      </key>",
+                  "      <value>",
+                  "        <int>121</int>",
+                  "      </value>",
+                  "    </item>",
+                  "    <item>",
+                  "      <key>",
+                  "        <string>same_day_year_ago_date</string>",
+                  "      </key>",
+                  "      <value>",
+                  "        <int>305</int>",
+                  "      </value>",
+                  "    </item>",
+                  "  </ColumnWidths>",
+                  "  <ColumnDisplayIndex>",
+                  "    <item>",
+                  "      <key>",
+                  "        <string>date_key</string>",
+                  "      </key>",
+                  "      <value>",
+                  "        <int>0</int>",
+                  "      </value>",
+                  "    </item>",
+                  "    <item>",
+                  "      <key>",
+                  "        <string>full_date</string>",
+                  "      </key>",
+                  "      <value>",
+                  "        <int>1</int>",
+                  "      </value>",
+                  "    </item>",
+                  "    <item>",
+                  "      <key>",
+                  "        <string>day_of_week</string>",
+                  "      </key>",
+                  "      <value>",
+                  "        <int>2</int>",
+                  "      </value>",
+                  "    </item>",
+                  "    <item>",
+                  "      <key>",
+                  "        <string>day_num_in_month</string>",
+                  "      </key>",
+                  "      <value>",
+                  "        <int>3</int>",
+                  "      </value>",
+                  "    </item>",
+                  "    <item>",
+                  "      <key>",
+                  "        <string>day_name</string>",
+                  "      </key>",
+                  "      <value>",
+                  "        <int>4</int>",
+                  "      </value>",
+                  "    </item>",
+                  "    <item>",
+                  "      <key>",
+                  "        <string>day_abbrev</string>",
+                  "      </key>",
+                  "      <value>",
+                  "        <int>5</int>",
+                  "      </value>",
+                  "    </item>",
+                  "    <item>",
+                  "      <key>",
+                  "        <string>weekday_flag</string>",
+                  "      </key>",
+                  "      <value>",
+                  "        <int>6</int>",
+                  "      </value>",
+                  "    </item>",
+                  "    <item>",
+                  "      <key>",
+                  "        <string>week_num_in_year</string>",
+                  "      </key>",
+                  "      <value>",
+                  "        <int>7</int>",
+                  "      </value>",
+                  "    </item>",
+                  "    <item>",
+                  "      <key>",
+                  "        <string>week_begin_date</string>",
+                  "      </key>",
+                  "      <value>",
+                  "        <int>8</int>",
+                  "      </value>",
+                  "    </item>",
+                  "    <item>",
+                  "      <key>",
+                  "        <string>month</string>",
+                  "      </key>",
+                  "      <value>",
+                  "        <int>9</int>",
+                  "      </value>",
+                  "    </item>",
+                  "    <item>",
+                  "      <key>",
+                  "        <string>month_name</string>",
+                  "      </key>",
+                  "      <value>",
+                  "        <int>10</int>",
+                  "      </value>",
+                  "    </item>",
+                  "    <item>",
+                  "      <key>",
+                  "        <string>month_abbrev</string>",
+                  "      </key>",
+                  "      <value>",
+                  "        <int>11</int>",
+                  "      </value>",
+                  "    </item>",
+                  "    <item>",
+                  "      <key>",
+                  "        <string>quarter</string>",
+                  "      </key>",
+                  "      <value>",
+                  "        <int>12</int>",
+                  "      </value>",
+                  "    </item>",
+                  "    <item>",
+                  "      <key>",
+                  "        <string>year</string>",
+                  "      </key>",
+                  "      <value>",
+                  "        <int>13</int>",
+                  "      </value>",
+                  "    </item>",
+                  "    <item>",
+                  "      <key>",
+                  "        <string>yearmo</string>",
+                  "      </key>",
+                  "      <value>",
+                  "        <int>14</int>",
+                  "      </value>",
+                  "    </item>",
+                  "    <item>",
+                  "      <key>",
+                  "        <string>same_day_year_ago_date</string>",
+                  "      </key>",
+                  "      <value>",
+                  "        <int>15</int>",
+                  "      </value>",
+                  "    </item>",
+                  "  </ColumnDisplayIndex>",
+                  "  <ColumnFrozen />",
+                  "  <ColumnChecked />",
+                  "  <ColumnFilter />",
+                  "  <SelectionFilter />",
+                  "  <FilterParameters />",
+                  "  <IsSortDescending>false</IsSortDescending>",
+                  "</TableWidgetGridSerialization>]]></AnnotationContent></Gemini>"
+                ]
+              }
+            ]
+          },
+          {
+            "name": "ServiceHealth",
+            "columns": [
+              {
+                "name": "Correlation ID",
+                "dataType": "string",
+                "sourceColumn": "Correlation ID",
+                "sourceProviderType": "varchar"
+              },
+              {
+                "name": "Operation ID",
+                "dataType": "string",
+                "sourceColumn": "Operation ID",
+                "sourceProviderType": "varchar"
+              },
+              {
+                "name": "Timestamp",
+                "dataType": "string",
+                "sourceColumn": "Timestamp",
+                "sourceProviderType": "varchar"
+              },
+              {
+                "name": "Service Health ID",
+                "dataType": "string",
+                "sourceColumn": "Service Health ID",
+                "sourceProviderType": "varchar"
+              },
+              {
+                "name": "Description",
+                "dataType": "string",
+                "sourceColumn": "Description",
+                "sourceProviderType": "varchar"
+              },
+              {
+                "name": "Impact",
+                "dataType": "string",
+                "sourceColumn": "Impact",
+                "sourceProviderType": "varchar"
+              },
+              {
+                "name": "Impacted Regions",
+                "dataType": "string",
+                "sourceColumn": "Impacted Regions",
+                "sourceProviderType": "varchar"
+              },
+              {
+                "name": "Impacted Services",
+                "dataType": "string",
+                "sourceColumn": "Impacted Services",
+                "sourceProviderType": "varchar"
+              },
+              {
+                "name": "Incident Type",
+                "dataType": "string",
+                "sourceColumn": "Incident Type",
+                "sourceProviderType": "varchar"
+              },
+              {
+                "name": "Level",
+                "dataType": "string",
+                "sourceColumn": "Level",
+                "sourceProviderType": "varchar"
+              },
+              {
+                "name": "Status",
+                "dataType": "string",
+                "sourceColumn": "Status",
+                "sourceProviderType": "varchar"
+              },
+              {
+                "name": "Title",
+                "dataType": "string",
+                "sourceColumn": "Title",
+                "sourceProviderType": "varchar"
+              },
+              {
+                "name": "rnk",
+                "dataType": "int64",
+                "sourceColumn": "rnk",
+                "sourceProviderType": "bigint"
+              },
+              {
+                "type": "calculated",
+                "name": "Date",
+                "dataType": "dateTime",
+                "isDataTypeInferred": false,
+                "expression": "FORMAT(VALUE(LEFT(ServiceHealth[Timestamp], 10)), \"M/d/yyyy\")",
+                "formatString": "Short Date",
+                "annotations": [
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"DateTimeShortDatePattern\" />"
+                  }
+                ]
+              }
+            ],
+            "partitions": [
+              {
+                "name": "ServiceHealthView",
+                "dataView": "full",
+                "source": {
+                  "query": " SELECT [bpst_aal].[ServiceHealthView].* FROM [bpst_aal].[ServiceHealthView] ",
+                  "dataSource": "SqlAzure pbisttest.database.windows.net LancesSQLDB"
+                }
+              }
+            ],
+            "measures": [
+              {
+                "name": "Total Service Health Errors",
+                "expression": "CALCULATE(DISTINCTCOUNT(ServiceHealth[Service Health ID]))"
+              }
+            ],
+            "annotations": [
+              {
+                "name": "_TM_ExtProp_QueryDefinition",
+                "value": " SELECT [bpst_aal].[ServiceHealthView].* FROM [bpst_aal].[ServiceHealthView] "
+              },
+              {
+                "name": "_TM_ExtProp_DbTableName",
+                "value": "ServiceHealthView"
+              },
+              {
+                "name": "_TM_ExtProp_DbSchemaName",
+                "value": "bpst_aal"
+              }
+            ]
+          }
+        ],
+        "relationships": [
+          {
+            "name": "0aa1a560-aeb8-4e75-a189-e95600b455e9",
+            "fromTable": "Events",
+            "fromColumn": "Date",
+            "toTable": "Date",
+            "toColumn": "full_date",
+            "crossFilteringBehavior": "bothDirections"
+          },
+          {
+            "name": "26933e92-bedc-481a-b4a4-13f4cf4fcb3b",
+            "fromTable": "ServiceHealth",
+            "fromColumn": "Date",
+            "toTable": "Date",
+            "toColumn": "full_date",
+            "crossFilteringBehavior": "bothDirections"
+          }
+        ],
+        "annotations": [
+          {
+            "name": "ClientCompatibilityLevel",
+            "value": "400"
+          }
+        ]
+      }
+    }
+  }
+}
+

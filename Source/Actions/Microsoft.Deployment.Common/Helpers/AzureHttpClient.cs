@@ -5,6 +5,8 @@ using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 
+using Microsoft.Deployment.Common.Model.Http;
+
 namespace Microsoft.Deployment.Common.Helpers
 {
     public class AzureHttpClient
@@ -35,10 +37,9 @@ namespace Microsoft.Deployment.Common.Helpers
             this.ResourceGroup = resourceGroup;
         }
 
-        public AzureHttpClient(string token, Dictionary<string, string> headers)
+        public AzureHttpClient(Dictionary<string, string> headers)
         {
             this.Headers = headers;
-            this.Token = token;
         }
 
         public async Task<HttpResponseMessage> ExecuteGenericRequestWithHeaderAsync(HttpMethod method, string url, string body)
@@ -118,10 +119,70 @@ namespace Microsoft.Deployment.Common.Helpers
             }
         }
 
+        public async Task<HttpResponseMessage> ExecuteGenericRequestNoTokenAsync(HttpMethod method, string url, string body = "")
+        {
+            using (HttpClient client = new HttpClient())
+            {
+                string requestUri = url;
+
+                HttpRequestMessage message = new HttpRequestMessage(method, requestUri);
+
+                if (method == HttpMethod.Post || method == HttpMethod.Put)
+                {
+                    message.Content = new StringContent(body, Encoding.UTF8, "application/json");
+                }
+
+                if (this.Headers != null)
+                {
+                    foreach (KeyValuePair<string, string> header in this.Headers)
+                    {
+                        client.DefaultRequestHeaders.Add(header.Key, header.Value);
+                    }
+                }
+
+                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("text/javascript"));
+
+                return await client.SendAsync(message);
+            }
+        }
+
+        public async Task<string> GetJson(HttpMethod method, string url, string body = "")
+        {
+            HttpResponseMessage response = await this.ExecuteGenericRequestNoTokenAsync(method, url, body);
+            return response.IsSuccessStatusCode ? await response.Content.ReadAsStringAsync() : null;
+        }
+
+        public async Task<HttpResponseDetails> GetJsonDetails(HttpMethod method, string url, string body = "")
+        {
+            HttpResponseMessage response = await this.ExecuteGenericRequestNoTokenAsync(method, url, body);
+            return new HttpResponseDetails(response.StatusCode, await response.Content.ReadAsStringAsync());
+        }
+
+        public async Task<bool> IsSuccess(HttpMethod method, string url, string body = "")
+        {
+            HttpResponseMessage response = await this.ExecuteGenericRequestWithHeaderAsync(method, url, body);
+            return response.IsSuccessStatusCode;
+        }
+
         public async Task<string> Request(HttpMethod method, string url, string body = "")
         {
             HttpResponseMessage response = await this.ExecuteGenericRequestWithHeaderAsync(method, url, body);
-            return await response.Content.ReadAsStringAsync();
+            return response.IsSuccessStatusCode ? await response.Content.ReadAsStringAsync() : null;
+        }
+
+        public async Task<T> Request<T>(HttpMethod method, string url, string body = "")
+        {
+            T result = default(T);
+
+            HttpResponseMessage response = await this.ExecuteGenericRequestWithHeaderAsync(method, url, body);
+
+            if (response.IsSuccessStatusCode)
+            {
+                result = JsonUtility.Deserialize<T>(await response.Content.ReadAsStringAsync());
+            }
+
+            return result;
         }
 
         public async Task<string> Request(string url, byte[] file, string name)
@@ -152,6 +213,57 @@ namespace Microsoft.Deployment.Common.Helpers
             }
 
             return await response.Content.ReadAsStringAsync();
+        }
+
+        public async Task<T> RequestAzure<T>(HttpMethod method, string url, string apiVersion, string body = "")
+        {
+            T result = default(T);
+
+            HttpResponseMessage response = await this.ExecuteWithSubscriptionAndResourceGroupAsync(method, url, apiVersion, body);
+
+            if (response.IsSuccessStatusCode)
+            {
+                result = JsonUtility.Deserialize<T>(await response.Content.ReadAsStringAsync());
+            }
+
+            return result;
+        }
+
+        public async Task<T> RequestValue<T>(HttpMethod method, string url, string body = "")
+        {
+            T value = default(T);
+
+            HttpResponseMessage response = await this.ExecuteGenericRequestWithHeaderAsync(method, url, body);
+
+            if (response.IsSuccessStatusCode)
+            {
+                value = JsonUtility.DeserializeContent<T>(await response.Content.ReadAsStringAsync());
+            }
+
+            return value;
+        }
+
+        public async Task<string> Test(HttpMethod method, string url, string body = "")
+        {
+            string message = null;
+
+            HttpResponseMessage result = await this.ExecuteGenericRequestWithHeaderAsync(method, url, body);
+
+            if (!result.IsSuccessStatusCode)
+            {
+                HttpErrorResponseWrapper response = JsonUtility.Deserialize<HttpErrorResponseWrapper>(await result.Content.ReadAsStringAsync());
+
+                if (response != null && response.Error != null)
+                {
+                    message = response.Error.Message;
+                }
+                else
+                {
+                    message = result.StatusCode.ToString();
+                }
+            }
+
+            return message;
         }
 
         private string GetFormBoundary()

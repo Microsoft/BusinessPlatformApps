@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 using Microsoft.Azure;
 using Microsoft.Azure.Management.Resources;
-
+using Microsoft.Deployment.Common;
 using Microsoft.Deployment.Common.ActionModel;
 using Microsoft.Deployment.Common.Actions;
 using Microsoft.Deployment.Common.ErrorCode;
@@ -23,10 +23,11 @@ namespace Microsoft.Deployment.Actions.AzureCustom.Common
             var resourceGroup = request.DataStore.GetValue("SelectedResourceGroup");
             var location = request.DataStore.GetJson("SelectedLocation", "Name");
             var connectorName = request.DataStore.GetValue("ConnectorName");
+            var requiresConsent = request.DataStore.GetValue("RequiresConsent");
 
             //Needs to be changed once Logic Apps makes it available
             if (connectorName == "bingsearch")
-                {
+            {
                 location = "brazilsouth";
             }
 
@@ -50,6 +51,37 @@ namespace Microsoft.Deployment.Actions.AzureCustom.Common
             {
                 return new ActionResponse(ActionStatus.Failure, JsonUtility.GetJObjectFromJsonString(await connection.Content.ReadAsStringAsync()),
                     null, DefaultErrorCodes.DefaultErrorCode, "Failed to create connection");
+            }
+
+            var redirectRoot = request.Info.WebsiteRootUrl;
+
+            if (requiresConsent != null && requiresConsent.ToLowerInvariant() == "true")
+            {
+                // Get Consent links for auth
+                payload = new ExpandoObject();
+                payload.parameters = new ExpandoObject[1];
+                payload.parameters[0] = new ExpandoObject();
+                payload.parameters[0].objectId = null;
+                payload.parameters[0].tenantId = null;
+                payload.parameters[0].parameterName = "token";
+                payload.parameters[0].redirectUrl = redirectRoot + Constants.WebsiteRedirectPath;
+
+                HttpResponseMessage consent = await new AzureHttpClient(azureToken, subscription, resourceGroup).ExecuteWithSubscriptionAndResourceGroupAsync(HttpMethod.Post,
+                    $"/providers/Microsoft.Web/connections/{connectorName}/listConsentLinks", "2016-06-01", JsonUtility.GetJsonStringFromObject(payload));
+
+                if (!consent.IsSuccessStatusCode)
+                {
+                    return new ActionResponse(ActionStatus.Failure, JsonUtility.GetJObjectFromJsonString(await connection.Content.ReadAsStringAsync()),
+                        null, DefaultErrorCodes.DefaultErrorCode, "Failed to get consent");
+                }
+                var connectiondata = JsonUtility.GetJObjectFromJsonString(await connection.Content.ReadAsStringAsync());
+                var consentdata = JsonUtility.GetJObjectFromJsonString(await consent.Content.ReadAsStringAsync());
+                dynamic objectToReturn = new ExpandoObject();
+                objectToReturn.Consent = consentdata;
+                objectToReturn.Connection = connectiondata;
+                objectToReturn.UniqueId = payload.parameters[0].objectId;
+
+                return new ActionResponse(ActionStatus.Success, objectToReturn);
             }
 
             return new ActionResponse(ActionStatus.Success);

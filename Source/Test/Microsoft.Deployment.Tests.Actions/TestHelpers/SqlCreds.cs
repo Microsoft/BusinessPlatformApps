@@ -1,8 +1,10 @@
 ﻿using System.Dynamic;
-using Microsoft.Deployment.Common.ActionModel;
-using Microsoft.Deployment.Common.Helpers;
+
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Newtonsoft.Json.Linq;
+
+using Microsoft.Deployment.Common.ActionModel;
+using Microsoft.Deployment.Common.Helpers;
 
 namespace Microsoft.Deployment.Tests.Actions.TestHelpers
 {

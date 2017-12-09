@@ -24,9 +24,7 @@ let accessToken = '{!PBIaccess_token}';
 let refreshToken = '{!PBIrefresh_token}';
 let expires_on = '{!PBIexpires_on}';
 let validateResult = '{!validateResult}';
-
-let selectedGroup = '{!selectedGroup}';
-let selectedReport = 'YOURREPORTID';
+let selectedReport = 'YOURREPORTID'; 
 
 window.onload = function() {
 
@@ -80,75 +78,6 @@ window.onbeforeclose = function()
         {
             window.opener.update(window.location.href);
         }
-
-</script>
-</html>
-
-</apex:page><apex:page showHeader="true" controller="PowerBIController" action="{!redirectOnCallback}">
-
-<html>
-
-<head>
-
-</head>
-
-<apex:includeScript value="{!$Resource.PBIJS}"/>
-<apex:form >
-<apex:actionFunction name="refreshAccessToken" action="{!refreshAccessToken}"/>
-</apex:form>
-<div id="myReport" style="height: 800px;"/>
-
-
-<script>
-
-let accessToken = '{!PBIaccess_token}';
-let refreshToken = '{!PBIrefresh_token}';
-let expires_on = '{!PBIexpires_on}';
-let selectedReport = 'YOURREPORTID';
-window.onload = function() {
-
-
-let expiresOn = parseInt(expires_on);
-let currentTime = Date.now()/1000;
-    
-    if(expiresOn <= currentTime || !accessToken)
-    { 
-        window.location.href = '{!authUrl}';
-    } else if((expiresOn - 2000) <= currentTime)
-           {
-                refreshAccessToken();
-           }
- 
-
-var filter = {
-      $schema: "http://powerbi.com/product/schema#basic"
-    };
-
-var embedConfiguration = {
-
-    type: 'report',
-    
-    id: selectedReport,
-
-    embedUrl: 'https://app.powerbi.com/reportEmbed',
-
-    settings: {
-
-            filterPaneEnabled: true,
-
-            navContentPaneEnabled: true
-
-        }
-};
-
-
-
-powerbi.accessToken = '{!PBIaccess_token}';
-
-var element = document.getElementById('myReport');
-
-var report = powerbi.embed(element, embedConfiguration);
-}
 
 </script>
 </html>

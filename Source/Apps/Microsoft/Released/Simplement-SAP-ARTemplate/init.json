@@ -77,8 +77,10 @@
                 "name": "customize.html"
             },
             {
+                "displayCompletionNotification": false,
                 "displayname": "Summary",
                 "name": "$SiteCommon$/pages-gallery/summary.html",
+                "sendCompletionNotification": false,
                 "values": {
                     "Target Server": "$(this.MS.DataStore.getValue('Server'))",
                     "Target Database": "$(this.MS.DataStore.getValue('Database'))",
@@ -86,6 +88,9 @@
                 }
             },
             {
+                "datastoreEntriesToValidate": [
+                    "ImpersonationPassword"
+                ],
                 "displayname": "Progress",
                 "filename": "$save('SAPSolutionTemplate.pbix')",
                 "finishedActionName": "Microsoft-GetTaskStatus",
@@ -129,7 +134,6 @@
         "Pages": [
             {
                 "displayname": "Uninstall Progress",
-                "HasNavigated": "$save(true)",
                 "isUninstall": true,
                 "name": "$SiteCommon$/pages-gallery/progress.html",
                 "successMessage": "$translate(INIT_UNINSTALL_SUCCESS)"

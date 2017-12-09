@@ -50,6 +50,11 @@ namespace Microsoft.Deployment.Actions.OnPremise.TaskScheduler
                 {
                     if (task.Name.EqualsIgnoreCase(taskName))
                     {
+                        if (task.State == TaskState.Running || task.State == TaskState.Queued)
+                        {
+                            task.Stop();
+                            NTHelper.KillProcess("azurebcp");
+                        }
                         ts.RootFolder.DeleteTask(taskName);
                     }
                 }

@@ -1,0 +1,762 @@
+{
+  "properties": {
+    "packageType": "Graph",
+    "package": {
+      "nodes": {
+        "node1": {
+          "assetId": "asset1",
+          "parameters": {
+            "Language": {
+              "value": "English",
+              "certificateThumbprint": ""
+            },
+            "Text Column": {
+              "value": "%7B%22isFilter%22%3Atrue%2C%22rules%22%3A%5B%7B%22ruleType%22%3A%22ColumnNames%22%2C%22columns%22%3A%5B%22content%22%5D%2C%22exclude%22%3Afalse%7D%5D%7D",
+              "certificateThumbprint": ""
+            }
+          }
+        },
+        "node2": {
+          "assetId": "asset2",
+          "parameters": {
+            "R Script": {
+              "value": "# The script MUST contain a function named azureml_main\n# which is the entry point for this module.\n\n# imports up here can be used to \nimport pandas as pd\n\n# The entry point function can contain up to two input arguments:\n#   Param<dataframe1>: a pandas.DataFrame\n#   Param<dataframe2>: a pandas.DataFrame\ndef azureml_main(dataframe1 = None, dataframe2 = None):\n\n    return pd.concat([dataframe1, dataframe2], axis=1)\n    return dataframe1,\n",
+              "certificateThumbprint": ""
+            },
+            "Python Version": {
+              "value": "Anaconda 2.0/Python 2.7.7",
+              "certificateThumbprint": ""
+            }
+          }
+        },
+        "node3": {
+          "assetId": "asset2",
+          "parameters": {
+            "R Script": {
+              "value": "# The script MUST contain a function named azureml_main\n# which is the entry point for this module.\n\n# imports up here can be used to \nimport pandas as pd\n\nimport csv\nfrom StringIO import StringIO\n\ndef flatmap(df, func):\n    rows = []\n    cols = df.columns\n    for r in df.values:\n        index = 0\n        row = {}\n        for col in cols:\n            row[col] = r[index]\n            index += 1\n        multrows = func(row)\n        for rr in multrows:\n            rows.append(rr)\n    return pd.DataFrame.from_records(rows)\n    \ndef explodeKeyPhrase(input):\n    results = []\n    row2 = csv.reader(StringIO(input['Key Phrases']), delimiter=',')\n    for x in row2:\n        for col in x:\n            results.append( {'messageId': input['messageId'], 'keyPhrase': col[0:400]} )\n\n    return results\n\n# The entry point function can contain up to two input arguments:\n#   Param<dataframe1>: a pandas.DataFrame\n#   Param<dataframe2>: a pandas.DataFrame\ndef azureml_main(dataframe1 = None, dataframe2 = None):\n\n    return flatmap(dataframe1, explodeKeyPhrase)",
+              "certificateThumbprint": ""
+            },
+            "Python Version": {
+              "value": "Anaconda 2.0/Python 2.7.7",
+              "certificateThumbprint": ""
+            }
+          }
+        },
+        "node4": {
+          "assetId": "asset3",
+          "parameters": {
+            "Please Specify Data Destination": {
+              "value": "SqlAzure",
+              "certificateThumbprint": ""
+            },
+            "Database Server Name": {
+              "value": "pbisttest.database.windows.net",
+              "certificateThumbprint": ""
+            },
+            "Database Name": {
+              "value": "TestReddit",
+              "certificateThumbprint": ""
+            },
+            "Server User Account Name": {
+              "value": "pbiadmin",
+              "certificateThumbprint": ""
+            },
+            "Server User Account Password": {
+              "value": "PlacementPassword",
+              "certificateThumbprint": ""
+            },
+            "Trust Server Certificate": {
+              "value": "False",
+              "certificateThumbprint": ""
+            },
+            "Comma separated list of columns to be saved": {
+              "value": "messageId,keyPhrase",
+              "certificateThumbprint": ""
+            },
+            "Data Table Name": {
+              "value": "reddit.Staging_KeyPhrases",
+              "certificateThumbprint": ""
+            },
+            "Comma separated list of datatable columns": {
+              "value": "documentId,keyPhrase",
+              "certificateThumbprint": ""
+            },
+            "SQL Azure Number Of Rows To Write": {
+              "value": "100",
+              "certificateThumbprint": ""
+            },
+            "Treat Errors as Warnings": {
+              "value": "False",
+              "certificateThumbprint": ""
+            }
+          }
+        },
+        "node5": {
+          "assetId": "asset4",
+          "parameters": {
+            "Columns to be cleaned": {
+              "value": "%7B%22isFilter%22%3Atrue%2C%22rules%22%3A%5B%7B%22ruleType%22%3A%22ColumnNames%22%2C%22columns%22%3A%5B%22content%22%5D%2C%22exclude%22%3Afalse%7D%5D%7D",
+              "certificateThumbprint": ""
+            },
+            "Minimum missing value ratio": {
+              "value": "0",
+              "certificateThumbprint": ""
+            },
+            "Maximum missing value ratio": {
+              "value": "1",
+              "certificateThumbprint": ""
+            },
+            "Cleaning mode": {
+              "value": "Remove entire row",
+              "certificateThumbprint": ""
+            }
+          }
+        },
+        "node6": {
+          "assetId": "asset5",
+          "parameters": {}
+        },
+        "node7": {
+          "assetId": "asset6",
+          "parameters": {
+            "SQL Query Script": {
+              "value": "select Article, Mention, Offset, Length,\r\n  CASE \r\n      WHEN type = 'PER' THEN 'Person'\r\n      WHEN type = 'ORG' THEN 'Organization'\r\n      WHEN type = 'LOC' THEN 'Location'\r\n      END AS entityType\r\n from t1\r\nWHERE type != 'TIL'",
+              "certificateThumbprint": ""
+            }
+          }
+        },
+        "node8": {
+          "assetId": "asset7",
+          "parameters": {
+            "Comma-separated case-sensitive names of join key columns for L": {
+              "value": "%7B%22isFilter%22%3Atrue%2C%22rules%22%3A%5B%7B%22ruleType%22%3A%22ColumnNames%22%2C%22columns%22%3A%5B%22ExperimentDocId%22%5D%2C%22exclude%22%3Afalse%7D%5D%7D",
+              "certificateThumbprint": ""
+            },
+            "Comma-separated case-sensitive names of join key columns for R": {
+              "value": "%7B%22isFilter%22%3Atrue%2C%22rules%22%3A%5B%7B%22ruleType%22%3A%22ColumnNames%22%2C%22columns%22%3A%5B%22Article%22%5D%2C%22exclude%22%3Afalse%7D%5D%7D",
+              "certificateThumbprint": ""
+            },
+            "Match case": {
+              "value": "True",
+              "certificateThumbprint": ""
+            },
+            "Join type": {
+              "value": "Inner Join",
+              "certificateThumbprint": ""
+            },
+            "Keep right key columns in joined table": {
+              "value": "False",
+              "certificateThumbprint": ""
+            }
+          }
+        },
+        "node9": {
+          "assetId": "asset3",
+          "parameters": {
+            "Please Specify Data Destination": {
+              "value": "SqlAzure",
+              "certificateThumbprint": ""
+            },
+            "Database Server Name": {
+              "value": "pbisttest.database.windows.net",
+              "certificateThumbprint": ""
+            },
+            "Database Name": {
+              "value": "TestReddit",
+              "certificateThumbprint": ""
+            },
+            "Server User Account Name": {
+              "value": "pbiadmin",
+              "certificateThumbprint": ""
+            },
+            "Server User Account Password": {
+              "value": "PlacementPassword",
+              "certificateThumbprint": ""
+            },
+            "Trust Server Certificate": {
+              "value": "False",
+              "certificateThumbprint": ""
+            },
+            "Comma separated list of columns to be saved": {
+              "value": "messageId,Mention,Offset,Length,entityType",
+              "certificateThumbprint": ""
+            },
+            "Data Table Name": {
+              "value": "reddit.Staging_Entities",
+              "certificateThumbprint": ""
+            },
+            "Comma separated list of datatable columns": {
+              "value": "documentId,entity,entityOffset,entityLength,entityType",
+              "certificateThumbprint": ""
+            },
+            "SQL Azure Number Of Rows To Write": {
+              "value": "50",
+              "certificateThumbprint": ""
+            },
+            "Treat Errors as Warnings": {
+              "value": "False",
+              "certificateThumbprint": ""
+            }
+          }
+        },
+        "node10": {
+          "assetId": "asset8",
+          "parameters": {
+            "Column": {
+              "value": "%7B%22isFilter%22%3Atrue%2C%22rules%22%3A%5B%7B%22ruleType%22%3A%22ColumnNames%22%2C%22columns%22%3A%5B%22tweet_text%22%5D%2C%22exclude%22%3Afalse%7D%5D%7D",
+              "certificateThumbprint": ""
+            },
+            "Data Type": {
+              "value": "String",
+              "certificateThumbprint": ""
+            },
+            "Categorical": {
+              "value": "NonCategorical",
+              "certificateThumbprint": ""
+            },
+            "Fields": {
+              "value": "Unchanged",
+              "certificateThumbprint": ""
+            }
+          }
+        },
+        "node11": {
+          "assetId": "asset9",
+          "parameters": {
+            "Target column": {
+              "value": "%7B%22isFilter%22%3Atrue%2C%22rules%22%3A%5B%7B%22ruleType%22%3A%22ColumnNames%22%2C%22columns%22%3A%5B%22tweet_text%22%5D%2C%22exclude%22%3Afalse%7D%5D%2C%22ui%22%3A%7B%22withRules%22%3Atrue%7D%7D",
+              "certificateThumbprint": ""
+            },
+            "Hashing bitsize": {
+              "value": "11",
+              "certificateThumbprint": ""
+            },
+            "N-grams": {
+              "value": "2",
+              "certificateThumbprint": ""
+            }
+          }
+        },
+        "node12": {
+          "assetId": "asset10",
+          "parameters": {
+            "Append score columns to output": {
+              "value": "False",
+              "certificateThumbprint": ""
+            }
+          }
+        },
+        "node13": {
+          "assetId": "asset2",
+          "parameters": {
+            "R Script": {
+              "value": "# The script MUST contain a function named azureml_main\n# which is the entry point for this module.\n\n# imports up here can be used to \nimport pandas as pd\n\n# The entry point function can contain up to two input arguments:\n#   Param<dataframe1>: a pandas.DataFrame\n#   Param<dataframe2>: a pandas.DataFrame\ndef azureml_main(dataframe1 = None, dataframe2 = None):\n\n    return pd.concat([dataframe1, dataframe2], axis=1)\n    return dataframe1,\n",
+              "certificateThumbprint": ""
+            },
+            "Python Version": {
+              "value": "Anaconda 2.0/Python 2.7.7",
+              "certificateThumbprint": ""
+            }
+          }
+        },
+        "node14": {
+          "assetId": "asset3",
+          "parameters": {
+            "Please Specify Data Destination": {
+              "value": "SqlAzure",
+              "certificateThumbprint": ""
+            },
+            "Database Server Name": {
+              "value": "pbisttest.database.windows.net",
+              "certificateThumbprint": ""
+            },
+            "Database Name": {
+              "value": "TestReddit",
+              "certificateThumbprint": ""
+            },
+            "Server User Account Name": {
+              "value": "pbiadmin",
+              "certificateThumbprint": ""
+            },
+            "Server User Account Password": {
+              "value": "PlacementPassword",
+              "certificateThumbprint": ""
+            },
+            "Trust Server Certificate": {
+              "value": "False",
+              "certificateThumbprint": ""
+            },
+            "Comma separated list of columns to be saved": {
+              "value": "Scored Probabilities,messageId",
+              "certificateThumbprint": ""
+            },
+            "Data Table Name": {
+              "value": "reddit.Staging_Sentiment",
+              "certificateThumbprint": ""
+            },
+            "Comma separated list of datatable columns": {
+              "value": "sentiment,documentId",
+              "certificateThumbprint": ""
+            },
+            "SQL Azure Number Of Rows To Write": {
+              "value": "100",
+              "certificateThumbprint": ""
+            },
+            "Treat Errors as Warnings": {
+              "value": "False",
+              "certificateThumbprint": ""
+            }
+          }
+        },
+        "node15": {
+          "assetId": "asset12",
+          "parameters": {
+            "Please Specify Data Source": {
+              "value": "SqlAzure",
+              "certificateThumbprint": ""
+            },
+            "Database Server Name": {
+              "value": "pbisttest.database.windows.net",
+              "certificateThumbprint": ""
+            },
+            "Database Name": {
+              "value": "TestReddit",
+              "certificateThumbprint": ""
+            },
+            "Server User Account Name": {
+              "value": "pbiadmin",
+              "certificateThumbprint": ""
+            },
+            "Server User Account Password": {
+              "value": "PlacementPassword",
+              "certificateThumbprint": ""
+            },
+            "Trust Server Certificate": {
+              "value": "False",
+              "certificateThumbprint": ""
+            },
+            "Database Query": {
+              "value": "select top 50000 content, messageId, ExperimentDocId FROM reddit.AzureMachineLearningInputView",
+              "certificateThumbprint": ""
+            }
+          }
+        },
+        "node16": {
+          "assetId": "asset2",
+          "parameters": {
+            "R Script": {
+              "value": "# The script MUST contain a function named azureml_main\n# which is the entry point for this module.\n\n# imports up here can be used to \nimport pandas as pd\n\n# The entry point function can contain up to two input arguments:\n#   Param<dataframe1>: a pandas.DataFrame\n#   Param<dataframe2>: a pandas.DataFrame\ndef azureml_main(dataframe1 = None, dataframe2 = None):\n\n    # Remove all numbers, punctuation, and special characters.\n    # Make the string lower-case\n    dataframe1['tweet_text'] = dataframe1['content'].str.replace(r'[^a-zA-Z]', ' ').str.lower()\n\n    return dataframe1,\n",
+              "certificateThumbprint": ""
+            },
+            "Python Version": {
+              "value": "Anaconda 2.0/Python 2.7.7",
+              "certificateThumbprint": ""
+            }
+          }
+        },
+        "node17": {
+          "assetId": "asset2",
+          "parameters": {
+            "R Script": {
+              "value": "# The script MUST contain a function named azureml_main\n# which is the entry point for this module.\n\n# imports up here can be used to \nimport pandas as pd\n\n# The entry point function can contain up to two input arguments:\n#   Param<dataframe1>: a pandas.DataFrame\n#   Param<dataframe2>: a pandas.DataFrame\ndef azureml_main(dataframe1 = None, dataframe2 = None):\n\n    dataframe1['Mention'] = dataframe1['Mention'].str[0:500]\n    return dataframe1,\n",
+              "certificateThumbprint": ""
+            },
+            "Python Version": {
+              "value": "Anaconda 2.0/Python 2.7.7",
+              "certificateThumbprint": ""
+            }
+          }
+        },
+        "node18": {
+          "assetId": "asset2",
+          "parameters": {
+            "R Script": {
+              "value": "# The script MUST contain a function named azureml_main\n# which is the entry point for this module.\n\n# imports up here can be used to \nimport pandas as pd\n\n# The entry point function can contain up to two input arguments:\n#   Param<dataframe1>: a pandas.DataFrame\n#   Param<dataframe2>: a pandas.DataFrame\ndef azureml_main(dataframe1 = None, dataframe2 = None):\n\n    dataframe1['content'] = dataframe1['content'].map(lambda x: x.strip())\n    my_df2 = dataframe1[(dataframe1['content']!='null') & (dataframe1['content'] != '')]\n    return my_df2",
+              "certificateThumbprint": ""
+            },
+            "Python Version": {
+              "value": "Anaconda 2.0/Python 2.7.7",
+              "certificateThumbprint": ""
+            }
+          }
+        },
+        "node19": {
+          "assetId": "asset11"
+        }
+      },
+      "edges": [
+        {
+          "sourceNodeId": "node1",
+          "sourcePortId": "Results dataset",
+          "targetNodeId": "node2",
+          "targetPortId": "Dataset1"
+        },
+        {
+          "sourceNodeId": "node2",
+          "sourcePortId": "Result Dataset",
+          "targetNodeId": "node3",
+          "targetPortId": "Dataset1"
+        },
+        {
+          "sourceNodeId": "node3",
+          "sourcePortId": "Result Dataset",
+          "targetNodeId": "node4",
+          "targetPortId": "Dataset"
+        },
+        {
+          "sourceNodeId": "node5",
+          "sourcePortId": "Cleaned dataset",
+          "targetNodeId": "node1",
+          "targetPortId": "Dataset"
+        },
+        {
+          "sourceNodeId": "node5",
+          "sourcePortId": "Cleaned dataset",
+          "targetNodeId": "node16",
+          "targetPortId": "Dataset1"
+        },
+        {
+          "sourceNodeId": "node6",
+          "sourcePortId": "Entities",
+          "targetNodeId": "node7",
+          "targetPortId": "Table1"
+        },
+        {
+          "sourceNodeId": "node7",
+          "sourcePortId": "Results dataset",
+          "targetNodeId": "node17",
+          "targetPortId": "Dataset1"
+        },
+        {
+          "sourceNodeId": "node8",
+          "sourcePortId": "Results dataset",
+          "targetNodeId": "node9",
+          "targetPortId": "Dataset"
+        },
+        {
+          "sourceNodeId": "node10",
+          "sourcePortId": "Results dataset",
+          "targetNodeId": "node11",
+          "targetPortId": "Dataset"
+        },
+        {
+          "sourceNodeId": "node11",
+          "sourcePortId": "Transformed dataset",
+          "targetNodeId": "node12",
+          "targetPortId": "Dataset"
+        },
+        {
+          "sourceNodeId": "node12",
+          "sourcePortId": "Scored dataset",
+          "targetNodeId": "node13",
+          "targetPortId": "Dataset1"
+        },
+        {
+          "sourceNodeId": "node13",
+          "sourcePortId": "Result Dataset",
+          "targetNodeId": "node14",
+          "targetPortId": "Dataset"
+        },
+        {
+          "sourceNodeId": "node15",
+          "sourcePortId": "Results dataset",
+          "targetNodeId": "node18",
+          "targetPortId": "Dataset1"
+        },
+        {
+          "sourceNodeId": "node16",
+          "sourcePortId": "Result Dataset",
+          "targetNodeId": "node10",
+          "targetPortId": "Dataset"
+        },
+        {
+          "sourceNodeId": "node17",
+          "sourcePortId": "Result Dataset",
+          "targetNodeId": "node8",
+          "targetPortId": "Dataset2"
+        },
+        {
+          "sourceNodeId": "node18",
+          "sourcePortId": "Result Dataset",
+          "targetNodeId": "node5",
+          "targetPortId": "Dataset"
+        },
+        {
+          "sourceNodeId": "node18",
+          "sourcePortId": "Result Dataset",
+          "targetNodeId": "node2",
+          "targetPortId": "Dataset2"
+        },
+        {
+          "sourceNodeId": "node18",
+          "sourcePortId": "Result Dataset",
+          "targetNodeId": "node13",
+          "targetPortId": "Dataset2"
+        },
+        {
+          "sourceNodeId": "node18",
+          "sourcePortId": "Result Dataset",
+          "targetNodeId": "node8",
+          "targetPortId": "Dataset1"
+        },
+        {
+          "sourceNodeId": "node18",
+          "sourcePortId": "Result Dataset",
+          "targetNodeId": "node6",
+          "targetPortId": "Story"
+        },
+        {
+          "sourceNodeId": "node19",
+          "sourcePortId": "Results dataset",
+          "targetNodeId": "node12",
+          "targetPortId": "Trained model"
+        }
+      ],
+      "graphParameters": {
+        "Database server name": {
+          "description": "Database server name",
+          "type": "String",
+          "links": [
+            {
+              "nodeId": "node4",
+              "parameterKey": "Database Server Name"
+            },
+            {
+              "nodeId": "node9",
+              "parameterKey": "Database Server Name"
+            },
+            {
+              "nodeId": "node14",
+              "parameterKey": "Database Server Name"
+            },
+            {
+              "nodeId": "node15",
+              "parameterKey": "Database Server Name"
+            }
+          ]
+        },
+        "Database name": {
+          "description": "Database name",
+          "type": "String",
+          "links": [
+            {
+              "nodeId": "node4",
+              "parameterKey": "Database Name"
+            },
+            {
+              "nodeId": "node9",
+              "parameterKey": "Database Name"
+            },
+            {
+              "nodeId": "node14",
+              "parameterKey": "Database Name"
+            },
+            {
+              "nodeId": "node15",
+              "parameterKey": "Database Name"
+            }
+          ]
+        },
+        "Server user account name": {
+          "description": "Server user account name",
+          "type": "String",
+          "links": [
+            {
+              "nodeId": "node4",
+              "parameterKey": "Server User Account Name"
+            },
+            {
+              "nodeId": "node9",
+              "parameterKey": "Server User Account Name"
+            },
+            {
+              "nodeId": "node14",
+              "parameterKey": "Server User Account Name"
+            },
+            {
+              "nodeId": "node15",
+              "parameterKey": "Server User Account Name"
+            }
+          ]
+        },
+        "Server user account password": {
+          "description": "Server user account password",
+          "type": "Credential",
+          "links": [
+            {
+              "nodeId": "node4",
+              "parameterKey": "Server User Account Password"
+            },
+            {
+              "nodeId": "node9",
+              "parameterKey": "Server User Account Password"
+            },
+            {
+              "nodeId": "node14",
+              "parameterKey": "Server User Account Password"
+            },
+            {
+              "nodeId": "node15",
+              "parameterKey": "Server User Account Password"
+            }
+          ]
+        }
+      }
+    },
+    "title": "Reddit Process Document",
+    "readOnly": false,
+    "exposeSampleData": false,
+    "realtimeConfiguration": {
+      "maxConcurrentCalls": 20
+    },
+    "diagnostics": {
+      "level": "None"
+    },
+    "storageAccount": {
+      "name": "mcleantestmachinelearn"
+    },
+    "input": {
+      "title": "",
+      "description": "",
+      "type": "object",
+      "properties": {}
+    },
+    "output": {
+      "title": "",
+      "description": "",
+      "type": "object",
+      "properties": {}
+    },
+    "exampleRequest": {
+      "globalParameters": {
+        "Database server name": "pbisttest.database.windows.net",
+        "Database name": "TestReddit",
+        "Server user account name": "pbiadmin",
+        "Server user account password": ""
+      }
+    },
+    "assets": {
+      "asset1": {
+        "name": "Extract Key Phrases from Text",
+        "type": "Module",
+        "locationInfo": {
+          "uri": "aml://module/506153734175476c4f62416c57734963.c08afa3658ac4a2bbc59f2a16bb4c2f3.v1-default-1741",
+          "credentials": ""
+        }
+      },
+      "asset2": {
+        "name": "Execute Python Script",
+        "type": "Module",
+        "locationInfo": {
+          "uri": "aml://module/506153734175476c4f62416c57734963.cdb56f957f4c404dbde75bb972e6f232.v1-default-1735",
+          "credentials": ""
+        }
+      },
+      "asset3": {
+        "name": "Export Data",
+        "type": "Module",
+        "locationInfo": {
+          "uri": "aml://module/506153734175476c4f62416c57734963.7a391181b6a74ad4b82de419c0d6522c.v1-default-1742",
+          "credentials": ""
+        }
+      },
+      "asset4": {
+        "name": "Clean Missing Data",
+        "type": "Module",
+        "locationInfo": {
+          "uri": "aml://module/506153734175476c4f62416c57734963.d2c5ca2f732341a39b7eda917c99f0c4.v1-default-1728",
+          "credentials": ""
+        }
+      },
+      "asset5": {
+        "name": "Named Entity Recognition",
+        "type": "Module",
+        "locationInfo": {
+          "uri": "aml://module/506153734175476c4f62416c57734963.50b91b4f9c9840d698142d945c0bb3f1.v1-default-1611",
+          "credentials": ""
+        }
+      },
+      "asset6": {
+        "name": "Apply SQL Transformation",
+        "type": "Module",
+        "locationInfo": {
+          "uri": "aml://module/506153734175476c4f62416c57734963.90381e8067c34d9987541db785b7ea37.v1-default-1744",
+          "credentials": ""
+        }
+      },
+      "asset7": {
+        "name": "Join Data",
+        "type": "Module",
+        "locationInfo": {
+          "uri": "aml://module/506153734175476c4f62416c57734963.124865f7e9014656adacf4cb08248099.v1-default-1712",
+          "credentials": ""
+        }
+      },
+      "asset8": {
+        "name": "Edit Metadata",
+        "type": "Module",
+        "locationInfo": {
+          "uri": "aml://module/506153734175476c4f62416c57734963.370b6676c11c486fbf7335349f842a66.v1-default-1742",
+          "credentials": ""
+        }
+      },
+      "asset9": {
+        "name": "Feature Hashing",
+        "type": "Module",
+        "locationInfo": {
+          "uri": "aml://module/506153734175476c4f62416c57734963.c9a826602d9c411d81224d9e0b3ce92a.v1-default-1741",
+          "credentials": ""
+        }
+      },
+      "asset10": {
+        "name": "Score Model",
+        "type": "Module",
+        "locationInfo": {
+          "uri": "aml://module/506153734175476c4f62416c57734963.401b4f92e7244d5abe81d5b0ff9bdb33.v1-default-1730",
+          "credentials": ""
+        }
+      },
+      "asset12": {
+        "name": "Import Data",
+        "type": "Module",
+        "locationInfo": {
+          "uri": "aml://module/506153734175476c4f62416c57734963.4e1b0fe6aded4b3fa36f39b8862b9004.v1-default-1744",
+          "credentials": ""
+        }
+      },
+      "asset11": {
+        "name": "Mini Twitter sentiment analysis [trained model] - Copy",
+        "type": "Resource",
+        "locationInfo": {
+          "uri": "https://mcleantestmachinelearn.blob.core.windows.net/azuremlassetscontainer/405e6efb86ed486aa9e4b6cbdc543352.ilearner"
+        },
+        "outputPorts": {
+          "Results dataset": {
+            "type": "Dataset"
+          }
+        }
+      }
+    },
+    "parameters": {
+      "database server name": {
+        "value": "",
+        "certificateThumbprint": ""
+      },
+      "database name": {
+        "value": "",
+        "certificateThumbprint": ""
+      },
+      "server user account name": {
+        "value": "",
+        "certificateThumbprint": ""
+      },
+      "server user account password": {
+        "value": "",
+        "certificateThumbprint": ""
+      }
+    },
+    "payloadsInBlobStorage": false
+  },
+  "location": "South Central US",
+  "tags": {}
+}

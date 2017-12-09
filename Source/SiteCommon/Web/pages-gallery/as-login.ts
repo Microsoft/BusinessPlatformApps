@@ -1,6 +1,6 @@
-﻿import { AzureLogin } from './azure-login';
+﻿import { ViewModelBase } from '../services/view-model-base';
 
-export class ASLogin extends AzureLogin {
+export class ASLogin extends ViewModelBase {
     hasToken: boolean = false;
 
     async connect(): Promise<void> {

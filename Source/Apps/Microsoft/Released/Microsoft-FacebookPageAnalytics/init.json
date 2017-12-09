@@ -1,0 +1,247 @@
+﻿{
+    "Install": {
+        "Pages": [
+            {
+                "architectureDiagram": "dist/Apps/Microsoft/Released/Microsoft-FacebookTemplate/Web/images/ArchitectureDiagram.png",
+                "displayname": "Getting Started",
+                "list1": [
+                    "$translate(INIT_GETTING_STARTED_AZURE_SUBSCRIPTION)",
+                    "$translate(INIT_GETTING_STARTED_PBI_DESKTOP)",
+                    "$translate(INIT_GETTING_STARTED_PBI_PRO)",
+                    "$translate(INIT_GETTING_STARTED_FACEBOOK)"
+                ],
+                "list2": [
+                    "$translate(INIT_GETTING_STARTED_CLOUD_SOLUTION)",
+                    "$translate(INIT_GETTING_STARTED_CONNECT_AS_PBI)"
+                ],
+                "name": "$SiteCommon$/pages-gallery/getting-started.html",
+                "templateName": "Brand And Campaign Management For Facebook"
+            },
+            {
+                "displayname": "Facebook Login",
+                "name": "$SiteCommon$/pages-gallery/facebook-login.html"
+            },
+            {
+                "displayname": "Facebook Pages",
+                "name": "$SiteCommon$/pages-gallery/facebookPages.html",
+                "skip": "$run(this.MS.DataStore.getValue('UserOwnsPage') === 'true' ? 'true': 'false')"
+            },
+            {
+                "defaultLocation": "5",
+                "displayname": "Login",
+                "name": "$SiteCommon$/pages-gallery/azure-login.html",
+                "pricingCalculatorUrl": "$translate(INIT_NEWS_PRICING_CALCULATOR)",
+                "pricingCost": "$translate(INIT_FACEBOOK_PRICING_COST)",
+                "pricingUrl": "$translate(INIT_FACEBOOK_PRICING_URL)"
+            },
+            {
+                "bingUrl": "placeholder",
+                "cognitiveUrl": "placeholder",
+                "displayname": "Cognitive API",
+                "name": "$SiteCommon$/pages-gallery/cognitive-services-terms.html",
+                "skip": "$run(this.MS.DataStore.getValue('UserOwnsPage') === 'true' ? 'true': 'false')"
+            },
+            {
+                "checkSqlVersion": true,
+                "displayname": "Target",
+                "isAzureSql": true,
+                "name": "$SiteCommon$/pages-gallery/sql.html",
+                "newSqlDatabase": "facebook",
+                "showAzureSql": false,
+                "showNewSqlOption": "true",
+                "showSkuS1": true,
+                "sqlInstance": "NewSql",
+                "sqlSku": "S1",
+                "subtitle": "$translate(INIT_SQL_TITLE)",
+                "title": "$translate(INIT_SQL_TITLE)"
+            },
+            {
+                "displayCompletionNotification": false,
+                "displayname": "Summary",
+                "name": "$SiteCommon$/pages-gallery/summary.html",
+                "sendCompletionNotification": false,
+                "values": {
+                    "Facebook Pages": "$(this.MS.DataStore.getValue('FacebookPagesToFollow'))",
+                    "Subscription": "$(this.MS.DataStore.getJson('SelectedSubscription').DisplayName)",
+                    "Resource Group": "$(this.MS.DataStore.getValue('SelectedResourceGroup'))",
+                    "Target Server": "$(this.MS.DataStore.getValue('Server'))",
+                    "Target Database": "$(this.MS.DataStore.getValue('Database'))",
+                    "Target Username": "$(this.MS.DataStore.getValue('Username'))"
+                }
+            },
+            {
+                "datastoreEntriesToValidate": [
+                    "SqlConnectionString",
+                    "Filename"
+                ],
+                "displayname": "Progress",
+                "enablePublishReport": "$run(this.MS.DataStore.getValue('ssasDisabled') === 'false')",
+                "name": "$SiteCommon$/pages-gallery/progress.html",
+                "showCounts": false,
+                "uniqueId": "$save(this.MS.UtilityService.getUniqueId(10))"
+            }
+        ],
+        "Actions": [
+            {
+                "CognitiveServiceName": "TextCognitiveService",
+                "CognitiveServiceType": "TextAnalytics",
+                "CognitiveSkuName": "S1",
+                "DeploymentName": "Deployment",
+                "displayname": "$translate(INIT_ACTION_DEPLOYING_COGNITIVE_SERVICE)",
+                "name": "Microsoft-DeployCognitiveService",
+                "skip": "$run(this.MS.DataStore.getValue('UserOwnsPage') === 'true' ? 'true': 'false')"
+            },
+            {
+                "CognitiveServiceName": "TextCognitiveService",
+                "displayname": "$translate(INIT_ACTION_GETTING_COGNITIVE_KEY)",
+                "name": "Microsoft-GetCognitiveKey",
+                "skip": "$run(this.MS.DataStore.getValue('UserOwnsPage') === 'true' ? 'true': 'false')"
+            },
+            {
+                "displayname": "$translate(INIT_ACTION_DEPLOYING_SQL_SCRIPTS)",
+                "name": "Microsoft-DeploySQLScripts",
+                "SqlServerIndex": "0",
+                "SqlScriptsFolder": "Database",
+                "skip": "$run(this.MS.DataStore.getValue('UserOwnsPage') === 'true' ? 'false': 'true')"
+            },
+            {
+                "displayname": "$translate(INIT_ACTION_DEPLOYING_SQL_SCRIPTS)",
+                "name": "Microsoft-DeploySQLScripts",
+                "SqlServerIndex": "0",
+                "SqlScriptsFolder": "Database/OldFacebook",
+                "skip": "$run(this.MS.DataStore.getValue('UserOwnsPage') === 'true' ? 'true': 'false')"
+            },
+            {
+                "displayname": "$translate(INIT_ACTION_DEPLOYING_DATABASE_CONFIGURATION)",
+                "name": "Microsoft-SetConfigValueInSql",
+                "SqlConfigTable": "[fbpa].[configuration]",
+                "SqlEntryName": "PagesToFollow",
+                "SqlEntryValue": "$ds(FacebookPageId)",
+                "SqlGroup": "SolutionTemplate",
+                "SqlServerIndex": "0",
+                "SqlSubGroup": "ETL",
+                "skip": "$run(this.MS.DataStore.getValue('UserOwnsPage') === 'true' ? 'false': 'true')"
+            },
+            {
+                "displayname": "$translate(INIT_ACTION_DEPLOYING_DATABASE_CONFIGURATION)",
+                "name": "Microsoft-SetConfigValueInSql",
+                "SqlConfigTable": "[fb].[configuration]",
+                "SqlEntryName": "PagesToFollow",
+                "SqlEntryValue": "$ds(FacebookPagesToFollow)",
+                "SqlGroup": "SolutionTemplate",
+                "SqlServerIndex": "0",
+                "SqlSubGroup": "ETL",
+                "skip": "$run(this.MS.DataStore.getValue('UserOwnsPage') === 'true' ? 'true': 'false')"
+            },
+            {
+                "DeploymentName": "Deployment1",
+                "displayname": "$translate(INIT_ACTION_DEPLOYING_AZURE_FUNCTION)",
+                "FunctionName": "$save('solutiontemplatefunc' + this.MS.DataStore.getValue('uniqueId'))",
+                "name": "Microsoft-DeployAzureFunction",
+                "RepoUrl": "https://github.com/MohaaliMicrosoft/FacebookETL",
+                "sku": "Standard",
+                "skip": "$run(this.MS.DataStore.getValue('UserOwnsPage') === 'true' ? 'true': 'false')"
+            },
+            {
+                "displayname": "$translate(INIT_ACTION_DEPLOYING_SQL_SCRIPTS)",
+                "name": "Microsoft-PopulateFacebookPages",
+                "skip": "$run(this.MS.DataStore.getValue('UserOwnsPage') === 'true' ? 'false': 'true')"
+            },
+            {
+                "DeploymentName": "Deployment1",
+                "displayname": "$translate(INIT_ACTION_DEPLOYING_AZURE_FUNCTION)",
+                "FunctionName": "$save('solutiontemplatefunc' + this.MS.DataStore.getValue('uniqueId'))",
+                "name": "Microsoft-DeployAzureFunction",
+                "RepoUrl": "https://github.com/cdoroftei/FacebookPageETL",
+                "sku": "Standard",
+                "skip": "$run(this.MS.DataStore.getValue('UserOwnsPage') === 'true' ? 'false': 'true')"
+            },
+            {
+                "DeploymentName": "Deployment1",
+                "displayname": "$translate(INIT_ACTION_WAITING_DEPLOYMENT)",
+                "name": "Microsoft-WaitForArmDeploymentStatus"
+            },
+            {
+                "displayname": "$translate(INIT_ACTION_CREATING_FUNCTION)",
+                "name": "Microsoft-CheckFunctionStatus"
+            },
+            {
+                "DeploymentName": "Deployment2",
+                "displayname": "$translate(INIT_ACTION_DEPLOYING_STORAGE_ACCOUNT)",
+                "name": "Microsoft-CreateAzureStorageAccount",
+                "StorageAccountEncryptionEnabled": "true",
+                "StorageAccountName": "$save('stor' + this.MS.DataStore.getValue('uniqueId'))",
+                "StorageAccountType": "Standard_LRS"
+            },
+            {
+                "DeploymentName": "Deployment2",
+                "displayname": "$translate(INIT_ACTION_WAITING_DEPLOYMENT)",
+                "name": "Microsoft-WaitForArmDeploymentStatus"
+            },
+            {
+                "displayname": "$translate(INIT_ACTION_GETTING_STORAGE_ACCOUNT_KEY)",
+                "name": "Microsoft-GetStorageAccountKey"
+            },
+            {
+                "ConnectorName": "azurequeues",
+                "ConnectorPayload": {
+                    "sharedkey": "$ds(StorageAccountKey)",
+                    "storageaccount": "$ds(StorageAccountName)"
+                },
+                "displayname": "$translate(INIT_ACTION_CREATING_LOGIC_APP_CONNECTOR)",
+                "name": "Microsoft-UpdateBlobStorageConnector"
+            },
+            {
+                "AppSettingKeys": {
+                    "queue": "$ds(StorageAccountConnectionString)"
+                },
+                "displayname": "$translate(INIT_ACTION_DEPLOYING_APP_SETTINGS)",
+                "name": "Microsoft-DeployAzureFunctionAppSettings"
+            },
+            {
+                "AppSettingKeys": {
+                    "CognitiveKey": "$ds(CognitiveServiceKey)",
+                    "FacebookClientId": "",
+                    "FacebookClientSecret": "",
+                    "FacebookPageToken": "$ds(FacebookPageToken)",
+                    "FacebookPageId": "$ds(FacebookPageId)",
+                    "Schema": "$ds(Schema)",
+                    "SqlConnectionString": "$ds(SqlConnectionString)"
+                },
+                "displayname": "$translate(INIT_ACTION_DEPLOYING_CONNECTION_STRINGS)",
+                "name": "Microsoft-DeployAzureFunctionConnectionStrings",
+                "skip": "$run(this.MS.DataStore.getValue('UserOwnsPage') === 'true' ? 'false': 'true')"
+            },
+            {
+                "AppSettingKeys": {
+                    "CognitiveKey": "$ds(CognitiveServiceKey)",
+                    "FacebookClientId": "$ds(FacebookClientId)",
+                    "FacebookClientSecret": "$ds(FacebookClientSecret)",
+                    "FacebookPageToken": "$ds(FacebookPageToken)",
+                    "FacebookPageId": "$ds(FacebookPageId)",
+                    "Schema": "$ds(Schema)",
+                    "SqlConnectionString": "$ds(SqlConnectionString)"
+                },
+                "displayname": "$translate(INIT_ACTION_DEPLOYING_CONNECTION_STRINGS)",
+                "name": "Microsoft-DeployAzureFunctionConnectionStrings",
+                "skip": "$run(this.MS.DataStore.getValue('UserOwnsPage') === 'true' ? 'true': 'false')"
+            },
+            {
+                "AzureArmFile": "Service/Arm/logicapps.json",
+                "AzureArmParameters": {
+                    "functionname": "$ds(FunctionName)",
+                    "storageName": "$ds(StorageAccountName)",
+                    "subscription": "$ds(SelectedSubscription)['SubscriptionId']",
+                    "resourceGroup": "$ds(SelectedResourceGroup)"
+                },
+                "displayname": "$translate(INIT_ACTION_DEPLOYING_LOGIC_APP)",
+                "name": "Microsoft-DeployAzureArmTemplate"
+            },
+            {
+                "displayname": "$translate(INIT_ACTION_RUNNING_LOGIC_APP_HISTORICAL)",
+                "LogicAppName": "GetHistoryForFacebookPages",
+                "name": "Microsoft-ForceRunLogicApp"
+            }
+        ]
+    }
+}

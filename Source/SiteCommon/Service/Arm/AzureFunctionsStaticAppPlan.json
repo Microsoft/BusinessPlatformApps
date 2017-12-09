@@ -1,58 +1,65 @@
 {
   "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
   "contentVersion": "1.0.0.0",
-  "parameters": {
-    "storageaccountname": {
-      "defaultValue": "ststorage",
-      "type": "string"
-    },
+    "parameters": {
+        "storageaccountname": {
+            "defaultValue": "ststorage",
+            "type": "string"
+        },
 
-    "name": {
-      "defaultValue": "stsite",
-      "type": "string"
-    },
+        "name": {
+            "defaultValue": "stsite",
+            "type": "string"
+        },
 
-    "repoUrl": {
-      "defaultValue": "",
-      "type": "string"
-    },
+        "repoUrl": {
+            "defaultValue": "",
+            "type": "string"
+        },
 
-    "resourcegroup": {
-      "defaultValue": "stresourcegroup",
-      "type": "string"
-    },
+        "resourcegroup": {
+            "defaultValue": "stresourcegroup",
+            "type": "string"
+        },
 
-    "subscription": {
-      "defaultValue": "idrequired",
-      "type": "string"
+        "subscription": {
+            "defaultValue": "idrequired",
+            "type": "string"
+        },
+
+        "hostingPlanName": {
+            "defaultValue": "",
+            "type": "string"
+        },
+
+        "hostingEnvironment": {
+            "defaultValue": "",
+            "type": "string"
+        },
+
+        "workerSize": {
+            "defaultValue": "",
+            "type": "string"
+        },
+
+        "sku": {
+            "defaultValue": "",
+            "type": "string"
+        },
+
+        "skuCode": {
+            "defaultValue": "",
+            "type": "string"
+        },
+        //"projectPath": {
+        //    "defaultValue": ".",
+        //    "type": "string"
+        //},
+        "branch": {
+            "defaultValue": "master",
+            "type": "string"
+        }
     },
-	
-	 "hostingPlanName": {
-      "defaultValue": "",
-      "type": "string"
-    },
-	
-	"hostingEnvironment": {
-      "defaultValue": "",
-      "type": "string"
-    },
-	
-	"workerSize": {
-      "defaultValue": "",
-      "type": "string"
-    },
-	
-	"sku": {
-      "defaultValue": "",
-      "type": "string"
-    },
-	
-	"skuCode": {
-      "defaultValue": "",
-      "type": "string"
-    }
-	
-  },
     "resources": [
       {
         "apiVersion": "2015-08-01",
@@ -62,31 +69,35 @@
           "name": "[parameters('name')]",
           "siteConfig": {
             "appSettings": [
-              {
-                "name": "AzureWebJobsDashboard",
-                "value": "[concat('DefaultEndpointsProtocol=https;AccountName=',parameters('storageaccountname'),';AccountKey=',listKeys(resourceId('Microsoft.Storage/storageAccounts', parameters('storageaccountname')), '2015-05-01-preview').key1)]"
-              },
-              {
-                "name": "AzureWebJobsStorage",
-                "value": "[concat('DefaultEndpointsProtocol=https;AccountName=',parameters('storageaccountname'),';AccountKey=',listKeys(resourceId('Microsoft.Storage/storageAccounts', parameters('storageaccountname')), '2015-05-01-preview').key1)]"
-              },
-              {
-                "name": "FUNCTIONS_EXTENSION_VERSION",
-                "value": "~1"
-              },
-              {
-                "name": "WEBSITE_CONTENTAZUREFILECONNECTIONSTRING",
-                "value": "[concat('DefaultEndpointsProtocol=https;AccountName=',parameters('storageaccountname'),';AccountKey=',listKeys(resourceId('Microsoft.Storage/storageAccounts', parameters('storageaccountname')), '2015-05-01-preview').key1)]"
-              },
-              {
-                "name": "WEBSITE_CONTENTSHARE",
-                "value": "[toLower(parameters('name'))]"
-              },
-              {
-                "name": "WEBSITE_NODE_DEFAULT_VERSION",
-                "value": "6.5.0"
-              }
-			  
+                {
+                    "name": "AzureWebJobsDashboard",
+                    "value": "[concat('DefaultEndpointsProtocol=https;AccountName=',parameters('storageaccountname'),';AccountKey=',listKeys(resourceId('Microsoft.Storage/storageAccounts', parameters('storageaccountname')), '2015-05-01-preview').key1)]"
+                },
+                {
+                    "name": "AzureWebJobsStorage",
+                    "value": "[concat('DefaultEndpointsProtocol=https;AccountName=',parameters('storageaccountname'),';AccountKey=',listKeys(resourceId('Microsoft.Storage/storageAccounts', parameters('storageaccountname')), '2015-05-01-preview').key1)]"
+                },
+                {
+                    "name": "FUNCTIONS_EXTENSION_VERSION",
+                    "value": "~1"
+                },
+                {
+                    "name": "WEBSITE_CONTENTAZUREFILECONNECTIONSTRING",
+                    "value": "[concat('DefaultEndpointsProtocol=https;AccountName=',parameters('storageaccountname'),';AccountKey=',listKeys(resourceId('Microsoft.Storage/storageAccounts', parameters('storageaccountname')), '2015-05-01-preview').key1)]"
+                },
+                {
+                    "name": "WEBSITE_CONTENTSHARE",
+                    "value": "[toLower(parameters('name'))]"
+                },
+                {
+                    "name": "WEBSITE_NODE_DEFAULT_VERSION",
+                    "value": "6.5.0"
+                }
+                //{
+                //    "name": "PROJECT",
+                //    "value": "[parameters('projectPath')]"
+                //}
+
             ],
 			"alwaysOn": true
           },
@@ -108,11 +119,11 @@
 				"dependsOn": [
               "[resourceId('Microsoft.Web/sites/', parameters('name'))]"
 				],
-				"properties": {
-              "RepoUrl": "[parameters('repoUrl')]",
-              "branch": "master",
-              "IsManualIntegration": "true"
-				}
+                "properties": {
+                    "RepoUrl": "[parameters('repoUrl')]",
+                    "branch": "[parameters('branch')]",
+                    "IsManualIntegration": "true"
+                }
 			}
 			],
 			"location": "[resourceGroup().location]",

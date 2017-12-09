@@ -1,21 +1,25 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Dynamic;
-using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 
 using Microsoft.Deployment.Common.ActionModel;
 using Microsoft.Deployment.Common.Actions;
-using Microsoft.Deployment.Common.ErrorCode;
 using Microsoft.Deployment.Common.Helpers;
-using Newtonsoft.Json.Linq;
+using Microsoft.Deployment.Common.Model.Azure;
 
 namespace Microsoft.Deployment.Actions.AzureCustom.Common
 {
     [Export(typeof(IAction))]
     public class CheckFunctionStatus : BaseAction
     {
+        public const int ATTEMPTS = 92;
+        public const int STATUS = 4;
+        public const int WAIT = 5000;
+
+        public const string SUCCESS = "Deployment successful";
+
         public override async Task<ActionResponse> ExecuteActionAsync(ActionRequest request)
         {
             var azureToken = request.DataStore.GetJson("AzureToken", "access_token");
@@ -35,28 +39,75 @@ namespace Microsoft.Deployment.Actions.AzureCustom.Common
             HttpResponseMessage result = await client.ExecuteGenericRequestWithHeaderAsync(HttpMethod.Post, "https://web1.appsvcux.ext.azure.com/websites/api/Websites/KuduSync", JsonUtility.GetJsonStringFromObject(obj));
             var resultBody = await result.Content.ReadAsStringAsync();
 
-           
-            while(true)
+            return await IsReady(client, sitename) ? new ActionResponse(ActionStatus.Success) : new ActionResponse(ActionStatus.Failure);
+        }
+
+        private async Task<bool> IsReady(AzureHttpClient client, string sitename)
+        {
+            bool isReady = false;
+
+            for (int i = 0; i < ATTEMPTS && !isReady; i++)
             {
-                result = await client.ExecuteWithSubscriptionAndResourceGroupAsync(HttpMethod.Get, $"/providers/Microsoft.Web/sites/{sitename}/deployments", "2016-08-01", "");
-                resultBody = await result.Content.ReadAsStringAsync();
-                if(result.IsSuccessStatusCode)
+                FunctionStatusWrapper statusWrapper = await client.RequestAzure<FunctionStatusWrapper>(HttpMethod.Get, $"/providers/Microsoft.Web/sites/{sitename}/deployments", "2016-08-01");
+
+                if (statusWrapper != null && !statusWrapper.Value.IsNullOrEmpty())
                 {
-                    var jobj = JsonUtility.GetJObjectFromJsonString(resultBody);
-                    if(jobj["value"] != null && (jobj["value"] as JArray).Count > 0 )
+                    bool hasFinishedDeployment = true;
+
+                    for (int j = 0; j < statusWrapper.Value.Count && hasFinishedDeployment; j++)
                     {
-                        if (bool.Parse(jobj["value"][0]["properties"]["complete"].ToString()) == true)
+                        FunctionStatus status = statusWrapper.Value[j];
+
+                        hasFinishedDeployment = status != null && status.Properties != null && !string.IsNullOrEmpty(status.Properties.LogUrl);
+
+                        if (hasFinishedDeployment)
                         {
-                            break;
+                            List<FunctionStatusLog> logs = await client.Request<List<FunctionStatusLog>>(HttpMethod.Get, status.Properties.LogUrl);
+
+                            hasFinishedDeployment = !logs.IsNullOrEmpty();
+
+                            if (hasFinishedDeployment)
+                            {
+                                bool isDeployed = false;
+
+                                for (int k = 0; k < logs.Count && !isDeployed; k++)
+                                {
+                                    isDeployed = logs[k].Message.Contains(SUCCESS);
+                                }
+
+                                hasFinishedDeployment = isDeployed && status.Properties.Active && status.Properties.Complete &&
+                                    status.Properties.EndTime != null && status.Properties.Status == STATUS;
+                            }
                         }
                     }
-                    
+
+                    if (hasFinishedDeployment)
+                    {
+                        FunctionWrapper functionWrapper = await client.RequestAzure<FunctionWrapper>(HttpMethod.Get, $"/providers/Microsoft.Web/sites/{sitename}/functions", "2016-08-01");
+
+                        if (functionWrapper != null && !functionWrapper.Value.IsNullOrEmpty())
+                        {
+                            bool areFunctionsReady = true;
+
+                            for (int j = 0; j < functionWrapper.Value.Count && areFunctionsReady; j++)
+                            {
+                                Function function = functionWrapper.Value[j];
+
+                                areFunctionsReady = function != null && function.Properties != null && function.Properties.Config != null && !function.Properties.Config.Disabled;
+                            }
+
+                            isReady = areFunctionsReady;
+                        }
+                    }
                 }
 
-                await Task.Delay(5000);
+                if (!isReady)
+                {
+                    await Task.Delay(WAIT);
+                }
             }
 
-            return new ActionResponse(ActionStatus.Success);
+            return isReady;
         }
     }
 }

@@ -1,0 +1,109 @@
+﻿WITH eventProps AS
+(
+    SELECT 
+        arrayElement.ArrayValue.correlationId AS corrid, 
+        arrayElement.ArrayValue.resultDescription AS description,
+        CASE WHEN arrayElement.ArrayValue.level = 'Information'
+        THEN 'Informational'
+        ELSE arrayElement.ArrayValue.level
+        END as level,
+        arrayElement.ArrayValue.resultType AS status,
+        arrayElement.ArrayValue.time AS ts, 
+        udf.ConvertBlobToJSON(arrayElement.ArrayValue.Properties.eventProperties) AS payload
+    FROM [EventHubInput] AS event CROSS APPLY GetArrayElements(event.records) AS arrayElement 
+    WHERE arrayElement.ArrayValue.Properties.eventCategory = 'ServiceHealth'
+),
+convertToObj AS
+(
+    SELECT 
+        corrid,
+        description,
+        level,
+        status, 
+        ts, 
+        TRY_CAST(payload as Record) as casted 
+    FROM eventProps
+), 
+impactedServices AS 
+(
+    SELECT   
+        GetRecordPropertyValue(obj.casted, 'eventDataId') as shid, 
+        GetRecordPropertyValue(obj.casted, 'operationId') as opid, 
+        GetRecordPropertyValue(obj.casted, 'properties') as innerProps, 
+        obj.corrid, 
+        obj.ts, 
+        obj.description,
+        obj.level,
+        obj.status,
+        udf.ConvertBlobToJSON(E.PropertyValue.impactedServices) AS iss
+    FROM convertToObj AS obj
+    CROSS APPLY GetRecordProperties(obj.casted) AS E
+    where E.PropertyName = 'properties'
+), 
+finalobj AS 
+(
+    SELECT 
+        is2.shid,
+        is2.corrid, 
+        is2.description,
+        is2.level,
+        is2.status,
+        is2.opid, 
+        is2.ts, 
+        GetRecordPropertyValue(is2.innerProps, 'communication') as impact, 
+        GetRecordPropertyValue(is2.innerProps, 'region') as impactedRegions, 
+        GetRecordPropertyValue(is2.innerProps, 'incidentType') as incidentType, 
+        GetArrayElement(is2.iss, 0) AS sname,
+        GetRecordPropertyValue(is2.innerProps, 'title') as title
+    FROM impactedServices AS is2
+),
+serviceid AS 
+(
+    SELECT 
+        f.shid as serviceHealthId,
+        f.corrid as correlationId, 
+        f.description,
+        f.impact, 
+        f.impactedRegions, 
+        f.sname.ServiceName as impactedServices, 
+        f.incidentType, 
+        f.level,
+        f.opid as operationId, 
+        f.status,
+        f.ts as [timestamp],
+        f.title
+    FROM finalobj AS f
+)
+
+SELECT * INTO [ServiceHealthOutput] FROM serviceid
+
+SELECT
+    arrayElement.ArrayValue.[identity].claims.[http://schemas.xmlsoap.org/ws/2005/05/identity/claims/upn] as caller,
+    arrayElement.ArrayValue.correlationId, 
+    arrayElement.ArrayValue.resultDescription as description,
+    arrayElement.ArrayValue.Properties.eventCategory,
+    CASE WHEN arrayElement.ArrayValue.level = 'Information'
+    THEN 'Informational'
+    ELSE arrayElement.ArrayValue.level
+    END as level,
+    arrayElement.ArrayValue.category as operationCategory,
+    arrayElement.ArrayValue.Properties.operationId,
+    arrayElement.ArrayValue.operationName,
+    CASE WHEN CHARINDEX('/', SUBSTRING(arrayElement.ArrayValue.resourceId, 68, 1000)) = 0   
+     THEN SUBSTRING(arrayElement.ArrayValue.resourceId, 68, 1000)  
+     ELSE SUBSTRING(arrayElement.ArrayValue.resourceId, 68, CHARINDEX('/', SUBSTRING(arrayElement.ArrayValue.resourceId, 68, 1000))-1)  
+    END as resourceGroup,
+    arrayElement.ArrayValue.resourceId,
+    CASE WHEN CHARINDEX('/PROVIDERS', arrayElement.ArrayValue.resourceId) = 0
+      THEN null
+      ELSE SUBSTRING(arrayElement.ArrayValue.resourceId, CHARINDEX('/PROVIDERS', arrayElement.ArrayValue.resourceId) + 11, CHARINDEX('/', SUBSTRING(arrayElement.ArrayValue.resourceId, CHARINDEX('/PROVIDERS', arrayElement.ArrayValue.resourceId) + 11, 1000)) - 1)
+    END as resourceProvider,
+    CASE WHEN arrayElement.ArrayValue.resultType = 'Start'
+        THEN 'Started'
+        WHEN arrayElement.ArrayValue.resultType = 'Accept'
+        THEN 'Accepted'
+        ELSE arrayElement.ArrayValue.resultType
+    END as status,
+    arrayElement.ArrayValue.time as [timestamp]
+INTO [AdministrativeOutput]
+FROM [EventHubInput] event CROSS APPLY GetArrayElements(event.records) AS arrayElement 

@@ -6,6 +6,7 @@ using Microsoft.AnalysisServices.Tabular;
 using Microsoft.Deployment.Tests.Actions.TestHelpers;
 using Microsoft.IdentityModel.Clients.ActiveDirectory;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Deployment.Tests.Actions.AzureTests
 {
@@ -16,7 +17,11 @@ namespace Microsoft.Deployment.Tests.Actions.AzureTests
         public async Task CreateServicePrincipal()
         {
             var dataStore = await TestManager.GetDataStore();
-            var response = TestManager.ExecuteAction("Microsoft-CreateSpn", dataStore);
+            var permissions = JToken.Parse(HelperStringsJson.ApplicationPermission);
+
+            dataStore.AddToDataStore("Permissions", permissions);
+
+            var response = TestManager.ExecuteAction("Microsoft-CreateADApplication", dataStore);
             Assert.IsTrue(response.IsSuccess);
         }
 

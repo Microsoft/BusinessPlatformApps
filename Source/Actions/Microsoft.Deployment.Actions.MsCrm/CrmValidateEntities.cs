@@ -10,6 +10,7 @@ using Hyak.Common.Internals;
 using Microsoft.Xrm.Sdk.Messages;
 using Microsoft.Xrm.Sdk.Metadata;
 using Microsoft.Xrm.Sdk.WebServiceClient;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 using Microsoft.Deployment.Common.ActionModel;
@@ -28,15 +29,8 @@ namespace Microsoft.Deployment.Common.Actions.MsCrm
         {
             string refreshToken = request.DataStore.GetJson("MsCrmToken")["refresh_token"].ToString();
             string organizationUrl = request.DataStore.GetValue("OrganizationUrl");
-            string[] entities = request.DataStore.GetValue("Entities").SplitByCommaSpaceTabReturnArray();
-
-            var additionalObjects = request.DataStore.GetValue("AdditionalObjects");
-
-            if (!string.IsNullOrEmpty(additionalObjects))
-            {
-                string[] add = additionalObjects.Split(',');
-                entities.ToList().AddRange(add);
-            }
+            //string[] entities = request.DataStore.GetValue("Entities").Split(new[] { ',', ' ', '\t' }, StringSplitOptions.RemoveEmptyEntries);
+            Dictionary<string, string> entities = JsonConvert.DeserializeObject<Dictionary<string, string>>(request.DataStore.GetValue("Entities"));
 
             var crmToken = CrmTokenUtility.RetrieveCrmOnlineToken(refreshToken, request.Info.WebsiteRootUrl, request.DataStore, organizationUrl);
 
@@ -52,7 +46,7 @@ namespace Microsoft.Deployment.Common.Actions.MsCrm
             {
                 try
                 {
-                    Parallel.ForEach(entities, (e) => { this.CheckAndUpdateEntity(e, proxy, request.Logger); });
+                    Parallel.ForEach(entities, (e) => { this.CheckAndUpdateEntity(e.Key, proxy, request.Logger); });
 
                     retryNeeded = false;
                 }
@@ -93,26 +87,28 @@ namespace Microsoft.Deployment.Common.Actions.MsCrm
                 throw new Exception($"The {entity} entity cannot be retrieved from the PSA instance.");
             }
 
-            // Raise and error if we can't enable it, but we need to
-            if (!checkResponse.EntityMetadata.CanChangeTrackingBeEnabled.Value)
-            {
-                logger.LogCustomProperty("PSAEntity", $"The {entity} entity cannot be enabled for change tracking.");
-                throw new Exception($"The {entity} entity cannot be enabled for change tracking.");
-            }
-
-            // Nothing to do further, try changing
+            // Check if change tracking enabled
             if (!(bool)checkResponse.EntityMetadata.ChangeTrackingEnabled)
             {
-                UpdateEntityRequest updateRequest = new UpdateEntityRequest() { Entity = checkResponse.EntityMetadata };
-                updateRequest.Entity.ChangeTrackingEnabled = true;
-
-                UpdateEntityResponse updateResponse = (UpdateEntityResponse)proxy.Execute(updateRequest);
-
-                // Check the entity has actually been change tracking enabled
-                RetrieveEntityResponse verifyChange = (RetrieveEntityResponse)proxy.Execute(checkRequest);
-                if (!(bool)verifyChange.EntityMetadata.ChangeTrackingEnabled)
+                // Check if change tracking can be enabled
+                if (!checkResponse.EntityMetadata.CanChangeTrackingBeEnabled.Value)
                 {
-                    logger.LogCustomProperty("PSAEntity", $"Warning: Change tracking for {entity} has been enabled, but is not yet active.");
+                    logger.LogCustomProperty("PSAEntity", $"The {entity} entity cannot be enabled for change tracking.");
+                    throw new Exception($"The {entity} entity cannot be enabled for change tracking.");
+                }
+                else
+                {
+                    UpdateEntityRequest updateRequest = new UpdateEntityRequest() { Entity = checkResponse.EntityMetadata };
+                    updateRequest.Entity.ChangeTrackingEnabled = true;
+
+                    UpdateEntityResponse updateResponse = (UpdateEntityResponse)proxy.Execute(updateRequest);
+
+                    // Check the entity has actually been change tracking enabled
+                    RetrieveEntityResponse verifyChange = (RetrieveEntityResponse)proxy.Execute(checkRequest);
+                    if (!(bool)verifyChange.EntityMetadata.ChangeTrackingEnabled)
+                    {
+                        logger.LogCustomProperty("PSAEntity", $"Warning: Change tracking for {entity} has been enabled, but is not yet active.");
+                    }
                 }
             }
         }

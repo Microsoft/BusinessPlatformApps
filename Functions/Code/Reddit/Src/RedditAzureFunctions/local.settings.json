@@ -1,0 +1,27 @@
+{
+  "IsEncrypted": false,
+  "Values": {
+    "AzureMLApiKey": "",
+    "AzureMLBaseUrl": "https://ussouthcentral.services.azureml.net/subscriptions/SUBSCRIPTIONGUID/services/SERVICEGUID/jobs?api-version=2.0",
+    "SocialGistApiKey": "",
+    "AzureWebJobsStorage": "DefaultEndpointsProtocol=https;AccountName=ACCOUNTNAME;AccountKey=ACCOUNTKEY;EndpointSuffix=core.windows.net",
+    "QueryTerms": "superman|batman|flash|\"wonder+woman\"|\"green+lantern\"|firestorm|marvel|\"dc+comics\"|\"dc+comic\"|\"justice+league\"",
+    "SearchToThreadTimeDelayInSeconds": "5",
+    "MaximumResultsPerSearch": "100",
+    "SocialGistApiRequestTimeoutInSeconds": "300",
+    "ResultLimitPerPage": "10",
+    "RedditSearchQueueName": "reddit-search-source-dev",
+    "RedditPostQueueName": "reddit-source-dev",
+    "AzureMLJobQueueName": "reddit-azureml-job-source-dev",
+    "StorageQueueConnection": "DefaultEndpointsProtocol=https;AccountName=STORAGEQUEUEACCOUNTNAME;AccountKey=STORAGEQUEUEACCOUNTKEY;EndpointSuffix=core.windows.net",
+    "ScheduledRedditQueryFrequency": "0 0 1 * * *",
+    "ScheduledAzureMLFrequency": "0 */30 * * * *"
+  },
+  "ConnectionStrings": {
+    "SqlConnection": "Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=Reddit;Integrated Security=True;Pooling=False"
+  },
+  "Host": {
+    "LocalHttpPort": 7071,
+    "CORS": "*"
+  }
+}

@@ -18,6 +18,8 @@ export class Salesforce extends ViewModelBase {
         this.MS.DataStore.addToDataStore('SalesforceUrl', this.salesforceUrl, DataStoreType.Public);
         this.MS.DataStore.addToDataStore('ObjectTables', this.salesforceObjects, DataStoreType.Public);
 
+        this.MS.DataStore.addToDataStore('Entities', this.salesforceObjects, DataStoreType.Public);
+
         let salesforceLoginResponse: ActionResponse = await this.MS.HttpService.executeAsync('Microsoft-ValidateSalesforceCredentials');
 
         this.isValidated = salesforceLoginResponse.IsSuccess;

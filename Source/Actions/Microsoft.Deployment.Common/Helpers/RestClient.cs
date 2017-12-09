@@ -14,7 +14,8 @@ namespace Microsoft.Deployment.Common.Helpers
     {
         public readonly string ID;
 
-        private readonly HttpClient _client;
+        private readonly AuthenticationHeaderValue _authenticationInfo;
+        private readonly string _baseUri;
         private readonly Dictionary<string, string> _headers;
         private readonly string _mediaType;
 
@@ -23,15 +24,15 @@ namespace Microsoft.Deployment.Common.Helpers
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
             ServicePointManager.Expect100Continue = false;
             ServicePointManager.CheckCertificateRevocationList = true;
-            _client = new HttpClient { BaseAddress = new Uri(baseUri) };
+            _baseUri = baseUri;
             _headers = headers;
             _mediaType = mediaType;
 
             ID = id;
 
-            // Set authorization 
+            // Set authorization
             if (authenticationInfo != null)
-                _client.DefaultRequestHeaders.Authorization = authenticationInfo;
+                _authenticationInfo = authenticationInfo;
         }
 
         private string SanitizeBody(string body)
@@ -42,27 +43,34 @@ namespace Microsoft.Deployment.Common.Helpers
 
         public async Task<string> HandleRequest(HttpMethod method, string relativeUri, Dictionary<string, string> headers, string body)
         {
-            _client.DefaultRequestHeaders.Accept.Clear();
-            _client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue(_mediaType));
+            string responseMessage;
 
-            HttpRequestMessage message = new HttpRequestMessage(method, relativeUri);
-
-            if (headers != null)
+            using (HttpClient client = new HttpClient() { BaseAddress = new Uri(_baseUri) })
             {
-                _client.DefaultRequestHeaders.Clear();
-                headers.Keys.ToList().ForEach(p => _client.DefaultRequestHeaders.Add(p, headers[p]));
+                client.DefaultRequestHeaders.Authorization = _authenticationInfo;
+
+                client.DefaultRequestHeaders.Accept.Clear();
+                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue(_mediaType));
+
+                HttpRequestMessage message = new HttpRequestMessage(method, relativeUri);
+
+                if (headers != null)
+                {
+                    client.DefaultRequestHeaders.Clear();
+                    headers.Keys.ToList().ForEach(p => client.DefaultRequestHeaders.Add(p, headers[p]));
+                }
+
+                if (body != null)
+                {
+                    message.Content = new StringContent(body, Encoding.UTF8, _mediaType);
+                }
+
+                var response = await client.SendAsync(message);
+                responseMessage = await response.Content.ReadAsStringAsync();
+
+                if (response.IsSuccessStatusCode)
+                    return responseMessage;
             }
-
-            if (body != null)
-            {
-                message.Content = new StringContent(body, Encoding.UTF8, _mediaType);
-            }
-
-            var response = await _client.SendAsync(message);
-            string responseMessage = await response.Content.ReadAsStringAsync();
-
-            if (response.IsSuccessStatusCode)
-                return responseMessage;
 
             throw new HttpRequestException(responseMessage);
         }

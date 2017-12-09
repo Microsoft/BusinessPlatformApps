@@ -1,18 +1,14 @@
-﻿using System;
+﻿using Microsoft.Deployment.Common;
+using Microsoft.Deployment.Common.Helpers;
+using System;
 using System.Collections.Generic;
-using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
+using System.Data.SqlClient;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web.Http;
-
-using Newtonsoft.Json.Linq;
-
-using Microsoft.Deployment.Common;
-using Microsoft.Deployment.Common.Helpers;
 
 namespace Microsoft.Deployment.Site.Service.Controllers
 {
@@ -58,8 +54,9 @@ namespace Microsoft.Deployment.Site.Service.Controllers
                 }
 
                 string deploymentIdsConnection = Constants.BpstDeploymentIdDatabase;
-                var cmd = $"INSERT INTO deploymentids VALUES('{deploymentId}','{DateTime.UtcNow.ToString("o")}')";
-                SqlUtility.InvokeSqlCommand(deploymentIdsConnection, cmd, new Dictionary<string, string>());
+                string statement = "INSERT INTO dbo.deploymentids VALUES(@p1, @p2)";
+                SqlParameter[] parameters = SqlUtility.MapValuesToSqlParameters(deploymentId, DateTime.UtcNow);
+                SqlUtility.ExecuteQueryWithParameters(deploymentIdsConnection, statement, parameters);
 
                 resp = new HttpResponseMessage(HttpStatusCode.OK);
                 return resp;
@@ -74,12 +71,16 @@ namespace Microsoft.Deployment.Site.Service.Controllers
 
         private static async Task<HttpResponseMessage> GetToken(string refreshToken, string tokenUrl, string clientId)
         {
-            HttpClient client = new HttpClient();
+            HttpResponseMessage response;
 
-            var builder = GetTokenUri(refreshToken, Constants.AzureManagementCoreApi, clientId);
-            var content = new StringContent(builder.ToString());
-            content.Headers.ContentType = new MediaTypeHeaderValue("application/x-www-form-urlencoded");
-            var response = await client.PostAsync(new Uri(tokenUrl), content);
+            using (HttpClient client = new HttpClient())
+            {
+                var builder = GetTokenUri(refreshToken, Constants.AzureManagementCoreApi, clientId);
+                var content = new StringContent(builder.ToString());
+                content.Headers.ContentType = new MediaTypeHeaderValue("application/x-www-form-urlencoded");
+                response = await client.PostAsync(new Uri(tokenUrl), content);
+            }
+
             return response;
         }
 

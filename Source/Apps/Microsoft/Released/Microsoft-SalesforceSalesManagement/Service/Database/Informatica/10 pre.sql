@@ -17,7 +17,8 @@ BEGIN
 	FROM smgt.[configuration] WHERE configuration_group = 'SolutionTemplate' AND configuration_subgroup = 'SalesManagement' AND [name] = 'AdditionalTables';
 SET @cr = CURSOR FAST_FORWARD FOR
               SELECT [value] FROM STRING_SPLIT(@additionalTables,',')
-			  
+IF(@additionalTables <> '')
+BEGIN 
 OPEN @cr;
 FETCH NEXT FROM @cr INTO @p1;
 WHILE @@FETCH_STATUS = 0  
@@ -33,7 +34,7 @@ END;
 CLOSE @cr;
 DEALLOCATE @cr;
 END;
-
+END;
 
 
 -- Regular views

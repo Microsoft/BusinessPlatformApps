@@ -28,7 +28,7 @@ namespace Microsoft.Deployment.Common.Actions.MsCrm
 
             string refreshToken = request.DataStore.GetJson("MsCrmToken")["refresh_token"].ToString();
             string organizationUrl = request.DataStore.GetValue("OrganizationUrl");
-            string[] entities = request.DataStore.GetValue("Entities").SplitByCommaSpaceTabReturnArray();
+            Dictionary<string, string> entities = JsonConvert.DeserializeObject<Dictionary<string, string>>(request.DataStore.GetValue("Entities"));
 
             var crmToken = CrmTokenUtility.RetrieveCrmOnlineToken(refreshToken, request.Info.WebsiteRootUrl, request.DataStore, organizationUrl);
 
@@ -46,10 +46,10 @@ namespace Microsoft.Deployment.Common.Actions.MsCrm
             {
                 try
                 {
-                    var xml = $@"
+                             var xml = $@"
                         <fetch distinct='false' mapping='logical' aggregate='true'> 
-                            <entity name='{entry}'> 
-                                <attribute name='{entry}id' alias='{entry}_count' aggregate='count'/> 
+                            <entity name='{entry.Key}'> 
+                                 <attribute name = '{entry.Value}' alias = '{entry.Key}_count' aggregate = 'count'/>
                             </entity> 
                         </fetch>";
 
@@ -59,11 +59,11 @@ namespace Microsoft.Deployment.Common.Actions.MsCrm
 
                     var xdoc = XDocument.Parse(result.FetchXmlResult);
 
-                    count = xdoc.Descendants().First(e => e.Name == $"{entry}_count").Value;
+                    count = xdoc.Descendants().First(e => e.Name == $"{entry.Key}_count").Value;
                 }
                 catch (Exception e)
                 {
-                    if(e.Message == $"The entity with a name = '{entry}' was not found in the MetadataCache.")
+                    if(e.Message == $"The entity with a name = '{entry.Key}' was not found in the MetadataCache.")
                     {
                         return new ActionResponse(ActionStatus.Failure, null, e, "NotPSAInstance");
                     }
@@ -80,7 +80,7 @@ namespace Microsoft.Deployment.Common.Actions.MsCrm
                     max = Convert.ToInt32(count);
                 }
 
-                initialCounts.Add(entry.ToLowerInvariant(), Convert.ToInt32(count));
+                initialCounts.Add(entry.Key.ToLowerInvariant(), Convert.ToInt32(count));
             }
             var missingCounts = new List<string>();
 

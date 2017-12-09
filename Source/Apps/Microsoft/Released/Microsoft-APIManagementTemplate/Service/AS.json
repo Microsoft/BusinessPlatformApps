@@ -1,0 +1,3648 @@
+{
+  "create": {
+    "database": {
+      "name": "test",
+      "compatibilityLevel": 1200,
+      "model": {
+        "culture": "en-US",
+        "dataSources": [
+          {
+            "name": "ST_DS",
+            "connectionString": "Provider=SQLNCLI11;Data Source=tcp:testmodbworkplease.database.windows.net;Persist Security Info=False;User ID=pbiadmin;Initial Catalog=apiManagementDB",
+            "impersonationMode": "impersonateServiceAccount",
+            "annotations": [
+              {
+                "name": "ConnectionEditUISource",
+                "value": "SqlServer"
+              }
+            ]
+          }
+        ],
+        "tables": [
+          {
+            "name": "VisualCallProbabilityEdgeList",
+            "columns": [
+              {
+                "name": "users",
+                "dataType": "int64",
+                "sourceColumn": "users",
+                "formatString": "0",
+                "summarizeBy": "sum",
+                "annotations": [
+                  {
+                    "name": "SummarizationSetBy",
+                    "value": "Automatic"
+                  },
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"NumberWhole\" Accuracy=\"0\" />"
+                  },
+                  {
+                    "name": "DataTypeAtRefresh",
+                    "value": "Int64#####not a type"
+                  },
+                  {
+                    "name": "PBI_NameAtRefresh",
+                    "value": "users"
+                  },
+                  {
+                    "name": "PBI_WasHiddenAtRefresh",
+                    "value": "False"
+                  }
+                ]
+              },
+              {
+                "name": "CallProbability",
+                "dataType": "int64",
+                "sourceColumn": "CallProbability",
+                "formatString": "0",
+                "summarizeBy": "sum",
+                "annotations": [
+                  {
+                    "name": "SummarizationSetBy",
+                    "value": "Automatic"
+                  },
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"NumberWhole\" Accuracy=\"0\" />"
+                  },
+                  {
+                    "name": "DataTypeAtRefresh",
+                    "value": "Int64#####not a type"
+                  },
+                  {
+                    "name": "PBI_NameAtRefresh",
+                    "value": "CallProbability"
+                  },
+                  {
+                    "name": "PBI_WasHiddenAtRefresh",
+                    "value": "False"
+                  }
+                ]
+              },
+              {
+                "type": "calculated",
+                "name": "Edge",
+                "dataType": "string",
+                "isDataTypeInferred": true,
+                "expression": "VisualCallProbabilityEdgeList[SourceOperation] & \"->\" & VisualCallProbabilityEdgeList[TargetOperation]",
+                "summarizeBy": "none",
+                "annotations": [
+                  {
+                    "name": "SummarizationSetBy",
+                    "value": "Automatic"
+                  },
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"Text\" />"
+                  },
+                  {
+                    "name": "DataTypeAtRefresh",
+                    "value": "String#####not a type"
+                  }
+                ]
+              },
+              {
+                "type": "calculated",
+                "name": "probability_bin",
+                "dataType": "double",
+                "isDataTypeInferred": true,
+                "expression": "int(VisualCallProbabilityEdgeList[CallProbability] / 10) * 10.0",
+                "summarizeBy": "sum",
+                "annotations": [
+                  {
+                    "name": "SummarizationSetBy",
+                    "value": "Automatic"
+                  },
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"General\" />"
+                  },
+                  {
+                    "name": "DataTypeAtRefresh",
+                    "value": "Double#####not a type"
+                  }
+                ]
+              },
+              {
+                "type": "calculated",
+                "name": "SourceOperation",
+                "dataType": "string",
+                "isDataTypeInferred": true,
+                "expression": "VisualCallProbabilityEdgeList[ProductID] & \":\" & VisualCallProbabilityEdgeList[ApiID] & \":\" & VisualCallProbabilityEdgeList[OperationID]",
+                "summarizeBy": "none",
+                "annotations": [
+                  {
+                    "name": "SummarizationSetBy",
+                    "value": "Automatic"
+                  },
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"Text\" />"
+                  },
+                  {
+                    "name": "DataTypeAtRefresh",
+                    "value": "String#####not a type"
+                  }
+                ]
+              },
+              {
+                "type": "calculated",
+                "name": "TargetOperation",
+                "dataType": "string",
+                "isDataTypeInferred": true,
+                "expression": "VisualCallProbabilityEdgeList[RelatedProductID] & \":\" & VisualCallProbabilityEdgeList[RelatedApiID] & \":\" & VisualCallProbabilityEdgeList[RelatedOperationID]",
+                "summarizeBy": "none",
+                "annotations": [
+                  {
+                    "name": "SummarizationSetBy",
+                    "value": "Automatic"
+                  },
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"Text\" />"
+                  },
+                  {
+                    "name": "DataTypeAtRefresh",
+                    "value": "String#####not a type"
+                  }
+                ]
+              },
+              {
+                "type": "calculated",
+                "name": "Edge2",
+                "dataType": "string",
+                "isDataTypeInferred": true,
+                "expression": "VisualCallProbabilityEdgeList[OperationID] & \"->\" & VisualCallProbabilityEdgeList[RelatedOperationID]",
+                "summarizeBy": "none",
+                "annotations": [
+                  {
+                    "name": "SummarizationSetBy",
+                    "value": "Automatic"
+                  },
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"Text\" />"
+                  },
+                  {
+                    "name": "DataTypeAtRefresh",
+                    "value": "String#####not a type"
+                  }
+                ]
+              },
+              {
+                "name": "ProductID",
+                "dataType": "string",
+                "sourceColumn": "ProductID",
+                "summarizeBy": "none",
+                "annotations": [
+                  {
+                    "name": "SummarizationSetBy",
+                    "value": "Automatic"
+                  },
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"Text\" />"
+                  },
+                  {
+                    "name": "DataTypeAtRefresh",
+                    "value": "String#####not a type"
+                  },
+                  {
+                    "name": "PBI_NameAtRefresh",
+                    "value": "ProductID"
+                  },
+                  {
+                    "name": "PBI_WasHiddenAtRefresh",
+                    "value": "False"
+                  }
+                ]
+              },
+              {
+                "name": "ApiID",
+                "dataType": "string",
+                "sourceColumn": "ApiID",
+                "summarizeBy": "none",
+                "annotations": [
+                  {
+                    "name": "SummarizationSetBy",
+                    "value": "Automatic"
+                  },
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"Text\" />"
+                  },
+                  {
+                    "name": "DataTypeAtRefresh",
+                    "value": "String#####not a type"
+                  },
+                  {
+                    "name": "PBI_NameAtRefresh",
+                    "value": "ApiID"
+                  },
+                  {
+                    "name": "PBI_WasHiddenAtRefresh",
+                    "value": "False"
+                  }
+                ]
+              },
+              {
+                "name": "OperationID",
+                "dataType": "string",
+                "sourceColumn": "OperationID",
+                "summarizeBy": "none",
+                "annotations": [
+                  {
+                    "name": "SummarizationSetBy",
+                    "value": "Automatic"
+                  },
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"Text\" />"
+                  },
+                  {
+                    "name": "DataTypeAtRefresh",
+                    "value": "String#####not a type"
+                  },
+                  {
+                    "name": "PBI_NameAtRefresh",
+                    "value": "OperationID"
+                  },
+                  {
+                    "name": "PBI_WasHiddenAtRefresh",
+                    "value": "False"
+                  }
+                ]
+              },
+              {
+                "name": "RelatedProductID",
+                "dataType": "string",
+                "sourceColumn": "RelatedProductID",
+                "summarizeBy": "none",
+                "annotations": [
+                  {
+                    "name": "SummarizationSetBy",
+                    "value": "Automatic"
+                  },
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"Text\" />"
+                  },
+                  {
+                    "name": "DataTypeAtRefresh",
+                    "value": "String#####not a type"
+                  },
+                  {
+                    "name": "PBI_NameAtRefresh",
+                    "value": "RelatedProductID"
+                  },
+                  {
+                    "name": "PBI_WasHiddenAtRefresh",
+                    "value": "False"
+                  }
+                ]
+              },
+              {
+                "name": "RelatedApiID",
+                "dataType": "string",
+                "sourceColumn": "RelatedApiID",
+                "summarizeBy": "none",
+                "annotations": [
+                  {
+                    "name": "SummarizationSetBy",
+                    "value": "Automatic"
+                  },
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"Text\" />"
+                  },
+                  {
+                    "name": "DataTypeAtRefresh",
+                    "value": "String#####not a type"
+                  },
+                  {
+                    "name": "PBI_NameAtRefresh",
+                    "value": "RelatedApiID"
+                  },
+                  {
+                    "name": "PBI_WasHiddenAtRefresh",
+                    "value": "False"
+                  }
+                ]
+              },
+              {
+                "name": "RelatedOperationID",
+                "dataType": "string",
+                "sourceColumn": "RelatedOperationID",
+                "summarizeBy": "none",
+                "annotations": [
+                  {
+                    "name": "SummarizationSetBy",
+                    "value": "Automatic"
+                  },
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"Text\" />"
+                  },
+                  {
+                    "name": "DataTypeAtRefresh",
+                    "value": "String#####not a type"
+                  },
+                  {
+                    "name": "PBI_NameAtRefresh",
+                    "value": "RelatedOperationID"
+                  },
+                  {
+                    "name": "PBI_WasHiddenAtRefresh",
+                    "value": "False"
+                  }
+                ]
+              }
+            ],
+            "partitions": [
+              {
+                "name": "VisualCallProbabilityEdgeList-be83b753-2d71-493b-86f0-dac9c67b2d06",
+                "dataView": "full",
+                "source": {
+                  "query": "SELECT [pbist_apimgmt].[vw_visualcallprobabilityedgelist].* FROM [pbist_apimgmt].[vw_visualcallprobabilityedgelist] ",
+                  "dataSource": "ST_DS"
+                }
+              }
+            ],
+            "annotations": [
+              {
+                "name": "PBI_Id",
+                "value": "c37fbe3f-18d8-46b3-a16f-a236e697db29"
+              },
+              {
+                "name": "LinkedQueryName",
+                "value": "VisualCallProbabilityEdgeList"
+              }
+            ]
+          },
+          {
+            "name": "VisualIPEdgeCounts",
+            "columns": [
+              {
+                "name": "datetime_hour_bin",
+                "dataType": "dateTime",
+                "sourceColumn": "datetime_hour_bin",
+                "formatString": "General Date",
+                "summarizeBy": "none",
+                "annotations": [
+                  {
+                    "name": "SummarizationSetBy",
+                    "value": "Automatic"
+                  },
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"DateTimeGeneralPattern\"><DateTimes><DateTime LCID=\"1033\" Group=\"GeneralDateTimeLong\" FormatString=\"G\" /></DateTimes></Format>"
+                  },
+                  {
+                    "name": "DataTypeAtRefresh",
+                    "value": "DateTime#####not a type"
+                  },
+                  {
+                    "name": "PBI_NameAtRefresh",
+                    "value": "datetime_hour_bin"
+                  },
+                  {
+                    "name": "PBI_WasHiddenAtRefresh",
+                    "value": "False"
+                  }
+                ]
+              },
+              {
+                "name": "IPAddress",
+                "dataType": "string",
+                "sourceColumn": "IPAddress",
+                "summarizeBy": "none",
+                "annotations": [
+                  {
+                    "name": "SummarizationSetBy",
+                    "value": "Automatic"
+                  },
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"Text\" />"
+                  },
+                  {
+                    "name": "DataTypeAtRefresh",
+                    "value": "String#####not a type"
+                  },
+                  {
+                    "name": "PBI_NameAtRefresh",
+                    "value": "IPAddress"
+                  },
+                  {
+                    "name": "PBI_WasHiddenAtRefresh",
+                    "value": "False"
+                  }
+                ]
+              },
+              {
+                "name": "counts",
+                "dataType": "int64",
+                "sourceColumn": "counts",
+                "formatString": "0",
+                "summarizeBy": "sum",
+                "annotations": [
+                  {
+                    "name": "SummarizationSetBy",
+                    "value": "Automatic"
+                  },
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"NumberWhole\" Accuracy=\"0\" />"
+                  },
+                  {
+                    "name": "DataTypeAtRefresh",
+                    "value": "Int64#####not a type"
+                  },
+                  {
+                    "name": "PBI_NameAtRefresh",
+                    "value": "counts"
+                  },
+                  {
+                    "name": "PBI_WasHiddenAtRefresh",
+                    "value": "False"
+                  }
+                ]
+              },
+              {
+                "type": "calculated",
+                "name": "Edge",
+                "dataType": "string",
+                "isDataTypeInferred": true,
+                "expression": "VisualIPEdgeCounts[OperationID] & \"->\" & VisualIPEdgeCounts[RelatedOperationID]",
+                "summarizeBy": "none",
+                "annotations": [
+                  {
+                    "name": "SummarizationSetBy",
+                    "value": "Automatic"
+                  },
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"Text\" />"
+                  },
+                  {
+                    "name": "DataTypeAtRefresh",
+                    "value": "String#####not a type"
+                  }
+                ]
+              },
+              {
+                "type": "calculated",
+                "name": "SourceOperation",
+                "dataType": "string",
+                "isDataTypeInferred": true,
+                "expression": "VisualIPEdgeCounts[ProductID] & \":\" & VisualIPEdgeCounts[ApiID] & \":\" & VisualIPEdgeCounts[OperationID]",
+                "summarizeBy": "none",
+                "annotations": [
+                  {
+                    "name": "SummarizationSetBy",
+                    "value": "Automatic"
+                  },
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"Text\" />"
+                  },
+                  {
+                    "name": "DataTypeAtRefresh",
+                    "value": "String#####not a type"
+                  }
+                ]
+              },
+              {
+                "type": "calculated",
+                "name": "TargetOperation",
+                "dataType": "string",
+                "isDataTypeInferred": true,
+                "expression": "VisualIPEdgeCounts[RelatedProductID] & \":\" & VisualIPEdgeCounts[RelatedApiID] & \":\" & VisualIPEdgeCounts[RelatedOperationID]",
+                "summarizeBy": "none",
+                "annotations": [
+                  {
+                    "name": "SummarizationSetBy",
+                    "value": "Automatic"
+                  },
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"Text\" />"
+                  },
+                  {
+                    "name": "DataTypeAtRefresh",
+                    "value": "String#####not a type"
+                  }
+                ]
+              },
+              {
+                "name": "ProductID",
+                "dataType": "string",
+                "sourceColumn": "ProductID",
+                "summarizeBy": "none",
+                "annotations": [
+                  {
+                    "name": "SummarizationSetBy",
+                    "value": "Automatic"
+                  },
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"Text\" />"
+                  },
+                  {
+                    "name": "DataTypeAtRefresh",
+                    "value": "String#####not a type"
+                  },
+                  {
+                    "name": "PBI_NameAtRefresh",
+                    "value": "ProductID"
+                  },
+                  {
+                    "name": "PBI_WasHiddenAtRefresh",
+                    "value": "False"
+                  }
+                ]
+              },
+              {
+                "name": "ApiID",
+                "dataType": "string",
+                "sourceColumn": "ApiID",
+                "summarizeBy": "none",
+                "annotations": [
+                  {
+                    "name": "SummarizationSetBy",
+                    "value": "Automatic"
+                  },
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"Text\" />"
+                  },
+                  {
+                    "name": "DataTypeAtRefresh",
+                    "value": "String#####not a type"
+                  },
+                  {
+                    "name": "PBI_NameAtRefresh",
+                    "value": "ApiID"
+                  },
+                  {
+                    "name": "PBI_WasHiddenAtRefresh",
+                    "value": "False"
+                  }
+                ]
+              },
+              {
+                "name": "OperationID",
+                "dataType": "string",
+                "sourceColumn": "OperationID",
+                "summarizeBy": "none",
+                "annotations": [
+                  {
+                    "name": "SummarizationSetBy",
+                    "value": "Automatic"
+                  },
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"Text\" />"
+                  },
+                  {
+                    "name": "DataTypeAtRefresh",
+                    "value": "String#####not a type"
+                  },
+                  {
+                    "name": "PBI_NameAtRefresh",
+                    "value": "OperationID"
+                  },
+                  {
+                    "name": "PBI_WasHiddenAtRefresh",
+                    "value": "False"
+                  }
+                ]
+              },
+              {
+                "name": "RelatedProductID",
+                "dataType": "string",
+                "sourceColumn": "RelatedProductID",
+                "summarizeBy": "none",
+                "annotations": [
+                  {
+                    "name": "SummarizationSetBy",
+                    "value": "Automatic"
+                  },
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"Text\" />"
+                  },
+                  {
+                    "name": "DataTypeAtRefresh",
+                    "value": "String#####not a type"
+                  },
+                  {
+                    "name": "PBI_NameAtRefresh",
+                    "value": "RelatedProductID"
+                  },
+                  {
+                    "name": "PBI_WasHiddenAtRefresh",
+                    "value": "False"
+                  }
+                ]
+              },
+              {
+                "name": "RelatedApiID",
+                "dataType": "string",
+                "sourceColumn": "RelatedApiID",
+                "summarizeBy": "none",
+                "annotations": [
+                  {
+                    "name": "SummarizationSetBy",
+                    "value": "Automatic"
+                  },
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"Text\" />"
+                  },
+                  {
+                    "name": "DataTypeAtRefresh",
+                    "value": "String#####not a type"
+                  },
+                  {
+                    "name": "PBI_NameAtRefresh",
+                    "value": "RelatedApiID"
+                  },
+                  {
+                    "name": "PBI_WasHiddenAtRefresh",
+                    "value": "False"
+                  }
+                ]
+              },
+              {
+                "name": "RelatedOperationID",
+                "dataType": "string",
+                "sourceColumn": "RelatedOperationID",
+                "summarizeBy": "none",
+                "annotations": [
+                  {
+                    "name": "SummarizationSetBy",
+                    "value": "Automatic"
+                  },
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"Text\" />"
+                  },
+                  {
+                    "name": "DataTypeAtRefresh",
+                    "value": "String#####not a type"
+                  },
+                  {
+                    "name": "PBI_NameAtRefresh",
+                    "value": "RelatedOperationID"
+                  },
+                  {
+                    "name": "PBI_WasHiddenAtRefresh",
+                    "value": "False"
+                  }
+                ]
+              }
+            ],
+            "partitions": [
+              {
+                "name": "VisualIPEdgeCounts-2d90fa2f-2ea9-4957-aa0b-b2f2f6becd8f",
+                "dataView": "full",
+                "source": {
+                  "query": "SELECT [pbist_apimgmt].[vw_visualipedgecounts].* FROM [pbist_apimgmt].[vw_visualipedgecounts]",
+                  "dataSource": "ST_DS"
+                }
+              }
+            ],
+            "measures": [
+              {
+                "name": "logcount",
+                "expression": "LOG(count(VisualIPEdgeCounts[IPAddress]))",
+                "annotations": [
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"General\" />"
+                  }
+                ]
+              }
+            ],
+            "annotations": [
+              {
+                "name": "PBI_Id",
+                "value": "6e1e0ee6-e441-4304-8364-c240254e1af8"
+              },
+              {
+                "name": "LinkedQueryName",
+                "value": "VisualIPEdgeCounts"
+              }
+            ]
+          },
+
+          {
+            "name": "VisualOperationCallVolume",
+            "columns": [
+              {
+                "name": "datetime_hour",
+                "dataType": "dateTime",
+                "sourceColumn": "datetime_hour",
+                "formatString": "General Date",
+                "summarizeBy": "none",
+                "annotations": [
+                  {
+                    "name": "SummarizationSetBy",
+                    "value": "Automatic"
+                  },
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"DateTimeGeneralPattern\"><DateTimes><DateTime LCID=\"1033\" Group=\"GeneralDateTimeLong\" FormatString=\"G\" /></DateTimes></Format>"
+                  },
+                  {
+                    "name": "DataTypeAtRefresh",
+                    "value": "DateTime#####not a type"
+                  },
+                  {
+                    "name": "PBI_NameAtRefresh",
+                    "value": "datetime_hour"
+                  },
+                  {
+                    "name": "PBI_WasHiddenAtRefresh",
+                    "value": "False"
+                  }
+                ]
+              },
+              {
+                "name": "OperationId",
+                "dataType": "string",
+                "sourceColumn": "OperationId",
+                "summarizeBy": "none",
+                "annotations": [
+                  {
+                    "name": "SummarizationSetBy",
+                    "value": "Automatic"
+                  },
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"Text\" />"
+                  },
+                  {
+                    "name": "DataTypeAtRefresh",
+                    "value": "String#####not a type"
+                  },
+                  {
+                    "name": "PBI_NameAtRefresh",
+                    "value": "OperationId"
+                  },
+                  {
+                    "name": "PBI_WasHiddenAtRefresh",
+                    "value": "False"
+                  }
+                ]
+              },
+              {
+                "name": "ApiID",
+                "dataType": "string",
+                "sourceColumn": "ApiID",
+                "summarizeBy": "none",
+                "annotations": [
+                  {
+                    "name": "SummarizationSetBy",
+                    "value": "Automatic"
+                  },
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"Text\" />"
+                  },
+                  {
+                    "name": "DataTypeAtRefresh",
+                    "value": "String#####not a type"
+                  },
+                  {
+                    "name": "PBI_NameAtRefresh",
+                    "value": "ApiID"
+                  },
+                  {
+                    "name": "PBI_WasHiddenAtRefresh",
+                    "value": "False"
+                  }
+                ]
+              },
+              {
+                "name": "operation_counts",
+                "dataType": "int64",
+                "sourceColumn": "operation_counts",
+                "formatString": "0",
+                "summarizeBy": "sum",
+                "annotations": [
+                  {
+                    "name": "SummarizationSetBy",
+                    "value": "Automatic"
+                  },
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"NumberWhole\" Accuracy=\"0\" />"
+                  },
+                  {
+                    "name": "DataTypeAtRefresh",
+                    "value": "Int64#####not a type"
+                  },
+                  {
+                    "name": "PBI_NameAtRefresh",
+                    "value": "operation_counts"
+                  },
+                  {
+                    "name": "PBI_WasHiddenAtRefresh",
+                    "value": "False"
+                  }
+                ]
+              },
+              {
+                "name": "ProductID",
+                "dataType": "string",
+                "sourceColumn": "ProductID",
+                "summarizeBy": "none",
+                "annotations": [
+                  {
+                    "name": "SummarizationSetBy",
+                    "value": "Automatic"
+                  },
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"Text\" />"
+                  },
+                  {
+                    "name": "DataTypeAtRefresh",
+                    "value": "String#####not a type"
+                  },
+                  {
+                    "name": "PBI_NameAtRefresh",
+                    "value": "ProductID"
+                  },
+                  {
+                    "name": "PBI_WasHiddenAtRefresh",
+                    "value": "False"
+                  }
+                ]
+              },
+              {
+                "type": "calculated",
+                "name": "ApiIDTruncated",
+                "dataType": "string",
+                "isDataTypeInferred": true,
+                "expression": "LEFT(VisualOperationCallVolume[ApiID], 20)",
+                "summarizeBy": "none",
+                "annotations": [
+                  {
+                    "name": "SummarizationSetBy",
+                    "value": "Automatic"
+                  },
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"Text\" />"
+                  },
+                  {
+                    "name": "DataTypeAtRefresh",
+                    "value": "String#####not a type"
+                  }
+                ]
+              }
+            ],
+            "partitions": [
+              {
+                "name": "VisualOperationCallVolume-af812ba3-43de-4f85-9e29-8415b88ac155",
+                "dataView": "full",
+                "source": {
+                  "query": "SELECT [pbist_apimgmt].[vw_visualoperationcallvolume].* FROM [pbist_apimgmt].[vw_visualoperationcallvolume] ",
+                  "dataSource": "ST_DS"
+                }
+              }
+            ],
+            "annotations": [
+              {
+                "name": "PBI_Id",
+                "value": "46da23d9-3b21-4c4c-a3a1-899caf663f9c"
+              },
+              {
+                "name": "LinkedQueryName",
+                "value": "VisualOperationCallVolume"
+              }
+            ]
+          },
+
+          {
+            "name": "AllRequestData",
+            "columns": [
+              {
+                "name": "RequestId",
+                "dataType": "string",
+                "sourceColumn": "RequestId",
+                "summarizeBy": "none",
+                "annotations": [
+                  {
+                    "name": "SummarizationSetBy",
+                    "value": "Automatic"
+                  },
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"Text\" />"
+                  },
+                  {
+                    "name": "DataTypeAtRefresh",
+                    "value": "String#####not a type"
+                  },
+                  {
+                    "name": "PBI_NameAtRefresh",
+                    "value": "RequestId"
+                  },
+                  {
+                    "name": "PBI_WasHiddenAtRefresh",
+                    "value": "False"
+                  }
+                ]
+              },
+              {
+                "name": "CreatedDate",
+                "dataType": "dateTime",
+                "sourceColumn": "CreatedDate",
+                "formatString": "dddd\\, mmmm d\\, yyyy",
+                "summarizeBy": "none",
+                "annotations": [
+                  {
+                    "name": "SummarizationSetBy",
+                    "value": "Automatic"
+                  },
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"DateTimeGeneralPattern\"><DateTimes><DateTime LCID=\"1033\" Group=\"LongDate\" FormatString=\"dddd, MMMM d, yyyy\" /></DateTimes></Format>"
+                  },
+                  {
+                    "name": "DataTypeAtRefresh",
+                    "value": "DateTime#####Date"
+                  },
+                  {
+                    "name": "PBI_NameAtRefresh",
+                    "value": "CreatedDate"
+                  },
+                  {
+                    "name": "PBI_WasHiddenAtRefresh",
+                    "value": "False"
+                  },
+                  {
+                    "name": "UnderlyingDateTimeDataType",
+                    "value": "Date"
+                  }
+                ]
+              },
+              {
+                "name": "ExecutionTime",
+                "dataType": "int64",
+                "sourceColumn": "ExecutionTime",
+                "formatString": "0",
+                "summarizeBy": "sum",
+                "annotations": [
+                  {
+                    "name": "SummarizationSetBy",
+                    "value": "Automatic"
+                  },
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"NumberWhole\" Accuracy=\"0\" />"
+                  },
+                  {
+                    "name": "DataTypeAtRefresh",
+                    "value": "Int64#####not a type"
+                  },
+                  {
+                    "name": "PBI_NameAtRefresh",
+                    "value": "ExecutionTime"
+                  },
+                  {
+                    "name": "PBI_WasHiddenAtRefresh",
+                    "value": "False"
+                  }
+                ]
+              },
+              {
+                "name": "Operation",
+                "dataType": "string",
+                "sourceColumn": "Operation",
+                "summarizeBy": "none",
+                "annotations": [
+                  {
+                    "name": "SummarizationSetBy",
+                    "value": "Automatic"
+                  },
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"Text\" />"
+                  },
+                  {
+                    "name": "DataTypeAtRefresh",
+                    "value": "String#####not a type"
+                  },
+                  {
+                    "name": "PBI_NameAtRefresh",
+                    "value": "Operation"
+                  },
+                  {
+                    "name": "PBI_WasHiddenAtRefresh",
+                    "value": "False"
+                  }
+                ]
+              },
+              {
+                "name": "OperationId",
+                "dataType": "string",
+                "sourceColumn": "OperationId",
+                "summarizeBy": "none",
+                "annotations": [
+                  {
+                    "name": "SummarizationSetBy",
+                    "value": "Automatic"
+                  },
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"Text\" />"
+                  },
+                  {
+                    "name": "DataTypeAtRefresh",
+                    "value": "String#####not a type"
+                  },
+                  {
+                    "name": "PBI_NameAtRefresh",
+                    "value": "OperationId"
+                  },
+                  {
+                    "name": "PBI_WasHiddenAtRefresh",
+                    "value": "False"
+                  }
+                ]
+              },
+              {
+                "name": "Api",
+                "dataType": "string",
+                "sourceColumn": "Api",
+                "summarizeBy": "none",
+                "annotations": [
+                  {
+                    "name": "SummarizationSetBy",
+                    "value": "Automatic"
+                  },
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"Text\" />"
+                  },
+                  {
+                    "name": "DataTypeAtRefresh",
+                    "value": "String#####not a type"
+                  },
+                  {
+                    "name": "PBI_NameAtRefresh",
+                    "value": "Api"
+                  },
+                  {
+                    "name": "PBI_WasHiddenAtRefresh",
+                    "value": "False"
+                  }
+                ]
+              },
+              {
+                "name": "ApiId",
+                "dataType": "string",
+                "sourceColumn": "ApiId",
+                "summarizeBy": "none",
+                "annotations": [
+                  {
+                    "name": "SummarizationSetBy",
+                    "value": "Automatic"
+                  },
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"Text\" />"
+                  },
+                  {
+                    "name": "DataTypeAtRefresh",
+                    "value": "String#####not a type"
+                  },
+                  {
+                    "name": "PBI_NameAtRefresh",
+                    "value": "ApiId"
+                  },
+                  {
+                    "name": "PBI_WasHiddenAtRefresh",
+                    "value": "False"
+                  }
+                ]
+              },
+              {
+                "name": "Product",
+                "dataType": "string",
+                "sourceColumn": "Product",
+                "summarizeBy": "none",
+                "annotations": [
+                  {
+                    "name": "SummarizationSetBy",
+                    "value": "Automatic"
+                  },
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"Text\" />"
+                  },
+                  {
+                    "name": "DataTypeAtRefresh",
+                    "value": "String#####not a type"
+                  },
+                  {
+                    "name": "PBI_NameAtRefresh",
+                    "value": "Product"
+                  },
+                  {
+                    "name": "PBI_WasHiddenAtRefresh",
+                    "value": "False"
+                  }
+                ]
+              },
+              {
+                "name": "ProductId",
+                "dataType": "string",
+                "sourceColumn": "ProductId",
+                "summarizeBy": "none",
+                "annotations": [
+                  {
+                    "name": "SummarizationSetBy",
+                    "value": "Automatic"
+                  },
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"Text\" />"
+                  },
+                  {
+                    "name": "DataTypeAtRefresh",
+                    "value": "String#####not a type"
+                  },
+                  {
+                    "name": "PBI_NameAtRefresh",
+                    "value": "ProductId"
+                  },
+                  {
+                    "name": "PBI_WasHiddenAtRefresh",
+                    "value": "False"
+                  }
+                ]
+              },
+              {
+                "name": "SubscriptionId",
+                "dataType": "string",
+                "sourceColumn": "SubscriptionId",
+                "summarizeBy": "none",
+                "annotations": [
+                  {
+                    "name": "SummarizationSetBy",
+                    "value": "Automatic"
+                  },
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"Text\" />"
+                  },
+                  {
+                    "name": "DataTypeAtRefresh",
+                    "value": "String#####not a type"
+                  },
+                  {
+                    "name": "PBI_NameAtRefresh",
+                    "value": "SubscriptionId"
+                  },
+                  {
+                    "name": "PBI_WasHiddenAtRefresh",
+                    "value": "False"
+                  }
+                ]
+              },
+              {
+                "name": "SubscriptionName",
+                "dataType": "string",
+                "sourceColumn": "SubscriptionName",
+                "summarizeBy": "none",
+                "annotations": [
+                  {
+                    "name": "SummarizationSetBy",
+                    "value": "Automatic"
+                  },
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"Text\" />"
+                  },
+                  {
+                    "name": "DataTypeAtRefresh",
+                    "value": "String#####not a type"
+                  },
+                  {
+                    "name": "PBI_NameAtRefresh",
+                    "value": "SubscriptionName"
+                  },
+                  {
+                    "name": "PBI_WasHiddenAtRefresh",
+                    "value": "False"
+                  }
+                ]
+              },
+              {
+                "name": "IPAddress",
+                "dataType": "string",
+                "sourceColumn": "IPAddress",
+                "summarizeBy": "none",
+                "annotations": [
+                  {
+                    "name": "SummarizationSetBy",
+                    "value": "Automatic"
+                  },
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"Text\" />"
+                  },
+                  {
+                    "name": "DataTypeAtRefresh",
+                    "value": "String#####not a type"
+                  },
+                  {
+                    "name": "PBI_NameAtRefresh",
+                    "value": "IPAddress"
+                  },
+                  {
+                    "name": "PBI_WasHiddenAtRefresh",
+                    "value": "False"
+                  }
+                ]
+              },
+              {
+                "name": "Latitude",
+                "dataType": "double",
+                "sourceColumn": "Latitude",
+                "summarizeBy": "sum",
+                "annotations": [
+                  {
+                    "name": "SummarizationSetBy",
+                    "value": "Automatic"
+                  },
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"General\" />"
+                  },
+                  {
+                    "name": "DataTypeAtRefresh",
+                    "value": "Double#####not a type"
+                  },
+                  {
+                    "name": "PBI_NameAtRefresh",
+                    "value": "Latitude"
+                  },
+                  {
+                    "name": "PBI_WasHiddenAtRefresh",
+                    "value": "False"
+                  }
+                ]
+              },
+              {
+                "name": "Longitude",
+                "dataType": "double",
+                "sourceColumn": "Longitude",
+                "summarizeBy": "sum",
+                "annotations": [
+                  {
+                    "name": "SummarizationSetBy",
+                    "value": "Automatic"
+                  },
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"General\" />"
+                  },
+                  {
+                    "name": "DataTypeAtRefresh",
+                    "value": "Double#####not a type"
+                  },
+                  {
+                    "name": "PBI_NameAtRefresh",
+                    "value": "Longitude"
+                  },
+                  {
+                    "name": "PBI_WasHiddenAtRefresh",
+                    "value": "False"
+                  }
+                ]
+              },
+              {
+                "name": "City",
+                "dataType": "string",
+                "sourceColumn": "City",
+                "summarizeBy": "none",
+                "annotations": [
+                  {
+                    "name": "SummarizationSetBy",
+                    "value": "Automatic"
+                  },
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"Text\" />"
+                  },
+                  {
+                    "name": "DataTypeAtRefresh",
+                    "value": "String#####not a type"
+                  },
+                  {
+                    "name": "PBI_NameAtRefresh",
+                    "value": "City"
+                  },
+                  {
+                    "name": "PBI_WasHiddenAtRefresh",
+                    "value": "False"
+                  }
+                ]
+              },
+              {
+                "name": "StatusCode",
+                "dataType": "int64",
+                "sourceColumn": "StatusCode",
+                "formatString": "0",
+                "summarizeBy": "count",
+                "annotations": [
+                  {
+                    "name": "SummarizationSetBy",
+                    "value": "Automatic"
+                  },
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"NumberWhole\" Accuracy=\"0\" />"
+                  },
+                  {
+                    "name": "DataTypeAtRefresh",
+                    "value": "Int64#####not a type"
+                  },
+                  {
+                    "name": "PBI_NameAtRefresh",
+                    "value": "StatusCode"
+                  },
+                  {
+                    "name": "PBI_WasHiddenAtRefresh",
+                    "value": "False"
+                  }
+                ]
+              },
+              {
+                "name": "StatusReason",
+                "dataType": "string",
+                "sourceColumn": "StatusReason",
+                "summarizeBy": "none",
+                "annotations": [
+                  {
+                    "name": "SummarizationSetBy",
+                    "value": "Automatic"
+                  },
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"Text\" />"
+                  },
+                  {
+                    "name": "DataTypeAtRefresh",
+                    "value": "String#####not a type"
+                  },
+                  {
+                    "name": "PBI_NameAtRefresh",
+                    "value": "StatusReason"
+                  },
+                  {
+                    "name": "PBI_WasHiddenAtRefresh",
+                    "value": "False"
+                  }
+                ]
+              },
+              {
+                "name": "RequestLength",
+                "dataType": "int64",
+                "sourceColumn": "RequestLength",
+                "formatString": "0",
+                "summarizeBy": "sum",
+                "annotations": [
+                  {
+                    "name": "SummarizationSetBy",
+                    "value": "Automatic"
+                  },
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"NumberWhole\" Accuracy=\"0\" />"
+                  },
+                  {
+                    "name": "DataTypeAtRefresh",
+                    "value": "Int64#####not a type"
+                  },
+                  {
+                    "name": "PBI_NameAtRefresh",
+                    "value": "RequestLength"
+                  },
+                  {
+                    "name": "PBI_WasHiddenAtRefresh",
+                    "value": "False"
+                  }
+                ]
+              },
+              {
+                "name": "ResponseLength",
+                "dataType": "int64",
+                "sourceColumn": "ResponseLength",
+                "formatString": "0",
+                "summarizeBy": "sum",
+                "annotations": [
+                  {
+                    "name": "SummarizationSetBy",
+                    "value": "Automatic"
+                  },
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"NumberWhole\" Accuracy=\"0\" />"
+                  },
+                  {
+                    "name": "DataTypeAtRefresh",
+                    "value": "Int64#####not a type"
+                  },
+                  {
+                    "name": "PBI_NameAtRefresh",
+                    "value": "ResponseLength"
+                  },
+                  {
+                    "name": "PBI_WasHiddenAtRefresh",
+                    "value": "False"
+                  }
+                ]
+              },
+              {
+                "name": "IsError",
+                "dataType": "int64",
+                "sourceColumn": "IsError",
+                "formatString": "0",
+                "summarizeBy": "sum",
+                "annotations": [
+                  {
+                    "name": "SummarizationSetBy",
+                    "value": "Automatic"
+                  },
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"NumberWhole\" Accuracy=\"0\" />"
+                  },
+                  {
+                    "name": "DataTypeAtRefresh",
+                    "value": "Int64#####not a type"
+                  },
+                  {
+                    "name": "PBI_NameAtRefresh",
+                    "value": "IsError"
+                  },
+                  {
+                    "name": "PBI_WasHiddenAtRefresh",
+                    "value": "False"
+                  }
+                ]
+              },
+              {
+                "name": "CreatedDateTime",
+                "dataType": "dateTime",
+                "sourceColumn": "CreatedDateTime",
+                "formatString": "General Date",
+                "summarizeBy": "none",
+                "annotations": [
+                  {
+                    "name": "SummarizationSetBy",
+                    "value": "Automatic"
+                  },
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"DateTimeGeneralPattern\"><DateTimes><DateTime LCID=\"1033\" Group=\"GeneralDateTimeLong\" FormatString=\"G\" /></DateTimes></Format>"
+                  },
+                  {
+                    "name": "DataTypeAtRefresh",
+                    "value": "DateTime#####not a type"
+                  },
+                  {
+                    "name": "PBI_NameAtRefresh",
+                    "value": "CreatedDateTime"
+                  },
+                  {
+                    "name": "PBI_WasHiddenAtRefresh",
+                    "value": "False"
+                  }
+                ]
+              }
+            ],
+            "partitions": [
+              {
+                "name": "AllRequestData-a2f662ae-cabe-409b-9ca2-fa552b4b80c0",
+                "dataView": "full",
+                "source": {
+                  "query": "SELECT [pbist_apimgmt].[vw_allrequestdata].* FROM [pbist_apimgmt].[vw_allrequestdata] ",
+                  "dataSource": "ST_DS"
+                }
+              }
+            ],
+            "measures": [
+              {
+                "name": "CallsThisWeek",
+                "expression": "CALCULATE(COUNTA(AllRequestData[RequestId]), DATESINPERIOD ('Date'[date], LASTDATE('Date'[date]),-7, DAY))",
+                "formatString": "0",
+                "annotations": [
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"NumberWhole\" Accuracy=\"0\" />"
+                  }
+                ]
+              },
+              {
+                "name": "CallsLastWeek",
+                "expression": "CALCULATE(COUNTA(AllRequestData[RequestId]), DATESINPERIOD ('Date'[date], LASTDATE('Date'[date])-7,-7, DAY))",
+                "formatString": "0",
+                "annotations": [
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"NumberWhole\" Accuracy=\"0\" />"
+                  }
+                ]
+              },
+              {
+                "name": "APIGrowthTarget",
+                "expression": "([CallsLastWeek] * 0.01) + [CallsLastWeek]",
+                "annotations": [
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"General\" />"
+                  }
+                ]
+              },
+              {
+                "name": "TargetAttainment",
+                "expression": "([CallsThisWeek]/[APIGrowthTarget])",
+                "annotations": [
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"General\" />"
+                  }
+                ]
+              },
+              {
+                "name": "ErrorsThisWeek",
+                "expression": "CALCULATE(COUNTAX(FILTER(AllRequestData, [IsError]=1), [IsError]), DATESINPERIOD ('Date'[date], LASTDATE('Date'[date]),-7, DAY))",
+                "formatString": "0",
+                "annotations": [
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"NumberWhole\" Accuracy=\"0\" />"
+                  }
+                ]
+              },
+              {
+                "name": "ErrorsLastWeek",
+                "expression": "CALCULATE(COUNTAX(FILTER(AllRequestData, [IsError]=1), [IsError]), DATESINPERIOD ('Date'[date], LASTDATE('Date'[date])-7,-7, DAY))",
+                "formatString": "0",
+                "annotations": [
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"NumberWhole\" Accuracy=\"0\" />"
+                  }
+                ]
+              },
+              {
+                "name": "ErrorTarget",
+                "expression": "[ErrorsLastWeek] - ([ErrorsLastWeek] * 0.1)",
+                "annotations": [
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"General\" />"
+                  }
+                ]
+              },
+              {
+                "name": "ErrorsAll",
+                "expression": "COUNTAX(FILTER(AllRequestData, [IsError]=1), [IsError])",
+                "formatString": "0",
+                "annotations": [
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"NumberWhole\" Accuracy=\"0\" />"
+                  }
+                ]
+              },
+              {
+                "name": "ExecutionTimeThisWeek",
+                "expression": "CALCULATE(AVERAGE(AllRequestData[ExecutionTime]), DATESINPERIOD ('Date'[date], LASTDATE('Date'[date]),-7, DAY))",
+                "formatString": "0",
+                "annotations": [
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"NumberWhole\" Accuracy=\"0\" />"
+                  }
+                ]
+              },
+              {
+                "name": "ExecutionTimeLastWeek",
+                "expression": "CALCULATE(AVERAGE(AllRequestData[ExecutionTime]), DATESINPERIOD ('Date'[date], LASTDATE('Date'[date])-7,-7, DAY))",
+                "annotations": [
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"General\" />"
+                  }
+                ]
+              },
+              {
+                "name": "ExecutionTimeTarget",
+                "expression": "[ExecutionTimeLastWeek] - ([ExecutionTimeLastWeek] * 0.01)",
+                "annotations": [
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"General\" />"
+                  }
+                ]
+              }
+            ],
+            "annotations": [
+              {
+                "name": "PBI_Id",
+                "value": "3f9cefa9-3849-402f-96ba-32aba667940c"
+              },
+              {
+                "name": "LinkedQueryName",
+                "value": "AllRequestData"
+              }
+            ]
+          },
+          {
+            "name": "APIMErrorDetail",
+            "columns": [
+              {
+                "name": "RequestId",
+                "dataType": "string",
+                "sourceColumn": "RequestId",
+                "summarizeBy": "none",
+                "annotations": [
+                  {
+                    "name": "SummarizationSetBy",
+                    "value": "Automatic"
+                  },
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"Text\" />"
+                  },
+                  {
+                    "name": "DataTypeAtRefresh",
+                    "value": "String#####not a type"
+                  },
+                  {
+                    "name": "PBI_NameAtRefresh",
+                    "value": "RequestId"
+                  },
+                  {
+                    "name": "PBI_WasHiddenAtRefresh",
+                    "value": "False"
+                  }
+                ]
+              },
+              {
+                "name": "CreatedDate",
+                "dataType": "dateTime",
+                "sourceColumn": "CreatedDate",
+                "formatString": "dddd\\, mmmm d\\, yyyy",
+                "summarizeBy": "none",
+                "annotations": [
+                  {
+                    "name": "SummarizationSetBy",
+                    "value": "Automatic"
+                  },
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"DateTimeGeneralPattern\"><DateTimes><DateTime LCID=\"1033\" Group=\"LongDate\" FormatString=\"dddd, MMMM d, yyyy\" /></DateTimes></Format>"
+                  },
+                  {
+                    "name": "DataTypeAtRefresh",
+                    "value": "DateTime#####Date"
+                  },
+                  {
+                    "name": "PBI_NameAtRefresh",
+                    "value": "CreatedDate"
+                  },
+                  {
+                    "name": "PBI_WasHiddenAtRefresh",
+                    "value": "False"
+                  },
+                  {
+                    "name": "UnderlyingDateTimeDataType",
+                    "value": "Date"
+                  }
+                ]
+              },
+              {
+                "name": "ServiceName",
+                "dataType": "string",
+                "sourceColumn": "ServiceName",
+                "summarizeBy": "none",
+                "annotations": [
+                  {
+                    "name": "SummarizationSetBy",
+                    "value": "Automatic"
+                  },
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"Text\" />"
+                  },
+                  {
+                    "name": "DataTypeAtRefresh",
+                    "value": "String#####not a type"
+                  },
+                  {
+                    "name": "PBI_NameAtRefresh",
+                    "value": "ServiceName"
+                  },
+                  {
+                    "name": "PBI_WasHiddenAtRefresh",
+                    "value": "False"
+                  }
+                ]
+              },
+              {
+                "name": "Source",
+                "dataType": "string",
+                "sourceColumn": "Source",
+                "summarizeBy": "none",
+                "annotations": [
+                  {
+                    "name": "SummarizationSetBy",
+                    "value": "Automatic"
+                  },
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"Text\" />"
+                  },
+                  {
+                    "name": "DataTypeAtRefresh",
+                    "value": "String#####not a type"
+                  },
+                  {
+                    "name": "PBI_NameAtRefresh",
+                    "value": "Source"
+                  },
+                  {
+                    "name": "PBI_WasHiddenAtRefresh",
+                    "value": "False"
+                  }
+                ]
+              },
+              {
+                "name": "Reason",
+                "dataType": "string",
+                "sourceColumn": "Reason",
+                "summarizeBy": "none",
+                "annotations": [
+                  {
+                    "name": "SummarizationSetBy",
+                    "value": "Automatic"
+                  },
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"Text\" />"
+                  },
+                  {
+                    "name": "DataTypeAtRefresh",
+                    "value": "String#####not a type"
+                  },
+                  {
+                    "name": "PBI_NameAtRefresh",
+                    "value": "Reason"
+                  },
+                  {
+                    "name": "PBI_WasHiddenAtRefresh",
+                    "value": "False"
+                  }
+                ]
+              },
+              {
+                "name": "Message",
+                "dataType": "string",
+                "sourceColumn": "Message",
+                "summarizeBy": "none",
+                "annotations": [
+                  {
+                    "name": "SummarizationSetBy",
+                    "value": "Automatic"
+                  },
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"Text\" />"
+                  },
+                  {
+                    "name": "DataTypeAtRefresh",
+                    "value": "String#####not a type"
+                  },
+                  {
+                    "name": "PBI_NameAtRefresh",
+                    "value": "Message"
+                  },
+                  {
+                    "name": "PBI_WasHiddenAtRefresh",
+                    "value": "False"
+                  }
+                ]
+              },
+              {
+                "name": "Operation",
+                "dataType": "string",
+                "sourceColumn": "Operation",
+                "summarizeBy": "none",
+                "annotations": [
+                  {
+                    "name": "SummarizationSetBy",
+                    "value": "Automatic"
+                  },
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"Text\" />"
+                  },
+                  {
+                    "name": "DataTypeAtRefresh",
+                    "value": "String#####not a type"
+                  },
+                  {
+                    "name": "PBI_NameAtRefresh",
+                    "value": "Operation"
+                  },
+                  {
+                    "name": "PBI_WasHiddenAtRefresh",
+                    "value": "False"
+                  }
+                ]
+              },
+              {
+                "name": "OperationId",
+                "dataType": "string",
+                "sourceColumn": "OperationId",
+                "summarizeBy": "none",
+                "annotations": [
+                  {
+                    "name": "SummarizationSetBy",
+                    "value": "Automatic"
+                  },
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"Text\" />"
+                  },
+                  {
+                    "name": "DataTypeAtRefresh",
+                    "value": "String#####not a type"
+                  },
+                  {
+                    "name": "PBI_NameAtRefresh",
+                    "value": "OperationId"
+                  },
+                  {
+                    "name": "PBI_WasHiddenAtRefresh",
+                    "value": "False"
+                  }
+                ]
+              },
+              {
+                "name": "Api",
+                "dataType": "string",
+                "sourceColumn": "Api",
+                "summarizeBy": "none",
+                "annotations": [
+                  {
+                    "name": "SummarizationSetBy",
+                    "value": "Automatic"
+                  },
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"Text\" />"
+                  },
+                  {
+                    "name": "DataTypeAtRefresh",
+                    "value": "String#####not a type"
+                  },
+                  {
+                    "name": "PBI_NameAtRefresh",
+                    "value": "Api"
+                  },
+                  {
+                    "name": "PBI_WasHiddenAtRefresh",
+                    "value": "False"
+                  }
+                ]
+              },
+              {
+                "name": "ApiId",
+                "dataType": "string",
+                "sourceColumn": "ApiId",
+                "summarizeBy": "none",
+                "annotations": [
+                  {
+                    "name": "SummarizationSetBy",
+                    "value": "Automatic"
+                  },
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"Text\" />"
+                  },
+                  {
+                    "name": "DataTypeAtRefresh",
+                    "value": "String#####not a type"
+                  },
+                  {
+                    "name": "PBI_NameAtRefresh",
+                    "value": "ApiId"
+                  },
+                  {
+                    "name": "PBI_WasHiddenAtRefresh",
+                    "value": "False"
+                  }
+                ]
+              },
+              {
+                "name": "Product",
+                "dataType": "string",
+                "sourceColumn": "Product",
+                "summarizeBy": "none",
+                "annotations": [
+                  {
+                    "name": "SummarizationSetBy",
+                    "value": "Automatic"
+                  },
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"Text\" />"
+                  },
+                  {
+                    "name": "DataTypeAtRefresh",
+                    "value": "String#####not a type"
+                  },
+                  {
+                    "name": "PBI_NameAtRefresh",
+                    "value": "Product"
+                  },
+                  {
+                    "name": "PBI_WasHiddenAtRefresh",
+                    "value": "False"
+                  }
+                ]
+              },
+              {
+                "name": "ProductId",
+                "dataType": "string",
+                "sourceColumn": "ProductId",
+                "summarizeBy": "none",
+                "annotations": [
+                  {
+                    "name": "SummarizationSetBy",
+                    "value": "Automatic"
+                  },
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"Text\" />"
+                  },
+                  {
+                    "name": "DataTypeAtRefresh",
+                    "value": "String#####not a type"
+                  },
+                  {
+                    "name": "PBI_NameAtRefresh",
+                    "value": "ProductId"
+                  },
+                  {
+                    "name": "PBI_WasHiddenAtRefresh",
+                    "value": "False"
+                  }
+                ]
+              },
+              {
+                "name": "SubscriptionId",
+                "dataType": "string",
+                "sourceColumn": "SubscriptionId",
+                "summarizeBy": "none",
+                "annotations": [
+                  {
+                    "name": "SummarizationSetBy",
+                    "value": "Automatic"
+                  },
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"Text\" />"
+                  },
+                  {
+                    "name": "DataTypeAtRefresh",
+                    "value": "String#####not a type"
+                  },
+                  {
+                    "name": "PBI_NameAtRefresh",
+                    "value": "SubscriptionId"
+                  },
+                  {
+                    "name": "PBI_WasHiddenAtRefresh",
+                    "value": "False"
+                  }
+                ]
+              },
+              {
+                "name": "SubscriptionName",
+                "dataType": "string",
+                "sourceColumn": "SubscriptionName",
+                "summarizeBy": "none",
+                "annotations": [
+                  {
+                    "name": "SummarizationSetBy",
+                    "value": "Automatic"
+                  },
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"Text\" />"
+                  },
+                  {
+                    "name": "DataTypeAtRefresh",
+                    "value": "String#####not a type"
+                  },
+                  {
+                    "name": "PBI_NameAtRefresh",
+                    "value": "SubscriptionName"
+                  },
+                  {
+                    "name": "PBI_WasHiddenAtRefresh",
+                    "value": "False"
+                  }
+                ]
+              },
+              {
+                "name": "IPAddress",
+                "dataType": "string",
+                "sourceColumn": "IPAddress",
+                "summarizeBy": "none",
+                "annotations": [
+                  {
+                    "name": "SummarizationSetBy",
+                    "value": "Automatic"
+                  },
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"Text\" />"
+                  },
+                  {
+                    "name": "DataTypeAtRefresh",
+                    "value": "String#####not a type"
+                  },
+                  {
+                    "name": "PBI_NameAtRefresh",
+                    "value": "IPAddress"
+                  },
+                  {
+                    "name": "PBI_WasHiddenAtRefresh",
+                    "value": "False"
+                  }
+                ]
+              },
+              {
+                "name": "CreatedDateTime",
+                "dataType": "dateTime",
+                "sourceColumn": "CreatedDateTime",
+                "formatString": "General Date",
+                "summarizeBy": "none",
+                "annotations": [
+                  {
+                    "name": "SummarizationSetBy",
+                    "value": "Automatic"
+                  },
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"DateTimeGeneralPattern\"><DateTimes><DateTime LCID=\"1033\" Group=\"GeneralDateTimeLong\" FormatString=\"G\" /></DateTimes></Format>"
+                  },
+                  {
+                    "name": "DataTypeAtRefresh",
+                    "value": "DateTime#####not a type"
+                  },
+                  {
+                    "name": "PBI_NameAtRefresh",
+                    "value": "CreatedDateTime"
+                  },
+                  {
+                    "name": "PBI_WasHiddenAtRefresh",
+                    "value": "False"
+                  }
+                ]
+              }
+            ],
+            "partitions": [
+              {
+                "name": "APIMErrorDetail-ad4ff75c-133d-46c4-a738-eaf6db12d81a",
+                "dataView": "full",
+                "source": {
+                  "query": "SELECT [pbist_apimgmt].[vw_apimerrordetail].* FROM [pbist_apimgmt].[vw_apimerrordetail] ",
+                  "dataSource": "ST_DS"
+                }
+              }
+            ],
+            "annotations": [
+              {
+                "name": "PBI_Id",
+                "value": "befe5bc7-d748-4507-aedb-04a09a219675"
+              },
+              {
+                "name": "LinkedQueryName",
+                "value": "APIMErrorDetail"
+              }
+            ]
+          },
+          {
+            "name": "Date",
+            "columns": [
+              {
+                "name": "date_key",
+                "dataType": "int64",
+                "sourceColumn": "date_key",
+                "formatString": "0",
+                "summarizeBy": "sum",
+                "annotations": [
+                  {
+                    "name": "SummarizationSetBy",
+                    "value": "Automatic"
+                  },
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"NumberWhole\" Accuracy=\"0\" />"
+                  },
+                  {
+                    "name": "DataTypeAtRefresh",
+                    "value": "Int64#####not a type"
+                  },
+                  {
+                    "name": "PBI_NameAtRefresh",
+                    "value": "date_key"
+                  },
+                  {
+                    "name": "PBI_WasHiddenAtRefresh",
+                    "value": "False"
+                  }
+                ]
+              },
+              {
+                "name": "date",
+                "dataType": "dateTime",
+                "sourceColumn": "date",
+                "formatString": "dddd\\, mmmm d\\, yyyy",
+                "summarizeBy": "none",
+                "annotations": [
+                  {
+                    "name": "SummarizationSetBy",
+                    "value": "Automatic"
+                  },
+                  {
+                    "name": "UnderlyingDateTimeDataType",
+                    "value": "Date"
+                  },
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"DateTimeGeneralPattern\"><DateTimes><DateTime LCID=\"1033\" Group=\"LongDate\" FormatString=\"dddd, MMMM d, yyyy\" /></DateTimes></Format>"
+                  },
+                  {
+                    "name": "DataTypeAtRefresh",
+                    "value": "DateTime#####Date"
+                  },
+                  {
+                    "name": "PBI_NameAtRefresh",
+                    "value": "date"
+                  },
+                  {
+                    "name": "PBI_WasHiddenAtRefresh",
+                    "value": "False"
+                  }
+                ]
+              },
+              {
+                "name": "day of the week",
+                "dataType": "int64",
+                "sourceColumn": "day of the week",
+                "formatString": "0",
+                "summarizeBy": "sum",
+                "annotations": [
+                  {
+                    "name": "SummarizationSetBy",
+                    "value": "Automatic"
+                  },
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"NumberWhole\" Accuracy=\"0\" />"
+                  },
+                  {
+                    "name": "DataTypeAtRefresh",
+                    "value": "Int64#####not a type"
+                  },
+                  {
+                    "name": "PBI_NameAtRefresh",
+                    "value": "day of the week"
+                  },
+                  {
+                    "name": "PBI_WasHiddenAtRefresh",
+                    "value": "False"
+                  }
+                ]
+              },
+              {
+                "name": "day number of the month",
+                "dataType": "int64",
+                "sourceColumn": "day number of the month",
+                "formatString": "0",
+                "summarizeBy": "sum",
+                "annotations": [
+                  {
+                    "name": "SummarizationSetBy",
+                    "value": "Automatic"
+                  },
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"NumberWhole\" Accuracy=\"0\" />"
+                  },
+                  {
+                    "name": "DataTypeAtRefresh",
+                    "value": "Int64#####not a type"
+                  },
+                  {
+                    "name": "PBI_NameAtRefresh",
+                    "value": "day number of the month"
+                  },
+                  {
+                    "name": "PBI_WasHiddenAtRefresh",
+                    "value": "False"
+                  }
+                ]
+              },
+              {
+                "name": "day name",
+                "dataType": "string",
+                "sourceColumn": "day name",
+                "summarizeBy": "none",
+                "annotations": [
+                  {
+                    "name": "SummarizationSetBy",
+                    "value": "Automatic"
+                  },
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"Text\" />"
+                  },
+                  {
+                    "name": "DataTypeAtRefresh",
+                    "value": "String#####not a type"
+                  },
+                  {
+                    "name": "PBI_NameAtRefresh",
+                    "value": "day name"
+                  },
+                  {
+                    "name": "PBI_WasHiddenAtRefresh",
+                    "value": "False"
+                  }
+                ]
+              },
+              {
+                "name": "day abbreviated",
+                "dataType": "string",
+                "sourceColumn": "day abbreviated",
+                "summarizeBy": "none",
+                "annotations": [
+                  {
+                    "name": "SummarizationSetBy",
+                    "value": "Automatic"
+                  },
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"Text\" />"
+                  },
+                  {
+                    "name": "DataTypeAtRefresh",
+                    "value": "String#####not a type"
+                  },
+                  {
+                    "name": "PBI_NameAtRefresh",
+                    "value": "day abbreviated"
+                  },
+                  {
+                    "name": "PBI_WasHiddenAtRefresh",
+                    "value": "False"
+                  }
+                ]
+              },
+              {
+                "name": "weekday flag",
+                "dataType": "string",
+                "sourceColumn": "weekday flag",
+                "summarizeBy": "none",
+                "annotations": [
+                  {
+                    "name": "SummarizationSetBy",
+                    "value": "Automatic"
+                  },
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"Text\" />"
+                  },
+                  {
+                    "name": "DataTypeAtRefresh",
+                    "value": "String#####not a type"
+                  },
+                  {
+                    "name": "PBI_NameAtRefresh",
+                    "value": "weekday flag"
+                  },
+                  {
+                    "name": "PBI_WasHiddenAtRefresh",
+                    "value": "False"
+                  }
+                ]
+              },
+              {
+                "name": "month",
+                "dataType": "int64",
+                "sourceColumn": "month",
+                "formatString": "0",
+                "summarizeBy": "sum",
+                "annotations": [
+                  {
+                    "name": "SummarizationSetBy",
+                    "value": "Automatic"
+                  },
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"NumberWhole\" Accuracy=\"0\" />"
+                  },
+                  {
+                    "name": "DataTypeAtRefresh",
+                    "value": "Int64#####not a type"
+                  },
+                  {
+                    "name": "PBI_NameAtRefresh",
+                    "value": "month"
+                  },
+                  {
+                    "name": "PBI_WasHiddenAtRefresh",
+                    "value": "False"
+                  }
+                ]
+              },
+              {
+                "name": "month name",
+                "dataType": "string",
+                "sourceColumn": "month name",
+                "summarizeBy": "none",
+                "annotations": [
+                  {
+                    "name": "SummarizationSetBy",
+                    "value": "Automatic"
+                  },
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"Text\" />"
+                  },
+                  {
+                    "name": "DataTypeAtRefresh",
+                    "value": "String#####not a type"
+                  },
+                  {
+                    "name": "PBI_NameAtRefresh",
+                    "value": "month name"
+                  },
+                  {
+                    "name": "PBI_WasHiddenAtRefresh",
+                    "value": "False"
+                  }
+                ]
+              },
+              {
+                "name": "month_abbrev",
+                "dataType": "string",
+                "sourceColumn": "month_abbrev",
+                "summarizeBy": "none",
+                "annotations": [
+                  {
+                    "name": "SummarizationSetBy",
+                    "value": "Automatic"
+                  },
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"Text\" />"
+                  },
+                  {
+                    "name": "DataTypeAtRefresh",
+                    "value": "String#####not a type"
+                  },
+                  {
+                    "name": "PBI_NameAtRefresh",
+                    "value": "month_abbrev"
+                  },
+                  {
+                    "name": "PBI_WasHiddenAtRefresh",
+                    "value": "False"
+                  }
+                ]
+              },
+              {
+                "name": "quarter",
+                "dataType": "int64",
+                "sourceColumn": "quarter",
+                "formatString": "0",
+                "summarizeBy": "sum",
+                "annotations": [
+                  {
+                    "name": "SummarizationSetBy",
+                    "value": "Automatic"
+                  },
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"NumberWhole\" Accuracy=\"0\" />"
+                  },
+                  {
+                    "name": "DataTypeAtRefresh",
+                    "value": "Int64#####not a type"
+                  },
+                  {
+                    "name": "PBI_NameAtRefresh",
+                    "value": "quarter"
+                  },
+                  {
+                    "name": "PBI_WasHiddenAtRefresh",
+                    "value": "False"
+                  }
+                ]
+              },
+              {
+                "name": "year",
+                "dataType": "int64",
+                "sourceColumn": "year",
+                "formatString": "0",
+                "summarizeBy": "sum",
+                "annotations": [
+                  {
+                    "name": "SummarizationSetBy",
+                    "value": "Automatic"
+                  },
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"NumberWhole\" Accuracy=\"0\" />"
+                  },
+                  {
+                    "name": "DataTypeAtRefresh",
+                    "value": "Int64#####not a type"
+                  },
+                  {
+                    "name": "PBI_NameAtRefresh",
+                    "value": "year"
+                  },
+                  {
+                    "name": "PBI_WasHiddenAtRefresh",
+                    "value": "False"
+                  }
+                ]
+              },
+              {
+                "name": "same_day_year_ago_date",
+                "dataType": "dateTime",
+                "sourceColumn": "same_day_year_ago_date",
+                "formatString": "dddd\\, mmmm d\\, yyyy",
+                "summarizeBy": "none",
+                "annotations": [
+                  {
+                    "name": "SummarizationSetBy",
+                    "value": "Automatic"
+                  },
+                  {
+                    "name": "UnderlyingDateTimeDataType",
+                    "value": "Date"
+                  },
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"DateTimeGeneralPattern\"><DateTimes><DateTime LCID=\"1033\" Group=\"LongDate\" FormatString=\"dddd, MMMM d, yyyy\" /></DateTimes></Format>"
+                  },
+                  {
+                    "name": "DataTypeAtRefresh",
+                    "value": "DateTime#####Date"
+                  },
+                  {
+                    "name": "PBI_NameAtRefresh",
+                    "value": "same_day_year_ago_date"
+                  },
+                  {
+                    "name": "PBI_WasHiddenAtRefresh",
+                    "value": "False"
+                  }
+                ]
+              },
+              {
+                "name": "week begin date",
+                "dataType": "dateTime",
+                "sourceColumn": "week begin date",
+                "formatString": "dddd\\, mmmm d\\, yyyy",
+                "summarizeBy": "none",
+                "annotations": [
+                  {
+                    "name": "SummarizationSetBy",
+                    "value": "Automatic"
+                  },
+                  {
+                    "name": "UnderlyingDateTimeDataType",
+                    "value": "Date"
+                  },
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"DateTimeGeneralPattern\"><DateTimes><DateTime LCID=\"1033\" Group=\"LongDate\" FormatString=\"dddd, MMMM d, yyyy\" /></DateTimes></Format>"
+                  },
+                  {
+                    "name": "DataTypeAtRefresh",
+                    "value": "DateTime#####Date"
+                  },
+                  {
+                    "name": "PBI_NameAtRefresh",
+                    "value": "week begin date"
+                  },
+                  {
+                    "name": "PBI_WasHiddenAtRefresh",
+                    "value": "False"
+                  }
+                ]
+              },
+              {
+                "type": "calculated",
+                "name": "CurrentDate",
+                "dataType": "dateTime",
+                "isDataTypeInferred": true,
+                "expression": "datevalue(TODAY())",
+                "formatString": "General Date",
+                "summarizeBy": "none",
+                "annotations": [
+                  {
+                    "name": "SummarizationSetBy",
+                    "value": "Automatic"
+                  },
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"DateTimeGeneralPattern\"><DateTimes><DateTime LCID=\"1033\" Group=\"GeneralDateTimeLong\" FormatString=\"G\" /></DateTimes></Format>"
+                  },
+                  {
+                    "name": "DataTypeAtRefresh",
+                    "value": "DateTime#####not a type"
+                  }
+                ]
+              },
+              {
+                "type": "calculated",
+                "name": "CurrentWeek",
+                "dataType": "string",
+                "isDataTypeInferred": true,
+                "expression": "If('Date'[date] < LASTDATE('Date'[CurrentDate]) - 7, \"False\", \"True\") ",
+                "summarizeBy": "none",
+                "annotations": [
+                  {
+                    "name": "SummarizationSetBy",
+                    "value": "Automatic"
+                  },
+                  {
+                    "name": "DataTypeAtRefresh",
+                    "value": "String#####not a type"
+                  }
+                ]
+              },
+              {
+                "type": "calculated",
+                "name": "IsToday",
+                "dataType": "string",
+                "isDataTypeInferred": true,
+                "expression": "IF('Date'[date] = 'Date'[CurrentDate], \"True\", \"False\")",
+                "summarizeBy": "none",
+                "annotations": [
+                  {
+                    "name": "SummarizationSetBy",
+                    "value": "Automatic"
+                  },
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"Text\" />"
+                  },
+                  {
+                    "name": "DataTypeAtRefresh",
+                    "value": "String#####not a type"
+                  }
+                ]
+              },
+              {
+                "type": "calculated",
+                "name": "Past Or Future",
+                "dataType": "string",
+                "isDataTypeInferred": true,
+                "expression": "IF('Date'[date] <= 'Date'[CurrentDate], \"Past\", \"Future\")",
+                "summarizeBy": "none",
+                "annotations": [
+                  {
+                    "name": "SummarizationSetBy",
+                    "value": "Automatic"
+                  },
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"Text\" />"
+                  },
+                  {
+                    "name": "DataTypeAtRefresh",
+                    "value": "String#####not a type"
+                  }
+                ]
+              },
+              {
+                "type": "calculated",
+                "name": "PreviousAndCurrentWeek",
+                "dataType": "string",
+                "isDataTypeInferred": true,
+                "expression": "If('Date'[date] <= 'Date'[CurrentDate] && 'Date'[date] > 'Date'[CurrentDate] - 14 , \"True\", \"False\")",
+                "summarizeBy": "none",
+                "annotations": [
+                  {
+                    "name": "SummarizationSetBy",
+                    "value": "Automatic"
+                  },
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"Text\" />"
+                  },
+                  {
+                    "name": "DataTypeAtRefresh",
+                    "value": "String#####not a type"
+                  }
+                ]
+              }
+            ],
+            "partitions": [
+              {
+                "name": "Date-9c41bd6c-40da-4277-9809-2d2e9f18ab6f",
+                "dataView": "full",
+                "source": {
+                  "query": "SELECT [pbist_apimgmt].[vw_date].* FROM [pbist_apimgmt].[vw_date] ",
+                  "dataSource": "ST_DS"
+                }
+              }
+            ],
+            "annotations": [
+              {
+                "name": "PBI_Id",
+                "value": "5c13c43c-4195-4d33-b4cf-b82566342936"
+              },
+              {
+                "name": "LinkedQueryName",
+                "value": "Date"
+              }
+            ]
+          },
+          {
+            "name": "OperationSummary",
+            "columns": [
+              {
+                "name": "OperationID",
+                "dataType": "string",
+                "sourceColumn": "OperationID",
+                "summarizeBy": "none",
+                "annotations": [
+                  {
+                    "name": "SummarizationSetBy",
+                    "value": "Automatic"
+                  },
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"Text\" />"
+                  },
+                  {
+                    "name": "DataTypeAtRefresh",
+                    "value": "String#####not a type"
+                  },
+                  {
+                    "name": "PBI_NameAtRefresh",
+                    "value": "OperationID"
+                  },
+                  {
+                    "name": "PBI_WasHiddenAtRefresh",
+                    "value": "False"
+                  }
+                ]
+              },
+              {
+                "name": "Operation",
+                "dataType": "string",
+                "sourceColumn": "Operation",
+                "summarizeBy": "none",
+                "annotations": [
+                  {
+                    "name": "SummarizationSetBy",
+                    "value": "Automatic"
+                  },
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"Text\" />"
+                  },
+                  {
+                    "name": "DataTypeAtRefresh",
+                    "value": "String#####not a type"
+                  },
+                  {
+                    "name": "PBI_NameAtRefresh",
+                    "value": "Operation"
+                  },
+                  {
+                    "name": "PBI_WasHiddenAtRefresh",
+                    "value": "False"
+                  }
+                ]
+              }
+            ],
+            "partitions": [
+              {
+                "name": "OperationSummary-32eed02e-aef0-4cec-a76c-aeef969993c8",
+                "dataView": "full",
+                "source": {
+                  "query": "SELECT [pbist_apimgmt].[vw_operationsummary].* FROM [pbist_apimgmt].[vw_operationsummary] ",
+                  "dataSource": "ST_DS"
+                }
+              }
+            ],
+            "annotations": [
+              {
+                "name": "PBI_Id",
+                "value": "899a0eeb-5eb8-4b3b-8372-96b5fdd5c1f2"
+              },
+              {
+                "name": "LinkedQueryName",
+                "value": "OperationSummary"
+              }
+            ]
+          },
+          {
+            "name": "ApiSummary",
+            "columns": [
+              {
+                "name": "ApiID",
+                "dataType": "string",
+                "sourceColumn": "ApiID",
+                "summarizeBy": "none",
+                "annotations": [
+                  {
+                    "name": "SummarizationSetBy",
+                    "value": "Automatic"
+                  },
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"Text\" />"
+                  },
+                  {
+                    "name": "DataTypeAtRefresh",
+                    "value": "String#####not a type"
+                  },
+                  {
+                    "name": "PBI_NameAtRefresh",
+                    "value": "ApiID"
+                  },
+                  {
+                    "name": "PBI_WasHiddenAtRefresh",
+                    "value": "False"
+                  }
+                ]
+              },
+              {
+                "name": "Api",
+                "dataType": "string",
+                "sourceColumn": "Api",
+                "summarizeBy": "none",
+                "annotations": [
+                  {
+                    "name": "SummarizationSetBy",
+                    "value": "Automatic"
+                  },
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"Text\" />"
+                  },
+                  {
+                    "name": "DataTypeAtRefresh",
+                    "value": "String#####not a type"
+                  },
+                  {
+                    "name": "PBI_NameAtRefresh",
+                    "value": "Api"
+                  },
+                  {
+                    "name": "PBI_WasHiddenAtRefresh",
+                    "value": "False"
+                  }
+                ]
+              }
+            ],
+            "partitions": [
+              {
+                "name": "ApiSummary-b8aac04e-3acc-42d6-93b5-44523d4defab",
+                "dataView": "full",
+                "source": {
+                  "query": "SELECT [pbist_apimgmt].[vw_apisummary].* FROM [pbist_apimgmt].[vw_apisummary] ",
+                  "dataSource": "ST_DS"
+                }
+              }
+            ],
+            "annotations": [
+              {
+                "name": "PBI_Id",
+                "value": "a3c89c13-a112-4fd2-9dcf-6a4ef7bee4aa"
+              },
+              {
+                "name": "LinkedQueryName",
+                "value": "ApiSummary"
+              }
+            ]
+          },
+          {
+            "name": "ProductSummary",
+            "columns": [
+              {
+                "name": "ProductID",
+                "dataType": "string",
+                "sourceColumn": "ProductID",
+                "summarizeBy": "none",
+                "annotations": [
+                  {
+                    "name": "SummarizationSetBy",
+                    "value": "Automatic"
+                  },
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"Text\" />"
+                  },
+                  {
+                    "name": "DataTypeAtRefresh",
+                    "value": "String#####not a type"
+                  },
+                  {
+                    "name": "PBI_NameAtRefresh",
+                    "value": "ProductID"
+                  },
+                  {
+                    "name": "PBI_WasHiddenAtRefresh",
+                    "value": "False"
+                  }
+                ]
+              },
+              {
+                "name": "Product",
+                "dataType": "string",
+                "sourceColumn": "Product",
+                "summarizeBy": "none",
+                "annotations": [
+                  {
+                    "name": "SummarizationSetBy",
+                    "value": "Automatic"
+                  },
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"Text\" />"
+                  },
+                  {
+                    "name": "DataTypeAtRefresh",
+                    "value": "String#####not a type"
+                  },
+                  {
+                    "name": "PBI_NameAtRefresh",
+                    "value": "Product"
+                  },
+                  {
+                    "name": "PBI_WasHiddenAtRefresh",
+                    "value": "False"
+                  }
+                ]
+              }
+            ],
+            "partitions": [
+              {
+                "name": "ProductSummary-faed0f50-ef16-4627-9360-eef5dafe2aaa",
+                "dataView": "full",
+                "source": {
+                  "query": "SELECT [pbist_apimgmt].[vw_productsummary].* FROM [pbist_apimgmt].[vw_productsummary] ",
+                  "dataSource": "ST_DS"
+                }
+              }
+            ],
+            "annotations": [
+              {
+                "name": "PBI_Id",
+                "value": "5c99278c-ed1b-4dcb-a6d3-b97c90652cd1"
+              },
+              {
+                "name": "LinkedQueryName",
+                "value": "ProductSummary"
+              }
+            ]
+          },
+          {
+            "name": "SubscriptionSummary",
+            "columns": [
+              {
+                "name": "SubscriptionID",
+                "dataType": "string",
+                "sourceColumn": "SubscriptionID",
+                "summarizeBy": "none",
+                "annotations": [
+                  {
+                    "name": "SummarizationSetBy",
+                    "value": "Automatic"
+                  },
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"Text\" />"
+                  },
+                  {
+                    "name": "DataTypeAtRefresh",
+                    "value": "String#####not a type"
+                  },
+                  {
+                    "name": "PBI_NameAtRefresh",
+                    "value": "SubscriptionID"
+                  },
+                  {
+                    "name": "PBI_WasHiddenAtRefresh",
+                    "value": "False"
+                  }
+                ]
+              },
+              {
+                "name": "Subscription",
+                "dataType": "string",
+                "sourceColumn": "Subscription",
+                "summarizeBy": "none",
+                "annotations": [
+                  {
+                    "name": "SummarizationSetBy",
+                    "value": "Automatic"
+                  },
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"Text\" />"
+                  },
+                  {
+                    "name": "DataTypeAtRefresh",
+                    "value": "String#####not a type"
+                  },
+                  {
+                    "name": "PBI_NameAtRefresh",
+                    "value": "Subscription"
+                  },
+                  {
+                    "name": "PBI_WasHiddenAtRefresh",
+                    "value": "False"
+                  }
+                ]
+              }
+            ],
+            "partitions": [
+              {
+                "name": "SubscriptionSummary-18a4422d-0a72-4575-b989-cda72005f8c9",
+                "dataView": "full",
+                "source": {
+                  "query": "SELECT [pbist_apimgmt].[vw_subscriptionsummary].* FROM [pbist_apimgmt].[vw_subscriptionsummary] ",
+                  "dataSource": "ST_DS"
+                }
+              }
+            ],
+            "annotations": [
+              {
+                "name": "PBI_Id",
+                "value": "259aa2f2-4154-4759-bf93-cb9355bef0b8"
+              },
+              {
+                "name": "LinkedQueryName",
+                "value": "SubscriptionSummary"
+              }
+            ]
+          },
+          {
+            "name": "SubscriptionIPAddress",
+            "columns": [
+              {
+                "name": "SubscriptionId",
+                "dataType": "string",
+                "sourceColumn": "SubscriptionId",
+                "summarizeBy": "none",
+                "annotations": [
+                  {
+                    "name": "SummarizationSetBy",
+                    "value": "Automatic"
+                  },
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"Text\" />"
+                  },
+                  {
+                    "name": "DataTypeAtRefresh",
+                    "value": "String#####not a type"
+                  },
+                  {
+                    "name": "PBI_NameAtRefresh",
+                    "value": "SubscriptionId"
+                  },
+                  {
+                    "name": "PBI_WasHiddenAtRefresh",
+                    "value": "False"
+                  }
+                ]
+              },
+              {
+                "name": "IPAddress",
+                "dataType": "string",
+                "sourceColumn": "IPAddress",
+                "summarizeBy": "none",
+                "annotations": [
+                  {
+                    "name": "SummarizationSetBy",
+                    "value": "Automatic"
+                  },
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"Text\" />"
+                  },
+                  {
+                    "name": "DataTypeAtRefresh",
+                    "value": "String#####not a type"
+                  },
+                  {
+                    "name": "PBI_NameAtRefresh",
+                    "value": "IPAddress"
+                  },
+                  {
+                    "name": "PBI_WasHiddenAtRefresh",
+                    "value": "False"
+                  }
+                ]
+              }
+            ],
+            "partitions": [
+              {
+                "name": "SubscriptionIPAddress-d48f8222-aac9-4671-92ac-fa378a723938",
+                "dataView": "full",
+                "source": {
+                  "query": "SELECT [pbist_apimgmt].[vw_subscriptionipaddress].* FROM [pbist_apimgmt].[vw_subscriptionipaddress] ",
+                  "dataSource": "ST_DS"
+                }
+              }
+            ],
+            "annotations": [
+              {
+                "name": "PBI_Id",
+                "value": "f20529e3-8e68-4c8c-841e-3af3bf056eae"
+              },
+              {
+                "name": "LinkedQueryName",
+                "value": "SubscriptionIPAddress"
+              }
+            ]
+          },
+          {
+            "name": "IPAddressSummary",
+            "columns": [
+              {
+                "name": "IPAddress",
+                "dataType": "string",
+                "sourceColumn": "IPAddress",
+                "summarizeBy": "none",
+                "annotations": [
+                  {
+                    "name": "SummarizationSetBy",
+                    "value": "Automatic"
+                  },
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"Text\" />"
+                  },
+                  {
+                    "name": "DataTypeAtRefresh",
+                    "value": "String#####not a type"
+                  },
+                  {
+                    "name": "PBI_NameAtRefresh",
+                    "value": "IPAddress"
+                  },
+                  {
+                    "name": "PBI_WasHiddenAtRefresh",
+                    "value": "False"
+                  }
+                ]
+              }
+            ],
+            "partitions": [
+              {
+                "name": "IPAddressSummary-37dba8dc-3d8a-4b4c-90c2-f446aafff943",
+                "dataView": "full",
+                "source": {
+                  "query": "SELECT [pbist_apimgmt].[vw_ipaddresssummary].* FROM [pbist_apimgmt].[vw_ipaddresssummary] ",
+                  "dataSource": "ST_DS"
+                }
+              }
+            ],
+            "annotations": [
+              {
+                "name": "PBI_Id",
+                "value": "10bce765-8734-4a41-ad08-868a4cee65a6"
+              },
+              {
+                "name": "LinkedQueryName",
+                "value": "IPAddressSummary"
+              }
+            ]
+          },
+          {
+            "name": "RelatedOperationSummary",
+            "columns": [
+              {
+                "name": "OperationID",
+                "dataType": "string",
+                "sourceColumn": "OperationID",
+                "summarizeBy": "none",
+                "annotations": [
+                  {
+                    "name": "SummarizationSetBy",
+                    "value": "Automatic"
+                  },
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"Text\" />"
+                  },
+                  {
+                    "name": "DataTypeAtRefresh",
+                    "value": "String#####not a type"
+                  },
+                  {
+                    "name": "PBI_NameAtRefresh",
+                    "value": "OperationID"
+                  },
+                  {
+                    "name": "PBI_WasHiddenAtRefresh",
+                    "value": "False"
+                  }
+                ]
+              },
+              {
+                "name": "Operation",
+                "dataType": "string",
+                "sourceColumn": "Operation",
+                "summarizeBy": "none",
+                "annotations": [
+                  {
+                    "name": "SummarizationSetBy",
+                    "value": "Automatic"
+                  },
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"Text\" />"
+                  },
+                  {
+                    "name": "DataTypeAtRefresh",
+                    "value": "String#####not a type"
+                  },
+                  {
+                    "name": "PBI_NameAtRefresh",
+                    "value": "Operation"
+                  },
+                  {
+                    "name": "PBI_WasHiddenAtRefresh",
+                    "value": "False"
+                  }
+                ]
+              }
+            ],
+            "partitions": [
+              {
+                "name": "RelatedOperationSummary-16d3908a-7c60-435c-a348-fc11157ded53",
+                "dataView": "full",
+                "source": {
+                  "query": "SELECT [pbist_apimgmt].[vw_operationsummary].* FROM [pbist_apimgmt].[vw_operationsummary] ",
+                  "dataSource": "ST_DS"
+                }
+              }
+            ],
+            "annotations": [
+              {
+                "name": "PBI_Id",
+                "value": "a696de75-61b8-49c2-b646-5097e5ff84b8"
+              },
+              {
+                "name": "LinkedQueryName",
+                "value": "RelatedOperationSummary"
+              }
+            ]
+          },
+          {
+            "name": "VisualFreqHour",
+            "columns": [
+              {
+                "name": "IPAddress",
+                "dataType": "string",
+                "sourceColumn": "IPAddress",
+                "summarizeBy": "none",
+                "annotations": [
+                  {
+                    "name": "SummarizationSetBy",
+                    "value": "Automatic"
+                  },
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"Text\" />"
+                  },
+                  {
+                    "name": "DataTypeAtRefresh",
+                    "value": "String#####not a type"
+                  },
+                  {
+                    "name": "PBI_NameAtRefresh",
+                    "value": "IPAddress"
+                  },
+                  {
+                    "name": "PBI_WasHiddenAtRefresh",
+                    "value": "False"
+                  }
+                ]
+              },
+              {
+                "name": "Hour",
+                "dataType": "int64",
+                "sourceColumn": "Hour",
+                "formatString": "0",
+                "summarizeBy": "sum",
+                "annotations": [
+                  {
+                    "name": "SummarizationSetBy",
+                    "value": "Automatic"
+                  },
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"NumberWhole\" Accuracy=\"0\" />"
+                  },
+                  {
+                    "name": "DataTypeAtRefresh",
+                    "value": "Int64#####not a type"
+                  },
+                  {
+                    "name": "PBI_NameAtRefresh",
+                    "value": "Hour"
+                  },
+                  {
+                    "name": "PBI_WasHiddenAtRefresh",
+                    "value": "False"
+                  }
+                ]
+              },
+              {
+                "name": "SignalStrength",
+                "dataType": "double",
+                "sourceColumn": "SignalStrength",
+                "summarizeBy": "sum",
+                "annotations": [
+                  {
+                    "name": "SummarizationSetBy",
+                    "value": "Automatic"
+                  },
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"General\" />"
+                  },
+                  {
+                    "name": "DataTypeAtRefresh",
+                    "value": "Double#####not a type"
+                  },
+                  {
+                    "name": "PBI_NameAtRefresh",
+                    "value": "SignalStrength"
+                  },
+                  {
+                    "name": "PBI_WasHiddenAtRefresh",
+                    "value": "False"
+                  }
+                ]
+              }
+            ],
+            "partitions": [
+              {
+                "name": "VisualFreqHour-cff7bea0-029e-47f7-bf63-9d78eb7ea1df",
+                "dataView": "full",
+                "source": {
+                  "query": "SELECT [pbist_apimgmt].[vw_visualfreqhour].* FROM [pbist_apimgmt].[vw_visualfreqhour] ",
+                  "dataSource": "ST_DS"
+                }
+              }
+            ],
+            "annotations": [
+              {
+                "name": "PBI_Id",
+                "value": "9349f002-58a4-4205-9b1c-f1a9b388b134"
+              },
+              {
+                "name": "LinkedQueryName",
+                "value": "VisualFreqHour"
+              }
+            ]
+          },
+          {
+            "name": "VisualFreqMinute",
+            "columns": [
+              {
+                "name": "IPAddress",
+                "dataType": "string",
+                "sourceColumn": "IPAddress",
+                "summarizeBy": "none",
+                "annotations": [
+                  {
+                    "name": "SummarizationSetBy",
+                    "value": "Automatic"
+                  },
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"Text\" />"
+                  },
+                  {
+                    "name": "DataTypeAtRefresh",
+                    "value": "String#####not a type"
+                  },
+                  {
+                    "name": "PBI_NameAtRefresh",
+                    "value": "IPAddress"
+                  },
+                  {
+                    "name": "PBI_WasHiddenAtRefresh",
+                    "value": "False"
+                  }
+                ]
+              },
+              {
+                "name": "Minute",
+                "dataType": "int64",
+                "sourceColumn": "Minute",
+                "formatString": "0",
+                "summarizeBy": "sum",
+                "annotations": [
+                  {
+                    "name": "SummarizationSetBy",
+                    "value": "Automatic"
+                  },
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"NumberWhole\" Accuracy=\"0\" />"
+                  },
+                  {
+                    "name": "DataTypeAtRefresh",
+                    "value": "Int64#####not a type"
+                  },
+                  {
+                    "name": "PBI_NameAtRefresh",
+                    "value": "Minute"
+                  },
+                  {
+                    "name": "PBI_WasHiddenAtRefresh",
+                    "value": "False"
+                  }
+                ]
+              },
+              {
+                "name": "SignalStrength",
+                "dataType": "double",
+                "sourceColumn": "SignalStrength",
+                "summarizeBy": "sum",
+                "annotations": [
+                  {
+                    "name": "SummarizationSetBy",
+                    "value": "Automatic"
+                  },
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"General\" />"
+                  },
+                  {
+                    "name": "DataTypeAtRefresh",
+                    "value": "Double#####not a type"
+                  },
+                  {
+                    "name": "PBI_NameAtRefresh",
+                    "value": "SignalStrength"
+                  },
+                  {
+                    "name": "PBI_WasHiddenAtRefresh",
+                    "value": "False"
+                  }
+                ]
+              }
+            ],
+            "partitions": [
+              {
+                "name": "VisualFreqMinute-36aaa37b-0a2d-43fb-8a9d-ca83910824a7",
+                "dataView": "full",
+                "source": {
+                  "query": "SELECT [pbist_apimgmt].[vw_visualfreqminute].* FROM [pbist_apimgmt].[vw_visualfreqminute] ",
+                  "dataSource": "ST_DS"
+                }
+              }
+            ],
+            "annotations": [
+              {
+                "name": "PBI_Id",
+                "value": "c41411ac-ad94-4652-be3d-13740f4a99e5"
+              },
+              {
+                "name": "LinkedQueryName",
+                "value": "VisualFreqMinute"
+              }
+            ]
+          }
+
+        ],
+        "relationships": [
+          {
+            "name": "469a417c-2cd6-4b5e-a164-2e3142802615",
+            "fromTable": "VisualOperationCallVolume",
+            "fromColumn": "OperationId",
+            "toTable": "OperationSummary",
+            "toColumn": "OperationID"
+          },
+          {
+            "name": "d4dcafb0-a9d8-411e-b209-01ccccd6463e",
+            "fromTable": "AllRequestData",
+            "fromColumn": "OperationId",
+            "toTable": "OperationSummary",
+            "toColumn": "OperationID"
+          },
+          {
+            "name": "dff0be99-4c62-4235-be5e-26a95e671e02",
+            "fromTable": "APIMErrorDetail",
+            "fromColumn": "OperationId",
+            "toTable": "OperationSummary",
+            "toColumn": "OperationID"
+          },
+          {
+            "name": "5c19f19a-eba1-4007-86fb-64009105efc8",
+            "fromTable": "APIMErrorDetail",
+            "fromColumn": "Api",
+            "toTable": "ApiSummary",
+            "toColumn": "Api"
+          },
+          {
+            "name": "718c8225-10e4-44ee-98f5-004832bf249e",
+            "fromTable": "VisualOperationCallVolume",
+            "fromColumn": "ApiID",
+            "toTable": "ApiSummary",
+            "toColumn": "ApiID"
+          },
+          {
+            "name": "de7a01bd-c750-4a8e-bc18-0a612d6b8b73",
+            "fromTable": "AllRequestData",
+            "fromColumn": "SubscriptionId",
+            "toTable": "SubscriptionSummary",
+            "toColumn": "SubscriptionID"
+          },
+          {
+            "name": "a4390ecc-3236-4320-b118-6ff792c8f9ad",
+            "fromTable": "APIMErrorDetail",
+            "fromColumn": "SubscriptionId",
+            "toTable": "SubscriptionSummary",
+            "toColumn": "SubscriptionID"
+          },
+          {
+            "name": "aba8561c-6bd4-4f9c-8c2d-04a647deea4e",
+            "fromTable": "AllRequestData",
+            "fromColumn": "ApiId",
+            "toTable": "ApiSummary",
+            "toColumn": "ApiID"
+          },
+          {
+            "name": "a2a20b8b-9734-40ea-a2c7-45e7b0791b0c",
+            "fromTable": "SubscriptionIPAddress",
+            "fromColumn": "SubscriptionId",
+            "toTable": "SubscriptionSummary",
+            "toColumn": "SubscriptionID"
+          },
+          {
+            "name": "87a42c3f-25c6-4fd4-9327-39828f41938f",
+            "fromTable": "VisualIPEdgeCounts",
+            "fromColumn": "IPAddress",
+            "toTable": "IPAddressSummary",
+            "toColumn": "IPAddress"
+          },
+          {
+            "name": "060c563f-301d-4140-81c5-7c0f331ed4b7",
+            "fromTable": "AllRequestData",
+            "fromColumn": "IPAddress",
+            "toTable": "IPAddressSummary",
+            "toColumn": "IPAddress"
+          },
+          {
+            "name": "9d3125f2-4310-4deb-962d-af06654922e9",
+            "fromTable": "APIMErrorDetail",
+            "fromColumn": "IPAddress",
+            "toTable": "IPAddressSummary",
+            "toColumn": "IPAddress"
+          },
+          {
+            "name": "1e0be8f6-6755-4d96-9504-bb524e1a2b50",
+            "fromTable": "SubscriptionIPAddress",
+            "fromColumn": "IPAddress",
+            "toTable": "IPAddressSummary",
+            "toColumn": "IPAddress"
+          },
+          {
+            "name": "65d76a24-711a-423c-a831-ba16ea3fdf10",
+            "fromTable": "VisualFreqHour",
+            "fromColumn": "IPAddress",
+            "toTable": "IPAddressSummary",
+            "toColumn": "IPAddress"
+          },
+          {
+            "name": "8f4c816e-7b72-4f9e-b10f-d1fa2c659121",
+            "fromTable": "VisualFreqMinute",
+            "fromColumn": "IPAddress",
+            "toTable": "IPAddressSummary",
+            "toColumn": "IPAddress"
+          },
+          {
+            "name": "779f741f-4a2c-42cd-8b01-84f0051ecc47",
+            "fromTable": "VisualOperationCallVolume",
+            "fromColumn": "ProductID",
+            "toTable": "ProductSummary",
+            "toColumn": "ProductID"
+          },
+          {
+            "name": "565249f8-e749-4f22-a7b9-5f68ede21aea",
+            "fromTable": "AllRequestData",
+            "fromColumn": "ProductId",
+            "toTable": "ProductSummary",
+            "toColumn": "ProductID"
+          },
+          {
+            "name": "c703b4a2-113c-445a-b5f6-0e7d35ea6dfb",
+            "fromTable": "AllRequestData",
+            "fromColumn": "CreatedDate",
+            "toTable": "Date",
+            "toColumn": "date"
+          },
+          {
+            "name": "929664c8-a280-4f48-b751-30f43677b100",
+            "fromTable": "APIMErrorDetail",
+            "fromColumn": "CreatedDate",
+            "toTable": "Date",
+            "toColumn": "date"
+          },
+          {
+            "name": "4a71e2e6-1eaa-4556-b5ec-dd188db0f7db",
+            "fromTable": "APIMErrorDetail",
+            "fromColumn": "ProductId",
+            "toTable": "ProductSummary",
+            "toColumn": "ProductID"
+          },
+          {
+            "name": "dd86e8e8-4cb5-4131-97d0-110b5edbd071",
+            "fromTable": "VisualCallProbabilityEdgeList",
+            "fromColumn": "ApiID",
+            "toTable": "ApiSummary",
+            "toColumn": "ApiID"
+          },
+          {
+            "name": "1db64072-0356-4d35-911d-de9e43de91f2",
+            "fromTable": "VisualCallProbabilityEdgeList",
+            "fromColumn": "OperationID",
+            "toTable": "OperationSummary",
+            "toColumn": "OperationID"
+          },
+          {
+            "name": "263275ba-0caf-455c-b5bc-59189119d7f6",
+            "fromTable": "VisualCallProbabilityEdgeList",
+            "fromColumn": "RelatedOperationID",
+            "toTable": "RelatedOperationSummary",
+            "toColumn": "OperationID"
+          },
+          {
+            "name": "3f152693-70b7-4e67-acf0-2be0d80b54ab",
+            "fromTable": "VisualIPEdgeCounts",
+            "fromColumn": "ApiID",
+            "toTable": "ApiSummary",
+            "toColumn": "ApiID"
+          },
+          {
+            "name": "f194cb73-2757-40f1-ae9e-936711bb0d9f",
+            "fromTable": "VisualIPEdgeCounts",
+            "fromColumn": "OperationID",
+            "toTable": "OperationSummary",
+            "toColumn": "OperationID"
+          },
+          {
+            "name": "20d65889-9ac3-4c72-871c-af1231b313e9",
+            "fromTable": "VisualIPEdgeCounts",
+            "fromColumn": "RelatedOperationID",
+            "toTable": "RelatedOperationSummary",
+            "toColumn": "OperationID"
+          }
+        ],
+        "annotations": [
+        ]
+      }
+    }
+  }
+}
+

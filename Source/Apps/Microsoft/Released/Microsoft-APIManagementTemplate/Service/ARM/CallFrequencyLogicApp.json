@@ -1,0 +1,106 @@
+﻿{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "logicappname": {
+      "defaultValue": "LogicApp",
+      "type": "string"
+    },
+    "resourcegroup": {
+      "defaultValue": "stresourcegroup",
+      "type": "string"
+    },
+    "subscription": {
+      "defaultValue": "idrequired",
+      "type": "string"
+    }
+  },
+  "variables": {},
+  "resources": [
+    {
+      "type": "Microsoft.Logic/workflows",
+      "name": "[parameters('logicappname')]",
+      "apiVersion": "2016-06-01",
+      "location": "[resourceGroup().location]",
+      "properties": {
+        "state": "Enabled",
+        "definition": {
+          "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+          "contentVersion": "1.0.0.0",
+          "parameters": {
+            "$connections": {
+              "defaultValue": {},
+              "type": "Object"
+            }
+          },
+          "triggers": {
+            "Recurrence": {
+              "recurrence": {
+                "frequency": "Hour",
+                "interval": 6
+              },
+              "type": "Recurrence"
+            }
+          },
+          "actions": {
+            "Batch_Job_No_Input_and_Output": {
+              "inputs": {
+                "host": {
+                  "connection": {
+                    "name": "@parameters('$connections')['azureml']['connectionId']"
+                  }
+                },
+                "method": "post",
+                "path": "/api/None",
+                "queries": {
+                  "API_Key": "[parameters('apikey')]",
+                  "API_URL": "[parameters('apiurl')]",
+                  "GlobalKeys": "frequency",
+                  "GlobalValues": "'min,h'"
+                }
+              },
+              "runAfter": {},
+              "type": "ApiConnection"
+            },
+            "Execute_stored_procedure": {
+              "inputs": {
+                "host": {
+                  "connection": {
+                    "name": "@parameters('$connections')['sql']['connectionId']"
+                  }
+                },
+                "method": "post",
+                "path": "/datasets/default/procedures/@{encodeURIComponent(encodeURIComponent('[pbist_apimgmt].[sp_ffttableswap]'))}"
+              },
+              "runAfter": {
+                "Batch_Job_No_Input_and_Output": [
+                  "Succeeded"
+                ]
+              },
+              "type": "ApiConnection"
+            }
+          },
+          "outputs": {}
+        },
+        "parameters": {
+          "$connections": {
+            "value": {
+              "azureml": {
+                "connectionId": "[concat('/subscriptions/', parameters('subscription'), '/resourceGroups/',parameters('resourcegroup'),'/providers/Microsoft.Web/connections/azureml')]",
+                "connectionName": "AzureMLConnector",
+                "id": "[concat('/subscriptions/', parameters('subscription'), '/providers/Microsoft.Web/locations/', resourceGroup().location, '/managedApis/azureml')]"
+              },
+              "sql": {
+                "connectionId": "[concat('/subscriptions/', parameters('subscription'), '/resourceGroups/' ,parameters('resourceGroup'),'/providers/Microsoft.Web/connections/sql')]",
+                "connectionName": "sql",
+                "id": "[concat('/subscriptions/' , parameters('subscription'), '/providers/Microsoft.Web/locations/',resourceGroup().location , '/managedApis/sql')]"
+              }
+            }
+          }
+        }
+      },
+      "resources": []
+    }
+  ],
+  "outputs": {}
+}

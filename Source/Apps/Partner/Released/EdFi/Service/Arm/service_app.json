@@ -1,0 +1,383 @@
+﻿{
+    "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "sqlServerAdminLogin": {
+            "type": "string"
+        },
+        "sqlServerAdminPassword": {
+            "type": "securestring"
+        },
+        "sqlServerProductionApiLogin": {
+            "type": "string",
+            "defaultValue": "EdFiOdsProductionApi"
+        },
+        "sqlServerProductionApiPassword": {
+            "type": "securestring"
+        },
+        "version": {
+            "type": "string"
+        },
+        "edition": {
+            "type": "string",
+            "allowedValues": [ "test", "release" ],
+            "defaultValue": "release"
+        },
+        "appInsightsLocation": {
+            "type": "string",
+            "allowedValues": [ "East US", "South Central US" ],
+            "defaultValue": "South Central US"
+        }
+    },
+    "variables": {
+        "odsAssetsBaseUrl": "[concat('https://odsassets.blob.core.windows.net/public/', parameters('edition'), '/', parameters('version'), '/')]",
+        "sqlMaxSizeBytes_Basic": "2147483648",
+        "sqlMaxSizeBytes_Standard": "268435456000",
+        "sqlMaxSizeBytes_Premium": "536870912000",
+        "sqlServerSettings": {
+            "name": "[concat('edfiodssql-', uniqueString(resourceGroup().id))]",
+            "administratorLogin": "[parameters('sqlServerAdminLogin')]",
+            "administratorLoginPassword": "[parameters('sqlServerAdminPassword')]"
+        },
+        "adminDatabaseSettings": {
+            "name": "EdFi_Admin",
+            "collation": "Latin1_General_100_CI_AS",
+            "maxSizeBytes": "[variables('sqlMaxSizeBytes_Basic')]",
+            "edition": "Standard",
+            "requestedServiceObjectiveName": "S1"
+        },
+        "securityDatabaseSettings": {
+            "name": "EdFi_Security",
+            "collation": "Latin1_General_100_CI_AS",
+            "maxSizeBytes": "[variables('sqlMaxSizeBytes_Basic')]",
+            "edition": "Standard",
+            "requestedServiceObjectiveName": "S1"
+        },
+        "productionOdsDatabaseSettings": {
+            "name": "EdFi_Ods_Production",
+            "collation": "Latin1_General_100_CI_AS",
+            "maxSizeBytes": "[variables('sqlMaxSizeBytes_Standard')]",
+            "edition": "Standard",
+            "requestedServiceObjectiveName": "S1"
+        },
+        "productionWebsiteSettings": {
+            "hostingPlanName": "Ed-Fi-Production-Websites",
+            "pricingTier": "S1",
+            "apiWebsiteName": "[concat('EdFiOdsApiWebSite-Production-', uniqueString(resourceGroup().id))]",
+            "sqlLogin": "[parameters('sqlServerProductionApiLogin')]",
+            "sqlPassword": "[parameters('sqlServerProductionApiPassword')]"
+        },
+        "odsEmptyBacpacUrl": "[concat(variables('odsAssetsBaseurl'), 'EdFi_Ods.bacpac')]",
+        "odsMinimalBacpacUrl": "[concat(variables('odsAssetsBaseurl'), 'EdFi_Ods_Minimal_Template.bacpac')]",
+        "odsPopulatedBacpacUrl": "[concat(variables('odsAssetsBaseurl'), 'EdFi_Ods_Populated_Template.bacpac')]",
+        "odsApiAssetsUrl": "[concat(variables('odsAssetsBaseurl'), 'EdFi.Ods.WebApi.zip')]",
+        "swaggerAssetsUrl": "[concat(variables('odsAssetsBaseurl'), 'EdFi.Ods.SwaggerUI.zip')]",
+        "odsstorageName": "[concat('odsstorage', uniqueString(resourceGroup().id))]"
+
+    },
+    "resources": [
+        {
+            "name": "[variables('sqlServerSettings').name]",
+            "type": "Microsoft.Sql/servers",
+            "location": "[resourceGroup().location]",
+            "tags": {
+                "displayName": "SqlServer"
+            },
+            "apiVersion": "2014-04-01-preview",
+            "properties": {
+                "administratorLogin": "[variables('sqlServerSettings').administratorLogin]",
+                "administratorLoginPassword": "[variables('sqlServerSettings').administratorLoginPassword]",
+                "version": "12.0"
+            },
+            "resources": [
+                {
+                    "apiVersion": "2014-04-01-preview",
+                    "dependsOn": [
+                        "[variables('sqlServerSettings').name]"
+                    ],
+                    "location": "[resourceGroup().location]",
+                    "name": "[variables('adminDatabaseSettings').name]",
+                    "properties": {
+                        "edition": "[variables('adminDatabaseSettings').edition]",
+                        "collation": "[variables('adminDatabaseSettings').collation]",
+                        "maxSizeBytes": "[variables('adminDatabaseSettings').maxSizeBytes]",
+                        "requestedServiceObjectiveName": "[variables('adminDatabaseSettings').requestedServiceObjectiveName]"
+                    },
+                    "resources": [
+                        {
+                            "name": "current",
+                            "type": "transparentDataEncryption",
+                            "dependsOn": [
+                                "[variables('adminDatabaseSettings').name]"
+                            ],
+                            "location": null,
+                            "apiVersion": "2014-04-01",
+                            "properties": {
+                                "status": "Enabled"
+                            }
+                        }
+                    ],
+                    "tags": {
+                        "displayName": "EdFi ODS Admin Database"
+                    },
+                    "type": "databases"
+                },
+                {
+                    "name": "[variables('productionOdsDatabaseSettings').name]",
+                    "type": "databases",
+                    "location": "[resourceGroup().location]",
+                    "tags": {
+                        "displayName": "EdFi ODS Production Database"
+                    },
+                    "apiVersion": "2014-04-01-preview",
+                    "dependsOn": [
+                        "[variables('sqlServerSettings').name]"
+                    ],
+                    "properties": {
+                        "collation": "[variables('productionOdsDatabaseSettings').collation]",
+                        "edition": "[variables('productionOdsDatabaseSettings').edition]",
+                        "maxSizeBytes": "[variables('productionOdsDatabaseSettings').maxSizeBytes]",
+                        "requestedServiceObjectiveName": "[variables('productionOdsDatabaseSettings').requestedServiceObjectiveName]"
+                    },
+                    "resources": [
+                        {
+                            "name": "Import",
+                            "type": "extensions",
+                            "apiVersion": "2014-04-01-preview",
+                            "dependsOn": [
+                                "[concat('Microsoft.Sql/servers/', variables('sqlServerSettings').name, '/databases/', variables('productionOdsDatabaseSettings').name)]"
+                            ],
+                            "properties": {
+                                "storageUri": "[variables('odsEmptyBacpacUrl')]",
+                                "administratorLogin": "[variables('sqlServerSettings').administratorLogin]",
+                                "administratorLoginPassword": "[variables('sqlServerSettings').administratorLoginPassword]",
+                                "operationMode": "Import",
+                                "storageKey": "?",
+                                "storageKeyType": "SharedAccessKey"
+                            }
+                        },
+                        {
+                            "name": "current",
+                            "type": "transparentDataEncryption",
+                            "dependsOn": [
+                                "[variables('productionOdsDatabaseSettings').name]"
+                            ],
+                            "location": null,
+                            "apiVersion": "2014-04-01",
+                            "properties": {
+                                "status": "Enabled"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "[variables('securityDatabaseSettings').name]",
+                    "type": "databases",
+                    "location": "[resourceGroup().location]",
+                    "tags": {
+                        "displayName": "EdFi ODS Security Database"
+                    },
+                    "apiVersion": "2014-04-01-preview",
+                    "dependsOn": [
+                        "[variables('sqlServerSettings').name]"
+                    ],
+                    "properties": {
+                        "collation": "[variables('securityDatabaseSettings').collation]",
+                        "edition": "[variables('securityDatabaseSettings').edition]",
+                        "maxSizeBytes": "[variables('securityDatabaseSettings').maxSizeBytes]",
+                        "requestedServiceObjectiveName": "[variables('securityDatabaseSettings').requestedServiceObjectiveName]"
+                    },
+                    "resources": [
+                        {
+                            "name": "current",
+                            "type": "transparentDataEncryption",
+                            "dependsOn": [
+                                "[variables('securityDatabaseSettings').name]"
+                            ],
+                            "location": null,
+                            "apiVersion": "2014-04-01",
+                            "properties": {
+                                "status": "Enabled"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "type": "firewallrules",
+                    "apiVersion": "2014-04-01-preview",
+                    "dependsOn": [
+                        "[concat('Microsoft.Sql/servers/', variables('sqlServerSettings').name)]"
+                    ],
+                    "location": "[resourceGroup().location]",
+                    "name": "AllowAllWindowsAzureIps",
+                    "properties": {
+                        "endIpAddress": "0.0.0.0",
+                        "startIpAddress": "0.0.0.0"
+                    }
+                },
+                {
+                    "type": "firewallrules",
+                    "apiVersion": "2014-04-01-preview",
+                    "dependsOn": [
+                        "[concat('Microsoft.Sql/servers/', variables('sqlServerSettings').name)]"
+                    ],
+                    "location": "[resourceGroup().location]",
+                    "name": "AllIPs",
+                    "properties": {
+                        "endIpAddress": "255.255.255.255",
+                        "startIpAddress": "0.0.0.0"
+                    }
+                }
+            ]
+        },
+        {
+            "apiVersion": "2015-08-01",
+            "name": "[variables('productionWebsiteSettings').hostingPlanName]",
+            "type": "Microsoft.Web/serverfarms",
+            "location": "[resourceGroup().location]",
+            "tags": {
+                "displayName": "Production Web Hosting Plan"
+            },
+            "sku": {
+                "name": "[variables('productionWebsiteSettings').pricingTier]",
+                "capacity": 1
+            },
+            "properties": {
+                "name": "[variables('productionWebsiteSettings').hostingPlanName]"
+            }
+        },
+        {
+            "apiVersion": "2015-08-01",
+            "name": "[variables('productionWebsiteSettings').apiWebsiteName]",
+            "type": "Microsoft.Web/sites",
+            "location": "[resourceGroup().location]",
+            "dependsOn": [
+                "[concat('Microsoft.Web/serverFarms/', variables('productionWebsiteSettings').hostingPlanName)]"
+            ],
+            "tags": {
+                "[concat('hidden-related:', resourceId('Microsoft.Web/serverfarms/', variables('productionWebsiteSettings').hostingPlanName))]": "empty",
+                "displayName": "Production API Website",
+                "Cloud-Ods-Role": "Api",
+                "Cloud-Ods-Environment": "Production"
+            },
+            "properties": {
+                "name": "[variables('productionWebsiteSettings').apiWebsiteName]",
+                "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', variables('productionWebsiteSettings').hostingPlanName)]",
+                "siteConfig": {
+                    "AlwaysOn": true
+                }
+            },
+            "resources": [
+                {
+                    "apiVersion": "2015-08-01",
+                    "type": "config",
+                    "name": "connectionstrings",
+                    "dependsOn": [
+                        "[concat('Microsoft.Web/sites/', variables('productionWebsiteSettings').apiWebsiteName)]",
+                        "[concat('Microsoft.Web/sites/', variables('productionWebsiteSettings').apiWebsiteName, '/extensions/MSDeploy')]",
+                        "[concat('Microsoft.Sql/servers/', variables('sqlServerSettings').name)]"
+                    ],
+                    "properties": {
+                        "EdFi_Ods": {
+                            "value": "[concat('Data Source=tcp:', reference(concat('Microsoft.Sql/servers/', variables('sqlServerSettings').name)).fullyQualifiedDomainName, ',1433;Initial Catalog=', variables('productionOdsDatabaseSettings').name,';User Id=\"', variables('productionWebsiteSettings').sqlLogin, '@', variables('sqlServerSettings').name, '\";Password=\"', variables('productionWebsiteSettings').sqlPassword, '\";')]",
+                            "type": "SQLServer"
+                        },
+                        "EdFi_Admin": {
+                            "value": "[concat('Data Source=tcp:', reference(concat('Microsoft.Sql/servers/', variables('sqlServerSettings').name)).fullyQualifiedDomainName, ',1433;Initial Catalog=EdFi_Admin;User Id=\"', variables('productionWebsiteSettings').sqlLogin, '@', variables('sqlServerSettings').name, '\";Password=\"', variables('productionWebsiteSettings').sqlPassword, '\";')]",
+                            "type": "SQLServer"
+                        },
+                        "EdFi_Security": {
+                            "value": "[concat('Data Source=tcp:', reference(concat('Microsoft.Sql/servers/', variables('sqlServerSettings').name)).fullyQualifiedDomainName, ',1433;Initial Catalog=EdFi_Security;User Id=\"', variables('productionWebsiteSettings').sqlLogin, '@', variables('sqlServerSettings').name, '\";Password=\"', variables('productionWebsiteSettings').sqlPassword, '\";')]",
+                            "type": "SQLServer"
+                        },
+                        "EdFi_Master": {
+                            "value": "[concat('Data Source=tcp:', reference(concat('Microsoft.Sql/servers/', variables('sqlServerSettings').name)).fullyQualifiedDomainName, ',1433;Initial Catalog=master;User Id=\"', variables('productionWebsiteSettings').sqlLogin, '@', variables('sqlServerSettings').name, '\";Password=\"', variables('productionWebsiteSettings').sqlPassword, '\";')]",
+                            "type": "SQLServer"
+                        }
+                    }
+                },
+                {
+                    "apiVersion": "2015-08-01",
+                    "type": "config",
+                    "name": "appsettings",
+                    "dependsOn": [
+                        "[concat('Microsoft.Web/sites/', variables('productionWebsiteSettings').apiWebsiteName)]",
+                        "[concat('Microsoft.Web/sites/', variables('productionWebsiteSettings').apiWebsiteName, '/extensions/MSDeploy')]",
+                        "[concat('AppInsights-', variables('productionWebsiteSettings').apiWebsiteName)]"
+                    ],
+                    "properties": {
+                        "owin:appStartup": "AzureCloudOds",
+                        "PreserveLoginUrl": "true",
+                        "DescriptorNamespacePrefix": "http://ed-fi.org",
+                        "BearerTokenTimeoutInMinutes": "15",
+                        "ApplicationInsightsInstrumentationKey": "[reference(resourceId('Microsoft.Insights/components', concat('AppInsights-', variables('productionWebsiteSettings').apiWebsiteName)), '2014-04-01').InstrumentationKey]",
+                        "LogLevelOverride": "INFO"
+                    }
+                },
+                {
+                    "apiVersion": "2015-08-01",
+                    "dependsOn": [
+                        "[concat('Microsoft.Web/sites/', variables('productionWebsiteSettings').apiWebsiteName)]"
+                    ],
+                    "location": "[resourceGroup().location]",
+                    "name": "MSDeploy",
+                    "properties": {
+                        "connectionString": "",
+                        "dbType": "None",
+                        "packageUri": "[variables('odsApiAssetsUrl')]",
+                        "setParameters": {
+                            "IIS Web Application Name": "[variables('productionWebsiteSettings').apiWebsiteName]"
+                        }
+                    },
+                    "tags": {
+                        "displayName": "deployment"
+                    },
+                    "type": "extensions"
+                }
+            ]
+        },
+        {
+            "name": "[variables('odsstorageName')]",
+            "type": "Microsoft.Storage/storageAccounts",
+            "location": "[resourceGroup().location]",
+            "apiVersion": "2015-06-15",
+            "dependsOn": [],
+            "tags": {
+                "displayName": "EdFi ODS Storage Account"
+            },
+            "properties": {
+                "accountType": "Standard_LRS"
+            }
+        },
+        {
+            "name": "[concat('AppInsights-', variables('productionWebsiteSettings').apiWebsiteName)]",
+            "type": "Microsoft.Insights/components",
+            "location": "[parameters('appInsightsLocation')]",
+            "apiVersion": "2014-04-01",
+            "dependsOn": [
+                "[concat('Microsoft.Web/sites/', variables('productionWebsiteSettings').apiWebsiteName)]"
+            ],
+            "tags": {
+                "[concat('hidden-link:', resourceId('Microsoft.Web/sites', variables('productionWebsiteSettings').apiWebsiteName))]": "Resource",
+                "displayName": "Production Api AppInsights"
+            },
+            "properties": {
+                "applicationId": "[variables('productionWebsiteSettings').apiWebsiteName]"
+            }
+        }
+    ],
+    "outputs": {
+        "productionApiUrl": {
+            "type": "string",
+            "value": "[concat('https://', reference(resourceId('Microsoft.Web/sites', variables('productionWebsiteSettings').apiWebsiteName)).hostNames[0])]"
+        },
+        "resourceGroupUniqueString": {
+            "type": "string",
+            "value": "[uniqueString(resourceGroup().id)]"
+        },
+        "sqlServerHostname": {
+            "type": "string",
+            "value": "[reference(concat('Microsoft.Sql/servers/', variables('sqlServerSettings').name)).fullyQualifiedDomainName]"
+        }
+    }
+}

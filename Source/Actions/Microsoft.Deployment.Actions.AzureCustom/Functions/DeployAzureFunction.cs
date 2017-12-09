@@ -35,9 +35,10 @@ namespace Microsoft.Deployment.Actions.AzureCustom.Common
             var skuCode = request.DataStore.GetValue("skuCode") ?? "S1";
             var workerSize = request.DataStore.GetValue("workerSize") ?? "0";
             var branch = request.DataStore.GetValue("branch") ?? "master";
+            /*var projectPath = request.DataStore.GetValue("ProjectPath") ?? string.Empty; Commented out until we find a way to hasten deployments -we will bring back functions to the same repo then */
 
 
-            string functionArmDeploymentRelativePath = sku.ToLower() == "standard"
+           string functionArmDeploymentRelativePath = sku.ToLower() == "standard"
                 ? "Service/Arm/AzureFunctionsStaticAppPlan.json"
                 : "Service/Arm/AzureFunctions.json";
 
@@ -55,6 +56,7 @@ namespace Microsoft.Deployment.Actions.AzureCustom.Common
             param.AddStringParam("skuCode", skuCode);
             param.AddStringParam("workerSize", workerSize);
             param.AddStringParam("branch", branch);
+            /*param.AddStringParam("projectPath", projectPath); Commented out until we find a way to hasten deployments - we will bring back functions to the same repo then*/
 
             var armTemplate = JsonUtility.GetJObjectFromJsonString(System.IO.File.ReadAllText(Path.Combine(request.ControllerModel.SiteCommonFilePath, functionArmDeploymentRelativePath)));
             var armParamTemplate = JsonUtility.GetJObjectFromObject(param.GetDynamicObject());

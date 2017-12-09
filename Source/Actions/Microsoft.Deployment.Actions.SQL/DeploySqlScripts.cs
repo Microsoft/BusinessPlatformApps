@@ -15,15 +15,15 @@ namespace Microsoft.Deployment.Actions.SQL
     {
         public override async Task<ActionResponse> ExecuteActionAsync(ActionRequest request)
         {
-            var sqlScriptsFolder = request.DataStore.GetValue("SqlScriptsFolder");
-
             string connectionString = request.DataStore.GetValueAtIndex("SqlConnectionString", "SqlServerIndex");
+            string sqlScriptsFolder = request.DataStore.GetValue("SqlScriptsFolder");
 
-            var files = Directory.EnumerateFiles(Path.Combine(request.Info.App.AppFilePath, sqlScriptsFolder)).ToList();
-            foreach (var f in files)
+            List<string> files = Directory.EnumerateFiles(Path.Combine(request.Info.App.AppFilePath, sqlScriptsFolder)).ToList();
+            foreach (string file in files)
             {
-                SqlUtility.InvokeSqlCommand(connectionString, File.ReadAllText(f), new Dictionary<string, string>());
+                SqlUtility.InvokeSqlCommand(connectionString, File.ReadAllText(file), new Dictionary<string, string>());
             }
+
             return new ActionResponse(ActionStatus.Success);
         }
     }

@@ -1,0 +1,193 @@
+{
+    "Install": {
+        "Pages": [
+            {
+                "architectureDiagram": "dist/Apps/Microsoft/Released/Microsoft-RedditTemplate/Web/Images/reddit-architecture.png",
+                "displayname": "Getting Started",
+                "list1": [
+                    "$translate(INIT_GETTING_STARTED_AZURE_SUBSCRIPTION)",
+                    "$translate(INIT_GETTING_STARTED_PBI_DESKTOP)",
+                    "$translate(INIT_GETTING_STARTED_PBI_PRO)"
+                ],
+                "list2": [
+                    "$translate(INIT_GETTING_STARTED_REDDIT_PROCESS_DATA)",
+                    "$translate(INIT_GETTING_STARTED_CONNECT_AS_PBI)"
+                ],
+                "name": "$SiteCommon$/pages-gallery/getting-started.html",
+                "subtitle": "$translate(INIT_REDDIT_SUBTITLE)",
+                "templateName": "$translate(INIT_REDDIT_TITLE)"
+            },
+            {
+                "displayname": "Details",
+                "name":  "details.html" 
+            },
+            {
+                "azureProviders": [
+                    "Microsoft.MachineLearning"
+                ],
+                "defaultLocation": "5",
+                "displayname": "Azure Login",
+                "name": "$SiteCommon$/pages-gallery/azure-login.html",
+                "pricingCalculatorUrl": "$translate(INIT_REDDIT_PRICING_CALCULATOR)",
+                "pricingCost": "$translate(INIT_REDDIT_PRICING_COST)",
+                "pricingUrl": "$translate(INIT_REDDIT_PRICING_URL)"
+            },
+            {
+                "displayname": "SQL Database",
+                "isAzureSql": true,
+                "name": "$SiteCommon$/pages-gallery/sql.html",
+                "newSqlDatabase": "reddit",
+                "showAzureSql": false,
+                "showNewSqlOption": true,
+                "sqlInstance": "NewSql",
+                "subtitle": "$translate(INIT_SQL_SUBTITLE)",
+                "title": "$translate(INIT_SQL_TITLE)"
+            },
+            {
+                "displayname": "Entities to Search",
+                "name": "search-and-user-defined-entities.html"
+            },
+            {
+                "displayname": "Summary",
+                "name": "$SiteCommon$/pages-gallery/summary.html",
+                "values": {
+                    "Target Server": "$(this.MS.DataStore.getValue('Server'))",
+                    "Target Database": "$(this.MS.DataStore.getValue('Database'))",
+                    "Target Username": "$(this.MS.DataStore.getValue('Username'))",
+                    "Search Query": "$(this.MS.DataStore.getValue('SearchQuery'))"
+                },
+                "displayCompletionNotification": false,
+                "sendCompletionNotification": false
+            },
+            {
+                "datastoreEntriesToValidate": [
+                    "AzureToken",
+                    "SqlConnectionString"
+                ],
+                "displayname": "Deploy",
+                "downloadPbiText": "$translate(INIT_REDDIT_DOWNLOAD)",
+                "enablePublishReport": "$run(this.MS.DataStore.getValue('ssasDisabled') === 'false')",
+                "filename": "$save('RedditOverview.pbix|RedditAdvancedAnalytics.pbix|RedditTargetingActivation.pbix')",
+                "name": "$SiteCommon$/pages-gallery/progress.html",
+                "uniqueId": "$save(this.MS.UtilityService.getUniqueId(8))"
+            }
+        ],
+        "Actions": [
+            {
+                "displayname": "$translate(INIT_ACTION_RETRIEVING_SOCIALGIST_API_KEY)",
+                "name": "Microsoft-RetrieveSocialGistApiKey"
+            },
+            {
+                "displayname": "$translate(INIT_ACTION_DEPLOYING_SQL_SCRIPTS)",
+                "name": "Microsoft-DeploySQLScripts",
+                "SqlScriptsFolder": "Database/",
+                "SqlServerIndex": "0"
+            },
+            {
+                "displayname": "$translate(INIT_ACTION_POPULATE_REDDIT_ENTITIES)",
+                "name": "Microsoft-PopulateRedditUserDefinedEntities"
+            },
+            {
+                "DeploymentName": "StorageAccount",
+                "displayname": "$translate(INIT_ACTION_DEPLOYING_STORAGE_ACCOUNT)",
+                "name": "Microsoft-CreateAzureStorageAccount",
+                "StorageAccountEncryptionEnabled": "false",
+                "StorageAccountName": "$save('redditstorage' + this.MS.DataStore.getValue('uniqueId'))",
+                "StorageAccountType": "Standard_LRS"
+            },
+            {
+                "DeploymentName": "StorageAccount",
+                "displayname": "$translate(INIT_ACTION_VALIDATING_STORAGE_ACCOUNT)",
+                "name": "Microsoft-WaitForArmDeploymentStatus"
+            },
+            {
+                "DeploymentName": "StorageAccount",
+                "displayname": "$translate(INIT_ACTION_GETTING_STORAGE_ACCOUNT_KEY)",
+                "name": "Microsoft-GetStorageAccountKey"
+            },
+            {
+                "DeploymentName": "StorageAccount",
+                "displayname": "$translate(INIT_ACTION_VALIDATING_STORAGE_ACCOUNT_KEY)",
+                "name": "Microsoft-WaitForArmDeploymentStatus"
+            },
+            {
+                "DeploymentName": "StorageAccount",
+                "displayname": "$translate(INIT_ACTION_DEPLOYING_STORAGE_ACCOUNT_CONTAINER)",
+                "name": "Microsoft-DeployStorageAccountContainer",
+                "StorageAccountContainer": "reddit"
+            },
+            {
+                "DeploymentName": "StorageAccount",
+                "displayname": "$translate(INIT_ACTION_DEPLOYING_AZURE_ML_ASSETS)",
+                "name": "Microsoft-UploadAssetBlobStorage",
+                "StorageAccountConnectionString": "$ds(StorageAccountConnectionString)",
+                "BlobContainer": "reddit",
+                "AssetFile": "Service/AzureML/TwitterModel.ilearner"
+            },
+            {
+                "CommitmentPlan": "commitmentplan",
+                "DeploymentName": "AzureML",
+                "displayname": "$translate(INIT_ACTION_DEPLOYING_AZURE_ML)",
+                "name": "Microsoft-DeployRedditAzureMLWebServiceFromFile",
+                "WebServiceFile": "Service/AzureML/RedditML.json",
+                "WebServiceName": "$run('RedditProcessDoc' + this.MS.DataStore.getValue('uniqueId'))",
+                "SentimentModelUri": "$ds(AssetAccessUri)",
+                "AssetModelAzureMLName": "Mini Twitter sentiment analysis [trained model] - Copy"
+            },
+            {
+                "DeploymentName": "Function",
+                "displayname": "$translate(INIT_ACTION_DEPLOYING_REDDIT)",
+                "FunctionName": "$save('redditfunction' + this.MS.DataStore.getValue('uniqueId'))",
+                "name": "Microsoft-DeployAzureFunction",
+                "RepoUrl": "https://github.com/dwaynepryce/RedditAzureFunctions.git",
+                "Branch": "release/0.8.x"
+            },
+            {
+                "DeploymentName": "Function",
+                "displayname": "$translate(INIT_ACTION_VALIDATING_REDDIT)",
+                "name": "Microsoft-WaitForArmDeploymentStatus"
+            },
+            {
+                "displayname": "$translate(INIT_ACTION_CREATING_FUNCTION)",
+                "name": "Microsoft-CheckFunctionStatus"
+            },
+            {
+                "displayname": "$translate(INIT_ACTION_SCHEDULING_DAILY_REFRESH)",
+                "name": "Microsoft-RandomizeScheduledStartTime"
+            },
+            {
+                "AppSettingKeys": {
+                    "SqlConnection": "$ds(SqlConnectionString)"
+                },
+                "displayname": "$translate(INIT_ACTION_DEPLOYING_CONNECTION_STRINGS)",
+                "name": "Microsoft-DeployAzureFunctionConnectionStrings"
+            },
+            {
+                "AppSettingKeys": {
+                    "AzureMLApiKey": "$ds(AzureMLKey)",
+                    "AzureMLBaseUrl": "$ds(AzureMLUrl)",
+                    "SocialGistApiKey": "$ds(SocialGistApiKey)",
+                    "QueryTerms": "$ds(SearchCriteria)",
+                    "MaximumResultsPerSearch": "10000",
+                    "SocialGistApiRequestTimeoutInSeconds": "300",
+                    "ResultLimitPerPage": "100",
+                    "RedditSearchQueueName": "reddit-search-source",
+                    "RedditPostQueueName": "reddit-source",
+                    "AzureMLJobQueueName": "reddit-azureml-job-source",
+                    "StorageQueueConnection": "$ds(StorageAccountConnectionString)",
+                    "ScheduledRedditQueryFrequency": "$ds(RandomScheduleCronTime)",
+                    "ScheduledAzureMLFrequency": "0 */30 * * * *",
+                    "SearchToThreadTimeDelayInSeconds": "60"
+                },
+                "displayname": "$translate(INIT_ACTION_DEPLOYING_APP_SETTINGS)",
+                "name": "Microsoft-DeployAzureFunctionAppSettings"
+            },
+            {
+                "displayname": "$translate(INIT_ACTION_START_REDDIT_PIPELINE)",
+                "name": "Microsoft-SignalExecuteRedditSearchFunction",
+                "StorageQueueName": "reddit-search-source",
+                "StorageAccountConnectionString": "$ds(StorageAccountConnectionString)"
+            }
+        ]
+    }
+}

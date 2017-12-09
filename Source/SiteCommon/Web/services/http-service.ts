@@ -157,7 +157,7 @@ export class HttpService {
             .withHeader('Content-Type', 'application/json; charset=utf-8')
             .withHeader('UserGeneratedId', this.MS.LoggerService.UserGenId)
             .withHeader('OperationId', this.MS.LoggerService.OperationId)
-            .withHeader('SessionId', this.MS.LoggerService.appInsights.context.session.id)
+            .withHeader('SessionId', this.MS.LoggerService.getSessionId())
             .withHeader('UserId', this.MS.LoggerService.UserId)
             .withHeader('TemplateName', this.MS.NavigationService.appName)
             .withHeader('UniqueId', uniqueId);

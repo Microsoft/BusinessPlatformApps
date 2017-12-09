@@ -1,10 +1,8 @@
 ﻿using System.ComponentModel.Composition;
-using System.Globalization;
 using System.Threading.Tasks;
 
 using Microsoft.Deployment.Common.ActionModel;
 using Microsoft.Deployment.Common.Actions;
-using Microsoft.Deployment.Common.Helpers;
 using System.Net.Http;
 
 namespace Microsoft.Deployment.Actions.Custom.Facebook
@@ -18,10 +16,16 @@ namespace Microsoft.Deployment.Actions.Custom.Facebook
             string clientSecret = request.DataStore.GetValue("FacebookClientSecret");
 
             string requestUri = $"https://graph.facebook.com/oauth/access_token?grant_type=client_credentials&client_id={clientId}&client_secret={clientSecret}";
-            HttpClient client = new HttpClient();
-            var response = await client.GetAsync(requestUri);
+
+            HttpResponseMessage response;
+
+            using (HttpClient client = new HttpClient())
+            {
+                response = await client.GetAsync(requestUri);
+            }
+            
             string responseObj = await response.Content.ReadAsStringAsync();
-            if(!response.IsSuccessStatusCode)
+            if (!response.IsSuccessStatusCode)
             {
                 return new ActionResponse(ActionStatus.FailureExpected, responseObj);
             }

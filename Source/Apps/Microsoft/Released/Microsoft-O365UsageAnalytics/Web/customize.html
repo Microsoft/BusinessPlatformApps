@@ -1,0 +1,16 @@
+﻿<template>
+    <h1 class="st-title">Bring Your Own User Data</h1>
+
+    <p class="st-text">Get started by adding a .csv file containing your users:</p>
+
+    <label class="st-button-right st-file-upload">
+        <input type="file" accept=".csv" change.delegate="entityUpload()" files.bind="csv" value.bind="csvPath" />
+        <span>Upload Data</span>
+    </label>
+
+    <p class="st-text">User Values</p>
+    <p>
+        <textarea class="st-input" value.bind="selectedEntity.values"></textarea>
+    </p>
+
+</template>

@@ -1,0 +1,56 @@
+{
+  "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "appService_FunctionApp120161201033704_name": {
+      "type": "string"
+    },
+    "appServicePlan_aspDevWest_location": {
+      "type": "string"
+    },
+    "appServicePlan_aspDevWest_name": {
+      "type": "string"
+    },
+    "appServicePlan_aspDevWest_resourceGroup": {
+      "type": "string"
+    },
+    "storageaccount_azurefunctions868a4f82": {
+      "type": "string"
+    }
+  },
+  "resources": [
+    {
+      "location": "[parameters('appServicePlan_aspDevWest_location')]",
+      "name": "[parameters('appService_FunctionApp120161201033704_name')]",
+      "type": "Microsoft.Web/sites",
+      "apiVersion": "2015-08-01",
+      "tags": {
+        "[concat('hidden-related:', resourceId(parameters('appServicePlan_aspDevWest_resourceGroup'),'Microsoft.Web/serverfarms', parameters('appServicePlan_aspDevWest_name')))]": "empty"
+      },
+      "kind": "functionApp",
+      "properties": {
+        "name": "[parameters('appService_FunctionApp120161201033704_name')]",
+        "serverFarmId": "[resourceId(parameters('appServicePlan_aspDevWest_resourceGroup'),'Microsoft.Web/serverfarms', parameters('appServicePlan_aspDevWest_name'))]",
+        "kind": "functionApp",
+        "siteConfig": {
+          "alwaysOn": true
+        }
+      },
+      "resources": [
+        {
+          "name": "appsettings",
+          "type": "config",
+          "apiVersion": "2015-08-01",
+          "dependsOn": [
+            "[concat('Microsoft.Web/Sites/', parameters('appService_FunctionApp120161201033704_name'))]"
+          ],
+          "properties": {
+            "FUNCTIONS_EXTENSION_VERSION": "~1",
+            "AzureWebJobsDashboard": "[concat('DefaultEndpointsProtocol=https;AccountName=', parameters('storageaccount_azurefunctions868a4f82'), ';AccountKey=', listKeys(resourceId('azurefunctions-westus','Microsoft.Storage/storageAccounts', parameters('storageaccount_azurefunctions868a4f82')), '2015-06-15').key1)]",
+            "AzureWebJobsStorage": "[concat('DefaultEndpointsProtocol=https;AccountName=', parameters('storageaccount_azurefunctions868a4f82'), ';AccountKey=', listKeys(resourceId('azurefunctions-westus','Microsoft.Storage/storageAccounts', parameters('storageaccount_azurefunctions868a4f82')), '2015-06-15').key1)]"
+          }
+        }
+      ]
+    }
+  ]
+}

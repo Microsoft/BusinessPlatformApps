@@ -25,7 +25,7 @@ namespace Microsoft.Deployment.Actions.AzureCustom.Common
             var location = request.DataStore.GetJson("SelectedLocation", "Name");
             var apiKey = request.DataStore.GetValue("apiKey");
             var subscriptionKey = request.DataStore.GetValue("subscriptionKey");
-
+            string connectionString = request.DataStore.GetValueAtIndex("SqlConnectionString", "SqlServerIndex");
             var sitename = request.DataStore.GetValue("FunctionName");
 
             List<string> appSettings = new List<string>();
@@ -46,7 +46,7 @@ namespace Microsoft.Deployment.Actions.AzureCustom.Common
             obj.siteId = new ExpandoObject();
             obj.siteId.Name = sitename;
             obj.siteId.ResourceGroup = resourceGroup;
-            obj.connectionStrings = new ExpandoObject[2];
+            obj.connectionStrings = new ExpandoObject[3];
             obj.connectionStrings[0] = new ExpandoObject();
             obj.connectionStrings[0].ConnectionString = apiKey;
             obj.connectionStrings[0].Name = "apiKey";
@@ -55,6 +55,11 @@ namespace Microsoft.Deployment.Actions.AzureCustom.Common
             obj.connectionStrings[1].ConnectionString = subscriptionKey;
             obj.connectionStrings[1].Name = "subscriptionKey";
             obj.connectionStrings[1].Type = 2;
+
+            obj.connectionStrings[2] = new ExpandoObject();
+            obj.connectionStrings[2].ConnectionString = connectionString;
+            obj.connectionStrings[2].Name = "ConnectionString";
+            obj.connectionStrings[2].Type = 2;
             obj.location = location;
 
 

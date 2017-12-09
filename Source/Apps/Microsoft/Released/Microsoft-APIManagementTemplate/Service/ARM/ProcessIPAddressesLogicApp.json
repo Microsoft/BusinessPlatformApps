@@ -1,0 +1,78 @@
+{
+"$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+"contentVersion": "1.0.0.0",
+"parameters": {
+    "logicappname": {
+    "defaultValue": "LogicApp",
+    "type": "string"
+    },
+    "resourcegroup": {
+    "defaultValue": "stresourcegroup",
+    "type": "string"
+    },
+    "subscription": {
+    "defaultValue": "idrequired",
+    "type": "string"
+    }
+},
+"variables": {},
+"resources": [
+    {
+    "type": "Microsoft.Logic/workflows",
+    "name": "[parameters('logicappname')]",
+    "apiVersion": "2016-06-01",
+    "location": "[resourceGroup().location]",
+    "properties": {
+        "state": "Enabled",
+        "definition": {
+        "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+        "contentVersion": "1.0.0.0",
+        "parameters": {
+            "$connections": {
+            "defaultValue": {},
+            "type": "Object"
+            }
+        },
+        "triggers": {
+            "Recurrence": {
+            "recurrence": {
+                "frequency": "Minute",
+                "interval": 15
+            },
+            "type": "Recurrence"
+            }
+        },
+        "actions": {
+            "Execute_stored_procedure": {
+              "inputs": {
+                "host": {
+                  "connection": {
+                    "name": "@parameters('$connections')['sql']['connectionId']"
+                  }
+                },
+                "method": "post",
+                "path": "/datasets/default/procedures/@{encodeURIComponent(encodeURIComponent('[pbist_apimgmt].[sp_ProcessIPAddressLocations]'))}"
+              },
+                "runAfter": {},
+                "type": "ApiConnection"
+            }
+        },
+        "outputs": {}
+        },
+        "parameters": {
+        "$connections": {
+            "value": {
+            "sql": {
+                "connectionId": "[concat('/subscriptions/', parameters('subscription'), '/resourceGroups/' ,parameters('resourceGroup'),'/providers/Microsoft.Web/connections/sql')]",
+                "connectionName": "sql",
+                "id": "[concat('/subscriptions/' , parameters('subscription'), '/providers/Microsoft.Web/locations/',resourceGroup().location , '/managedApis/sql')]"
+            }
+            }
+        }
+        }
+    },
+    "resources": []
+    }
+],
+"outputs": {}
+}

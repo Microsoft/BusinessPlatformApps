@@ -12,17 +12,10 @@ namespace Microsoft.Deployment.Actions.AzureCustom.PowerApp
     [Export(typeof(IAction))]
     public class WranglePowerApp : BaseAction
     {
-        private const string POWER_APP_PROPERTIES = "Properties.json";
-
         public override async Task<ActionResponse> ExecuteActionAsync(ActionRequest request)
         {
             string paFileName = request.DataStore.GetValue("PowerAppFileName");
             string paSqlConnectionId = request.DataStore.GetValue("PowerAppSqlConnectionId");
-
-            if (paSqlConnectionId == null)
-            {
-                return new ActionResponse(ActionStatus.Success);
-            }
 
             string paOriginal = request.Info.App.AppFilePath + $"/service/PowerApp/{paFileName}";
             string paWrangledDirectoryName = Path.GetRandomFileName();
@@ -37,18 +30,17 @@ namespace Microsoft.Deployment.Actions.AzureCustom.PowerApp
             {
                 using (ZipArchive pa = new ZipArchive(paStream, ZipArchiveMode.Update))
                 {
-                    ZipArchiveEntry paProperties = pa.CreateEntry(POWER_APP_PROPERTIES);
+                    ZipArchiveEntry paProperties = pa.CreateEntry(PowerAppUtility.POWERAPP_PROPERTIES);
                     using (StreamWriter paWriter = new StreamWriter(paProperties.Open()))
                     {
-                        //TODO: Make generic for future power apps
-                        paWriter.Write($"{{\"Author\":\"\",\"Name\":\"TwitterTemplate.msapp\",\"Id\":\"a8b23524-032c-43b3-a6fc-07b85188ae47\",\"FileID\":\"a43aa036-e3ab-48e5-a5b4-038565be3ea9\",\"LocalConnectionReferences\":\"{{\\\"cbe235ee-eb8b-5329-1c73-812825f07146\\\":{{\\\"connectionRef\\\":{{\\\"displayName\\\":\\\"SQLServer\\\",\\\"iconUri\\\":\\\"https://az818438.vo.msecnd.net/icons/sql.png\\\",\\\"id\\\":\\\"/providers/microsoft.powerapps/apis/shared_sql\\\",\\\"sharedConnectionId\\\":\\\"/providers/microsoft.powerapps/apis/shared_sql/connections/{paSqlConnectionId}\\\",\\\"isOnPremiseConnection\\\":false}},\\\"dataSources\\\":[\\\"[pbist_twitter].[twitter_query]\\\",\\\"[pbist_twitter].[twitter_query_details]\\\",\\\"[pbist_twitter].[twitter_query_readable]\\\"],\\\"dependencies\\\":{{}},\\\"dependents\\\":[],\\\"id\\\":\\\"cbe235ee-eb8b-5329-1c73-812825f07146\\\",\\\"connectionInstanceId\\\":\\\"/providers/microsoft.powerapps/apis/shared_sql/connections/{paSqlConnectionId}\\\"}}}}\",\"DocumentLayoutWidth\":1366,\"DocumentLayoutHeight\":768,\"DocumentLayoutOrientation\":\"landscape\",\"DocumentLayoutMaintainAspectRatio\":false,\"DocumentLayoutLockOrientation\":true,\"OriginatingVersion\":\"1.193\",\"DocumentAppType\":\"DesktopOrTablet\",\"AppCreationSource\":\"AppFromScratch\",\"AppDescription\":\"\",\"IsAutoSaveEnabled\":false}}");
+                        paWriter.Write($"{{\"Author\":\"\",\"Name\":\"TwitterTemplate.msapp\",\"Id\":\"a8b23524-032c-43b3-a6fc-07b85188ae47\",\"FileID\":\"a43aa036-e3ab-48e5-a5b4-038565be3ea9\",\"LocalConnectionReferences\":\"{{\\\"cbe235ee-eb8b-5329-1c73-812825f07146\\\":{{\\\"connectionRef\\\":{{\\\"displayName\\\":\\\"SQL Server\\\",\\\"iconUri\\\":\\\"https://az818438.vo.msecnd.net/icons/sql.png\\\",\\\"id\\\":\\\"/providers/microsoft.powerapps/apis/shared_sql\\\",\\\"sharedConnectionId\\\":\\\"/providers/microsoft.powerapps/apis/shared_sql/connections/{paSqlConnectionId}\\\",\\\"isOnPremiseConnection\\\":false,\\\"bypassConsent\\\":false,\\\"parameterHints\\\":{{}},\\\"apiTier\\\":\\\"Standard\\\"}},\\\"dataSources\\\":[\\\"[pbist_twitter].[twitter_query]\\\",\\\"[pbist_twitter].[twitter_query_details]\\\",\\\"[pbist_twitter].[twitter_query_readable]\\\"],\\\"dependencies\\\":{{}},\\\"id\\\":\\\"cbe235ee-eb8b-5329-1c73-812825f07146\\\",\\\"connectionInstanceId\\\":\\\"/providers/microsoft.powerapps/apis/shared_sql/connections/{paSqlConnectionId}\\\"}}}}\",\"DocumentLayoutWidth\":1366,\"DocumentLayoutHeight\":768,\"DocumentLayoutOrientation\":\"landscape\",\"DocumentLayoutMaintainAspectRatio\":false,\"DocumentLayoutLockOrientation\":true,\"OriginatingVersion\":\"1.193\",\"DocumentAppType\":\"DesktopOrTablet\",\"AppCreationSource\":\"AppFromScratch\",\"AppDescription\":\"\",\"LastControlUniqueId\":164}}");
                     }
                 }
             }
 
             string paUrl = request.Info.ServiceRootUrl + request.Info.ServiceRelativePath + request.Info.App.AppRelativeFilePath + $"/Temp/{paWrangledDirectoryName}/{paFileName}";
 
-            return new ActionResponse(ActionStatus.Success, JsonUtility.GetJObjectFromStringValue(paUrl));
+            return new ActionResponse(ActionStatus.Success, paUrl);
         }
     }
 }

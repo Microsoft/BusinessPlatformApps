@@ -44,11 +44,10 @@
     }
 
     modify(key: string, value: T) {
-        var index: number = this.internalKeys.indexOf(key)
+        var index: number = this.internalKeys.indexOf(key);
         if (index === -1) {
-            throw new Error("Key is not found inside dictionary");
+            throw new Error('Key is not found inside dictionary');
         }
-
         this.internalValues[index] = value;
     }
 

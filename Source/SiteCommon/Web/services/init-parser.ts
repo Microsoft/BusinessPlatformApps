@@ -92,6 +92,12 @@ export class InitParser {
             case VariableType.RunAndSaveOld:
                 command = variable.value;
                 break;
+            case VariableType.RunAndTestFalse:
+                command = variable.value
+                break;
+            case VariableType.RunAndTestTrue:
+                command = variable.value
+                break;
             case VariableType.RunAndTranslate:
                 command = variable.value;
                 break;
@@ -162,6 +168,10 @@ export class InitParser {
             this.processInitValue(value, variable, VariableType.DataStoreGetAll, '$dsall(');
         } else if (/^\$run\(.*\)/.test(ciValue)) {
             this.processInitValue(value, variable, VariableType.Run, '$run(');
+        } else if (/^\$isfalse\(.*\)/.test(ciValue)) {
+            this.processInitValue(value, variable, VariableType.RunAndTestFalse, '$isfalse(');
+        } else if (/^\$istrue\(.*\)/.test(ciValue)) {
+            this.processInitValue(value, variable, VariableType.RunAndTestTrue, '$istrue(');
         } else if (/^\$translate\(.*\)/.test(ciValue)) {
             this.processInitValue(value, variable, VariableType.RunAndTranslate, '$translate(');
         } else if (/^\$\(.*\)/.test(ciValue)) {
@@ -198,6 +208,12 @@ export class InitParser {
             case VariableType.RunAndSaveOld:
                 dsValue = dsValue.replace('this.', 'self.');
                 variable.saveToDataStore = this.isPermanentEntryIntoDataStore(dsValue);
+                break;
+            case VariableType.RunAndTestFalse:
+                dsValue = `self.MS.DataStore.getValue('${dsValue}') === 'false'`;
+                break;
+            case VariableType.RunAndTestTrue:
+                dsValue = `self.MS.DataStore.getValue('${dsValue}') === 'true'`;
                 break;
             case VariableType.RunAndTranslate:
                 dsValue = 'self.MS.Translate.' + dsValue;

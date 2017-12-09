@@ -1,0 +1,104 @@
+﻿{
+    "Install": {
+        "Pages": [
+            {
+                "architectureDiagram": "dist/Apps/Microsoft/Released/Partner-EdFi/Web/Images/edfidiagram.png",
+                "displayname": "Getting Started",
+                "list1": [
+                    "$translate(INIT_GETTING_STARTED_AZURE_SUBSCRIPTION)",
+                    "$translate(INIT_GETTING_STARTED_PBI_DESKTOP)",
+                    "$translate(INIT_GETTING_STARTED_PBI_PRO)"
+                ],
+                "list2": [
+                    "$translate(INIT_GETTING_STARTED_CLOUD_SOLUTION)",
+                    "$translate(INIT_GETTING_STARTED_CONNECT_AS_PBI)"
+                ],
+                "name": "$SiteCommon$/pages-gallery/getting-started.html",
+                "templateName": "$translate(AX_COLLECTIONS_TEMPLATE_TITLE)"
+            },
+            {
+                "azureProviders": [
+                    "Microsoft.Web"
+                ],
+                "displayname": "Login",
+                "showAdvanced": true,
+                "name": "$SiteCommon$/pages-gallery/azure-login.html"
+            },
+            {
+                "displayname": "Server credentials",
+                "name": "edfi.html",
+                "useDefaultValidateButton": true
+            },
+            {
+                "displayname": "Education Organization",
+                "name": "edfi-org.html",
+                "useDefaultValidateButton": true
+            },
+            {
+                "displayname": "Summary",
+                "name": "$SiteCommon$/pages-gallery/summary.html",
+                "displayCompletionNotification": false,
+                "sendCompletionNotification": false,
+                "values": {
+                    "Subscription": "$(this.MS.DataStore.getJson('SelectedSubscription').DisplayName)",
+                    "Resource Group": "$(this.MS.DataStore.getValue('SelectedResourceGroup'))",
+                    "Target Server": "put_server_here",
+                    "Target Username": "$(this.MS.DataStore.getValue('sqlServerAdminLogin'))",
+                    "API Username": "$(this.MS.DataStore.getValue('sqlServerProductionApiLogin'))"
+
+                }
+            },
+            {
+                "displayname": "Deploy",
+                "filename": "$save('CreditAndCollectionsImportMode.pbix')",
+                "name": "$SiteCommon$/pages-gallery/progress.html"
+                // "targetSchema": "cc"
+            }
+        ],
+
+        "Actions": [
+            {
+                "displayname": "$translate(INIT_ACTION_GET_EDFI_VERSION)",
+                "name": "Microsoft-GetTextBlob",
+                "SqlServerIndex": "0",
+                "storageBaseUrl": "https://odsassets.blob.core.windows.net/public/release",
+                "blobUrl": "https://odsassets.blob.core.windows.net/public/release/LatestVersion.txt",
+                "blobContentName": "edfiLatestVersion"
+            },
+            {
+                "displayname": "$translate(INIT_ACTION_DEPLOYING_EDFI_CLOUD_RESOURCES)",
+                "name": "Microsoft-DeployAzureArmTemplate",
+                "AzureArmFile": "Service/Arm/service_app.json",
+                "Wait": false,
+                "AzureArmParameters": {
+                    "appInsightsLocation": "South Central US",
+                    "edition": "release",
+                    "sqlServerAdminLogin": "$(this.MS.DataStore.getValue('sqlServerAdminLogin'))",
+                    "sqlServerAdminPassword": "$(this.MS.DataStore.getValue('sqlServerAdminPassword'))",
+                    "sqlServerProductionApiLogin": "$(this.MS.DataStore.getValue('sqlServerProductionApiLogin'))",
+                    "sqlServerProductionApiPassword": "$(this.MS.DataStore.getValue('sqlServerProductionApiPassword'))",
+                    "version": "$(this.MS.DataStore.getValue('edfiLatestVersion'))",
+                    "subscription": "$(this.MS.DataStore.getJson('SelectedSubscription').SubscriptionId)",
+                    "resourceGroup": "$(this.MS.DataStore.getValue('SelectedResourceGroup'))"
+                }
+            },
+            {
+                "displayname": "$translate(INIT_ACTION_DEPLOYING_SQL_SCRIPTS)",
+                "name": "Microsoft-CreateSqlUser",
+                "server": "$(this.MS.DataStore.getJson('ArmOutput').SubscriptionId)",
+                "databasename": "EdFi_Ods_Production",
+                "newUser": "$(this.MS.DataStore.getValue('sqlServerProductionApiLogin'))",
+                "newPassword": "$(this.MS.DataStore.getValue('sqlServerProductionApiPassword'))",
+                "sqlServerAdminLogin": "$(this.MS.DataStore.getValue('sqlServerAdminLogin'))",
+                "sqlServerAdminPassword": "$(this.MS.DataStore.getValue('sqlServerAdminPassword'))",
+                "additionalSchemas": "edfi"
+            },
+            {
+                "displayname": "$translate(INIT_ACTION_DEPLOYING_SQL_SCRIPTS)",
+                "name": "Microsoft-DeploySQLScripts",
+                "SqlServerIndex": "0",
+                "SqlScriptsFolder": "Database"
+            }
+        ]
+    }
+}

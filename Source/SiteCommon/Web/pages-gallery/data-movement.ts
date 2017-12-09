@@ -2,6 +2,7 @@
 
 import { DataMovementType } from '../models/data-movement-type';
 import { InformaticaAgent } from '../models/informatica-agent';
+import { InformaticaRuntimeEnvironment } from '../models/informatica-runtime-environment';
 import { ScribeAgent } from '../models/scribe-agent';
 import { ScribeAgentInstall } from '../models/scribe-agent-install';
 import { ScribeOrganization } from '../models/scribe-organization';
@@ -9,12 +10,18 @@ import { ScribeOrganization } from '../models/scribe-organization';
 import { ViewModelBase } from '../services/view-model-base';
 
 export class DataMovement extends ViewModelBase {
+    company: string = '';
     dataMovement: string = '';
     dataMovementType: DataMovementType = new DataMovementType();
+    informaticaAccount: string = 'Existing';
     informaticaAgentId: string = '';
     informaticaAgentLocation: string = '';
     informaticaAgents: InformaticaAgent[] = [];
+    isRegistered: boolean = this.MS.HttpService.isOnPremise;
+    nameFirst: string = '';
+    nameLast: string = '';
     password: string = '';
+    passwordConfirmation: string = '';
     scribeAgentId: string = '';
     scribeAgentInstall: ScribeAgentInstall = new ScribeAgentInstall();
     scribeAgents: ScribeAgent[] = [];
@@ -39,6 +46,8 @@ export class DataMovement extends ViewModelBase {
     async OnScribeOrganizationChanged(): Promise<void> {
         if (this.MS.HttpService.isOnPremise) {
             this.MS.DataStore.addToDataStore('ScribeOrganizationId', this.scribeOrganizationId, DataStoreType.Private);
+
+            this.scribeAgents = [];
 
             let scribeAgents: ScribeAgent[] = await this.MS.HttpService.getResponseAsync('Microsoft-GetScribeAgents');
 
@@ -68,9 +77,45 @@ export class DataMovement extends ViewModelBase {
                 this.MS.DataStore.addToDataStore('InformaticaUsername', this.username, DataStoreType.Private);
                 this.MS.DataStore.addToDataStore('InformaticaPassword', this.password, DataStoreType.Private);
 
+                if (this.informaticaAccount === 'New') {
+                    if (this.password !== this.passwordConfirmation) {
+                        this.MS.ErrorService.set(this.MS.Translate.DATA_MOVEMENT_INFORMATICA_PASSWORD_MATCH);
+                        break;
+                    }
+
+                    this.MS.DataStore.addToDataStore('InformaticaCompany', this.company, DataStoreType.Private);
+                    this.MS.DataStore.addToDataStore('InformaticaNameFirst', this.nameFirst, DataStoreType.Private);
+                    this.MS.DataStore.addToDataStore('InformaticaNameLast', this.nameLast, DataStoreType.Private);
+
+                    if (await this.MS.HttpService.isExecuteSuccessAsync('Microsoft-RegisterInformaticaAccount')) {
+                        this.informaticaAccount = 'Existing';
+                        this.isRegistered = true;
+                    } else {
+                        break;
+                    }
+                }
+
                 if (await this.MS.HttpService.isExecuteSuccessAsync('Microsoft-VerifyInformaticaCredentials')) {
                     if (this.MS.HttpService.isOnPremise) {
-                        this.informaticaAgents = await this.MS.HttpService.getResponseAsync('Microsoft-GetInformaticaAgents');
+                        let informaticaRuntimeEnvironments: InformaticaRuntimeEnvironment[] = await this.MS.HttpService.getResponseAsync('Microsoft-GetInformaticaAgents');
+
+                        let informaticaAgents: InformaticaAgent[] = [];
+
+                        if (informaticaRuntimeEnvironments && informaticaRuntimeEnvironments.length > 0) {
+                            for (let i = 0; i < informaticaRuntimeEnvironments.length; i++) {
+                                let informaticaRuntimeEnvironment: InformaticaRuntimeEnvironment = informaticaRuntimeEnvironments[i];
+                                if (informaticaRuntimeEnvironment && informaticaRuntimeEnvironment.agents && informaticaRuntimeEnvironment.agents.length > 0) {
+                                    for (let j = 0; j < informaticaRuntimeEnvironment.agents.length; j++) {
+                                        let informaticaAgent: InformaticaAgent = informaticaRuntimeEnvironment.agents[j];
+                                        if (informaticaAgent && informaticaAgent.name !== 'Informatica Cloud Hosted Agent') {
+                                            informaticaAgents.push(informaticaAgent);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
+                        this.informaticaAgents = informaticaAgents;
 
                         if (this.informaticaAgents && this.informaticaAgents.length > 0) {
                             this.informaticaAgentId = this.informaticaAgents[0].id;

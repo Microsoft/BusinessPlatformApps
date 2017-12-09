@@ -49,50 +49,54 @@ go
 
 CREATE VIEW pbist_sccm.vw_computer
 AS 
-SELECT [machineid]
-      ,[sitecode]
-      ,[name]
-      ,case [client type] when 1 then 'Computer' when 3 then 'Mobile' else 'tbd' end [client type]
-      ,CASE
-            when [operating system] like 'iOS%' then 'iOS'
-            when [operating system] like 'Android%' then 'Android'
-            when [operating system] like 'OS X%' then 'OS X'
-            when [operating system]='Microsoft Windows NT Advanced Server 6.3' OR [operating system]='Microsoft Windows NT Advanced Server 6.4' OR [operating system]='Windows Technical Preview for Enterprise 6.4'
-                then 'Window Server 2012 R2'
-            when [operating system]='Microsoft Windows NT Workstation 5.0' then 'Windows 2000 Professional'
-            when [operating system] like '%Windows%Workstation 6.1%' then 'Windows 7'
-            when [operating system] like '%Windows%Workstation 6.2%' then 'Windows 8'
-            when [operating system] like '%Windows%Workstation 6.3%' OR [operating system] like '%Windows%Workstation 6.4%' OR [operating system] like 'Windows 8.1%' then 'Windows 8.1'
-            when [operating system] ='Microsoft Windows NT Advanced Server 5.2' then 'Windows Server 2003'
-            when [operating system] ='Microsoft Windows NT Advanced Server 6.0' then 'Windows Server 2008'
-            when [operating system] ='Microsoft Windows NT Advanced Server 6.1' then 'Windows Server 2008 R2'
-            when [operating system] ='Microsoft Windows NT Advanced Server 6.2' then 'Windows Server 2012'
-            when [operating system] ='Microsoft Windows NT Advanced Server 10.0'
-                then 'Windows Server 2016'
-            when [operating system] like 'Windows Phone%' then 'Windows Phone'
-            when [operating system] like 'Windows 10%'
-                OR [operating system]='Microsoft Windows NT Workstation 10.0'
-                OR [operating system]='Microsoft Windows NT Workstation 10.0 (Tablet Edition)'
-                OR [operating system]='Microsoft Windows NT Server 10.0'
-                then 'Windows 10'
-            when  [operating system]='Microsoft Windows NT Advanced Server 10.0'
-                OR [operating system] like 'Windows Server 2016%'
-                then 'Windows Server 2016'
-            when [operating system]='Microsoft Windows NT Server 6.0'
-                OR [operating system]='Microsoft Windows NT Workstation 6.0'
-                OR [operating system]='Microsoft Windows NT Workstation 6.0 (Tablet Edition)'
-                then 'Windows Vista'
-            when [operating system]='Microsoft Windows NT Workstation 5.1'
-                OR [operating system]='Microsoft Windows NT Server 5.2'
-                then 'Windows XP'
-            else [operating system]
-      end [operating system name]
-      ,[operating system] [operating system long name]
-      ,manufacturer
-      ,model
-      ,[platform]
-      ,[physical memory]
-  FROM pbist_sccm.computer c WHERE c.[deleted date] IS NULL
+SELECT machineid,
+       sitecode,
+       [name],
+       CASE [client type]
+           WHEN 1 THEN 'Computer'
+           WHEN 3 THEN 'Mobile'
+           ELSE 'Undetermined'
+       END AS [client type], 
+       CASE
+           WHEN [operating system] LIKE 'Windows Phone%' THEN 'Windows Phone'
+           WHEN [operating system] LIKE 'iOS%' THEN 'iOS'
+           WHEN [operating system] LIKE 'Android%' THEN 'Android'
+           WHEN [operating system] LIKE 'OS X%' THEN 'OS X'
+
+
+            --- Windows Workstation
+           WHEN [operating system] = 'Microsoft Windows NT Workstation 5.0' THEN 'Windows 2000 Professional'
+           WHEN [operating system] = 'Microsoft Windows NT Workstation 5.1' OR [operating system] = 'Microsoft Windows NT Workstation 5.1 (Embedded)' OR 
+                [operating system] = 'Microsoft Windows NT Workstation 5.1 (Tablet Edition)' OR
+                [operating system] = 'Microsoft Windows NT Workstation 5.2' THEN 'Windows XP'
+           WHEN [operating system] = 'Microsoft Windows NT Workstation 6.0' OR [operating system] = 'Microsoft Windows NT Workstation 6.0 (Tablet Edition)' THEN 'Windows Vista'
+           WHEN [operating system] LIKE '%Windows%Workstation 6.1%' OR [operating system] LIKE 'Windows 7%6.1' OR [operating system] LIKE 'Windows Embedded%6.1' THEN 'Windows 7'
+           WHEN [operating system] LIKE '%Windows%Workstation 6.2%' THEN 'Windows 8'
+           WHEN [operating system] LIKE '%Windows%Workstation 6.3%' OR [operating system] LIKE 'Windows 8.1%' THEN 'Windows 8.1'
+           WHEN [operating system] LIKE 'Windows 10%' OR
+                [operating system] = 'Microsoft Windows NT Workstation 10.0' OR
+                [operating system] LIKE '%Windows%Workstation 6.4%' OR
+                [operating system] = 'Microsoft Windows NT Workstation 10.0 (Tablet Edition)' THEN 'Windows 10'
+            --- Windows Server
+           WHEN [operating system] = 'Microsoft Windows NT Server 5.0' OR [operating system] = 'Microsoft Windows NT Advanced Server 5.0' THEN 'Windows Server 2000' 
+           WHEN [operating system] = 'Microsoft Windows NT Advanced Server 5.2' OR [operating system] = 'Microsoft Windows NT Server 5.2' THEN 'Windows Server 2003'
+           WHEN [operating system] = 'Microsoft Windows NT Advanced Server 6.0' OR [operating system] = 'Microsoft Windows NT Server 6.0' THEN 'Windows Server 2008'
+           WHEN [operating system] = 'Microsoft Windows NT Advanced Server 6.1' OR [operating system] = 'Microsoft Windows NT Server 6.1' THEN 'Windows Server 2008 R2'
+           WHEN [operating system] = 'Microsoft Windows NT Advanced Server 6.2' OR [operating system] = 'Microsoft Windows NT Server 6.2' THEN 'Windows Server 2012'
+           WHEN [operating system] = 'Microsoft Windows NT Advanced Server 6.3' OR [operating system] = 'Microsoft Windows NT Server 6.3' THEN 'Window Server 2012 R2'
+           WHEN [operating system] = 'Microsoft Windows NT Advanced Server 10.0' OR [operating system] = 'Microsoft Windows NT Server 10.0' OR
+                [operating system] LIKE 'Windows Server 2016%' OR
+                [operating system] LIKE '%Windows%Server 6.4%' THEN 'Windows Server 2016'
+           ELSE
+                [operating system]
+       END AS [operating system name],
+       [operating system] AS [operating system long name],
+       manufacturer,
+       model,
+       [platform],
+       [physical memory]
+FROM pbist_sccm.computer AS c
+WHERE [deleted date] IS NULL;
 go
 
 

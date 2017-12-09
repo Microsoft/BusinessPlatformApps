@@ -72,6 +72,37 @@
                   },
                   "type": "Function"
                 },
+                "UserDefinedEntitiesExtractor": {
+
+                  "inputs": {
+
+                    "body": {
+
+                      "text": "@{body('HTMLStripperWebHook')['Scrubbed']}"
+
+                    },
+
+                    "function": {
+
+                      "id": "[concat('/subscriptions/', parameters('subscription'), '/resourceGroups/',parameters('resourcegroup'),'/providers/Microsoft.Web/sites/', parameters('sitename'), '/Functions/UserDefinedEntities')]"
+
+                    }
+
+                  },
+
+                  "runAfter": {
+
+                    "HTMLStripperWebHook": [
+
+                      "Succeeded"
+
+                    ]
+
+                  },
+
+                  "type": "Function"
+
+                },
                 "ArticleCleanerWebHook": {
                   "inputs": {
                     "body": {
@@ -199,6 +230,11 @@
                     "UrlDomainWebHook": [
                       "Succeeded"
                     ],
+                    "UserDefinedEntitiesExtractor": [
+
+                      "Succeeded"
+
+                    ],
                     "Key_Phrases": [
                       "Succeeded"
                     ]
@@ -232,6 +268,7 @@
                       "sourceUrl": "@Json(body('UrlCleaner'))?['newUri']",
                       "text": "@{body('HTMLStripperWebHook')['Scrubbed']}",
                       "textLength": "@{body('HTMLStripperWebHook')['ScrubbedLength']}",
+                      "userDefinedEntities": "@{body('UserDefinedEntitiesExtractor')?['entities']}",
                       "title": "@{item()?['name']}"
                     },
                     "host": {

@@ -1,0 +1,868 @@
+{
+  "create": {
+    "database": {
+      "name": "CustomerService",
+      "compatibilityLevel": 1200,
+      "model": {
+        "culture": "en-US",
+        "dataSources": [
+                    {
+                        "name": "ST_DS",
+                        "connectionString": "Provider=SQLNCLI11;Data Source=tcp:a.database.windows.net;Persist Security Info=False;User ID=pbiadmin;Initial Catalog=CustomerServiceDB",
+                        "impersonationMode": "impersonateServiceAccount",
+                        "annotations": [
+                            {
+                                "name": "ConnectionEditUISource",
+                                "value": "SqlServer"
+                            }
+                        ]
+                    }
+        ],
+        "tables": [
+          {
+            "name": "Activity",
+            "columns": [
+              {
+                "name": "Activity Id",
+                "dataType": "string",
+                "sourceColumn": "Activity Id"
+              },
+              {
+                "name": "Case Id",
+                "dataType": "string",
+                "sourceColumn": "Case Id"
+              },
+              {
+                "name": "Direction Code",
+                "dataType": "int64",
+                "sourceColumn": "Direction Code"
+              },
+              {
+                "name": "Activity Type",
+                "dataType": "string",
+                "sourceColumn": "Activity Type"
+              }
+            ],
+            "partitions": [
+              {
+                                "name": "Partition",
+                                "dataView": "full",
+                                "source": {
+                                    "query": "SELECT [csrv].[activityview].* FROM [csrv].[activityview]",
+                                    "dataSource": "ST_DS"
+                                }
+             }
+
+
+
+            ]
+          },
+          {
+            "name": "Case",
+            "columns": [
+              {
+                "name": "Case Id",
+                "dataType": "string",
+                "sourceColumn": "Case Id"
+              },
+              {
+                "name": "Account Id",
+                "dataType": "string",
+                "sourceColumn": "Account Id"
+              },
+              {
+                "name": "Customer Id",
+                "dataType": "string",
+                "sourceColumn": "Customer Id"
+              },
+              {
+                "name": "Owner Id",
+                "dataType": "string",
+                "sourceColumn": "Owner Id"
+              },
+              {
+                "name": "Title",
+                "dataType": "string",
+                "sourceColumn": "Title"
+              },
+              {
+                "name": "Created On Date",
+                "dataType": "dateTime",
+                "sourceColumn": "Created On Date"
+              },
+              {
+                "name": "Created On",
+                "dataType": "dateTime",
+                "sourceColumn": "Created On"
+              },
+              {
+                "name": "Resolve By Date",
+                "dataType": "dateTime",
+                "sourceColumn": "Resolve By Date"
+              },
+              {
+                "name": "Sentiment Score",
+                "dataType": "double",
+                "sourceColumn": "Sentiment Score"
+              },
+              {
+                "name": "Resolve SLA Status",
+                "dataType": "int64",
+                "sourceColumn": "Resolve SLA Status"
+              },
+              {
+                "name": "Resolve SLA",
+                "dataType": "string",
+                "sourceColumn": "Resolve SLA"
+              },
+              {
+                "name": "First Response SLA Status",
+                "dataType": "int64",
+                "sourceColumn": "First Response SLA Status"
+              },
+              {
+                "name": "First Response SLA",
+                "dataType": "string",
+                "sourceColumn": "First Response SLA"
+              },
+              {
+                "name": "Modified On",
+                "dataType": "dateTime",
+                "sourceColumn": "Modified On"
+              },
+              {
+                "name": "Resolved On Date",
+                "dataType": "dateTime",
+                "sourceColumn": "Resolved On Date"
+              },
+              {
+                "name": "Status",
+                "dataType": "string",
+                "sourceColumn": "Status"
+              },
+              {
+                "name": "State",
+                "dataType": "string",
+                "sourceColumn": "State"
+              },
+              {
+                "name": "Origin",
+                "dataType": "string",
+                "sourceColumn": "Origin"
+              },
+              {
+                "name": "Priority Code",
+                "dataType": "int64",
+                "sourceColumn": "Priority Code"
+              },
+              {
+                "name": "Priority",
+                "dataType": "string",
+                "sourceColumn": "Priority"
+              },
+              {
+                "name": "Escalated",
+                "dataType": "int64",
+                "sourceColumn": "Escalated"
+              },
+              {
+                "name": "Response By Date",
+                "dataType": "dateTime",
+                "sourceColumn": "Response By Date"
+              },
+              {
+                "name": "Follow Up By Date",
+                "dataType": "dateTime",
+                "sourceColumn": "Follow Up By Date"
+              },
+              {
+                "name": "Escalated Date",
+                "dataType": "dateTime",
+                "sourceColumn": "Escalated Date"
+              },
+              {
+                "name": "Customer Satisfaction Code",
+                "dataType": "int64",
+                "sourceColumn": "Customer Satisfaction Code"
+              },
+              {
+                "name": "Customer Satisfaction",
+                "dataType": "string",
+                "sourceColumn": "Customer Satisfaction"
+              },
+              {
+                "type": "calculated",
+                "name": "Duration",
+                "dataType": "double",
+                "isDataTypeInferred": true,
+                "expression": " ('Case'[Modified On]-'Case'[Created On])*24"
+              }
+            ],
+            "partitions": [
+             {
+                                "name": "Partition",
+                                "dataView": "full",
+                                "source": {
+                                    "query": "SELECT [csrv].[caseview].* FROM [csrv].[caseview]",
+                                    "dataSource": "ST_DS"
+                                }
+             }
+
+            ]
+          },
+          {
+            "name": "Configuration",
+            "isHidden": true,
+            "columns": [
+              {
+                "name": "id",
+                "dataType": "int64",
+                "sourceColumn": "id"
+              },
+              {
+                "name": "Configuration Group",
+                "dataType": "string",
+                "sourceColumn": "Configuration Group"
+              },
+              {
+                "name": "Configuration Subgroup",
+                "dataType": "string",
+                "sourceColumn": "Configuration Subgroup"
+              },
+              {
+                "name": "Name",
+                "dataType": "string",
+                "sourceColumn": "Name"
+              },
+              {
+                "name": "Value",
+                "dataType": "string",
+                "sourceColumn": "Value"
+              }
+            ],
+            "partitions": [
+                             {
+                                "name": "Partition",
+                                "dataView": "full",
+                                "source": {
+                                    "query": "SELECT [csrv].[configurationview].* FROM [csrv].[configurationview]",
+                                    "dataSource": "ST_DS"
+                                }
+                             }
+
+            ]
+          },
+          {
+            "name": "Customer",
+            "columns": [
+              {
+                "name": "Customer Id",
+                "dataType": "string",
+                "sourceColumn": "Customer Id"
+              },
+              {
+                "name": "Customer Name",
+                "dataType": "string",
+                "sourceColumn": "Customer Name"
+              },
+              {
+                "name": "City",
+                "dataType": "string",
+                "sourceColumn": "City",
+                "dataCategory": "City"
+              },
+              {
+                "name": "State",
+                "dataType": "string",
+                "sourceColumn": "State",
+                "dataCategory": "StateOrProvince"
+              },
+              {
+                "name": "Country",
+                "dataType": "string",
+                "sourceColumn": "Country",
+                "dataCategory": "Country"
+              },
+              {
+                "type": "calculated",
+                "name": "Location",
+                "dataType": "string",
+                "isDataTypeInferred": true,
+                "expression": " Customer[City] & \" \" & Customer[State] & \" \" & Customer[Country]",
+                "dataCategory": "City"
+              }
+            ],
+            "partitions": [
+                             {
+                                "name": "Partition",
+                                "dataView": "full",
+                                "source": {
+                                    "query": "SELECT [csrv].[customerview].* FROM [csrv].[customerview]",
+                                    "dataSource": "ST_DS"
+                                }
+                             }
+            ]
+          },
+          {
+            "name": "Dates",
+            "columns": [
+              {
+                "name": "date_key",
+                "dataType": "int64",
+                "sourceColumn": "date_key"
+              },
+              {
+                "name": "Date",
+                "dataType": "dateTime",
+                "sourceColumn": "Date"
+              },
+              {
+                "name": "Day of the Week",
+                "dataType": "int64",
+                "sourceColumn": "Day of the Week"
+              },
+              {
+                "name": "Day Number of the Month",
+                "dataType": "int64",
+                "sourceColumn": "Day Number of the Month"
+              },
+              {
+                "name": "Day Name",
+                "dataType": "string",
+                "sourceColumn": "Day Name"
+              },
+              {
+                "name": "Day Abbreviated",
+                "dataType": "string",
+                "sourceColumn": "Day Abbreviated"
+              },
+              {
+                "name": "Weekday Flag",
+                "dataType": "string",
+                "sourceColumn": "Weekday Flag"
+              },
+              {
+                "name": "month",
+                "dataType": "int64",
+                "sourceColumn": "month"
+              },
+              {
+                "name": "Month Name",
+                "dataType": "string",
+                "sourceColumn": "Month Name"
+              },
+              {
+                "name": "month_abbrev",
+                "dataType": "string",
+                "sourceColumn": "month_abbrev"
+              },
+              {
+                "name": "quarter",
+                "dataType": "int64",
+                "sourceColumn": "quarter"
+              },
+              {
+                "name": "year",
+                "dataType": "int64",
+                "sourceColumn": "year"
+              },
+              {
+                "name": "same_day_year_ago_date",
+                "dataType": "dateTime",
+                "sourceColumn": "same_day_year_ago_date"
+              },
+              {
+                "name": "Week Begin Date",
+                "dataType": "dateTime",
+                "sourceColumn": "Week Begin Date"
+              },
+              {
+                "type": "calculated",
+                "name": "Is Before or Current Date",
+                "dataType": "int64",
+                "isDataTypeInferred": true,
+                "expression": " if([Date]<=[CurrentDate],1,0)"
+              },
+              {
+                "type": "calculated",
+                "name": "Is Current Day of the Year or Before",
+                "dataType": "boolean",
+                "isDataTypeInferred": true,
+                "expression": " if([Date]<=[CurrentDate],TRUE(),FALSE())"
+              },
+              {
+                "type": "calculated",
+                "name": "Is Current Month",
+                "dataType": "boolean",
+                "isDataTypeInferred": true,
+                "expression": " if(MONTH(Dates[Date])=Month([CurrentDate]),TRUE,FALSE)"
+              },
+              {
+                "type": "calculated",
+                "name": "Is Last 3 Months",
+                "dataType": "boolean",
+                "isDataTypeInferred": true,
+                "expression": " if( AND([CurrentDate] - Dates[Date] <=90  , [CurrentDate] >= Dates[Date]), TRUE, FALSE)"
+              },
+              {
+                "type": "calculated",
+                "name": "Is Last 3 Years",
+                "dataType": "boolean",
+                "isDataTypeInferred": true,
+                "expression": " if(Year([CurrentDate]) - Dates[Year] < 3 && Year([CurrentDate]) - Dates[Year] >= -1,TRUE,FALSE)"
+              },
+              {
+                "type": "calculated",
+                "name": "Is Last Year",
+                "dataType": "boolean",
+                "isDataTypeInferred": true,
+                "expression": [
+                  " ",
+                  "if( AND((year([CurrentDate])*12+MONTH([CurrentDate])) - (year(Dates[Date])*12+Month(Dates[Date])) <=12, Dates[Is Before or Current Date])  ,TRUE,FALSE)"
+                ]
+              },
+              {
+                "type": "calculated",
+                "name": "Month Year",
+                "dataType": "string",
+                "isDataTypeInferred": true,
+                "expression": " Dates[month_abbrev] & \"-\" &  RIGHT(Dates[Year],2)"
+              },
+              {
+                "type": "calculated",
+                "name": "Month Year Number",
+                "dataType": "int64",
+                "isDataTypeInferred": true,
+                "expression": " INT(Dates[date_key]/100)"
+              }
+            ],
+            "partitions": [
+                              {
+                                "name": "Partition",
+                                "dataView": "full",
+                                "source": {
+                                    "query": "SELECT [csrv].[dateview].* FROM [csrv].[dateview]",
+                                    "dataSource": "ST_DS"
+                                }
+                             }
+           ],
+            "measures": [
+              {
+                "name": "CurrentDate",
+                "expression": " today()"
+              }
+            ]
+          },
+          {
+            "name": "Calculations",
+            "columns": [
+              {
+                "name": "MeasureValues",
+                "dataType": "int64",
+                "sourceColumn": "MeasureValues"
+              }
+            ],
+            "partitions": [
+                             {
+                                "name": "Partition",
+                                "dataView": "full",
+                                "source": {
+                                    "query": "SELECT [csrv].[measuresview].* FROM [csrv].[measuresview]",
+                                    "dataSource": "ST_DS"
+                                }
+                             }
+            ],
+            "measures": [
+              {
+                "name": "Activity Count",
+                "expression": " COUNTROWS(Activity)"
+              },
+              {
+                "name": "Activity Count per Case",
+                "expression": " DIVIDE( 'Calculations'[Activity Count],'Calculations'[Cases Created],0)"
+              },
+              {
+                "name": "Average Customer Satisfaction",
+                "expression": " Average('Case'[Customer Satisfaction Code])"
+              },
+              {
+                "name": "BaseURL",
+                "expression": " LOOKUPVALUE('Configuration'[Value],Configuration[Name],\"BaseURL\")"
+              },
+              {
+                "name": "Case Duration",
+                "expression": " calculate(AVERAGE('Case'[Duration]), not isblank('Case'[Resolved On Date]))"
+              },
+              {
+                "name": "Cases Created",
+                "expression": [
+                  " ",
+                  "CALCULATE (",
+                  "    COUNTROWS('Case' ),",
+                  "    USERELATIONSHIP (",
+                  "        'Case'[Created On Date],",
+                  "        Dates[Date]",
+                  "    )",
+                  ")"
+                ]
+              },
+              {
+                "name": "Cases Escalated",
+                "expression": [
+                  " CALCULATE ( COUNTROWS('Case'),",
+                  "        'Case'[Escalated]=1,",
+                  "\t\tUSERELATIONSHIP (",
+                  "        'Case'[Escalated Date],",
+                  "        Dates[Date]",
+                  "    ))"
+                ]
+              },
+              {
+                "name": "Cases Resolved",
+                "expression": [
+                  " ",
+                  "CALCULATE (",
+                  "    COUNTROWS('Case' ),",
+                  "    USERELATIONSHIP (",
+                  "        'Case'[Resolved On Date],",
+                  "        Dates[Date]",
+                  "    )",
+                  ")"
+                ]
+              },
+              {
+                "name": "First Response SLA Violated",
+                "expression": " Calculate([Cases Created], 'Case'[First Response SLA Status]=1)"
+              },
+              {
+                "name": "First Response SLA Violated %",
+                "expression": " DIVIDE( [First Response SLA Violated] , [Cases Created] , 0)"
+              },
+              {
+                "name": "Resolved SLA Noncompliance",
+                "expression": [
+                  " ",
+                  "CALCULATE ( [Cases Created], 'Case'[Resolve SLA Status]=1 )"
+                ]
+              },
+              {
+                "name": "Resolved SLA Noncompliance %",
+                "expression": " DIVIDE([Resolved SLA Noncompliance], [Cases Resolved],0)"
+              },
+              {
+                "name": "SLA Noncompliance",
+                "expression": [
+                  " ",
+                  "CALCULATE ( COUNTROWS('Case'),filter('CASE', or('Case'[Resolve SLA Status]=1, 'Case'[First Response SLA Status]=1 )))"
+                ]
+              },
+              {
+                "name": "SLA Noncompliance %",
+                "expression": " DIVIDE('Calculations'[SLA Noncompliance],'Calculations'[Cases Created],0)"
+              },
+              {
+                "name": "Survey Responses",
+                "expression": [
+                  " ",
+                  "CALCULATE (",
+                  "    COUNTROWS('SurveyResponse' ),",
+                  "    USERELATIONSHIP (",
+                  "        'SurveyResponse'[Completed On Date],",
+                  "        Dates[Date]",
+                  "    )",
+                  ")"
+                ]
+              },
+              {
+                "name": "Survey Score Average",
+                "expression": [
+                  " DIVIDE(CALCULATE(",
+                  "    sum(SurveyResponse[Score]),",
+                  "    USERELATIONSHIP (",
+                  "        'SurveyResponse'[Completed On Date],",
+                  "        Dates[Date]",
+                  "    )",
+                  ") , [Survey Responses],0)"
+                ]
+              },
+              {
+                "name": "Case Escalation %",
+                "expression": "  Divide([Cases Escalated] ,[Cases Resolved],0)"
+              }
+            ]
+          },
+          {
+            "name": "Owner",
+            "columns": [
+              {
+                "name": "Owner ID",
+                "dataType": "string",
+                "sourceColumn": "Owner ID"
+              },
+              {
+                "name": "Owner Name",
+                "dataType": "string",
+                "sourceColumn": "Owner Name"
+              },
+              {
+                "name": "Owner Type",
+                "dataType": "string",
+                "sourceColumn": "Owner Type"
+              }
+            ],
+            "partitions": [
+                             {
+                                "name": "Partition",
+                                "dataView": "full",
+                                "source": {
+                                    "query": "SELECT [csrv].[ownerview].* FROM [csrv].[ownerview]",
+                                    "dataSource": "ST_DS"
+                                }
+                             }
+            ]
+          },
+          {
+            "name": "SurveyResponse",
+            "columns": [
+              {
+                "name": "Survey Response Id",
+                "dataType": "string",
+                "sourceColumn": "Survey Response Id"
+              },
+              {
+                "name": "Survey Id",
+                "dataType": "string",
+                "sourceColumn": "Survey Id"
+              },
+              {
+                "name": "Owner Id",
+                "dataType": "string",
+                "sourceColumn": "Owner Id"
+              },
+              {
+                "name": "NPS Type",
+                "dataType": "string",
+                "sourceColumn": "NPS Type"
+              },
+              {
+                "name": "Case Id",
+                "dataType": "string",
+                "sourceColumn": "Case Id"
+              },
+              {
+                "name": "Completed On Date",
+                "dataType": "dateTime",
+                "sourceColumn": "Completed On Date"
+              },
+              {
+                "name": "Score",
+                "dataType": "double",
+                "sourceColumn": "Score"
+              }
+            ],
+            "partitions": [
+                             {
+                                "name": "Partition",
+                                "dataView": "full",
+                                "source": {
+                                    "query": "SELECT [csrv].[surveyresponseview].* FROM [csrv].[surveyresponseview]",
+                                    "dataSource": "ST_DS"
+                                }
+                             }
+            ]
+          },
+          {
+            "name": "User",
+            "columns": [
+              {
+                "name": "User Id",
+                "dataType": "string",
+                "sourceColumn": "User Id"
+              },
+              {
+                "name": "Full Name",
+                "dataType": "string",
+                "sourceColumn": "Full Name"
+              },
+              {
+                "name": "Parent User Id",
+                "dataType": "string",
+                "sourceColumn": "Parent User Id"
+              },
+              {
+                "name": "Employee Level",
+                "dataType": "int64",
+                "sourceColumn": "Employee Level"
+              },
+              {
+                "type": "calculated",
+                "name": "Org Level 1",
+                "dataType": "string",
+                "isDataTypeInferred": true,
+                "expression": " LOOKUPVALUE(User[Full Name],User[User Id],PATHITEM ( [Path], 2 ))"
+              },
+              {
+                "type": "calculated",
+                "name": "Org Level 2",
+                "dataType": "string",
+                "isDataTypeInferred": true,
+                "expression": " LOOKUPVALUE(User[Full Name],User[User Id],PATHITEM ( [Path], 3 ))"
+              },
+              {
+                "type": "calculated",
+                "name": "Org Level 3",
+                "dataType": "string",
+                "isDataTypeInferred": true,
+                "expression": " LOOKUPVALUE(User[Full Name],User[User Id],PATHITEM ( [Path], 4 ))"
+              },
+              {
+                "type": "calculated",
+                "name": "Path",
+                "dataType": "string",
+                "isDataTypeInferred": true,
+                "expression": " PATH([User Id], [Parent User Id])"
+              }
+            ],
+            "partitions": [
+                              {
+                                "name": "Partition",
+                                "dataView": "full",
+                                "source": {
+                                    "query": "SELECT [csrv].[userview].* FROM [csrv].[userview]",
+                                    "dataSource": "ST_DS"
+                                }
+                             }
+           ]
+          },
+          {
+            "name": "Team",
+            "columns": [
+              {
+                "name": "Team Id",
+                "dataType": "string",
+                "sourceColumn": "Team Id"
+              },
+              {
+                "name": "Team Name",
+                "dataType": "string",
+                "sourceColumn": "Team Name"
+              }
+            ],
+            "partitions": [
+ 
+                             {
+                                "name": "Partition",
+                                "dataView": "full",
+                                "source": {
+                                    "query": "SELECT [csrv].[teamview].* FROM [csrv].[teamview]",
+                                    "dataSource": "ST_DS"
+                                }
+                             }
+           ]
+          },
+          {
+            "name": "Survey",
+            "columns": [
+              {
+                "name": "Survey Id",
+                "dataType": "string",
+                "sourceColumn": "Survey Id"
+              },
+              {
+                "name": "Survey Name",
+                "dataType": "string",
+                "sourceColumn": "Survey Name"
+              }
+            ],
+            "partitions": [
+                             {
+                                "name": "Partition",
+                                "dataView": "full",
+                                "source": {
+                                    "query": "SELECT [csrv].[surveyview].* FROM [csrv].[surveyview]",
+                                    "dataSource": "ST_DS"
+                                }
+                             }
+            ]
+          }
+        ],
+        "relationships": [
+          {
+            "name": "646f3ecc-5214-4e77-867d-4ea0939035ef",
+            "fromTable": "Case",
+            "fromColumn": "Customer Id",
+            "toTable": "Customer",
+            "toColumn": "Customer Id",
+            "crossFilteringBehavior": "bothDirections"
+          },
+          {
+            "name": "1cf46f6a-6ee5-4a97-a322-14427051e51f",
+            "fromTable": "Activity",
+            "fromColumn": "Case Id",
+            "toTable": "Case",
+            "toColumn": "Case Id"
+          },
+          {
+            "name": "e0971cc2-b041-4dc7-aa71-77d98a6f84aa",
+            "fromTable": "Case",
+            "fromColumn": "Escalated Date",
+            "toTable": "Dates",
+            "toColumn": "Date",
+            "isActive": false
+          },
+          {
+            "name": "59498354-a05b-4fca-aab3-d18ea2232a56",
+            "fromTable": "Case",
+            "fromColumn": "Owner Id",
+            "toTable": "Owner",
+            "toColumn": "Owner ID"
+          },
+          {
+            "name": "f9510b9a-4889-4bcb-a834-6ea2b6210336",
+            "fromTable": "Case",
+            "fromColumn": "Created On Date",
+            "toTable": "Dates",
+            "toColumn": "Date",
+            "isActive": false
+          },
+          {
+            "name": "d74b26f8-18d1-4401-bfb8-19da82951677",
+            "fromTable": "Case",
+            "fromColumn": "Resolved On Date",
+            "toTable": "Dates",
+            "toColumn": "Date"
+          },
+          {
+            "name": "4734f692-be6b-48c2-b1e1-502cd3299b72",
+            "fromTable": "SurveyResponse",
+            "fromColumn": "Completed On Date",
+            "toTable": "Dates",
+            "toColumn": "Date",
+            "isActive": false
+          },
+          {
+            "name": "ae19232a-a402-4052-8403-e49eec35a53b",
+            "fromTable": "SurveyResponse",
+            "fromColumn": "Case Id",
+            "toTable": "Case",
+            "toColumn": "Case Id"
+          },
+          {
+            "name": "49147c90-b705-4bf8-b423-95646ae4dd51",
+            "fromTable": "SurveyResponse",
+            "fromColumn": "Survey Id",
+            "toTable": "Survey",
+            "toColumn": "Survey Id"
+          }
+        ],
+        "annotations": [
+          {
+            "name": "ClientCompatibilityLevel",
+            "value": "500"
+          }
+        ]
+      }
+    }
+  }
+}
+

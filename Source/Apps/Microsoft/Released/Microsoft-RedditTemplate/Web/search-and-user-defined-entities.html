@@ -1,0 +1,52 @@
+﻿<template>
+    <h1 class="st-title">${MS.Translate.REDDIT_SEARCH_AND_ENTITIES_TITLE}</h1>
+    <p class="st-subtitle">${MS.Translate.REDDIT_SEARCH_AND_ENTITIES_SUBTITLE}</p>
+
+    <p class="st-text">${MS.Translate.REDDIT_SEARCH_AND_ENTITIES_SELECT_ENTITY}</p>
+
+    <button class="primary" click.trigger="entityAdd()">${MS.Translate.BYOE_CUSTOMIZE_ADD_ENTITY}</button>
+    <label class="st-button-right st-file-upload">
+        <input type="file" accept=".csv" change.delegate="entityUpload()" files.bind="csv" value.bind="csvPath" />
+        <span>${MS.Translate.BYOE_CUSTOMIZE_UPLOAD_ENTITIES}</span>
+    </label>
+
+    <div if.bind="selectedEntity">
+        <div class="st-byoe-preview">
+            <span class="st-text">${MS.Translate.BYOE_CUSTOMIZE_PREVIEW_OUTPUT}</span>
+            <div class="st-byoe-preview-entities">
+                <div repeat.for="entity of entities">
+                    <h4>${entity.name}</h4>
+                    <ul class="st-byoe-preview-list">
+                        <li repeat.for="value of entity.values.split('\n').slice(0,3)">
+                            <i class="fa fa-${entity.icon}" css="color: ${entity.color}"></i>
+                            <span>${value.length > 12 ? value.substr(0,9) + '...' : value}</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <p class="st-text">${MS.Translate.BYOE_CUSTOMIZE_ENTITY_SELECT}</p>
+        <p>
+            <select class="btn btn-default dropdown-toggle st-input" value.bind="selectedEntity" change.delegate="viewmodel.onInvalidate()">
+                <option repeat.for="entity of entities" model.bind="entity">${entity.name}</option>
+            </select>
+        </p>
+
+        <p class="st-text">${MS.Translate.BYOE_CUSTOMIZE_EDIT_NAME}</p>
+        <input class="st-input" type="text" value.bind="selectedEntity.name" change.delegate="viewmodel.onInvalidate()"/>
+
+        <p class="st-text">${MS.Translate.BYOE_CUSTOMIZE_ENTITY_VALUES}</p>
+        <p>
+            <textarea class="st-input" value.bind="selectedEntity.values"></textarea>
+        </p>
+
+        <p class="st-float">
+            <button class="primary" click.trigger="entityRemove()">${MS.Translate.BYOE_CUSTOMIZE_REMOVE_ENTITY}</button>
+        </p>
+
+        <p class="st-float">
+            <button class="primary" click.trigger="onValidate()" if.bind="!MS.HttpService.isServiceBusy">${MS.Translate.COMMON_VALIDATE}</button>
+        </p>
+    </div>
+</template>

@@ -1,0 +1,19 @@
+﻿<template>
+    <require from="../templates/bpst-link.html"></require>
+
+    <h1 class="st-title">${MS.Translate.FACEBOOK_PAGES_TITLE}</h1>
+    <p class="st-subtitle">${MS.Translate.FACEBOOK_PAGES_SUBTITLE}</p>
+
+    <p>${MS.Translate.FACEBOOK_PAGES_DESCRIPTION}</p>
+    <p class="st-text">
+        <bpst-link a-description="${MS.Translate.FACEBOOK_LOGIN_DESCRIPTION_F}" a-link="${MS.Translate.FACEBOOK_LOGIN_LINK_F}" a-link-text="${MS.Translate.COMMON_HERE}"></bpst-link>
+    </p>
+    <div class="st-float">
+        <p class="st-text">${MS.Translate.FACEBOOK_PAGES_FOLLOW}</p>
+        <input class="st-input" type="text" placeholder="Microsoft,microsoftdesign" change.delegate="onInvalidate()" disabled.bind="MS.HttpService.isServiceBusy" value.bind="searchQuery" />
+    </div>
+
+    <p class="st-float">
+        <button class="primary" click.trigger="onValidate()" if.bind="!MS.HttpService.isServiceBusy">${MS.Translate.COMMON_VALIDATE}</button>
+    </p>
+</template>

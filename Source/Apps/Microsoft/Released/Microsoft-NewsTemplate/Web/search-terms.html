@@ -11,6 +11,10 @@
     <div class="st-float">
         <p class="st-text">${MS.Translate.SEARCH_TERMS_QUERY}</p>
         <input class="st-input" type="text" placeholder.bind="MS.Translate.SEARCH_TERMS_QUERY_EXAMPLE_NEWS" change.delegate="onInvalidate()" disabled.bind="MS.HttpService.isServiceBusy" value.bind="searchQuery" />
+        <p class="st-text">
+            <span>${(130 - searchQuery.length) < 0 ? 0 : (130 - searchQuery.length)}</span>
+            <span>${MS.Translate.SEARCH_TERMS_QUERY_REMAINING}</span>
+        </p>
     </div>
 
     <p class="st-float">

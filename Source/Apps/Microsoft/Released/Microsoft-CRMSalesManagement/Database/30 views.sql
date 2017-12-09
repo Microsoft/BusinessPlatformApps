@@ -146,7 +146,7 @@ go
 -- TeamView
 CREATE VIEW smgt.teamview
 AS
-  SELECT id      AS [Team Id],
+  SELECT teamid      AS [Team Id],
          NAME    AS [Team Name]
   FROM   dbo.Team;
 go
@@ -155,7 +155,7 @@ go
 -- OwnerView
 CREATE VIEW smgt.ownerview
 AS
-  SELECT id         AS [Owner Id],
+  SELECT teamid         AS [Owner Id],
          [Name]			AS [Owner Name],
          'Team'			AS [Owner Type]
   FROM dbo.Team

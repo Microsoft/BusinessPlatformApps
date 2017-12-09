@@ -31,7 +31,7 @@ CREATE PROCEDURE bpst_news.sp_write_document
 	@publishedMinutePrecision datetime,
 
 	-- Ingest Timestamp
-	@ingestTimestamp datetime,
+	@ingestTimestamp NVARCHAR(100),
 	@ingestMonthPrecision datetime,
 	@ingestWeekPrecision datetime,
 	@ingestDayPrecision datetime,
@@ -42,7 +42,10 @@ CREATE PROCEDURE bpst_news.sp_write_document
 	@sentimentScore float,
 
 	-- Key Phrases
-	@keyPhraseJson NVARCHAR(max)
+	@keyPhraseJson NVARCHAR(max),
+
+	-- User Defined Entities
+	@userDefinedEntities NVARCHAR(max)
 AS
 BEGIN
 	-- SET NOCOUNT ON added to prevent extra result sets from
@@ -70,7 +73,7 @@ BEGIN
 		INSERT INTO [bpst_news].[documentingestedtimes]
 		( id, "timestamp", monthPrecision, weekPrecision, dayPrecision, hourPrecision, minutePrecision )
 		VALUES
-		( @docId, @ingestTimestamp, @ingestMonthPrecision, @ingestWeekPrecision, @ingestDayPrecision, @ingestHourPrecision, @ingestMinutePrecision );
+		( @docId, CONVERT(DATETIME, left(@ingestTimestamp,23)), @ingestMonthPrecision, @ingestWeekPrecision, @ingestDayPrecision, @ingestHourPrecision, @ingestMinutePrecision );
 
 		DELETE FROM [bpst_news].[documentsentimentscores] WHERE id = @docid;
 		INSERT INTO [bpst_news].[documentsentimentscores] (id, score) VALUES ( @docid, @sentimentScore );
@@ -80,6 +83,18 @@ BEGIN
 		INSERT INTO [bpst_news].[documentkeyphrases] (documentId, phrase)
 		SELECT @docid AS documentId, value AS phrase
 		FROM OPENJSON(@keyPhraseJson);
+
+		DELETE FROM [bpst_news].[userdefinedentities] WHERE documentId = @docid;
+		INSERT INTO [bpst_news].[userdefinedentities] (documentId, entityType, entityValue, offset, offsetDocumentPercentage, [length])
+		SELECT @docid AS documentId, *
+		FROM OPENJSON(@userDefinedEntities)
+		WITH (
+			entityType nvarchar(30) '$.type',
+		    entityValue nvarchar(max) '$.value',
+			offset int '$.position',
+			offsetDocumentPercentage float '$.positionDocumentPercentage',
+			[length] int '$.lengthInText'
+		)
 
 		COMMIT TRANSACTION;
 	END TRY
@@ -100,7 +115,7 @@ BEGIN
                         INNER JOIN sys.schemas sc ON ta.[schema_id] = sc.[schema_id]
     WHERE
         sc.name='bpst_news' AND ta.is_ms_shipped = 0 AND pa.index_id IN (0,1) AND
-        ta.name IN ('documents', 'documentpublishedtimes', 'documentingestedtimes', 'documentkeyphrases','documentsentimentscores', 'documenttopics', 'documenttopicimages', 'entities', 'documentcompressedentities')
+        ta.name IN ('documents', 'documentpublishedtimes', 'documentingestedtimes', 'documentkeyphrases','documentsentimentscores', 'documenttopics', 'documenttopicimages', 'entities')
     GROUP BY ta.name
 END;
 go
@@ -110,15 +125,14 @@ BEGIN
     SET NOCOUNT ON;
 
     SELECT Count(*) AS ExistingObjectCount
-    FROM   information_schema.tables
+    FROM   INFORMATION_SCHEMA.TABLES
     WHERE  ( table_schema = 'bpst_news' AND
-             table_name IN ('configuration', 'date', 'documents', 'documentpublishedtimes', 'documentingestedtimes', 'documentkeyphrases', 'documentsentimentscores', 'documenttopics', 'documenttopicimages', 'entities', 'documentcompressedentities', 'stg_documenttopics', 'stg_documenttopicimages', 'stg_entities', 'stg_documentcompressedentities')
+             table_name IN ('configuration', 'date', 'documents', 'documentpublishedtimes', 'documentingestedtimes', 'documentkeyphrases', 'documentsentimentscores', 'documenttopics', 'documenttopicimages', 'entities', 'stg_documenttopics', 'stg_documenttopicimages', 'stg_entities')
            );
 END;
 go
 
-
-CREATE PROCEDURE bpst_news.[sp_get_pull_status]
+	CREATE PROCEDURE bpst_news.[sp_get_pull_status]
 AS
 BEGIN
 		
@@ -127,17 +141,12 @@ BEGIN
 	-- 1 -> Data is present but not complete (Not applicable for twitter - declare success when we see one tweet)
 	-- 2 -> Data pull is complete
 	-- 3 -> No data is present
-
 	DECLARE @StatusCode int;
 	SET @StatusCode = -1;
-
 	SET NOCOUNT ON;
-
 	DECLARE @DeploymentTimestamp datetime2;
 	SET @DeploymentTimestamp = CAST((SELECT [value] from bpst_news.[configuration] config
 								WHERE config.configuration_group = 'SolutionTemplate' AND config.configuration_subgroup = 'Notifier' AND config.[name] = 'DeploymentTimestamp') AS datetime2)
-
-
 	DECLARE @NumberOfArticles int;
 	SET @NumberOfArticles = (SELECT COUNT(*) AS [Count]
 				   FROM bpst_news.documenttopics)
@@ -151,21 +160,17 @@ BEGIN
 	
 	DECLARE @ASDeployment bit;	 
 	SET @ASDeployment = 0;
-
 	IF EXISTS (SELECT * FROM bpst_news.[configuration] 
 			   WHERE [configuration].configuration_group = 'SolutionTemplate' AND 
 					 [configuration].configuration_subgroup = 'Notifier' AND 
 					 [configuration].[name] = 'ASDeployment' AND
 					 [configuration].[value] ='true')
 	SET @ASDeployment = 1;
-
 	UPDATE bpst_news.[configuration] 
 	SET [configuration].[value] = @StatusCode
 	WHERE [configuration].configuration_group = 'SolutionTemplate' AND [configuration].configuration_subgroup = 'Notifier' AND [configuration].[name] = 'DataPullStatus'
-
 END;
 GO
-
 
 -- Description:	Truncates all batch process tables so batch processes can be run
 CREATE PROCEDURE  bpst_news.sp_clean_stage_tables
@@ -177,9 +182,9 @@ BEGIN
 
     -- These tables are populated by AzureML batch processes.
     TRUNCATE TABLE bpst_news.stg_entities;
-    TRUNCATE TABLE bpst_news.stg_documentcompressedentities;
     TRUNCATE TABLE bpst_news.stg_documenttopics;
     TRUNCATE TABLE bpst_news.stg_documenttopicimages;
+    TRUNCATE TABLE bpst_news.stg_documentcompressedentities;
 END;
 go
 
@@ -193,10 +198,6 @@ BEGIN
     TRUNCATE TABLE bpst_news.entities;
     INSERT INTO bpst_news.entities WITH (TABLOCK) (documentId, entityType, entityValue, offset, offsetDocumentPercentage, [length])
         SELECT documentId, entityType, entityValue, offset, offsetDocumentPercentage, [length] FROM bpst_news.stg_entities;
-
-    TRUNCATE TABLE bpst_news.documentcompressedentities;
-    INSERT INTO bpst_news.documentcompressedentities WITH (TABLOCK) (documentId, compressedEntitiesJson)
-        SELECT documentId, compressedEntitiesJson FROM bpst_news.stg_documentcompressedentities;
 
     TRUNCATE TABLE bpst_news.documenttopics;
     INSERT INTO bpst_news.documenttopics WITH (TABLOCK) (documentId, topicId, batchId, documentDistance, topicScore, topicKeyPhrase)
@@ -234,7 +235,7 @@ FROM
 	  ,len(replace(convert(VARCHAR(MAX), t1.cleanedText), LEFT(phrase, 1000), '')) textWithoutPhrase
 	  ,len(t0.phrase) phraseLength
 	FROM bpst_news.documentkeyphrases t0
-	INNER JOIN Documents t1 ON t0.documentId = t1.id
+	INNER JOIN bpst_news.documents t1 ON t0.documentId = t1.id
 ) innerTable
 WHERE phraseLength != 0;
 

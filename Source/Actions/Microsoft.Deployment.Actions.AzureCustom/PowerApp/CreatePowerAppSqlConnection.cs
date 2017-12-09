@@ -1,46 +1,45 @@
-﻿using System;
-using System.ComponentModel.Composition;
+﻿using System.ComponentModel.Composition;
 using System.Net.Http;
-using System.Text;
 using System.Threading.Tasks;
 
 using Microsoft.Deployment.Common.ActionModel;
 using Microsoft.Deployment.Common.Actions;
 using Microsoft.Deployment.Common.Helpers;
 using Microsoft.Deployment.Common.Model;
+using Microsoft.Deployment.Common.Model.PowerApp;
 
 namespace Microsoft.Deployment.Actions.AzureCustom.PowerApp
 {
     [Export(typeof(IAction))]
     public class CreatePowerAppSqlConnection : BaseAction
     {
-        private const int SQL_CONNECTION_ID_LENGTH = 32;
-
-        private const string BASE_POWER_APPS_URL = "https://management.azure.com/providers/Microsoft.PowerApps";
-
         public override async Task<ActionResponse> ExecuteActionAsync(ActionRequest request)
         {
-            var azureToken = request.DataStore.GetJson("AzureToken", "access_token");
-            AzureHttpClient client = new AzureHttpClient(azureToken);
+            string powerAppEnvironmentId = request.DataStore.GetValue("PowerAppEnvironment");
 
-            string newSqlConnectionId = RandomGenerator.GetRandomHexadecimal(SQL_CONNECTION_ID_LENGTH);
-            string powerAppEnvironment = request.DataStore.GetValue("PowerAppEnvironment");
-
-            if (powerAppEnvironment == null)
+            if (powerAppEnvironmentId != null)
             {
-                return new ActionResponse(ActionStatus.Success);
+                AzureHttpClient ahc = new AzureHttpClient(request.DataStore.GetJson("AzureToken", "access_token"));
+
+                string newSqlConnectionId = RandomGenerator.GetRandomHexadecimal(PowerAppUtility.SQL_CONNECTION_ID_LENGTH);
+                string sqlConnectionString = request.DataStore.GetValueAtIndex("SqlConnectionString", "SqlServerIndex");
+
+                SqlCredentials sqlCredentials = SqlUtility.GetSqlCredentialsFromConnectionString(sqlConnectionString);
+
+                PowerAppSqlConnection powerAppSqlConnection = new PowerAppSqlConnection(sqlCredentials, powerAppEnvironmentId);
+
+                string body = JsonUtility.Serialize<PowerAppSqlConnection>(powerAppSqlConnection);
+                string url = string.Format(PowerAppUtility.URL_POWERAPPS_SQL_CONNECTION, newSqlConnectionId, powerAppEnvironmentId);
+
+                if (await ahc.IsSuccess(HttpMethod.Put, url, body))
+                {
+                    request.DataStore.AddToDataStore("PowerAppSqlConnectionId", newSqlConnectionId, DataStoreType.Private);
+                }
+                else
+                {
+                    PowerAppUtility.SkipPowerApp(request.DataStore);
+                }
             }
-
-            string sqlConnectionString = request.DataStore.GetValueAtIndex("SqlConnectionString", "SqlServerIndex");
-            SqlCredentials sqlCredentials = SqlUtility.GetSqlCredentialsFromConnectionString(sqlConnectionString);
-
-            string body = $"{{\"properties\":{{\"environment\":{{\"id\":\"/providers/Microsoft.PowerApps/environments/{powerAppEnvironment}\",\"name\":\"{powerAppEnvironment}\"}},\"connectionParameters\":{{\"server\":\"{sqlCredentials.Server}\",\"database\":\"{sqlCredentials.Database}\",\"username\":\"{sqlCredentials.Username}\",\"password\":\"{sqlCredentials.Password}\"}}}}}}";
-            string url = $"{BASE_POWER_APPS_URL}/apis/shared_sql/connections/{newSqlConnectionId}?api-version=2016-11-01&$filter=environment%20eq%20%27{powerAppEnvironment}%27";
-
-            await client.ExecuteGenericRequestWithHeaderAsync(HttpMethod.Put, url, body);
-            //TODO: if create fails return failure
-
-            request.DataStore.AddToDataStore("PowerAppSqlConnectionId", newSqlConnectionId, DataStoreType.Private);
 
             return new ActionResponse(ActionStatus.Success);
         }

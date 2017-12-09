@@ -14,8 +14,10 @@ public static async Task<object> Run(HttpRequestMessage req, TraceWriter log)
     string jsonContent = await req.Content.ReadAsStringAsync();
     dynamic data = JsonConvert.DeserializeObject(jsonContent);
 
-    if (data.html == null) {
-        return req.CreateResponse(HttpStatusCode.BadRequest, new {
+    if (data.html == null)
+    {
+        return req.CreateResponse(HttpStatusCode.BadRequest, new
+        {
             error = "Please pass 'html' property in the input object"
         });
     }
@@ -26,7 +28,8 @@ public static async Task<object> Run(HttpRequestMessage req, TraceWriter log)
 
     var scrubbedAndTrimmed = StringExtensions.LimitByBytes(scrubbed, 10000);
 
-    return req.CreateResponse(HttpStatusCode.OK, new {
+    return req.CreateResponse(HttpStatusCode.OK, new
+    {
         Scrubbed = scrubbedAndTrimmed,
         ScrubbedLength = scrubbedAndTrimmed.Length,
         NoTags = result.NoTags,

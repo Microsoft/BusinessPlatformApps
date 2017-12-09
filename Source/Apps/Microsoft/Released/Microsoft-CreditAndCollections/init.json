@@ -1,0 +1,245 @@
+﻿{
+    "Install": {
+        "Pages": [
+            {
+                "architectureDiagram": "dist/Apps/Microsoft/Released/Microsoft-CreditAndCollections/Web/Images/creditAndCollectionsArchDiagram.png",
+                "displayname": "Getting Started",
+                "list1": [
+                    "$translate(INIT_GETTING_STARTED_AZURE_SUBSCRIPTION)",
+                    "$translate(INIT_GETTING_STARTED_PBI_DESKTOP)",
+                    "$translate(INIT_GETTING_STARTED_PBI_PRO)"
+                ],
+                "list2": [
+                    "$translate(INIT_GETTING_STARTED_CLOUD_SOLUTION)",
+                    "$translate(INIT_GETTING_STARTED_CONNECT_AS_PBI)"
+                ],
+                "name": "$SiteCommon$/pages-gallery/getting-started.html",
+                "templateName": "$translate(AX_COLLECTIONS_TEMPLATE_TITLE)"
+            },
+            {
+                "azureProviders": [
+                    "Microsoft.Web"
+                ],
+                "displayname": "Login",
+                "name": "$SiteCommon$/pages-gallery/azure-login.html"
+            },
+            {
+                "displayname": "Dynamics 365 Login",
+                "name": "$SiteCommon$/pages-gallery/ax-login.html"
+            },
+            {
+                "displayname": "Dynamics 365 Connector",
+                "ConnectorName": "$save('dynamicsax')",
+                "RequiresConsent": "$save('true')",
+                "name": "$SiteCommon$/pages-gallery/ax-connector-login.html"
+            },
+            {
+                "checkSqlVersion": true,
+                "displayname": "Target",
+                "isAzureSql": true,
+                "name": "$SiteCommon$/pages-gallery/sql.html",
+                "newSqlDatabase": "CreditAndCollections",
+                "showAzureSql": false,
+                "showNewSqlOption": "true",
+                "showSkuS1": true,
+                "sqlInstance": "NewSql",
+                "sqlSku": "S1",
+                "subtitle": "$translate(INIT_SQL_TITLE)",
+                "title": "$translate(INIT_SQL_TITLE)"
+            },
+            {
+                "displayname": "Customize",
+                "name": "$SiteCommon$/pages-gallery/ax-customize.html",
+                "useDefaultValidateButton": true
+            },
+            {
+                "name": "$SiteCommon$/pages-gallery/choose-analysis-server.html",
+                "displayname": "AAS",
+                "showDescription": true,
+                "ssasEnabled": "true"
+            },
+            {
+                "displayname": "Login to Analysis Services",
+                "name": "$SiteCommon$/pages-gallery/as-login.html",
+                "oauthType": "as",
+                "skip": "$run(this.MS.DataStore.getValue('ssasDisabled') === 'true' ? 'true' : 'false')"
+            },
+            {
+                "name": "$SiteCommon$/pages-gallery/ssas.html",
+                "displayname": "AAS Login",
+                "skip": "$run(this.MS.DataStore.getValue('ssasDisabled') === 'true' ? 'true' : 'false')"
+            },
+            {
+                "displayname": "Summary",
+                "name": "$SiteCommon$/pages-gallery/summary.html",
+                "values": {
+                    "Target Server": "$(this.MS.DataStore.getValue('Server'))",
+                    "Target Database": "$(this.MS.DataStore.getValue('Database'))",
+                    "Target Username": "$(this.MS.DataStore.getValue('Username'))"
+                },
+                "ConnectorName": "$save('dynamicsax')",
+                "AxReportName": "$save('CreditAndCollectionsManagementReport')",
+                "AxMeasurementName": "$save('CustCollectionsBIMeasurements')"
+            },
+            {
+                "datastoreEntriesToValidate": [
+                    "SqlConnectionString"
+                ],
+                "displayname": "Deploy",
+                "filename": "$save('CreditAndCollectionsImportMode.pbix')",
+                "filenameSSAS": "$save('CreditAndCollectionsAs.pbix')",
+                "name": "$SiteCommon$/pages-gallery/progress.html",
+                "uniqueId": "$save(this.MS.UtilityService.getUniqueId(10))",
+                "asDatabase": "CreditCollections",
+                "showCounts": true,
+                "targetSchema": "cc"
+            }
+        ],
+
+        "Actions": [
+            {
+                "displayname": "$translate(INIT_ACTION_DEPLOYING_SQL_SCRIPTS)",
+                "name": "Microsoft-DeploySQLScripts",
+                "SqlServerIndex": "0",
+                "SqlScriptsFolder": "Database"
+            },
+            {
+                "displayname": "$translate(INIT_ACTION_DEPLOYING_DATABASE_CONFIGURATION)",
+                "name": "Microsoft-SetConfigValueInSql",
+                "SqlConfigTable": "[cc].[configuration]",
+                "SqlServerIndex": "0"
+            },
+            {
+                "displayname": "$translate(INIT_ACTION_DEPLOYING_DATABASE_CONFIGURATION)",
+                "name": "Microsoft-SetConfigValueInSql",
+                "SqlConfigTable": "[cc].[configuration]",
+                "SqlEntryName": "Tables",
+                "SqlEntryValue": "CustCollectionsBIMeasurements_BICompanyView_MATERIALIZED,CustCollectionsBIMeasurements_BIDateDimensionValue_MATERIALIZED,CustCollectionsBIMeasurements_CustCollectionsBIActivitiesAverageCloseTime_MATERIALIZED,CustCollectionsBIMeasurements_CustCollectionsBIActivitiesOpen_MATERIALIZED,CustCollectionsBIMeasurements_CustCollectionsBIAgedBalances_MATERIALIZED,CustCollectionsBIMeasurements_CustCollectionsBIBalancesDue_MATERIALIZED,CustCollectionsBIMeasurements_CustCollectionsBICaseAverageCloseTime_MATERIALIZED,CustCollectionsBIMeasurements_CustCollectionsBICasesOpen_MATERIALIZED,CustCollectionsBIMeasurements_CustCollectionsBICollectionLetter_MATERIALIZED,CustCollectionsBIMeasurements_CustCollectionsBICollectionLetterAmounts_MATERIALIZED,CustCollectionsBIMeasurements_CustCollectionsBICollectionStatus_MATERIALIZED,CustCollectionsBIMeasurements_CustCollectionsBICredit_MATERIALIZED,CustCollectionsBIMeasurements_CustCollectionsBICustOnHold_MATERIALIZED,CustCollectionsBIMeasurements_CustCollectionsBICustTable_MATERIALIZED,CustCollectionsBIMeasurements_CustCollectionsBIDSO30_MATERIALIZED,CustCollectionsBIMeasurements_CustCollectionsBIExpectedPayment_MATERIALIZED,CustCollectionsBIMeasurements_CustCollectionsBIInterestNotes_MATERIALIZED,CustCollectionsBIMeasurements_CustCollectionsBISalesOnHold_MATERIALIZED,CustCollectionsBIMeasurements_CustCollectionsBIWriteOff_MATERIALIZED,CustCollectionsBIMeasurements_SRSANALYSISENUMS_MATERIALIZED",
+                "SqlGroup": "SolutionTemplate",
+                "SqlServerIndex": "0",
+                "SqlSubGroup": "StandardConfiguration"
+            },
+            {
+                "displayname": "$translate(INIT_ACTION_DEPLOYING_DATABASE_CONFIGURATION)",
+                "name": "Microsoft-SetConfigValueInSql",
+                "skip": "$run(this.MS.DataStore.getValue('ssasDisabled') === 'true' ? 'true': 'false')",
+                "SqlConfigTable": "[cc].[configuration]",
+                "SqlEntryName": "FunctionName",
+                "SqlEntryValue": "$run('asscheduler' + this.MS.DataStore.getValue('uniqueId'))",
+                "SqlGroup": "SolutionTemplate",
+                "SqlServerIndex": "0",
+                "SqlSubGroup": "SSAS"
+            },
+            {
+                "displayname": "$translate(INIT_ACTION_DEPLOYING_DATABASE_CONFIGURATION)",
+                "name": "Microsoft-SetConfigValueInSql",
+                "skip": "$run(this.MS.DataStore.getAllValues('azureSqlDisabled')[0] === 'true' || this.MS.DataStore.getValue('ssasDisabled') === 'true' ? 'true': 'false')",
+                "SqlConfigTable": "[cc].[configuration]",
+                "SqlEntryName": "FunctionName",
+                "SqlEntryValue": "$run('asscheduler' + this.MS.DataStore.getValue('uniqueId'))",
+                "SqlGroup": "SolutionTemplate",
+                "SqlServerIndex": "0",
+                "SqlSubGroup": "SSAS"
+            },
+            {
+                "displayname": "$translate(NOTIFIER_CONFIGURE_NOTIFIER_APP)",
+                "name": "Microsoft-SetConfigValueInSql",
+                "skip": "$run(!this.MS.DataStore.getValue('SendCompletionNotification'))",
+                "SqlConfigTable": "[cc].[configuration]",
+                "SqlEntryName": "InitialPullDone",
+                "SqlEntryValue": "False",
+                "SqlGroup": "SolutionTemplate",
+                "SqlServerIndex": "0",
+                "SqlSubGroup": "Notifier"
+            },
+            {
+                "DeploymentName": "AxOdataInsert",
+                "displayname": "$translate(AX_UPDATE_CONFIGURATION)",
+                "name": "Microsoft-UpdateAxConfigurationEntity"
+            },
+            {
+                "DeploymentName": "SqlConnectionDeployment",
+                "displayname": "$translate(NOTIFIER_CREATING_DATABASE_CONNECTION)",
+                "name": "Microsoft-CreateSqlConnector",
+                "ApiConnectionName": "$save('sqlNotifierConnection')"
+            },
+            {
+                "DeploymentName": "LogicApp",
+                "displayname": "$translate(INIT_ACTION_DEPLOYING_LOGIC_APP)",
+                "name": "Microsoft-DeployAxLogicApp"
+            },
+            {
+                "DeploymentName": "NotifierLogicApp",
+                "displayname": "$translate(NOTIFIER_CREATING_NOTIFIER_APP)",
+                "name": "Microsoft-DeployNotifierLogicApp",
+                "logicAppName": "notifierLogicApp",
+                "skip": "$run(!this.MS.DataStore.getValue('SendCompletionNotification'))"
+            },
+            {
+                "displayname": "$translate(NOTIFIER_CONFIGURE_NOTIFIER_APP)",
+                "name": "Microsoft-ConfigureNotifier",
+                "SqlConfigTable": "[cc].[configuration]"
+            },
+            {
+                "ASDatabase": "CreditCollections",
+                "displayname": "$translate(INIT_ACTION_DEPLOYING_AS_MODEL)",
+                "name": "Microsoft-DeployAzureASModel",
+                "skip": "$run(this.MS.DataStore.getValue('ssasDisabled') === 'true' ? 'true': 'false')",
+                "SqlConnectionString": "$dsall(SqlConnectionString)[0]",
+                "xmlaFilePath": "Service/AzureAS/CreditAndCollections.xmla"
+            },
+            {
+                "DeploymentName": "ASFunction",
+                "displayname": "$translate(INIT_ACTION_DEPLOYING_AS_SCHEDULER)",
+                "FunctionName": "$save('asscheduler' + this.MS.DataStore.getValue('uniqueId'))",
+                "name": "Microsoft-DeployAzureFunction",
+                "RepoUrl": "https://github.com/MohaaliMicrosoft/AnalysisServicesRefresh",
+                "skip": "$run(this.MS.DataStore.getValue('ssasDisabled') === 'true' ? 'true': 'false')",
+                "sku": "Standard"
+            },
+            {
+                "DeploymentName": "ASFunction",
+                "displayname": "$translate(INIT_ACTION_WAITING_AS_SCHEDULER)",
+                "name": "Microsoft-WaitForArmDeploymentStatus",
+                "skip": "$run(this.MS.DataStore.getValue('ssasDisabled') === 'true' ? 'true': 'false')"
+            },
+            {
+                "displayname": "Create Service Principal",
+                "name": "Microsoft-CreateSpn",
+                "skip": "$run(this.MS.DataStore.getValue('ssasDisabled') === 'true' ? 'true': 'false')"
+            },
+            {
+                "displayname": "Assign Service Principal Permission",
+                "name": "Microsoft-AssignPermissionsForUser",
+                "skip": "$run(this.MS.DataStore.getValue('ssasDisabled') === 'true' ? 'true': 'false')",
+                "UserToAdd": "$ds(SPNUser)",
+                "ASDatabase": "CreditCollections"
+            },
+            {
+                "AppSettingKeys": {
+                    "appId": "$ds(SPNAppId)",
+                    "appKey": "$ds(SPNKey)",
+                    "username": "$ds(SPNUser)",
+                    "tenantId": "$ds(SPNTenantId)",
+                    "asServer": "$ds(ASServerUrl)",
+
+                    "connStringSql": "$dsall(SqlConnectionString)[0]",
+                    "schema": "[cc]",
+                    "databaseAS": "CreditCollections",
+                    "functionName": "$run('asscheduler' + this.MS.DataStore.getValue('uniqueId'))"
+                },
+
+                "DeploymentName": "ASFunction",
+                "displayname": "$translate(INIT_ACTION_SETTING_UP_AS_SCHEDULER)",
+                "name": "Microsoft-DeployAzureFunctionConnectionStrings",
+                "skip": "$run(this.MS.DataStore.getValue('ssasDisabled') === 'true' ? 'true': 'false')"
+            },
+            {
+                "displayname": "$translate(INIT_ACTION_WAITING_DATA)",
+                "name": "Microsoft-GetDataPullStatus",
+                "SqlServerIndex": 0,
+                "TargetSchema": "cc"
+            }
+        ]
+    }
+}

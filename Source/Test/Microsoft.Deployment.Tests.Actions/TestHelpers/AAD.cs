@@ -1,12 +1,12 @@
 ﻿using System;
-using System.Dynamic;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using Microsoft.Deployment.Common;
-using Microsoft.Deployment.Common.ActionModel;
+
 using Microsoft.IdentityModel.Clients.ActiveDirectory;
 using Microsoft.IdentityModel.Clients.ActiveDirectory.Internal;
-using Newtonsoft.Json.Linq;
+
+using Microsoft.Deployment.Common.ActionModel;
+using Microsoft.Deployment.Actions.AzureCustom.AzureToken;
 
 namespace Microsoft.Deployment.Tests.Actions.TestHelpers
 {
@@ -15,11 +15,13 @@ namespace Microsoft.Deployment.Tests.Actions.TestHelpers
         public string TenantId { get; set; }
 
         private static string code = string.Empty;
-        public static async Task<DataStore> GetUserTokenFromPopup()
+        public static async Task<DataStore> GetUserTokenFromPopup(string openAuthorizationType = "")
         {
 #if DEBUG
-            AuthenticationContext context = new AuthenticationContext("https://login.windows.net/" +"common");
-            var url = context.GetAuthorizationRequestUrlAsync(Constants.AzureManagementCoreApi, Constants.MicrosoftClientId, new Uri("https://unittest/redirect.html"), UserIdentifier.AnyUser, "prompt=consent").Result;
+            AuthenticationContext context = new AuthenticationContext("https://login.windows.net/" + "common");
+            AzureTokenRequestMeta meta = AzureTokenUtility.GetMetaFromOAuthType(openAuthorizationType);
+
+            var url = context.GetAuthorizationRequestUrlAsync(meta.Resource, meta.ClientId, new Uri("https://unittest/redirect.html"), UserIdentifier.AnyUser, "prompt=consent").Result;
             WindowsFormsWebAuthenticationDialog form = new WindowsFormsWebAuthenticationDialog(null);
             form.WebBrowser.Navigated += delegate (object sender, WebBrowserNavigatedEventArgs args)
             {
@@ -36,7 +38,6 @@ namespace Microsoft.Deployment.Tests.Actions.TestHelpers
 
             while (string.IsNullOrEmpty(code))
             {
-
                 await Task.Delay(5000);
             }
 #endif
@@ -45,6 +46,7 @@ namespace Microsoft.Deployment.Tests.Actions.TestHelpers
             datastore.AddToDataStore("code", code, DataStoreType.Private);
             datastore.AddToDataStore("AADTenant", "common", DataStoreType.Private);
             datastore.AddToDataStore("AADRedirect", "https://unittest/redirect.html");
+            datastore.AddToDataStore("oauthType", openAuthorizationType);
             var result = await TestManager.ExecuteActionAsync("Microsoft-GetAzureToken", datastore);
 
             return result.DataStore;

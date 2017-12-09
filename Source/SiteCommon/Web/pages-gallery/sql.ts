@@ -16,6 +16,7 @@ export class Sql extends ViewModelBase {
     hideSqlAuth: boolean = false;
     invalidUsernames: string[] = ['admin', 'administrator', 'dbmanager', 'dbo', 'guest', 'loginmanager', 'public', 'root', 'sa'];
     isAzureSql: boolean = false;
+    isCreateAzureSqlSelected: boolean = false;
     isGovAzureSql: boolean = false;
     isWindowsAuth: boolean = true;
     newSqlDatabase: string = null;
@@ -23,6 +24,7 @@ export class Sql extends ViewModelBase {
     passwordConfirmation: string = '';
     showAllWriteableDatabases: boolean = true;
     showAzureSql: boolean = true;
+    showCreateAzureSqlPrompt: boolean = false;
     showCredsWhenWindowsAuth: boolean = false;
     showDatabases: boolean = false;
     showGovAzure: boolean = false;
@@ -109,6 +111,10 @@ export class Sql extends ViewModelBase {
                 }
 
                 this.MS.DataStore.addToDataStore('azureSqlDisabled', this.isAzureSql || this.isGovAzureSql ? 'false' : 'true', DataStoreType.Public);
+
+                if (this.showCreateAzureSqlPrompt) {
+                    this.MS.DataStore.addTestToDataStore('CreateAzureSql', this.isCreateAzureSqlSelected);
+                }
             }
         } else {
             isSuccess = false;
@@ -124,13 +130,14 @@ export class Sql extends ViewModelBase {
 
         this.sqlServer = this.sqlServer.toLowerCase();
         if (this.sqlInstance === 'ExistingSql') {
-            let databasesResponse = await this.getDatabases();
+            let databasesResponse: ActionResponse = await this.getDatabases();
             if (databasesResponse.IsSuccess) {
                 this.databases = databasesResponse.Body.value;
                 this.database = this.databases.indexOf(oldDatabase) >= 0 ? oldDatabase : this.databases[0];
                 this.showDatabases = this.setValidated();
             } else {
                 this.onInvalidate();
+                this.MS.ErrorService.set(databasesResponse.ExceptionDetail.FriendlyErrorMessage, databasesResponse.ExceptionDetail.AdditionalDetailsErrorMessage);
             }
         } else if (this.sqlInstance === 'NewSql') {
             let newSqlError: string = this.validateAzureSQLCreate(this.username, this.password, this.passwordConfirmation);
@@ -206,13 +213,15 @@ export class Sql extends ViewModelBase {
 
     private validatePassword(pwd: string, pwd2: string, length: number): string {
         let passwordError: string = '';
+        let specialChar: RegExp = /[\!\@\#\$\%\^\&\*\(\)\_\\\-\+\=\`\~\{\}\|\\\:\;\"\'\<\,\>\.\?/]/;
+
         if (pwd !== pwd2) {
             passwordError = this.MS.Translate.SQL_ERROR_PASSWORD_MATCH;
         } else if (length && pwd.length < length) {
             passwordError = this.MS.Translate.SQL_ERROR_PASSWORD_LENGTH;
         } else if ((/\s/g).test(pwd)) {
             passwordError = this.MS.Translate.SQL_ERROR_PASSWORD_SPACES;
-        } else if (!(/[A-Z]/).test(pwd) || (/^[a-zA-Z0-9]*$/).test(pwd)) {
+        } else if (!((/[A-Z]/).test(pwd) && (/[a-z]/).test(pwd) && (/[0-9]/).test(pwd) && specialChar.test(pwd))) {
             passwordError = this.MS.Translate.SQL_ERROR_PASSWORD_SPECIAL_CHARACTERS;
         }
         return passwordError;

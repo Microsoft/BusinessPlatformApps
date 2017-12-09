@@ -132,7 +132,45 @@ BEGIN
 END;
 go
 
-
+	CREATE PROCEDURE bpst_news.[sp_get_pull_status]
+AS
+BEGIN
+		
+	--InitialPullComplete statuses
+	-- -1 -> Initial State
+	-- 1 -> Data is present but not complete (Not applicable for twitter - declare success when we see one tweet)
+	-- 2 -> Data pull is complete
+	-- 3 -> No data is present
+	DECLARE @StatusCode int;
+	SET @StatusCode = -1;
+	SET NOCOUNT ON;
+	DECLARE @DeploymentTimestamp datetime2;
+	SET @DeploymentTimestamp = CAST((SELECT [value] from bpst_news.[configuration] config
+								WHERE config.configuration_group = 'SolutionTemplate' AND config.configuration_subgroup = 'Notifier' AND config.[name] = 'DeploymentTimestamp') AS datetime2)
+	DECLARE @NumberOfArticles int;
+	SET @NumberOfArticles = (SELECT COUNT(*) AS [Count]
+				   FROM bpst_news.documenttopics)
+			
+	IF (@NumberOfArticles > 0 )
+		SET @StatusCode = 2 --Data pull is complete
+	
+	
+	IF (@NumberOfArticles = 0  AND DATEDIFF(HOUR, @DeploymentTimestamp, CURRENT_TIMESTAMP) > 24)
+	SET @StatusCode = 3 --No data is present
+	
+	DECLARE @ASDeployment bit;	 
+	SET @ASDeployment = 0;
+	IF EXISTS (SELECT * FROM bpst_news.[configuration] 
+			   WHERE [configuration].configuration_group = 'SolutionTemplate' AND 
+					 [configuration].configuration_subgroup = 'Notifier' AND 
+					 [configuration].[name] = 'ASDeployment' AND
+					 [configuration].[value] ='true')
+	SET @ASDeployment = 1;
+	UPDATE bpst_news.[configuration] 
+	SET [configuration].[value] = @StatusCode
+	WHERE [configuration].configuration_group = 'SolutionTemplate' AND [configuration].configuration_subgroup = 'Notifier' AND [configuration].[name] = 'DataPullStatus'
+END;
+GO
 
 -- Description:	Truncates all batch process tables so batch processes can be run
 CREATE PROCEDURE  bpst_news.sp_clean_stage_tables

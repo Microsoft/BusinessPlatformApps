@@ -1,0 +1,125 @@
+﻿{
+    "Install": {
+        "Pages": [
+            {
+                "architectureDiagram": "",
+                "displayname": "Getting Started",
+                "list1": [
+                    "$translate(INIT_GETTING_STARTED_AZURE_SUBSCRIPTION)",
+                    "$translate(INIT_GETTING_STARTED_PBI_DESKTOP)",
+                    "$translate(INIT_GETTING_STARTED_PBI_PRO)"
+                ],
+                "list2": [
+                    "$translate(INIT_GETTING_STARTED_CLOUD_SOLUTION)",
+                    "$translate(INIT_GETTING_STARTED_CONNECT_AS_PBI)"
+                ],
+                "name": "$SiteCommon$/pages-gallery/getting-started.html",
+                "templateName": "Academic"
+            },
+            {
+                "defaultLocation": "5",
+                "displayname": "Login",
+                "name": "$SiteCommon$/pages-gallery/azure-login.html",
+                "pricingCalculatorUrl": "$translate(INIT_NEWS_PRICING_CALCULATOR)",
+                "pricingCost": "",
+                "pricingUrl": ""
+            },
+            {
+                "bingUrl": "placeholder",
+                "cognitiveUrl": "placeholder",
+                "displayname": "Cognitive API",
+                "name": "$SiteCommon$/pages-gallery/cognitive-services-terms.html"
+            },
+            {
+                "displayname": "Search Terms",
+                "name": "$SiteCommon$/pages-gallery/search-terms-generic.html"
+            },
+            {
+                "checkSqlVersion": true,
+                "displayname": "Target",
+                "isAzureSql": true,
+                "name": "$SiteCommon$/pages-gallery/sql.html",
+                "newSqlDatabase": "Academic",
+                "showAzureSql": false,
+                "showNewSqlOption": "true",
+                "showSkuS1": true,
+                "sqlInstance": "NewSql",
+                "sqlSku": "S1",
+                "subtitle": "$translate(INIT_SQL_TITLE)",
+                "title": "$translate(INIT_SQL_TITLE)"
+            },
+            {
+                "datastoreEntriesToValidate": [
+                    "SqlConnectionString"
+                ],
+                "displayname": "Progress",
+                "enablePublishReport": "$run(this.MS.DataStore.getValue('ssasDisabled') === 'false')",
+                "filename": "$save('FacebookTemplate.pbix')",
+                "name": "$SiteCommon$/pages-gallery/progress.html",
+                "Schema": "$save('AK')",
+                "showCounts": false,
+                "uniqueId": "$save(this.MS.UtilityService.getUniqueId(10))"
+            }
+        ],
+
+        "Actions": [
+            {
+                "CognitiveServiceName": "TextCognitiveService",
+                "CognitiveServiceType": "TextAnalytics",
+                "CognitiveSkuName": "S1",
+                "DeploymentName": "Deployment",
+                "displayname": "$translate(INIT_ACTION_DEPLOYING_COGNITIVE_SERVICE)",
+                "name": "Microsoft-DeployCognitiveService"
+            },
+            {
+                "CognitiveServiceName": "TextCognitiveService",
+                "displayname": "$translate(INIT_ACTION_GETTING_COGNITIVE_KEY)",
+                "name": "Microsoft-GetCognitiveKey"
+            },
+            {
+                "displayname": "$translate(INIT_ACTION_DEPLOYING_SQL_SCRIPTS)",
+                "name": "Microsoft-DeploySQLScripts",
+                "SqlServerIndex": "0",
+                "SqlScriptsFolder": "Database"
+            },
+            {
+                "displayname": "$translate(INIT_ACTION_DEPLOYING_DATABASE_CONFIGURATION)",
+                "name": "Microsoft-SetConfigValueInSql",
+                "SqlConfigTable": "[fb].[configuration]",
+                "SqlEntryName": "PagesToFollow",
+                "SqlEntryValue": "$ds(FacebookPagesToFollow)",
+                "SqlGroup": "SolutionTemplate",
+                "SqlServerIndex": "0",
+                "SqlSubGroup": "ETL"
+            },
+            {
+                "DeploymentName": "Deployment1",
+                "displayname": "$translate(INIT_ACTION_DEPLOYING_AZURE_FUNCTION)",
+                "FunctionName": "$save('solutiontemplatefunc' + this.MS.DataStore.getValue('uniqueId'))",
+                "name": "Microsoft-DeployAzureFunction",
+                "RepoUrl": "https://github.com/MohaaliMicrosoft/FacebookETL",
+                "sku": "Standard"
+            },
+            {
+                "DeploymentName": "Deployment1",
+                "displayname": "$translate(INIT_ACTION_WAITING_DEPLOYMENT)",
+                "name": "Microsoft-WaitForArmDeploymentStatus"
+            },
+            {
+                "displayname": "$translate(INIT_ACTION_CREATING_FUNCTION)",
+                "name": "Microsoft-CheckFunctionStatus"
+            },
+            {
+                "AppSettingKeys": {
+                    "CognitiveKey": "$ds(CognitiveServiceKey)",
+                    "Schema": "$ds(Schema)",
+                    "SqlConnectionString": "$ds(SqlConnectionString)"
+                },
+                "displayname": "$translate(INIT_ACTION_DEPLOYING_CONNECTION_STRINGS)",
+                "name": "Microsoft-DeployAzureFunctionConnectionStrings"
+            }
+
+            // Force run the function (Action missing here)
+        ]
+    }
+}

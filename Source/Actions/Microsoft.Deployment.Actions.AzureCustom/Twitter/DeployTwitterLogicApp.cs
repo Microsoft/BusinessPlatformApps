@@ -32,6 +32,7 @@ namespace Microsoft.Deployment.Actions.AzureCustom.Twitter
 
             var search = request.DataStore.GetValue("SearchQuery");
             var logicAppName = request.DataStore.GetValue("LogicAppName");
+            var requestUri = string.Empty;
 
             search = search.StartsWith("@") ? "@" + search : search;
 
@@ -41,6 +42,7 @@ namespace Microsoft.Deployment.Actions.AzureCustom.Twitter
             param.AddStringParam("subscription", subscription);
             param.AddStringParam("search", search);
             param.AddStringParam("LogicAppName", logicAppName);
+            param.AddStringParam("logicAppUri", string.Empty);
 
             var armTemplate = JsonUtility.GetJObjectFromJsonString(System.IO.File.ReadAllText(Path.Combine(request.Info.App.AppFilePath, "Service/AzureArm/logicapp.json")));
             var armParamTemplate = JsonUtility.GetJObjectFromObject(param.GetDynamicObject());

@@ -1395,8 +1395,36 @@ AS
                 AND ( Datediff(year, Getdate(), modifiedon) < -1 ) ));
 go
 
+CREATE VIEW psa.ProjectView
+AS
+  SELECT msdyn_projectid                     AS [Project Id],
+         msdyn_customer                      AS [Project Customer Id],
+         msdyn_subject                       AS [Project Name],
+         msdyn_description                   AS [Project Description],
+         msdyn_projectmanager                AS [Project Manager User Id],
+         systemuser.fullname                 AS [Project Manager Name],
+         CONVERT(DATE, msdyn_actualstart)    AS [Project Actual Start],
+         CONVERT(DATE, msdyn_actualend)      AS [Project Actual End],
+         CONVERT(DATE, msdyn_scheduledstart) AS [Project Scheduled Start],
+         CONVERT(DATE, msdyn_scheduledend)   AS [Project Scheduled End],
+         CostPerformance.label               AS [Project Cost Performance],
+         msdyn_costperformence               AS [Project Cost Performance Code],
+         SchedulePerformance.label           AS [Project Schedule Performance],
+         msdyn_scheduleperformance           AS [Project Schedule Performance Code],
+         msdyn_stagename                     AS [Project Stage Name],
+         msdyn_contractorganizationalunitid  AS [Project Contracting Unit Id]
+  FROM   dbo.msdyn_project LEFT OUTER JOIN msdyn_costperformence_os_msdyn_project CostPerformance ON CostPerformance.[value] = msdyn_costperformence
+                           LEFT OUTER JOIN msdyn_scheduleperformance_os_msdyn_project SchedulePerformance ON SchedulePerformance.[value] = msdyn_scheduleperformance
+                           LEFT OUTER JOIN dbo.systemuser SystemUser ON msdyn_projectmanager = systemuserid
+  WHERE  statecode = 0
+         AND ( msdyn_istemplate = 0 )
+         AND ( msdyn_actualend IS NULL
+                 OR Datediff(year, Getdate(), msdyn_actualend) >= -1 );
+go
+
 CREATE VIEW psa.BusinessTransactionView
 AS
+-- Actuals
   SELECT 0                                 AS [Is Estimate],
          CONVERT(DATE, msdyn_documentdate) AS [Document Date],
          BillingType.label                 AS [Billing Type],
@@ -1417,17 +1445,13 @@ AS
          msdyn_amount_base                 AS Amount,
          msdyn_resourcecategory            AS [Resource Category Id]
   FROM   dbo.msdyn_actual
-         LEFT OUTER JOIN dbo.msdyn_transactionclassification_gos TransactionClass
-                      ON TransactionClass.value = msdyn_transactionclassification
-         LEFT OUTER JOIN dbo.msdyn_transactiontypecode_gos TransactionTypeCode
-                      ON TransactionTypeCode.value = msdyn_transactiontypecode
-         LEFT OUTER JOIN dbo.msdyn_billingtype_gos BillingType
-                      ON BillingType.value = msdyn_billingtype
-         LEFT OUTER JOIN dbo.msdyn_billingstatus_gos BillingStatus
-                      ON BillingStatus.value = msdyn_billingstatus
+         LEFT OUTER JOIN dbo.msdyn_transactionclassification_gos TransactionClass ON TransactionClass.value = msdyn_transactionclassification
+         LEFT OUTER JOIN dbo.msdyn_transactiontypecode_gos TransactionTypeCode ON TransactionTypeCode.value = msdyn_transactiontypecode
+         LEFT OUTER JOIN dbo.msdyn_billingtype_gos BillingType ON BillingType.value = msdyn_billingtype
+         LEFT OUTER JOIN dbo.msdyn_billingstatus_gos BillingStatus ON BillingStatus.value = msdyn_billingstatus
   WHERE  ( Datediff(year, Getdate(), msdyn_documentdate) >= -1 )
          AND ( Datediff(day, Getdate(), msdyn_documentdate) <= 366 )
-  UNION ALL
+  UNION ALL -- non-Time Estimates
   SELECT 1                                 AS [Is Estimate],
          CONVERT(DATE, msdyn_documentdate) AS [Document Date],
          BillingType.label                 AS [Billing Type],
@@ -1454,8 +1478,70 @@ AS
                       ON TransactionTypeCode.value = msdyn_transactiontypecode
          LEFT OUTER JOIN dbo.msdyn_billingtype_gos BillingType
                       ON BillingType.value = msdyn_billingtype
-  WHERE  ( Datediff(year, Getdate(), msdyn_documentdate) >= -1 )
-         AND ( Datediff(day, Getdate(), msdyn_documentdate) <= 366 );
+  WHERE statecode = 0 AND msdyn_transactionclassification != 192350000 -- Time
+        AND ( Datediff(year, Getdate(), msdyn_documentdate) >= -1 )
+        AND ( Datediff(day, Getdate(), msdyn_documentdate) <= 366 )
+  UNION ALL -- Time Cost Estimates
+  SELECT 
+          1                                 AS [Is Estimate],
+          CONVERT(DATE, msdyn_scheduledstart) AS [Document Date],
+          BillingType.label                 AS [Billing Type],
+          NULL                              AS [Billing Status],
+          CASE 
+          WHEN (msdyn_plannedsales_Base > 0) -- if we have sales amount then it is chargeable
+          THEN 192350001 -- Chargeable 
+          ELSE 192350000 -- Non-Chargeable
+          END                             AS [Billing Type Code],
+          NULL                              AS [Billing Status Code],
+          msdyn_transactioncategory         AS [Transaction Category Id],
+          192350000                         AS [Transaction Type Code], -- Cost
+          192350000                         AS [Transaction Class Code], -- Time		 
+          TransactionTypeCode.label         AS [Transaction Type],
+          TransactionClass.label            AS [Transaction Class],	     
+          project.[Project Customer Id]     AS [Customer Id],
+          msdyn_Effort					   AS Quantity,
+          null						       AS [Resource Id],
+          msdyn_project                     AS [Project Id],
+          NULL                              AS [Contract Line Id],
+          NULL                              AS [Contract Id],
+          msdyn_plannedcost_base            AS Amount,
+          msdyn_resourcecategory            AS [Resource Category Id]
+  FROM   dbo.msdyn_projecttask task
+              INNER JOIN psa.ProjectView project on task.msdyn_project = project.[Project Id]
+              LEFT OUTER JOIN dbo.msdyn_transactionclassification_gos TransactionClass ON TransactionClass.value = 192350000 -- Time
+              LEFT OUTER JOIN dbo.msdyn_transactiontypecode_gos TransactionTypeCode ON TransactionTypeCode.value = 192350000 -- Cost
+              LEFT OUTER JOIN dbo.msdyn_billingtype_gos BillingType ON BillingType.value = CASE 
+                                                                                              WHEN (msdyn_plannedsales_Base > 0) THEN 192350001 -- if we have sales amount then it is chargeable
+                                                                                              ELSE 192350000 -- Non-Chargeable
+                                                                                          END
+  WHERE msdyn_islinetask = 1											 											 
+  UNION ALL -- Time UnbilledSales Estimates
+  SELECT 
+          1                                 AS [Is Estimate],
+          CONVERT(DATE, msdyn_scheduledstart) AS [Document Date],
+          BillingType.label                 AS [Billing Type],
+          NULL                              AS [Billing Status],
+          192350001				           AS [Billing Type Code], -- Chargeable
+          NULL                              AS [Billing Status Code],
+          msdyn_transactioncategory         AS [Transaction Category Id],
+          192350005                         AS [Transaction Type Code], -- UnbilledSales
+          192350000                         AS [Transaction Class Code], -- Time		 
+          TransactionTypeCode.label         AS [Transaction Type],
+          TransactionClass.label            AS [Transaction Class],	     
+          project.[Project Customer Id]     AS [Customer Id],
+          msdyn_Effort                      AS Quantity,
+          null						       AS [Resource Id],
+          msdyn_project                     AS [Project Id],
+          NULL                              AS [Contract Line Id],
+          NULL                              AS [Contract Id],
+          msdyn_plannedsales_Base           AS Amount,
+          msdyn_resourcecategory            AS [Resource Category Id]
+  FROM   dbo.msdyn_projecttask task
+              INNER Join psa.ProjectView project on task.msdyn_project = project.[Project Id]
+              LEFT OUTER JOIN dbo.msdyn_transactionclassification_gos TransactionClass ON TransactionClass.value = 192350000 -- Time
+              LEFT OUTER JOIN dbo.msdyn_transactiontypecode_gos TransactionTypeCode ON TransactionTypeCode.value = 192350005 -- UnbilledSales
+              LEFT OUTER JOIN dbo.msdyn_billingtype_gos BillingType ON BillingType.value = 192350001 -- Chargeable
+  WHERE msdyn_islinetask = 1;
 go
 
 
@@ -1704,32 +1790,6 @@ AS
   FROM   psa.contractview cv INNER JOIN dbo.salesorderdetail od ON od.salesorderid = cv.[contract id]
   WHERE  msdyn_project IS NOT NULL
   GROUP  BY cv.[contract id], msdyn_project;
-go
-
-CREATE VIEW psa.ProjectView
-AS
-  SELECT msdyn_projectid                     AS [Project Id],
-         msdyn_customer                      AS [Project Customer Id],
-         msdyn_subject                       AS [Project Name],
-         msdyn_description                   AS [Project Description],
-         msdyn_projectmanager                AS [Project Manager User Id],
-         systemuser.fullname                 AS [Project Manager Name],
-         CONVERT(DATE, msdyn_actualstart)    AS [Project Actual Start],
-         CONVERT(DATE, msdyn_actualend)      AS [Project Actual End],
-         CONVERT(DATE, msdyn_scheduledstart) AS [Project Scheduled Start],
-         CONVERT(DATE, msdyn_scheduledend)   AS [Project Scheduled End],
-         CostPerformance.label               AS [Project Cost Performance],
-         msdyn_costperformence               AS [Project Cost Performance Code],
-         SchedulePerformance.label           AS [Project Schedule Performance],
-         msdyn_scheduleperformance           AS [Project Schedule Performance Code],
-         msdyn_stagename                     AS [Project Stage Name],
-         msdyn_contractorganizationalunitid  AS [Project Contracting Unit Id]
-  FROM   dbo.msdyn_project LEFT OUTER JOIN msdyn_costperformence_os_msdyn_project CostPerformance ON CostPerformance.[value] = msdyn_costperformence
-                           LEFT OUTER JOIN msdyn_scheduleperformance_os_msdyn_project SchedulePerformance ON SchedulePerformance.[value] = msdyn_scheduleperformance
-                           LEFT OUTER JOIN dbo.systemuser SystemUser ON msdyn_projectmanager = systemuserid
-  WHERE  ( msdyn_istemplate = 0 )
-         AND ( msdyn_actualend IS NULL
-                 OR Datediff(year, Getdate(), msdyn_actualend) >= -1 );
 go
 
 CREATE VIEW psa.QuoteLineView

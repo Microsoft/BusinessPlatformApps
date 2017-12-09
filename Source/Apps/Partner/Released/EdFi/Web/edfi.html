@@ -1,0 +1,22 @@
+﻿<template>
+    <h1 class="st-title">SQL credentials</h1>
+    <div class="st-two-columns">
+        <div class="st-input-column">
+            <p class="st-text">Admin user</p>
+            <input class="st-input" type="text" change.delegate="onInvalidate()" disabled.bind="MS.HttpService.isServiceBusy" value.bind="sqlServerAdminLogin" />
+        </div>
+        <div class="st-input-column">
+            <p class="st-text">API user</p>
+            <input class="st-input" type="text" change.delegate="onInvalidate()" disabled.bind="MS.HttpService.isServiceBusy" value.bind="sqlServerProductionApiLogin" />
+        </div>
+        <div class="st-input-column">
+            <p class="st-text">Password</p>
+            <input class="st-input" type="password" change.delegate="onInvalidate()" disabled.bind="MS.HttpService.isServiceBusy" value.bind="sqlServerAdminPassword" />
+        </div>
+        <div class="st-input-column">
+            <p class="st-text">Password</p>
+            <input class="st-input" type="password" change.delegate="onInvalidate()" disabled.bind="MS.HttpService.isServiceBusy" value.bind="sqlServerProductionApiPassword" />
+        </div>
+
+    </div>
+</template>

@@ -180,9 +180,9 @@ namespace Microsoft.Deployment.Common.Controller
         public void LogEmailSubscription(string emailAddress, string nameFirst, string nameLast)
         {
             Dictionary<string, string> emailSubscription = new Dictionary<string, string>();
-            emailSubscription.Add("Email Address", emailAddress);
-            emailSubscription.Add("First Name", nameFirst);
-            emailSubscription.Add("Last Name", nameLast);
+            emailSubscription.Add("EmailAddress", emailAddress);
+            emailSubscription.Add("FirstName", nameFirst);
+            emailSubscription.Add("LastName", nameLast);
             this.LogEvent("Email-Subscription", emailSubscription);
         }
 

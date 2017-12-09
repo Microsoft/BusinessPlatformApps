@@ -59,8 +59,7 @@ namespace Microsoft.Deployment.Actions.AzureCustom.Common
             var response = await appSettingCreated.Content.ReadAsStringAsync();
             if (!appSettingCreated.IsSuccessStatusCode)
             {
-                return new ActionResponse(ActionStatus.Failure, JsonUtility.GetJObjectFromJsonString(response),
-                    null, DefaultErrorCodes.DefaultErrorCode, "Error creating appsetting");
+                return new ActionResponse(ActionStatus.Failure, JsonUtility.GetJObjectFromJsonString(response), null, DefaultErrorCodes.DefaultErrorCode, "Error creating appsetting");
             }
 
             return new ActionResponse(ActionStatus.Success);

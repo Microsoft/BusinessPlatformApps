@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Threading.Tasks;
 
@@ -8,8 +9,6 @@ using Microsoft.Deployment.Common.ActionModel;
 using Microsoft.Deployment.Common.Actions;
 using Microsoft.Deployment.Common.Helpers;
 using Microsoft.Deployment.Common.Model.Informatica;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace Microsoft.Deployment.Actions.Custom.Informatica
 {
@@ -24,14 +23,8 @@ namespace Microsoft.Deployment.Actions.Custom.Informatica
             string username = request.DataStore.GetValue("InformaticaUsername");
             string password = request.DataStore.GetValue("InformaticaPassword");
             RestClient rc = await InformaticaUtility.Initialize(username, password);
-            List<string> sfObjects = request.DataStore.GetValue("Entities").SplitByCommaSpaceTabReturnList();
-            var additionalObjects = request.DataStore.GetValue("AdditionalObjects");
 
-            if (!string.IsNullOrEmpty(additionalObjects))
-            {
-                var add = additionalObjects.SplitByCommaSpaceTabReturnList();
-                sfObjects.AddRange(add);
-            }
+            List<string> entities = JsonUtility.DeserializeEntities(request.DataStore.GetValue("Entities"), request.DataStore.GetValue("AdditionalObjects"));
 
             InformaticaTask task = new InformaticaTask
             {
@@ -40,7 +33,7 @@ namespace Microsoft.Deployment.Actions.Custom.Informatica
                 TargetConnectionId = await InformaticaUtility.GetConnectionId(rc, InformaticaUtility.BPST_TARGET_NAME),
                 Name = InformaticaUtility.BPST_TASK_NAME,
                 OrgId = rc.ID,
-                ReplicationObjects = sfObjects.ToArray(),
+                ReplicationObjects = entities.ToArray(),
                 ScheduleId = await CreateSchedule(rc, "PBI_" + Guid.NewGuid().ToString("N"))
             };
 

@@ -113,7 +113,20 @@ AS
 			WHEN entityType = 'Location' THEN '#FF8000'
 			ELSE null
             END [Entity Color]
-     FROM bpst_news.entities;
+     FROM bpst_news.entities
+	 UNION ALL
+     SELECT
+			[entities].documentId							AS [Document Id],
+            [entities].entityType							AS [Entity Type],
+            [entities].entityValue							AS [Entity Value],
+            [entities].offset								AS [Offset],
+            [entities].offsetDocumentPercentage				AS [Offset Document Percentage],
+            [entities].[length]								AS [Lenth],
+            [entities].entityType + [entities].entityValue	AS [Entity Id],
+			[types].icon									AS [Entity Class],
+			[types].color									AS [Entity Color]
+     FROM bpst_news.userdefinedentities AS entities
+	 INNER JOIN bpst_news.typedisplayinformation AS [types] ON [entities].entityType = [types].entityType;
 go
 
 CREATE VIEW bpst_news.vw_EntityRankings AS
@@ -151,21 +164,22 @@ go
 
 
 CREATE VIEW bpst_news.vw_DocumentCompressedEntities
-AS
-    SELECT documentid				AS [Document Id],
-           compressedEntitiesJson	AS [Compressed Entities Json]
-    FROM bpst_news.documentcompressedentities;
-go
-
-
-CREATE VIEW bpst_news.vw_DocumentTopicImages
-AS
-    SELECT topicId			AS [Topic Id],
-           imageUrl1		AS [Image URL 1],
-           imageUrl2		AS [Image URL 2],
-           imageUrl3		AS [Image URL 3],
-           imageUrl4		AS [Image URL 4]
-    FROM   bpst_news.documenttopicimages;
+as
+	SELECT [id] AS [Document Id],
+	COALESCE((
+		SELECT TOP 160 [Entity Type] AS entityType
+			,[Entity Value] AS entityValue
+			,[Offset] AS offset
+			,[Offset Document Percentage] AS offsetPercentage
+			,[Lenth] AS [length]
+			,[Entity Id] AS [entityId]
+			,[Entity Class] AS [cssClass]
+			,[Entity Color] AS [cssColor]
+		FROM [bpst_news].[vw_FullEntities]
+		where [document id] = docs.id
+		FOR JSON AUTO
+	), '[]') AS [Compressed Entities Json] FROM
+	bpst_news.documents AS docs;
 go
 
 CREATE VIEW bpst_news.vw_TopicKeyPhrases

@@ -1,0 +1,284 @@
+{
+  "properties": {
+    "packageType": "Graph",
+    "package": {
+      "nodes": {
+        "node1": {
+          "assetId": "asset1",
+          "parameters": {
+            "Please Specify Data Source": {
+              "value": "SqlAzure",
+              "certificateThumbprint": ""
+            },
+            "Database Server Name": {
+              "value": "servername.database.windows.net",
+              "certificateThumbprint": ""
+            },
+            "Database Name": {
+              "value": "databasename",
+              "certificateThumbprint": ""
+            },
+            "Server User Account Name": {
+              "value": "username",
+              "certificateThumbprint": ""
+            },
+            "Server User Account Password": {
+              "value": "PlacementPassword",
+              "certificateThumbprint": ""
+            },
+            "Trust Server Certificate": {
+              "value": "False",
+              "certificateThumbprint": ""
+            },
+            "Database Query": {
+              "value": "EXEC [pbist_apimgmt].[sp_fftdataextraction]",
+              "certificateThumbprint": ""
+            }
+          }
+        },
+        "node2": {
+          "assetId": "asset2",
+          "parameters": {
+            "R Script": {
+              "value": "from datetime import datetime\nimport numpy as np\nimport pandas as pd\nfrom scipy.fftpack import fft as fftpack_fft\n\n\ndef initialize_dataframe(dataframe):\n    dataframe['call_count'] = 1\n    del dataframe['id']\n\n\ndef fft(series):\n    \"\"\" perform fft and return the result\n\n        for an input of length N an array of length N//2 - 1 is returned.\n            the first entry in fft is always a spike, so it is removed.\n            the second half of the array is symmetrical so it is removed\n\n    \"\"\"\n    num = len(series)\n    calls_freq = fftpack_fft(series)\n    calls_freq[0] = 0  # there is always a spike at 0, cut it off to prevent confusion of significance here.\n    return np.abs(calls_freq[:num//2])\n\n\ndef output_dataframe_shape():\n    return pd.DataFrame(columns=['ip_address', 'timeunit', 'call_freq', 'position'])\n\n\ndef fft_for_timeunit(dataframe, timeunit):\n    groups = dataframe.groupby('ip_address')\n    results_df = output_dataframe_shape()\n    for group, ip_hash_df in groups:\n        sorted_df = ip_hash_df.sort_values('timestamp')\n        ts_indexed_df = sorted_df.set_index(sorted_df['timestamp'])\n        resampled = ts_indexed_df.resample(timeunit)[['timestamp', 'call_count']].sum().copy()\n        resampled['call_count'] = resampled['call_count'].fillna(0)\n        actual_call_counts = resampled['call_count'].tolist()\n\n        fft_results = fft(actual_call_counts)\n        fft_df = pd.DataFrame({'ip_address': group, 'timeunit': timeunit, 'call_freq': pd.Series(fft_results)})\n        fft_df['position'] = fft_df.index\n        results_df = results_df.append(fft_df)\n    return results_df\n\n\ndef reorient_timeunit_df(dataframe):\n    df = dataframe.transpose()\n    df.columns = ['entry']\n    return df\n\n\ndef azureml_main(dataframe1 = None, dataframe2 = None):\n    dataframe1.columns = ['id', 'timestamp', 'ip_address']\n    initialize_dataframe(dataframe1)\n    timeunits = reorient_timeunit_df(dataframe2)\n    fft_for_all_timeunits = output_dataframe_shape()\n    for timeunit in timeunits.entry:\n        fft_for_all_timeunits = fft_for_all_timeunits.append(fft_for_timeunit(dataframe1, timeunit))\n\n    return fft_for_all_timeunits,",
+              "certificateThumbprint": ""
+            },
+            "Python Version": {
+              "value": "Anaconda 4.0/Python 2.7.11",
+              "certificateThumbprint": ""
+            }
+          }
+        },
+        "node3": {
+          "assetId": "asset3",
+          "parameters": {
+            "Please Specify Data Destination": {
+              "value": "SqlAzure",
+              "certificateThumbprint": ""
+            },
+            "Database Server Name": {
+              "value": "username.database.windows.net",
+              "certificateThumbprint": ""
+            },
+            "Database Name": {
+              "value": "databasename",
+              "certificateThumbprint": ""
+            },
+            "Server User Account Name": {
+              "value": "username",
+              "certificateThumbprint": ""
+            },
+            "Server User Account Password": {
+              "value": "PlacementPassword",
+              "certificateThumbprint": ""
+            },
+            "Trust Server Certificate": {
+              "value": "False",
+              "certificateThumbprint": ""
+            },
+            "Comma separated list of columns to be saved": {
+              "value": "ip_address, timeunit, call_freq, position",
+              "certificateThumbprint": ""
+            },
+            "Data Table Name": {
+              "value": "pbist_apimgmt.fft_staging",
+              "certificateThumbprint": ""
+            },
+            "Comma separated list of datatable columns": {
+              "value": "IPAddress, TimeUnit, CallFreq, Position",
+              "certificateThumbprint": ""
+            },
+            "SQL Azure Number Of Rows To Write": {
+              "value": "200",
+              "certificateThumbprint": ""
+            },
+            "Treat Errors as Warnings": {
+              "value": "False",
+              "certificateThumbprint": ""
+            }
+          }
+        },
+        "node4": {
+          "assetId": "asset4",
+          "parameters": {
+            "DataFormat": {
+              "value": "CSV",
+              "certificateThumbprint": ""
+            },
+            "HasHeader": {
+              "value": "False",
+              "certificateThumbprint": ""
+            },
+            "Data": {
+              "value": "min,h",
+              "certificateThumbprint": ""
+            }
+          }
+        }
+      },
+      "edges": [
+        {
+          "sourceNodeId": "node1",
+          "sourcePortId": "Results dataset",
+          "targetNodeId": "node2",
+          "targetPortId": "Dataset1"
+        },
+        {
+          "sourceNodeId": "node2",
+          "sourcePortId": "Result Dataset",
+          "targetNodeId": "node3",
+          "targetPortId": "Dataset"
+        },
+        {
+          "sourceNodeId": "node4",
+          "sourcePortId": "dataset",
+          "targetNodeId": "node2",
+          "targetPortId": "Dataset2"
+        }
+      ],
+      "graphParameters": {
+        "frequency": {
+          "description": "frequency",
+          "type": "Script",
+          "links": [
+            {
+              "nodeId": "node4",
+              "parameterKey": "Data"
+            }
+          ]
+        },
+        "Database server name": {
+          "description": "Database server name",
+          "type": "String",
+          "links": [
+            {
+              "nodeId": "node1",
+              "parameterKey": "Database Server Name"
+            },
+            {
+              "nodeId": "node3",
+              "parameterKey": "Database Server Name"
+            }
+          ]
+        },
+        "Database name": {
+          "description": "Database name",
+          "type": "String",
+          "links": [
+            {
+              "nodeId": "node1",
+              "parameterKey": "Database Name"
+            },
+            {
+              "nodeId": "node3",
+              "parameterKey": "Database Name"
+            }
+          ]
+        },
+        "User name": {
+          "description": "User name",
+          "type": "String",
+          "links": [
+            {
+              "nodeId": "node1",
+              "parameterKey": "Server User Account Name"
+            },
+            {
+              "nodeId": "node3",
+              "parameterKey": "Server User Account Name"
+            }
+          ]
+        }
+      }
+    },
+    "title": "APIMgmt",
+    "description": "Executes a Fast Fourier Transform over each IP Address's request history.",
+    "readOnly": false,
+    "exposeSampleData": false,
+    "realtimeConfiguration": {
+      "maxConcurrentCalls": 20
+    },
+    "diagnostics": {
+      "level": "None"
+    },
+    "storageAccount": {
+      "name": "templatesmlstorage"
+    },
+    "input": {
+      "title": "",
+      "description": "",
+      "type": "object",
+      "properties": {}
+    },
+    "output": {
+      "title": "",
+      "description": "",
+      "type": "object",
+      "properties": {}
+    },
+    "exampleRequest": {
+      "globalParameters": {
+        "Database server name": "templatessqlserver2.database.windows.net",
+        "Database name": "TemplatesSQL2",
+        "User name": "templatesBotUser",
+        "Password": "",
+        "frequency": "min,h"
+      }
+    },
+    "assets": {
+      "asset1": {
+        "name": "Import Data",
+        "type": "Module",
+        "locationInfo": {
+          "uri": "aml://module/506153734175476c4f62416c57734963.4e1b0fe6aded4b3fa36f39b8862b9004.v1-default-1744",
+          "credentials": ""
+        }
+      },
+      "asset2": {
+        "name": "Execute Python Script",
+        "type": "Module",
+        "locationInfo": {
+          "uri": "aml://module/506153734175476c4f62416c57734963.cdb56f957f4c404dbde75bb972e6f232.v1-default-1735",
+          "credentials": ""
+        }
+      },
+      "asset3": {
+        "name": "Export Data",
+        "type": "Module",
+        "locationInfo": {
+          "uri": "aml://module/506153734175476c4f62416c57734963.7a391181b6a74ad4b82de419c0d6522c.v1-default-1742",
+          "credentials": ""
+        }
+      },
+      "asset4": {
+        "name": "Enter Data Manually",
+        "type": "Module",
+        "locationInfo": {
+          "uri": "aml://module/506153734175476c4f62416c57734963.4fbef0ab2c8e4a25b5c47be76eac33d6.v1-default-1705",
+          "credentials": ""
+        }
+      }
+    },
+    "parameters": {
+      "frequency": {
+        "value": "min,h",
+        "certificateThumbprint": ""
+      },
+      "database server name": {
+        "value": "databaseservertoreplace",
+        "certificateThumbprint": ""
+      },
+      "database name": {
+        "value": "nametoreplace",
+        "certificateThumbprint": ""
+      },
+      "user name": {
+        "value": "pbiadmin",
+        "certificateThumbprint": ""
+      }
+    },
+    "payloadsInBlobStorage": false
+  },
+  "location": "South Central US",
+  "tags": {}
+}

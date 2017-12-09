@@ -1,0 +1,571 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="RedditModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="EmbeddedUrls">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="documentId" Type="varchar" MaxLength="64" Nullable="false" />
+          <Property Name="embeddedUrl" Type="nvarchar" MaxLength="500" />
+          <Property Name="embeddedUrlDomain" Type="nvarchar" MaxLength="100" />
+        </EntityType>
+        <EntityType Name="PostCommentCount">
+          <Key>
+            <PropertyRef Name="postId" />
+          </Key>
+          <Property Name="postId" Type="varchar" MaxLength="64" Nullable="false" />
+          <Property Name="commentCount" Type="int" />
+        </EntityType>
+        <EntityType Name="UserDefinedEntities">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="documentId" Type="varchar" MaxLength="64" Nullable="false" />
+          <Property Name="entity" Type="nvarchar" MaxLength="500" />
+          <Property Name="entityType" Type="nvarchar" MaxLength="20" />
+          <Property Name="entityOffset" Type="int" />
+          <Property Name="entityLength" Type="int" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'Reddit.reddit.UserDefinedEntityDefinitions' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="UserDefinedEntityDefinitions">
+          <Key>
+            <PropertyRef Name="regex" />
+            <PropertyRef Name="entityType" />
+            <PropertyRef Name="color" />
+          </Key>
+          <Property Name="regex" Type="nvarchar" MaxLength="200" Nullable="false" />
+          <Property Name="entityType" Type="nvarchar" MaxLength="30" Nullable="false" />
+          <Property Name="entityValue" Type="nvarchar(max)" />
+          <Property Name="color" Type="nvarchar" MaxLength="7" Nullable="false" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'Reddit.reddit.AllCommentsView' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="AllCommentsView">
+          <Key>
+            <PropertyRef Name="id" />
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+          </Key>
+          <Property Name="id" Type="varchar" MaxLength="64" Nullable="false" />
+          <Property Name="content" Type="nvarchar(max)" />
+          <Property Name="score" Type="int" />
+          <Property Name="controversiality" Type="float" />
+          <Property Name="gilded" Type="int" />
+          <Property Name="author" Type="nvarchar" MaxLength="100" />
+          <Property Name="subreddit" Type="nvarchar" MaxLength="200" />
+          <Property Name="isComment" Type="bit" />
+          <Property Name="publishedTimestamp" Type="datetime" Nullable="false" />
+          <Property Name="publishedMonthPrecision" Type="datetime" Nullable="false" />
+          <Property Name="publishedWeekPrecision" Type="datetime" Nullable="false" />
+          <Property Name="publishedDayPrecision" Type="datetime" Nullable="false" />
+          <Property Name="publishedHourPrecision" Type="datetime" Nullable="false" />
+          <Property Name="publishedMinutePrecision" Type="datetime" Nullable="false" />
+          <Property Name="ingestedTimestamp" Type="datetime" Nullable="false" />
+          <Property Name="url" Type="nvarchar" MaxLength="2048" />
+          <Property Name="sentiment" Type="decimal" Precision="18" Scale="17" />
+          <Property Name="parentId" Type="varchar" MaxLength="64" Nullable="false" />
+          <Property Name="postId" Type="varchar" MaxLength="64" Nullable="false" />
+          <Property Name="parentUrl" Type="nvarchar" MaxLength="2048" Nullable="false" />
+          <Property Name="postUrl" Type="nvarchar" MaxLength="2048" Nullable="false" />
+          <Property Name="documentContainsUserDefinedEntities" Type="bit" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'Reddit.reddit.AllPostsView' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="AllPostsView">
+          <Key>
+            <PropertyRef Name="id" />
+            
+            
+            
+            
+            
+            
+            
+          </Key>
+          <Property Name="id" Type="varchar" MaxLength="64" Nullable="false" />
+          <Property Name="content" Type="nvarchar(max)" />
+          <Property Name="score" Type="int" />
+          <Property Name="controversiality" Type="float" />
+          <Property Name="gilded" Type="int" />
+          <Property Name="author" Type="nvarchar" MaxLength="100" />
+          <Property Name="subreddit" Type="nvarchar" MaxLength="200" />
+          <Property Name="isComment" Type="bit" />
+          <Property Name="publishedTimestamp" Type="datetime" Nullable="false" />
+          <Property Name="publishedMonthPrecision" Type="datetime" Nullable="false" />
+          <Property Name="publishedWeekPrecision" Type="datetime" Nullable="false" />
+          <Property Name="publishedDayPrecision" Type="datetime" Nullable="false" />
+          <Property Name="publishedHourPrecision" Type="datetime" Nullable="false" />
+          <Property Name="publishedMinutePrecision" Type="datetime" Nullable="false" />
+          <Property Name="ingestedTimestamp" Type="datetime" Nullable="false" />
+          <Property Name="url" Type="nvarchar" MaxLength="2048" />
+          <Property Name="sentiment" Type="decimal" Precision="18" Scale="17" />
+          <Property Name="title" Type="nvarchar" MaxLength="200" />
+          <Property Name="mediaPreviewUrl" Type="nvarchar" MaxLength="2048" />
+          <Property Name="documentContainsUserDefinedEntities" Type="bit" />
+        </EntityType>
+        <Function Name="InsertComment" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="reddit">
+          <Parameter Name="NewDocId" Type="varchar" Mode="In" />
+          <Parameter Name="content" Type="nvarchar(max)" Mode="In" />
+          <Parameter Name="score" Type="int" Mode="In" />
+          <Parameter Name="controversiality" Type="float" Mode="In" />
+          <Parameter Name="gilded" Type="int" Mode="In" />
+          <Parameter Name="author" Type="nvarchar" Mode="In" />
+          <Parameter Name="subreddit" Type="nvarchar" Mode="In" />
+          <Parameter Name="publishedTimestamp" Type="datetime" Mode="In" />
+          <Parameter Name="publishedMonthPrecision" Type="datetime" Mode="In" />
+          <Parameter Name="publishedWeekPrecision" Type="datetime" Mode="In" />
+          <Parameter Name="publishedDayPrecision" Type="datetime" Mode="In" />
+          <Parameter Name="publishedHourPrecision" Type="datetime" Mode="In" />
+          <Parameter Name="publishedMinutePrecision" Type="datetime" Mode="In" />
+          <Parameter Name="ingestedTimestamp" Type="datetime" Mode="In" />
+          <Parameter Name="url" Type="nvarchar" Mode="In" />
+          <Parameter Name="parentId" Type="varchar" Mode="In" />
+          <Parameter Name="postId" Type="varchar" Mode="In" />
+          <Parameter Name="parentUrl" Type="nvarchar" Mode="In" />
+          <Parameter Name="postUrl" Type="nvarchar" Mode="In" />
+        </Function>
+        <Function Name="InsertPost" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="reddit">
+          <Parameter Name="NewDocId" Type="varchar" Mode="In" />
+          <Parameter Name="content" Type="nvarchar(max)" Mode="In" />
+          <Parameter Name="score" Type="int" Mode="In" />
+          <Parameter Name="controversiality" Type="float" Mode="In" />
+          <Parameter Name="gilded" Type="int" Mode="In" />
+          <Parameter Name="author" Type="nvarchar" Mode="In" />
+          <Parameter Name="subreddit" Type="nvarchar" Mode="In" />
+          <Parameter Name="publishedTimestamp" Type="datetime" Mode="In" />
+          <Parameter Name="publishedMonthPrecision" Type="datetime" Mode="In" />
+          <Parameter Name="publishedWeekPrecision" Type="datetime" Mode="In" />
+          <Parameter Name="publishedDayPrecision" Type="datetime" Mode="In" />
+          <Parameter Name="publishedHourPrecision" Type="datetime" Mode="In" />
+          <Parameter Name="publishedMinutePrecision" Type="datetime" Mode="In" />
+          <Parameter Name="ingestedTimestamp" Type="datetime" Mode="In" />
+          <Parameter Name="url" Type="nvarchar" Mode="In" />
+          <Parameter Name="title" Type="nvarchar" Mode="In" />
+          <Parameter Name="mediaPreviewUrl" Type="nvarchar" Mode="In" />
+        </Function>
+        <EntityContainer Name="RedditModelStoreContainer">
+          <EntitySet Name="EmbeddedUrls" EntityType="Self.EmbeddedUrls" Schema="reddit" store:Type="Tables" />
+          <EntitySet Name="PostCommentCount" EntityType="Self.PostCommentCount" Schema="reddit" store:Type="Tables" />
+          <EntitySet Name="UserDefinedEntities" EntityType="Self.UserDefinedEntities" Schema="reddit" store:Type="Tables" />
+          <EntitySet Name="UserDefinedEntityDefinitions" EntityType="Self.UserDefinedEntityDefinitions" store:Type="Tables" store:Schema="reddit">
+            <DefiningQuery>SELECT 
+    [UserDefinedEntityDefinitions].[regex] AS [regex], 
+    [UserDefinedEntityDefinitions].[entityType] AS [entityType], 
+    [UserDefinedEntityDefinitions].[entityValue] AS [entityValue], 
+    [UserDefinedEntityDefinitions].[color] AS [color]
+    FROM [reddit].[UserDefinedEntityDefinitions] AS [UserDefinedEntityDefinitions]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="AllCommentsView" EntityType="Self.AllCommentsView" store:Type="Views" store:Schema="reddit">
+            <DefiningQuery>SELECT 
+    [AllCommentsView].[id] AS [id], 
+    [AllCommentsView].[content] AS [content], 
+    [AllCommentsView].[score] AS [score], 
+    [AllCommentsView].[controversiality] AS [controversiality], 
+    [AllCommentsView].[gilded] AS [gilded], 
+    [AllCommentsView].[author] AS [author], 
+    [AllCommentsView].[subreddit] AS [subreddit], 
+    [AllCommentsView].[isComment] AS [isComment], 
+    [AllCommentsView].[publishedTimestamp] AS [publishedTimestamp], 
+    [AllCommentsView].[publishedMonthPrecision] AS [publishedMonthPrecision], 
+    [AllCommentsView].[publishedWeekPrecision] AS [publishedWeekPrecision], 
+    [AllCommentsView].[publishedDayPrecision] AS [publishedDayPrecision], 
+    [AllCommentsView].[publishedHourPrecision] AS [publishedHourPrecision], 
+    [AllCommentsView].[publishedMinutePrecision] AS [publishedMinutePrecision], 
+    [AllCommentsView].[ingestedTimestamp] AS [ingestedTimestamp], 
+    [AllCommentsView].[url] AS [url], 
+    [AllCommentsView].[sentiment] AS [sentiment], 
+    [AllCommentsView].[parentId] AS [parentId], 
+    [AllCommentsView].[postId] AS [postId], 
+    [AllCommentsView].[parentUrl] AS [parentUrl], 
+    [AllCommentsView].[postUrl] AS [postUrl], 
+    [AllCommentsView].[documentContainsUserDefinedEntities] AS [documentContainsUserDefinedEntities]
+    FROM [reddit].[AllCommentsView] AS [AllCommentsView]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="AllPostsView" EntityType="Self.AllPostsView" store:Type="Views" store:Schema="reddit">
+            <DefiningQuery>SELECT 
+    [AllPostsView].[id] AS [id], 
+    [AllPostsView].[content] AS [content], 
+    [AllPostsView].[score] AS [score], 
+    [AllPostsView].[controversiality] AS [controversiality], 
+    [AllPostsView].[gilded] AS [gilded], 
+    [AllPostsView].[author] AS [author], 
+    [AllPostsView].[subreddit] AS [subreddit], 
+    [AllPostsView].[isComment] AS [isComment], 
+    [AllPostsView].[publishedTimestamp] AS [publishedTimestamp], 
+    [AllPostsView].[publishedMonthPrecision] AS [publishedMonthPrecision], 
+    [AllPostsView].[publishedWeekPrecision] AS [publishedWeekPrecision], 
+    [AllPostsView].[publishedDayPrecision] AS [publishedDayPrecision], 
+    [AllPostsView].[publishedHourPrecision] AS [publishedHourPrecision], 
+    [AllPostsView].[publishedMinutePrecision] AS [publishedMinutePrecision], 
+    [AllPostsView].[ingestedTimestamp] AS [ingestedTimestamp], 
+    [AllPostsView].[url] AS [url], 
+    [AllPostsView].[sentiment] AS [sentiment], 
+    [AllPostsView].[title] AS [title], 
+    [AllPostsView].[mediaPreviewUrl] AS [mediaPreviewUrl], 
+    [AllPostsView].[documentContainsUserDefinedEntities] AS [documentContainsUserDefinedEntities]
+    FROM [reddit].[AllPostsView] AS [AllPostsView]</DefiningQuery>
+          </EntitySet>
+        </EntityContainer>
+      </Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="RedditCore.DataModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="Comment">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="String" Nullable="false" MaxLength="64" Unicode="false" FixedLength="false" />
+          <Property Name="Content" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Gilded" Type="Int32" />
+          <Property Name="Author" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Subreddit" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="IsComment" Type="Boolean" a:SetterAccess="Private" xmlns:a="http://schemas.microsoft.com/ado/2006/04/codegeneration" />
+          <Property Name="Sentiment" Type="Decimal" Precision="18" Scale="17" a:SetterAccess="Private" xmlns:a="http://schemas.microsoft.com/ado/2006/04/codegeneration" />
+          <Property Name="ParentId" Type="String" MaxLength="64" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="PublishedTimestamp" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="PublishedMonthPrecision" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="PublishedWeekPrecision" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="PublishedDayPrecision" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="PublishedHourPrecision" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="PublishedMinutePrecision" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="IngestedTimestamp" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="Url" Type="String" MaxLength="2048" FixedLength="false" Unicode="true" />
+          <Property Name="PostId" Type="String" Nullable="false" MaxLength="64" FixedLength="false" Unicode="false" />
+          <Property Name="Score" Type="Int32" />
+          <Property Name="Controversiality" Type="Double" />
+          <Property Name="ParentUrl" Type="String" Nullable="false" MaxLength="2048" FixedLength="false" Unicode="true" />
+          <Property Name="PostUrl" Type="String" Nullable="false" MaxLength="2048" FixedLength="false" Unicode="true" />
+          <Property Name="DocumentContainsUserDefinedEntities" Type="Boolean" a:SetterAccess="Private" xmlns:a="http://schemas.microsoft.com/ado/2006/04/codegeneration" />
+        </EntityType>
+        <EntityContainer Name="RedditEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="Comments" EntityType="RedditCore.DataModel.Comment" />
+          <FunctionImport Name="InsertSubreddit">
+            <Parameter Name="NewDocId" Mode="In" Type="Int64" />
+            <Parameter Name="content" Mode="In" Type="String" />
+            <Parameter Name="ups" Mode="In" Type="Int32" />
+            <Parameter Name="downs" Mode="In" Type="Int32" />
+            <Parameter Name="gilded" Mode="In" Type="Int32" />
+            <Parameter Name="author" Mode="In" Type="String" />
+            <Parameter Name="subreddit" Mode="In" Type="String" />
+            <Parameter Name="title" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="InsertComment">
+            <Parameter Name="NewDocId" Mode="In" Type="Int64" />
+            <Parameter Name="content" Mode="In" Type="String" />
+            <Parameter Name="ups" Mode="In" Type="Int32" />
+            <Parameter Name="downs" Mode="In" Type="Int32" />
+            <Parameter Name="gilded" Mode="In" Type="Int32" />
+            <Parameter Name="author" Mode="In" Type="String" />
+            <Parameter Name="subreddit" Mode="In" Type="String" />
+            <Parameter Name="parentId" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="InsertSubreddit1">
+            <Parameter Name="NewDocId" Mode="In" Type="Int64" />
+            <Parameter Name="content" Mode="In" Type="String" />
+            <Parameter Name="ups" Mode="In" Type="Int32" />
+            <Parameter Name="downs" Mode="In" Type="Int32" />
+            <Parameter Name="gilded" Mode="In" Type="Int32" />
+            <Parameter Name="author" Mode="In" Type="String" />
+            <Parameter Name="subreddit" Mode="In" Type="String" />
+            <Parameter Name="title" Mode="In" Type="String" />
+          </FunctionImport>
+          <EntitySet Name="Posts" EntityType="RedditCore.DataModel.Post" />
+          <FunctionImport Name="InsertComment1">
+            <Parameter Name="NewDocId" Mode="In" Type="String" />
+            <Parameter Name="content" Mode="In" Type="String" />
+            <Parameter Name="score" Mode="In" Type="Int32" />
+            <Parameter Name="controversiality" Mode="In" Type="Double" />
+            <Parameter Name="gilded" Mode="In" Type="Int32" />
+            <Parameter Name="author" Mode="In" Type="String" />
+            <Parameter Name="subreddit" Mode="In" Type="String" />
+            <Parameter Name="publishedTimestamp" Mode="In" Type="DateTime" />
+            <Parameter Name="publishedMonthPrecision" Mode="In" Type="DateTime" />
+            <Parameter Name="publishedWeekPrecision" Mode="In" Type="DateTime" />
+            <Parameter Name="publishedDayPrecision" Mode="In" Type="DateTime" />
+            <Parameter Name="publishedHourPrecision" Mode="In" Type="DateTime" />
+            <Parameter Name="publishedMinutePrecision" Mode="In" Type="DateTime" />
+            <Parameter Name="ingestedTimestamp" Mode="In" Type="DateTime" />
+            <Parameter Name="url" Mode="In" Type="String" />
+            <Parameter Name="parentId" Mode="In" Type="String" />
+            <Parameter Name="postId" Mode="In" Type="String" />
+            <Parameter Name="parentUrl" Mode="In" Type="String" />
+            <Parameter Name="postUrl" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="InsertPost">
+            <Parameter Name="NewDocId" Mode="In" Type="String" />
+            <Parameter Name="content" Mode="In" Type="String" />
+            <Parameter Name="score" Mode="In" Type="Int32" />
+            <Parameter Name="controversiality" Mode="In" Type="Double" />
+            <Parameter Name="gilded" Mode="In" Type="Int32" />
+            <Parameter Name="author" Mode="In" Type="String" />
+            <Parameter Name="subreddit" Mode="In" Type="String" />
+            <Parameter Name="publishedTimestamp" Mode="In" Type="DateTime" />
+            <Parameter Name="publishedMonthPrecision" Mode="In" Type="DateTime" />
+            <Parameter Name="publishedWeekPrecision" Mode="In" Type="DateTime" />
+            <Parameter Name="publishedDayPrecision" Mode="In" Type="DateTime" />
+            <Parameter Name="publishedHourPrecision" Mode="In" Type="DateTime" />
+            <Parameter Name="publishedMinutePrecision" Mode="In" Type="DateTime" />
+            <Parameter Name="ingestedTimestamp" Mode="In" Type="DateTime" />
+            <Parameter Name="url" Mode="In" Type="String" />
+            <Parameter Name="title" Mode="In" Type="String" />
+            <Parameter Name="mediaPreviewUrl" Mode="In" Type="String" />
+          </FunctionImport>
+          <EntitySet Name="UserDefinedEntities" EntityType="RedditCore.DataModel.UserDefinedEntity" />
+          <EntitySet Name="UserDefinedEntityDefinitions" EntityType="RedditCore.DataModel.UserDefinedEntityDefinition" />
+          <EntitySet Name="EmbeddedUrls" EntityType="RedditCore.DataModel.EmbeddedUrl" />
+          <EntitySet Name="PostCommentCounts" EntityType="RedditCore.DataModel.PostCommentCount" />
+        </EntityContainer>
+        <EntityType Name="Post">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="String" Nullable="false" MaxLength="64" Unicode="false" FixedLength="false" />
+          <Property Name="Content" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Gilded" Type="Int32" />
+          <Property Name="Author" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Subreddit" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="IsComment" Type="Boolean" />
+          <Property Name="Sentiment" Type="Decimal" Precision="18" Scale="17" />
+          <Property Name="Title" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="PublishedTimestamp" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="PublishedMonthPrecision" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="PublishedWeekPrecision" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="PublishedDayPrecision" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="PublishedHourPrecision" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="PublishedMinutePrecision" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="IngestedTimestamp" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="Url" Type="String" MaxLength="2048" FixedLength="false" Unicode="true" />
+          <Property Name="MediaPreviewUrl" Type="String" MaxLength="2048" FixedLength="false" Unicode="true" />
+          <Property Name="Score" Type="Int32" />
+          <Property Name="Controversiality" Type="Double" />
+          <Property Name="DocumentContainsUserDefinedEntities" Type="Boolean" a:SetterAccess="Private" xmlns:a="http://schemas.microsoft.com/ado/2006/04/codegeneration" />
+        </EntityType>
+        <EntityType Name="UserDefinedEntity">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="DocumentId" Type="String" Nullable="false" MaxLength="64" Unicode="false" FixedLength="false" />
+          <Property Name="Entity" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="EntityType" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="EntityOffset" Type="Int32" />
+          <Property Name="EntityLength" Type="Int32" />
+          <Property Name="Id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" a:SetterAccess="Public" xmlns:a="http://schemas.microsoft.com/ado/2006/04/codegeneration" />
+        </EntityType>
+        <EntityType Name="UserDefinedEntityDefinition">
+          <Key>
+            <PropertyRef Name="Regex" />
+            <PropertyRef Name="EntityType" />
+            <PropertyRef Name="Color" />
+          </Key>
+          <Property Name="Regex" Type="String" Nullable="false" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="EntityType" Type="String" Nullable="false" MaxLength="30" FixedLength="false" Unicode="true" />
+          <Property Name="EntityValue" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Color" Type="String" Nullable="false" MaxLength="7" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="EmbeddedUrl">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="DocumentId" Type="String" Nullable="false" MaxLength="64" FixedLength="false" Unicode="false" />
+          <Property Name="ContentEmbeddedUrl" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="ContentEmbeddedUrlDomain" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="PostCommentCount">
+          <Key>
+            <PropertyRef Name="PostId" />
+          </Key>
+          <Property Name="PostId" Type="String" Nullable="false" MaxLength="64" FixedLength="false" Unicode="false" />
+          <Property Name="CommentCount" Type="Int32" />
+        </EntityType>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="RedditModelStoreContainer" CdmEntityContainer="RedditEntities">
+          <EntitySetMapping Name="Comments">
+            <EntityTypeMapping TypeName="RedditCore.DataModel.Comment">
+              <ModificationFunctionMapping>
+                <InsertFunction FunctionName="RedditModel.Store.InsertComment">
+                  <ScalarProperty Name="Id" ParameterName="NewDocId" />
+                  <ScalarProperty Name="PostUrl" ParameterName="postUrl" />
+                  <ScalarProperty Name="ParentUrl" ParameterName="parentUrl" />
+                  <ScalarProperty Name="PostId" ParameterName="postId" />
+                  <ScalarProperty Name="ParentId" ParameterName="parentId" />
+                  <ScalarProperty Name="Url" ParameterName="url" />
+                  <ScalarProperty Name="IngestedTimestamp" ParameterName="ingestedTimestamp" />
+                  <ScalarProperty Name="PublishedMinutePrecision" ParameterName="publishedMinutePrecision" />
+                  <ScalarProperty Name="PublishedHourPrecision" ParameterName="publishedHourPrecision" />
+                  <ScalarProperty Name="PublishedDayPrecision" ParameterName="publishedDayPrecision" />
+                  <ScalarProperty Name="PublishedWeekPrecision" ParameterName="publishedWeekPrecision" />
+                  <ScalarProperty Name="PublishedMonthPrecision" ParameterName="publishedMonthPrecision" />
+                  <ScalarProperty Name="PublishedTimestamp" ParameterName="publishedTimestamp" />
+                  <ScalarProperty Name="Subreddit" ParameterName="subreddit" />
+                  <ScalarProperty Name="Author" ParameterName="author" />
+                  <ScalarProperty Name="Gilded" ParameterName="gilded" />
+                  <ScalarProperty Name="Controversiality" ParameterName="controversiality" />
+                  <ScalarProperty Name="Score" ParameterName="score" />
+                  <ScalarProperty Name="Content" ParameterName="content" />
+                </InsertFunction>
+              </ModificationFunctionMapping>
+            </EntityTypeMapping>
+            <EntityTypeMapping TypeName="IsTypeOf(RedditCore.DataModel.Comment)">
+              <MappingFragment StoreEntitySet="AllCommentsView">
+                <ScalarProperty Name="DocumentContainsUserDefinedEntities" ColumnName="documentContainsUserDefinedEntities" />
+                <ScalarProperty Name="PostUrl" ColumnName="postUrl" />
+                <ScalarProperty Name="ParentUrl" ColumnName="parentUrl" />
+                <ScalarProperty Name="PostId" ColumnName="postId" />
+                <ScalarProperty Name="ParentId" ColumnName="parentId" />
+                <ScalarProperty Name="Sentiment" ColumnName="sentiment" />
+                <ScalarProperty Name="Url" ColumnName="url" />
+                <ScalarProperty Name="IngestedTimestamp" ColumnName="ingestedTimestamp" />
+                <ScalarProperty Name="PublishedMinutePrecision" ColumnName="publishedMinutePrecision" />
+                <ScalarProperty Name="PublishedHourPrecision" ColumnName="publishedHourPrecision" />
+                <ScalarProperty Name="PublishedDayPrecision" ColumnName="publishedDayPrecision" />
+                <ScalarProperty Name="PublishedWeekPrecision" ColumnName="publishedWeekPrecision" />
+                <ScalarProperty Name="PublishedMonthPrecision" ColumnName="publishedMonthPrecision" />
+                <ScalarProperty Name="PublishedTimestamp" ColumnName="publishedTimestamp" />
+                <ScalarProperty Name="IsComment" ColumnName="isComment" />
+                <ScalarProperty Name="Subreddit" ColumnName="subreddit" />
+                <ScalarProperty Name="Author" ColumnName="author" />
+                <ScalarProperty Name="Gilded" ColumnName="gilded" />
+                <ScalarProperty Name="Controversiality" ColumnName="controversiality" />
+                <ScalarProperty Name="Score" ColumnName="score" />
+                <ScalarProperty Name="Content" ColumnName="content" />
+                <ScalarProperty Name="Id" ColumnName="id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Posts">
+            <EntityTypeMapping TypeName="RedditCore.DataModel.Post">
+              <ModificationFunctionMapping>
+                <InsertFunction FunctionName="RedditModel.Store.InsertPost">
+                  <ScalarProperty Name="Controversiality" ParameterName="controversiality" />
+                  <ScalarProperty Name="Score" ParameterName="score" />
+                  <ScalarProperty Name="MediaPreviewUrl" ParameterName="mediaPreviewUrl" />
+                  <ScalarProperty Name="Url" ParameterName="url" />
+                  <ScalarProperty Name="IngestedTimestamp" ParameterName="ingestedTimestamp" />
+                  <ScalarProperty Name="PublishedMinutePrecision" ParameterName="publishedMinutePrecision" />
+                  <ScalarProperty Name="PublishedHourPrecision" ParameterName="publishedHourPrecision" />
+                  <ScalarProperty Name="PublishedDayPrecision" ParameterName="publishedDayPrecision" />
+                  <ScalarProperty Name="PublishedWeekPrecision" ParameterName="publishedWeekPrecision" />
+                  <ScalarProperty Name="PublishedMonthPrecision" ParameterName="publishedMonthPrecision" />
+                  <ScalarProperty Name="PublishedTimestamp" ParameterName="publishedTimestamp" />
+                  <ScalarProperty Name="Id" ParameterName="NewDocId" />
+                  <ScalarProperty Name="Title" ParameterName="title" />
+                  <ScalarProperty Name="Subreddit" ParameterName="subreddit" />
+                  <ScalarProperty Name="Author" ParameterName="author" />
+                  <ScalarProperty Name="Gilded" ParameterName="gilded" />
+                  <ScalarProperty Name="Content" ParameterName="content" />
+                </InsertFunction>
+              </ModificationFunctionMapping>
+            </EntityTypeMapping>
+            <EntityTypeMapping TypeName="IsTypeOf(RedditCore.DataModel.Post)">
+              <MappingFragment StoreEntitySet="AllPostsView">
+                <ScalarProperty Name="DocumentContainsUserDefinedEntities" ColumnName="documentContainsUserDefinedEntities" />
+                <ScalarProperty Name="MediaPreviewUrl" ColumnName="mediaPreviewUrl" />
+                <ScalarProperty Name="Title" ColumnName="title" />
+                <ScalarProperty Name="Sentiment" ColumnName="sentiment" />
+                <ScalarProperty Name="Url" ColumnName="url" />
+                <ScalarProperty Name="IngestedTimestamp" ColumnName="ingestedTimestamp" />
+                <ScalarProperty Name="PublishedMinutePrecision" ColumnName="publishedMinutePrecision" />
+                <ScalarProperty Name="PublishedHourPrecision" ColumnName="publishedHourPrecision" />
+                <ScalarProperty Name="PublishedDayPrecision" ColumnName="publishedDayPrecision" />
+                <ScalarProperty Name="PublishedWeekPrecision" ColumnName="publishedWeekPrecision" />
+                <ScalarProperty Name="PublishedMonthPrecision" ColumnName="publishedMonthPrecision" />
+                <ScalarProperty Name="PublishedTimestamp" ColumnName="publishedTimestamp" />
+                <ScalarProperty Name="IsComment" ColumnName="isComment" />
+                <ScalarProperty Name="Subreddit" ColumnName="subreddit" />
+                <ScalarProperty Name="Author" ColumnName="author" />
+                <ScalarProperty Name="Gilded" ColumnName="gilded" />
+                <ScalarProperty Name="Controversiality" ColumnName="controversiality" />
+                <ScalarProperty Name="Score" ColumnName="score" />
+                <ScalarProperty Name="Content" ColumnName="content" />
+                <ScalarProperty Name="Id" ColumnName="id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <FunctionImportMapping FunctionImportName="InsertComment1" FunctionName="RedditModel.Store.InsertComment" />
+          <FunctionImportMapping FunctionImportName="InsertPost" FunctionName="RedditModel.Store.InsertPost" />
+          <EntitySetMapping Name="UserDefinedEntities">
+            <EntityTypeMapping TypeName="RedditCore.DataModel.UserDefinedEntity">
+              <MappingFragment StoreEntitySet="UserDefinedEntities">
+                <ScalarProperty Name="Id" ColumnName="id" />
+                <ScalarProperty Name="EntityLength" ColumnName="entityLength" />
+                <ScalarProperty Name="EntityOffset" ColumnName="entityOffset" />
+                <ScalarProperty Name="EntityType" ColumnName="entityType" />
+                <ScalarProperty Name="Entity" ColumnName="entity" />
+                <ScalarProperty Name="DocumentId" ColumnName="documentId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="UserDefinedEntityDefinitions">
+            <EntityTypeMapping TypeName="RedditCore.DataModel.UserDefinedEntityDefinition">
+              <MappingFragment StoreEntitySet="UserDefinedEntityDefinitions">
+                <ScalarProperty Name="Color" ColumnName="color" />
+                <ScalarProperty Name="EntityValue" ColumnName="entityValue" />
+                <ScalarProperty Name="EntityType" ColumnName="entityType" />
+                <ScalarProperty Name="Regex" ColumnName="regex" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="EmbeddedUrls">
+            <EntityTypeMapping TypeName="RedditCore.DataModel.EmbeddedUrl">
+              <MappingFragment StoreEntitySet="EmbeddedUrls">
+                <ScalarProperty Name="ContentEmbeddedUrlDomain" ColumnName="embeddedUrlDomain" />
+                <ScalarProperty Name="ContentEmbeddedUrl" ColumnName="embeddedUrl" />
+                <ScalarProperty Name="DocumentId" ColumnName="documentId" />
+                <ScalarProperty Name="Id" ColumnName="id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="PostCommentCounts">
+            <EntityTypeMapping TypeName="RedditCore.DataModel.PostCommentCount">
+              <MappingFragment StoreEntitySet="PostCommentCount">
+                <ScalarProperty Name="CommentCount" ColumnName="commentCount" />
+                <ScalarProperty Name="PostId" ColumnName="postId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+        <DesignerProperty Name="DefaultDatabaseSchema" Value="dbo" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

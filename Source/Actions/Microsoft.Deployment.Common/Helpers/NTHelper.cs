@@ -35,29 +35,46 @@ namespace Microsoft.Deployment.Common.Helpers
             return cleanedUsername;
         }
 
+        private static bool IsCredentialGuardEnabledAtLocation(string registryKey)
+        {
+            // Guard
+            if (string.IsNullOrEmpty(registryKey))
+                return false;
+
+            bool result = false;
+            RegistryKey rk = null; // Use this pattern instead of nesting a try with using statement
+            try
+            {
+                rk = Registry.LocalMachine.OpenSubKey(registryKey);
+                if (rk != null)
+                {
+                    object v = rk.GetValue("LsaCfgFlags");
+                    int intVal = Convert.ToInt32(v); // If conversion fails, we go to the catch block
+                    result = (intVal == 1 || intVal == 2);
+                }
+            }
+            catch { /* Nothing to do */ }
+            finally
+            {
+                rk?.Dispose();
+            }
+
+            return result;
+        }
+
+
         public static bool IsCredentialGuardEnabled()
         {
-            bool isCredentialGuardEnabled = false;
+            bool credentialGuardEnabled = false;
             int[] osVersion = NTHelper.OsVersionArray;
 
             if (osVersion[0] == 10 && osVersion[1] == 0 && osVersion[2] < 15011)
             {
-                try
-                {
-                    using (RegistryKey rk = Registry.LocalMachine.OpenSubKey("SYSTEM\\CurrentControlSet\\Control\\Lsa"))
-                    {
-                        object o = rk.GetValue("LsaCfgFlags");
-                        int rv = (int)o;
-                        isCredentialGuardEnabled = (rv == 1 || rv == 2);
-                    }
-
-                }
-                catch
-                {
-                    // Checking credential guard failed
-                }
+                credentialGuardEnabled = IsCredentialGuardEnabledAtLocation("SOFTWARE\\Policies\\Microsoft\\Windows\\DeviceGuard")  || 
+                                         IsCredentialGuardEnabledAtLocation("SYSTEM\\CurrentControlSet\\Control\\Lsa");  // Second check won't run if GP enabled it
             }
-            return isCredentialGuardEnabled;
+
+            return credentialGuardEnabled;
         }
 
         public static int[] OsVersionArray

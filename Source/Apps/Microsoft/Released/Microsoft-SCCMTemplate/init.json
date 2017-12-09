@@ -21,8 +21,7 @@
                     "$translate(INIT_GETTING_STARTED_DATA_PULL_SCCM)",
                     "$translate(INIT_GETTING_STARTED_IMPORT_DATA_PBI)"
                 ],
-                "name": "getting-started-powerbi-login.html",
-                "oauthType": "powerbi",
+                "name": "$SiteCommon$/pages-gallery/getting-started.html",
                 "subtitle": "$translate(INIT_SCCM_SUBTITLE)",
                 "templateName": "$translate(INIT_SCCM_TITLE)"
             },
@@ -46,6 +45,7 @@
                 "credentialTarget": "pbi_sccm",
                 "displayname": "Source",
                 "hideSqlAuth": true,
+                "isCreateAzureSqlSelected": false,
                 "name": "$SiteCommon$/pages-gallery/sql.html",
                 "onNext": [
                     {
@@ -56,9 +56,16 @@
                 ],
                 "showAllWriteableDatabases": false,
                 "showAzureSql": false,
+                "showCreateAzureSqlPrompt": true,
                 "subtitle": "$translate(INIT_SOURCE_SCCM_SUBTITLE)",
                 "title": "$translate(INIT_SOURCE_SCCM_TITLE)",
                 "useImpersonation": true
+            },
+            {
+                "displayname": "Azure SQL Login",
+                "name": "$SiteCommon$/pages-gallery/azure-login.html",
+                "oauthType": "",
+                "skip": "$isfalse(CreateAzureSql)"
             },
             {
                 "credentialTarget": "pbi_sccm",
@@ -82,18 +89,19 @@
             {
                 "displayname": "AAS",
                 "name": "$SiteCommon$/pages-gallery/choose-analysis-server.html",
+                "registerAnalysisServices": "$istrue(CreateAzureSql)",
                 "showDescription": true,
                 "skip": "$dsall(azureSqlDisabled)[1]",
                 "ssasEnabled": "true"
             },
             {
-                "displayname": "Login to Azure",
-                "name": "$SiteCommon$/pages-gallery/azure-login.html",
-                "oauthType": "",
                 "azureProviders": [
                     "Microsoft.AnalysisServices"
                 ],
-                "skip": "$run(this.MS.DataStore.getAllValues('azureSqlDisabled')[1] === 'true' || this.MS.DataStore.getValue('ssasDisabled') === 'true' ? 'true' : 'false')"
+                "displayname": "Login to Azure",
+                "name": "$SiteCommon$/pages-gallery/azure-login.html",
+                "oauthType": "",
+                "skip": "$run(this.MS.DataStore.getValue('CreateAzureSql') === 'true' || this.MS.DataStore.getAllValues('azureSqlDisabled')[1] === 'true' || this.MS.DataStore.getValue('ssasDisabled') === 'true' ? 'true' : 'false')"
             },
             {
                 "displayname": "Login to Analysis Services",
@@ -123,6 +131,9 @@
             },
             {
                 "asDatabase": "Sccm",
+                "datastoreEntriesToValidate": [
+                    "ImpersonationPassword"
+                ],
                 "displayname": "Progress",
                 "filename": "$save('SCCMSolutionTemplate.pbix')",
                 "filenameSSAS": "SCCMSolutionTemplateAS.pbix",
@@ -148,6 +159,17 @@
                 "name": "Microsoft-SetConfigValueInSql",
                 "SqlConfigTable": "pbist_sccm.[configuration]",
                 "SqlServerIndex": "1",
+                "useImpersonation": true
+            },
+            {
+                "displayname": "$translate(INIT_ACTION_DEPLOYING_DATABASE_CONFIGURATION)",
+                "name": "Microsoft-SetConfigValueInSql",
+                "SqlConfigTable": "pbist_sccm.[configuration]",
+                "SqlEntryName": "Tables",
+                "SqlEntryValue": "collection,computer,computercollection,computermalware,computerprogram,computerupdate,malware,operatingsystem,program,scanhistory,update,user,usercomputer",
+                "SqlGroup": "SolutionTemplate",
+                "SqlServerIndex": "1",
+                "SqlSubGroup": "StandardConfiguration",
                 "useImpersonation": true
             },
             {
@@ -283,7 +305,6 @@
         "Pages": [
             {
                 "displayname": "Uninstall Progress",
-                "HasNavigated": "$save(true)",
                 "isUninstall": true,
                 "name": "$SiteCommon$/pages-gallery/progress.html",
                 "successMessage": "$translate(INIT_UNINSTALL_SUCCESS)"

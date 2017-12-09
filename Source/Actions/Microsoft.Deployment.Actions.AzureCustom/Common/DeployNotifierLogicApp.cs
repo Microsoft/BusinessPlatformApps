@@ -55,7 +55,8 @@ namespace Microsoft.Deployment.Actions.AzureCustom.Common
             armTemplate.Add("parameters", armParamTemplate["parameters"]);
 
             //Deploy logic app 
-            var deploymentResponse = await DeployLogicApp(subscription, azureToken, resourceGroup, armTemplate, deploymentName);
+            var helper = new DeploymentHelper();
+            var deploymentResponse = await helper.DeployLogicApp(subscription, azureToken, resourceGroup, armTemplate, deploymentName);
 
             if (!deploymentResponse.IsSuccess)
             {
@@ -86,7 +87,7 @@ namespace Microsoft.Deployment.Actions.AzureCustom.Common
             armTemplate.Remove("parameters");
             armTemplate.Add("parameters", armParamTemplate["parameters"]);
             
-            deploymentResponse = await DeployLogicApp(subscription, azureToken, resourceGroup, armTemplate, deploymentName);
+            deploymentResponse = await helper.DeployLogicApp(subscription, azureToken, resourceGroup, armTemplate, deploymentName);
 
             if (!deploymentResponse.IsSuccess)
             {
@@ -100,70 +101,6 @@ namespace Microsoft.Deployment.Actions.AzureCustom.Common
                 DeployedResourceType.LogicApp, CreatedBy.BPST, DateTime.UtcNow.ToString("o"));
 
             return new ActionResponse(ActionStatus.Success);
-        }
-
-        public async Task<ActionResponse> DeployLogicApp(string subscription, string azureToken, string resourceGroup, JObject armTemplate, string deploymentName)
-        {
-            SubscriptionCloudCredentials creds = new TokenCloudCredentials(subscription, azureToken);
-            Microsoft.Azure.Management.Resources.ResourceManagementClient client = new ResourceManagementClient(creds);
-
-            var deployment = new Microsoft.Azure.Management.Resources.Models.Deployment()
-            {
-                Properties = new DeploymentPropertiesExtended()
-                {
-                    Template = armTemplate.ToString(),
-                    Parameters = JsonUtility.GetEmptyJObject().ToString()
-                }
-            };
-
-            var validate = await client.Deployments.ValidateAsync(resourceGroup, deploymentName, deployment, new CancellationToken());
-
-            if (!validate.IsValid)
-                return new ActionResponse(
-                    ActionStatus.Failure,
-                    JsonUtility.GetJObjectFromObject(validate),
-                    null,
-                    DefaultErrorCodes.DefaultErrorCode,
-                    $"Azure:{validate.Error.Message} Details:{validate.Error.Details}");
-
-            var deploymentItem = await client.Deployments.CreateOrUpdateAsync(resourceGroup, deploymentName, deployment, new CancellationToken());
-
-            var resp = await WaitForAction(client, resourceGroup, deploymentItem.Deployment.Name);
-
-            if (!resp.IsSuccess)
-            {
-                return resp;
-            }
-
-            return await WaitForAction(client, resourceGroup, deploymentName);
-        }
-
-        private async Task<ActionResponse> WaitForAction(ResourceManagementClient client, string resourceGroup, string deploymentName)
-        {
-            while (true)
-            {
-                Thread.Sleep(5000);
-                var status = await client.Deployments.GetAsync(resourceGroup, deploymentName, new CancellationToken());
-                var operations =
-                    await
-                        client.DeploymentOperations.ListAsync(resourceGroup, deploymentName,
-                            new DeploymentOperationsListParameters(), new CancellationToken());
-                var provisioningState = status.Deployment.Properties.ProvisioningState;
-
-                if (provisioningState == "Accepted" || provisioningState == "Running")
-                    continue;
-
-                if (provisioningState == "Succeeded")
-                    return new ActionResponse(ActionStatus.Success, operations);
-
-                var operation = operations.Operations.First(p => p.Properties.ProvisioningState == ProvisioningState.Failed);
-                var operationFailed =
-                    await
-                        client.DeploymentOperations.GetAsync(resourceGroup, deploymentName, operation.OperationId,
-                            new CancellationToken());
-
-                return new ActionResponse(ActionStatus.Failure, operationFailed);
-            }
         }
     }
 }

@@ -1,0 +1,9 @@
+﻿<template>
+    <h1 class="st-title">${MS.Translate.AX_TITLE}</h1>
+    <p class="st-subtitle">${MS.Translate.AX_SUBTITLE}</p>
+
+    <div class="st-float">
+        <button class="primary" if.bind="!isAuthenticated && isActivated" click.trigger="connect()">${MS.Translate.AX_LOGIN_CONFIRM}</button>
+        <button class="primary" if.bind="isAuthenticated && isActivated">${MS.Translate.TWITTER_VALIDATED}</button>
+    </div>
+</template>

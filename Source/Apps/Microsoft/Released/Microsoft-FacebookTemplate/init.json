@@ -15,8 +15,7 @@
                     "$translate(INIT_GETTING_STARTED_CONNECT_AS_PBI)"
                 ],
                 "name": "$SiteCommon$/pages-gallery/getting-started.html",
-                "templateName": "Brand And Campaign Management For Facebook",
-                "uniqueId": "$save(this.MS.UtilityService.getUniqueId(10))"
+                "templateName": "Brand And Campaign Management For Facebook"                
             },
             {
                 "displayname": "Facebook Login",
@@ -55,15 +54,30 @@
                 "title": "$translate(INIT_SQL_TITLE)"
             },
             {
+                "displayCompletionNotification": false,
+                "displayname": "Summary",
+                "name": "$SiteCommon$/pages-gallery/summary.html",
+                "sendCompletionNotification": false,
+                "values": {
+                    "Facebook Pages": "$(this.MS.DataStore.getValue('FacebookPagesToFollow'))",
+                    "Subscription": "$(this.MS.DataStore.getJson('SelectedSubscription').DisplayName)",
+                    "Resource Group": "$(this.MS.DataStore.getValue('SelectedResourceGroup'))",
+                    "Target Server": "$(this.MS.DataStore.getValue('Server'))",
+                    "Target Database": "$(this.MS.DataStore.getValue('Database'))",
+                    "Target Username": "$(this.MS.DataStore.getValue('Username'))"
+                }
+            },
+            {
                 "datastoreEntriesToValidate": [
                     "SqlConnectionString"
                 ],
                 "displayname": "Progress",
-                "enablePublishReport": true,
+                "enablePublishReport": "$run(this.MS.DataStore.getValue('ssasDisabled') === 'false')",
                 "filename": "$save('FacebookTemplate.pbix')",
                 "name": "$SiteCommon$/pages-gallery/progress.html",
                 "Schema": "$save('fb')",
-                "showCounts": false
+                "showCounts": false,
+                "uniqueId": "$save(this.MS.UtilityService.getUniqueId(10))"
             }
         ],
 

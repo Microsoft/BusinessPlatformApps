@@ -14,7 +14,7 @@ DECLARE @cr CURSOR;
 -- drop views
 SET @cr = CURSOR FAST_FORWARD FOR
               SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES
-              WHERE TABLE_TYPE='View' AND
+              WHERE TABLE_TYPE='VIEW' AND
                     TABLE_SCHEMA='psa' AND
                     TABLE_NAME IN ('ZResourceCapacityView', 'TransactionCategoryView', 'TimeEntryView', 'ResourceView', 'ResourceRequirementView', 'ResourceRequirementDetailView', 'ResourceRequestView',
                                    'ResourceBookingView', 'QuoteView', 'QuoteLineView', 'ProjectView', 'ProjectContractView', 'OrganizationalUnitView', 'OpportunityView', 'NamedResourceWorkCapacityView',
@@ -51,7 +51,7 @@ DEALLOCATE @cr;
 --- DROP DBO VIEWS---
 SET @cr = CURSOR FAST_FORWARD FOR
               SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES
-              WHERE TABLE_TYPE='View' AND
+              WHERE TABLE_TYPE='VIEW' AND
                     TABLE_SCHEMA='dbo' AND
                     TABLE_NAME IN ('timeline_os_opportunity', 'territorycode_os_account', 'status_os_bookingstatus', 'shipto_freighttermscode_os_salesorderdetail', 'shipto_freighttermscode_os_salesorder',
                                    'shipto_freighttermscode_os_quotedetail', 'shipto_freighttermscode_os_quote', 'shippingmethodcode_os_salesorder', 'shippingmethodcode_os_quote', 'shippingmethodcode_os_account',
@@ -95,7 +95,7 @@ SET @cr = CURSOR FAST_FORWARD FOR
               WHERE TABLE_TYPE='BASE TABLE' AND 
                     TABLE_SCHEMA='dbo' AND 
                     TABLE_NAME IN ('systemuser', 'StatusMetadata','AttributeMetadata', 'TargetMetadata','StateMetadata', 'salesorderdetail', 'salesorder', 'quotedetail', 'quote', 'OptionSetMetadata', 'opportunity', 'msdyn_transactioncategory',
-                                   'msdyn_timeentry', 'msdyn_resourcerequirementdetail', 'msdyn_resourcerequirement', 'msdyn_resourcerequest', 'msdyn_project', 'msdyn_organizationalunit', 'msdyn_orderlineresourcecategory',
+                                   'msdyn_timeentry', 'msdyn_resourcerequirementdetail', 'msdyn_resourcerequirement', 'msdyn_resourcerequest', 'msdyn_project', 'msdyn_projecttask', 'msdyn_organizationalunit', 'msdyn_orderlineresourcecategory',
                                    'msdyn_estimateline', 'msdyn_actual', 'GlobalOptionSetMetadata', 'bookingstatus', 'bookableresourcecategoryassn', 'bookableresourcecategory', 'bookableresourcebooking', 'bookableresource',
                                    'account');
 OPEN @cr;
@@ -130,12 +130,12 @@ DEALLOCATE @cr;
 
 -- drop known (to this solution) user defined types 
 SET @cr = CURSOR FAST_FORWARD FOR
-   SELECT [name] FROM sys.Types WHERE is_user_defined=1 AND is_table_type=1 AND [name] IN ('accountIdType', 'accountType', 'AttributeMetadataList', 'bookableresourcebookingIdType',
+   SELECT [name] FROM sys.types WHERE is_user_defined=1 AND is_table_type=1 AND [name] IN ('accountIdType', 'accountType', 'AttributeMetadataList', 'bookableresourcebookingIdType',
                                                                                            'bookableresourcebookingType', 'bookableresourcecategoryassnIdType', 'bookableresourcecategoryassnType',
                                                                                            'bookableresourcecategoryIdType', 'bookableresourcecategoryType', 'bookableresourceIdType', 'bookableresourceType',
                                                                                            'bookingstatusIdType', 'bookingstatusType', 'msdyn_actualIdType', 'msdyn_actualType', 'msdyn_estimatelineIdType',
                                                                                            'msdyn_estimatelineType', 'msdyn_orderlineresourcecategoryIdType', 'msdyn_orderlineresourcecategoryType',
-                                                                                           'msdyn_organizationalunitIdType', 'msdyn_organizationalunitType', 'msdyn_projectIdType', 'msdyn_projectType',
+                                                                                           'msdyn_organizationalunitIdType', 'msdyn_organizationalunitType', 'msdyn_projectIdType', 'msdyn_projectType', 'msdyn_projecttaskIdType', 'msdyn_projecttaskType',
                                                                                            'msdyn_resourcerequestIdType', 'msdyn_resourcerequestType', 'msdyn_resourcerequirementdetailIdType', 
                                                                                            'msdyn_resourcerequirementdetailType', 'msdyn_resourcerequirementIdType', 'msdyn_resourcerequirementType', 
                                                                                            'msdyn_timeentryIdType', 'msdyn_timeentryType', 'msdyn_transactioncategoryIdType', 'msdyn_transactioncategoryType', 

@@ -270,6 +270,7 @@ System.config({
       "SiteCommon/Web/services/init-parser.js",
       "SiteCommon/Web/services/logger-service.js",
       "SiteCommon/Web/services/main-service.js",
+      "SiteCommon/Web/services/mscc.js",
       "SiteCommon/Web/services/navigation-service.js",
       "SiteCommon/Web/services/translate-service.js",
       "SiteCommon/Web/services/utility-service.js",
@@ -682,37 +683,42 @@ System.config({
       "./analyze-view-factory",
       "./aurelia-hide-style"
     ],
+    "npm:aurelia-templating-resources@1.3.1/signal-binding-behavior.js": [
+      "./binding-signaler"
+    ],
+    "npm:aurelia-templating-resources@1.3.1/repeat-strategy-locator.js": [
+      "./null-repeat-strategy",
+      "./array-repeat-strategy",
+      "./map-repeat-strategy",
+      "./set-repeat-strategy",
+      "./number-repeat-strategy"
+    ],
+    "npm:aurelia-templating-resources@1.3.1/map-repeat-strategy.js": [
+      "./repeat-utilities"
+    ],
+    "npm:aurelia-templating-resources@1.3.1/set-repeat-strategy.js": [
+      "./repeat-utilities"
+    ],
+    "npm:aurelia-templating-resources@1.3.1/number-repeat-strategy.js": [
+      "./repeat-utilities"
+    ],
+    "npm:aurelia-templating-resources@1.3.1/aurelia-hide-style.js": [
+      "aurelia-pal"
+    ],
     "npm:aurelia-templating-resources@1.3.1/compose.js": [
       "aurelia-dependency-injection",
       "aurelia-task-queue",
       "aurelia-templating",
       "aurelia-pal"
     ],
-    "npm:aurelia-templating-resources@1.3.1/with.js": [
-      "aurelia-dependency-injection",
-      "aurelia-templating",
-      "aurelia-binding"
-    ],
     "npm:aurelia-templating-resources@1.3.1/if.js": [
       "aurelia-templating",
       "aurelia-dependency-injection"
     ],
-    "npm:aurelia-templating-resources@1.3.1/hide.js": [
+    "npm:aurelia-templating-resources@1.3.1/with.js": [
       "aurelia-dependency-injection",
       "aurelia-templating",
-      "aurelia-pal",
-      "./aurelia-hide-style"
-    ],
-    "npm:aurelia-templating-resources@1.3.1/show.js": [
-      "aurelia-dependency-injection",
-      "aurelia-templating",
-      "aurelia-pal",
-      "./aurelia-hide-style"
-    ],
-    "npm:aurelia-templating-resources@1.3.1/sanitize-html.js": [
-      "aurelia-binding",
-      "aurelia-dependency-injection",
-      "./html-sanitizer"
+      "aurelia-binding"
     ],
     "npm:aurelia-templating-resources@1.3.1/repeat.js": [
       "aurelia-dependency-injection",
@@ -723,16 +729,26 @@ System.config({
       "./analyze-view-factory",
       "./abstract-repeater"
     ],
-    "npm:aurelia-templating-resources@1.3.1/css-resource.js": [
-      "aurelia-templating",
-      "aurelia-loader",
+    "npm:aurelia-templating-resources@1.3.1/show.js": [
       "aurelia-dependency-injection",
-      "aurelia-path",
-      "aurelia-pal"
+      "aurelia-templating",
+      "aurelia-pal",
+      "./aurelia-hide-style"
+    ],
+    "npm:aurelia-templating-resources@1.3.1/hide.js": [
+      "aurelia-dependency-injection",
+      "aurelia-templating",
+      "aurelia-pal",
+      "./aurelia-hide-style"
     ],
     "npm:aurelia-templating-resources@1.3.1/replaceable.js": [
       "aurelia-dependency-injection",
       "aurelia-templating"
+    ],
+    "npm:aurelia-templating-resources@1.3.1/sanitize-html.js": [
+      "aurelia-binding",
+      "aurelia-dependency-injection",
+      "./html-sanitizer"
     ],
     "npm:aurelia-templating-resources@1.3.1/focus.js": [
       "aurelia-templating",
@@ -744,37 +760,22 @@ System.config({
     "npm:aurelia-templating-resources@1.3.1/attr-binding-behavior.js": [
       "aurelia-binding"
     ],
-    "npm:aurelia-templating-resources@1.3.1/debounce-binding-behavior.js": [
-      "aurelia-binding"
-    ],
-    "npm:aurelia-templating-resources@1.3.1/throttle-binding-behavior.js": [
-      "aurelia-binding"
+    "npm:aurelia-templating-resources@1.3.1/css-resource.js": [
+      "aurelia-templating",
+      "aurelia-loader",
+      "aurelia-dependency-injection",
+      "aurelia-path",
+      "aurelia-pal"
     ],
     "npm:aurelia-templating-resources@1.3.1/binding-mode-behaviors.js": [
       "aurelia-binding",
       "aurelia-metadata"
     ],
-    "npm:aurelia-templating-resources@1.3.1/signal-binding-behavior.js": [
-      "./binding-signaler"
+    "npm:aurelia-templating-resources@1.3.1/debounce-binding-behavior.js": [
+      "aurelia-binding"
     ],
-    "npm:aurelia-templating-resources@1.3.1/repeat-strategy-locator.js": [
-      "./null-repeat-strategy",
-      "./array-repeat-strategy",
-      "./map-repeat-strategy",
-      "./set-repeat-strategy",
-      "./number-repeat-strategy"
-    ],
-    "npm:aurelia-templating-resources@1.3.1/number-repeat-strategy.js": [
-      "./repeat-utilities"
-    ],
-    "npm:aurelia-templating-resources@1.3.1/map-repeat-strategy.js": [
-      "./repeat-utilities"
-    ],
-    "npm:aurelia-templating-resources@1.3.1/set-repeat-strategy.js": [
-      "./repeat-utilities"
-    ],
-    "npm:aurelia-templating-resources@1.3.1/aurelia-hide-style.js": [
-      "aurelia-pal"
+    "npm:aurelia-templating-resources@1.3.1/throttle-binding-behavior.js": [
+      "aurelia-binding"
     ],
     "npm:aurelia-templating-resources@1.3.1/binding-signaler.js": [
       "aurelia-binding"

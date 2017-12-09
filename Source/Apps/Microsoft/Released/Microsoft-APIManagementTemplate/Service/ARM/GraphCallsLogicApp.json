@@ -1,0 +1,158 @@
+﻿{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "logicappname": {
+      "defaultValue": "LogicApp",
+      "type": "string"
+    },
+    "resourcegroup": {
+      "defaultValue": "stresourcegroup",
+      "type": "string"
+    },
+    "subscription": {
+      "defaultValue": "idrequired",
+      "type": "string"
+    }
+  },
+  "variables": {},
+  "resources": [
+    {
+      "type": "Microsoft.Logic/workflows",
+      "name": "[parameters('logicappname')]",
+      "apiVersion": "2016-06-01",
+      "location": "[resourceGroup().location]",
+      "properties": {
+        "state": "Enabled",
+        "definition": {
+          "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+          "contentVersion": "1.0.0.0",
+          "parameters": {
+            "$connections": {
+              "defaultValue": {},
+              "type": "Object"
+            }
+          },
+          "triggers": {
+            "Recurrence": {
+              "operationOptions": "SingleInstance",
+              "recurrence": {
+                "frequency": "hour",
+                "interval": 1
+              },
+              "type": "Recurrence"
+            }
+          },
+          "actions": {
+            "Extract_Edge_Lists_for_Every_IP": {
+              "actions": {
+                "Extract_Extended_Edges": {
+                  "inputs": {
+                    "body": {
+                      "LinkWithinSeconds": 15,
+                      "ResultSet": "@body('Get_Requests_by_IP_Address')['ResultSets']?['Table1']"
+                    },
+                    "function": {
+                      "id": "[concat('/subscriptions/', parameters('subscription'), '/resourceGroups/',parameters('resourcegroup'),'/providers/Microsoft.Web/sites/', parameters('sitename'), '/Functions/ExtractExtendedEdges')]"
+                    }
+                  },
+                  "runAfter": {
+                    "Get_Requests_by_IP_Address": [
+                      "Succeeded"
+                    ]
+                  },
+                  "type": "Function"
+                },
+                "Extract_Probability_Edges": {
+                  "inputs": {
+                    "body": {
+                      "LinkWithinSeconds": 15,
+                      "ResultSet": "@body('Get_Requests_by_IP_Address')['ResultSets']?['Table1']"
+                    },
+                    "function": {
+                      "id": "[concat('/subscriptions/', parameters('subscription'), '/resourceGroups/',parameters('resourcegroup'),'/providers/Microsoft.Web/sites/', parameters('sitename'), '/Functions/ExtractProbabilityEdges')]"
+                    }
+                  },
+                  "runAfter": {
+                    "Get_Requests_by_IP_Address": [
+                      "Succeeded"
+                    ]
+                  },
+                  "type": "Function"
+                },
+                "Get_Requests_by_IP_Address": {
+                  "inputs": {
+                    "body": {
+                      "IpAddress": "@item()['IPAddress']"
+                    },
+                    "host": {
+                      "connection": {
+                        "name": "@parameters('$connections')['sql']['connectionId']"
+                      }
+                    },
+                    "method": "post",
+                    "path": "/datasets/default/procedures/@{encodeURIComponent(encodeURIComponent('[pbist_apimgmt].[sp_getrequestsbyipaddressinwindow]'))}"
+                  },
+                  "runAfter": {},
+                  "type": "ApiConnection"
+                }
+              },
+              "foreach": "@body('Get_Distinct_IP_Addresses')['ResultSets']['Table1']",
+              "runAfter": {
+                "Get_Distinct_IP_Addresses": [
+                  "Succeeded"
+                ]
+              },
+              "type": "Foreach"
+            },
+            "Get_Distinct_IP_Addresses": {
+              "inputs": {
+                "body": {},
+                "host": {
+                  "connection": {
+                    "name": "@parameters('$connections')['sql']['connectionId']"
+                  }
+                },
+                "method": "post",
+                "path": "/datasets/default/procedures/@{encodeURIComponent(encodeURIComponent('[pbist_apimgmt].[sp_getdistinctipaddressesinwindow]'))}"
+              },
+              "runAfter": {},
+              "type": "ApiConnection"
+            },
+            "Swap_Edge_List_Live_Tables_with_Stage_Tables": {
+              "inputs": {
+                "host": {
+                  "connection": {
+                    "name": "@parameters('$connections')['sql']['connectionId']"
+                  }
+                },
+                "method": "post",
+                "path": "/datasets/default/procedures/@{encodeURIComponent(encodeURIComponent('[pbist_apimgmt].[sp_edgetablesswap]'))}"
+              },
+              "runAfter": {
+                "Extract_Edge_Lists_for_Every_IP": [
+                  "Succeeded"
+                ]
+              },
+              "type": "ApiConnection"
+            }
+          },
+          "outputs": {}
+        },
+        "parameters": {
+          "$connections": {
+            "value": {
+              "sql": {
+                "connectionId": "[concat('/subscriptions/', parameters('subscription'), '/resourceGroups/' ,parameters('resourceGroup'),'/providers/Microsoft.Web/connections/sql')]",
+                "connectionName": "sql",
+                "id": "[concat('/subscriptions/' , parameters('subscription'), '/providers/Microsoft.Web/locations/',resourceGroup().location , '/managedApis/sql')]"
+              }
+            }
+          }
+        }
+      },
+      "resources": []
+    }
+  ],
+  "outputs": {}
+}

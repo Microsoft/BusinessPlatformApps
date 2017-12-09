@@ -51,17 +51,13 @@
 
             _orgUrl = request.DataStore.GetValue("OrganizationUrl");
             _orgId = request.DataStore.GetValue("OrganizationId");
-            string name = request.DataStore.GetValue("ProfileName") ?? "bpst-mscrm-profile";
+            string name = request.DataStore.GetValue("ProfileName") ?? Constants.CrmProfileName;
             string kV = request.DataStore.GetValue("KeyVault");
-            var entities = request.DataStore.GetValue("Entities").SplitByCommaSpaceTabReturnList();
-
-            var additionalObjects = request.DataStore.GetValue("AdditionalObjects");
-
-            if (!string.IsNullOrEmpty(additionalObjects))
-            {
-                string[] add = additionalObjects.SplitByCommaSpaceTabReturnArray();
-                entities.AddRange(add);
-            }
+            //string[] entities = request.DataStore.GetValue("Entities").Split(new[] {',', ' ', '\t'}, StringSplitOptions.RemoveEmptyEntries);
+            Dictionary<string, string> entitiesDict = JsonConvert.DeserializeObject<Dictionary<string, string>>(request.DataStore.GetValue("Entities"));
+            string[] entities = new string[entitiesDict.Count];
+            int iCount = 0;
+            foreach (var entity in entitiesDict) entities[iCount++] = entity.Key;
 
 
             MsCrmProfile profile = new MsCrmProfile
@@ -80,7 +76,8 @@
                 profile.Entities[i] = e;
             }
 
-            List<string> invalidEntities = await RetrieveInvalidEntities(entities.ToArray());
+
+            List<string> invalidEntities = await RetrieveInvalidEntities(entities);
 
             if (invalidEntities.Count > 0)
                 return new ActionResponse(ActionStatus.Failure, null,

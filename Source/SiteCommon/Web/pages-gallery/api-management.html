@@ -1,0 +1,14 @@
+﻿<template>
+    <require from="../templates/bpst-warning.html"></require>
+
+    <h1 class="st-title">${MS.Translate.API_MANAGEMENT_TITLE}</h1>
+
+    <bpst-warning message="${MS.Translate.API_MANAGEMENT_WARNING}"></bpst-warning>
+
+    <div class="st-float" if.bind="listApimServices && listApimServices.length > 0">
+        <p class="st-text">${MS.Translate.API_MANAGEMENT_SERVICE}</p>
+        <select class="btn btn-default dropdown-toggle st-input" disabled.bind="MS.HttpService.isServiceBusy" value.bind="idApimService">
+            <option repeat.for="apimService of listApimServices" value.bind="apimService.id">${apimService.name}</option>
+        </select>
+    </div>
+</template>

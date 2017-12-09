@@ -1,6 +1,6 @@
 ﻿<template>
     <h1 class="st-title">${MS.Translate.O365_LOGIN_TITLE}</h1>
-    <p class="st-subtitle">${MS.Translate.O365_LOGIN_SUBTITLE}</p>
+    <p class="st-subtitle">Connect to your O365 subscription, this can take a miniute</p>
 
     <div class="st-float" if.bind="!hasToken">
         <button class="primary" click.trigger="connect()" disabled.bind="MS.HttpService.isServiceBusy">Connect</button>

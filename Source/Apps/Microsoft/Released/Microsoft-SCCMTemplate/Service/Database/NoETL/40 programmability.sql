@@ -41,7 +41,7 @@ BEGIN
    DECLARE @StatusCode INT = -1;
 
     SELECT ta.[name] AS EntityName, SUM(pa.[rows]) AS [Count] INTO #counts
-    FROM sys.tables ta INNER JOIN sys.partitions pa ON pa.OBJECT_ID = ta.OBJECT_ID
+    FROM sys.tables ta INNER JOIN sys.partitions pa ON pa.object_id = ta.object_id
                        INNER JOIN sys.schemas sc ON ta.schema_id = sc.schema_id
     WHERE        
 		    sc.name='pbist_sccm' AND ta.is_ms_shipped = 0 AND pa.index_id IN (0,1) AND

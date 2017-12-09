@@ -1,0 +1,369 @@
+﻿{
+    "Install": {
+        "Pages": [
+            {
+                "architectureDiagram": "dist/Apps/Microsoft/Released/Microsoft-APIManagementTemplate/Web/Images/api-management.png",
+                "displayname": "Getting Started",
+                "list1": [
+                    "$translate(INIT_GETTING_STARTED_AZURE_SUBSCRIPTION)",
+                    "$translate(INIT_GETTING_STARTED_AZURE_API_MANAGEMENT)",
+                    "$translate(INIT_GETTING_STARTED_PBI_DESKTOP)",
+                    "$translate(INIT_GETTING_STARTED_PBI_PRO)"
+                ],
+                "list2": [
+                    "$translate(INIT_GETTING_STARTED_AZURE_API_MANAGEMENT_STREAM_SQL)",
+                    "$translate(INIT_GETTING_STARTED_AZURE_API_MANAGEMENT_PROCESS_DATA)",
+                    "$translate(INIT_GETTING_STARTED_CONNECT_AS_PBI)"
+                ],
+                "name": "$SiteCommon$/pages-gallery/getting-started.html",
+                "subtitle": "$translate(INIT_API_MANAGEMENT_SUBTITLE)",
+                "templateName": "$translate(INIT_API_MANAGEMENT_TITLE)"
+            },
+            {
+                "azureProviders": [
+                    "Microsoft.ApiManagement",
+                    "Microsoft.EventHub",
+                    "Microsoft.StreamAnalytics",
+                    "Microsoft.MachineLearning"
+                ],
+                "defaultLocation": "5",
+                "displayname": "Login",
+                "name": "$SiteCommon$/pages-gallery/azure-login.html",
+                "pricingCalculatorUrl": "$translate(INIT_AZURE_PRICING_CALCULATOR_URL)",
+                "pricingCost": "$translate(INIT_API_MANAGEMENT_PRICING_COST)",
+                "pricingUrl": "$translate(INIT_API_MANAGEMENT_PRICING_URL)"
+            },
+            {
+                "displayname": "API Management",
+                "name": "$SiteCommon$/pages-gallery/api-management.html",
+                "subtitle": "$translate(INIT_API_MANAGEMENT_CONNECT_SUBTITLE)",
+                "title": "$translate(INIT_API_MANAGEMENT_CONNECT_TITLE)"
+            },
+            {
+                "displayname": "Target",
+                "isAzureSql": true,
+                "name": "$SiteCommon$/pages-gallery/sql.html",
+                "newSqlDatabase": "apiManagementDB",
+                "showAzureSql": false,
+                "showNewSqlOption": true,
+                "sqlInstance": "NewSql",
+                "subtitle": "$translate(INIT_SQL_SUBTITLE)",
+                "title": "$translate(INIT_SQL_TITLE)"
+            },
+            {
+                "name": "$SiteCommon$/pages-gallery/choose-analysis-server.html",
+                "displayname": "AAS",
+                "showDescription": true
+
+                //"ssasEnabled": "true"
+            },
+            {
+                "displayname": "Login to Analysis Services",
+                "name": "$SiteCommon$/pages-gallery/as-login.html",
+                "oauthType": "as",
+                "skip": "$run(this.MS.DataStore.getValue('ssasDisabled'))"
+            },
+            {
+                "name": "$SiteCommon$/pages-gallery/ssas.html",
+                "displayname": "AAS Login",
+                "skip": "$run(this.MS.DataStore.getValue('ssasDisabled'))"
+            },
+            {
+                "displayCompletionNotification": false,
+                "displayname": "Summary",
+                "name": "$SiteCommon$/pages-gallery/summary.html",
+                "sendCompletionNotification": false,
+                "values": {
+                    "Subscription": "$(this.MS.DataStore.getJson('SelectedSubscription').DisplayName)",
+                    "Resource Group": "$(this.MS.DataStore.getValue('SelectedResourceGroup'))",
+                    "Target Server": "$(this.MS.DataStore.getValue('Server'))",
+                    "Target Database": "$(this.MS.DataStore.getValue('Database'))",
+                    "Target Username": "$(this.MS.DataStore.getValue('Username'))"
+                }
+            },
+            {
+                "datastoreEntriesToValidate": [
+                    "AzureToken",
+                    "SqlConnectionString"
+                ],
+                "displayname": "Deploy",
+                "filename": "$save('Azure_APIM_Analytics.pbix')",
+                "name": "$SiteCommon$/pages-gallery/progress.html",
+                "uniqueId": "$save(this.MS.UtilityService.getUniqueId(10))",
+                "uniqueIdFunction": "$save(this.MS.UtilityService.getUniqueId(10))",
+                "SiteName": "$save(this.uniqueIdFunction)",
+                "asDatabase": "APIM",
+                "filenameSSAS": "Azure_APIM_AnalyticsAS.pbix"
+            }
+        ],
+
+        "Actions": [
+            {
+                "displayname": "$translate(INIT_ACTION_DEPLOYING_SQL_SCRIPTS)",
+                "name": "Microsoft-DeploySQLScripts",
+                "SqlScriptsFolder": "Database"
+            },
+            /// AS Deployment
+            {
+                "displayname": "$translate(INIT_ACTION_DEPLOYING_DATABASE_CONFIGURATION)",
+                "name": "Microsoft-SetConfigValueInSql",
+                "SqlServerIndex": "0",
+                "SqlConfigTable": "[pbist_apimgmt].[configuration]"
+            },
+            {
+                "displayname": "$translate(INIT_ACTION_DEPLOYING_DATABASE_CONFIGURATION)",
+                "name": "Microsoft-SetConfigValueInSql",
+                "skip": "$run(this.MS.DataStore.getValue('ssasDisabled') )",
+                "SqlConfigTable": "[pbist_apimgmt].[configuration]",
+                "SqlEntryName": "FunctionName",
+                "SqlEntryValue": "$run('asscheduler' + this.MS.DataStore.getValue('uniqueId'))",
+                "SqlGroup": "SolutionTemplate",
+                "SqlServerIndex": "0",
+                "SqlSubGroup": "SSAS"
+            },
+            {
+                "ASDatabase": "APIM",
+                "displayname": "$translate(INIT_ACTION_DEPLOYING_AS_MODEL)",
+                "name": "Microsoft-DeployAzureASModel",
+                "skip": "$run( this.MS.DataStore.getValue('ssasDisabled') )",
+                "SqlConnectionString": "$dsall(SqlConnectionString)[0]",
+                "xmlaFilePath": "Service/AzureAS/APIM.xmla"
+            },
+            {
+                "DeploymentName": "ASFunction",
+                "displayname": "$translate(INIT_ACTION_DEPLOYING_AS_SCHEDULER)",
+                "FunctionName": "$save('asscheduler' + this.MS.DataStore.getValue('uniqueId'))",
+                "name": "Microsoft-DeployAzureFunction",
+                "RepoUrl": "https://github.com/MohaaliMicrosoft/AnalysisServicesRefresh",
+                "skip": "$run( this.MS.DataStore.getValue('ssasDisabled') )",
+                "sku": "Standard"
+            },
+            {
+                "DeploymentName": "ASFunction",
+                "displayname": "$translate(INIT_ACTION_WAITING_AS_SCHEDULER)",
+                "name": "Microsoft-WaitForArmDeploymentStatus",
+                "skip": "$run( this.MS.DataStore.getValue('ssasDisabled') )"
+            },
+            {
+                "displayname": "Create Service Principal",
+                "name": "Microsoft-CreateSpn",
+                "skip": "$run(this.MS.DataStore.getValue('ssasDisabled') )"
+            },
+            {
+                "displayname": "Assign Service Principal Permission",
+                "name": "Microsoft-AssignPermissionsForUser",
+                "skip": "$run( this.MS.DataStore.getValue('ssasDisabled') )",
+                "UserToAdd": "$ds(SPNUser)",
+                "ASDatabase": "APIM"
+            },
+            {
+                "AppSettingKeys": {
+                    "appId": "$ds(SPNAppId)",
+                    "appKey": "$ds(SPNKey)",
+                    "username": "$ds(SPNUser)",
+                    "tenantId": "$ds(SPNTenantId)",
+                    "asServer": "$ds(ASServerUrl)",
+
+                    "connStringSql": "$dsall(SqlConnectionString)[0]",
+                    "schema": "[pbist_apimgmt]",
+                    "databaseAS": "APIM",
+                    "functionName": "$run('asscheduler' + this.MS.DataStore.getValue('uniqueId'))"
+                },
+
+                "DeploymentName": "ASFunction",
+                "displayname": "$translate(INIT_ACTION_SETTING_UP_AS_SCHEDULER)",
+                "name": "Microsoft-DeployAzureFunctionConnectionStrings",
+                "skip": "$run(this.MS.DataStore.getValue('ssasDisabled') )"
+            },
+
+            /// Finish AS Deployment
+            {
+                "AzureArmFile": "Service/ARM/EventHub.json",
+                "AzureArmParametersUnique": {
+                    "nameConsumerGroup": "bpst-apim-cg-",
+                    "nameEventHub": "bpst-apim-eh-",
+                    "nameNamespace": "bpst-apim-ns-"
+                },
+                "displayname": "$translate(INIT_ACTION_CREATING_EVENTHUB)",
+                "name": "Microsoft-DeployAzureArmTemplate"
+            },
+            {
+                "displayname": "$translate(INIT_ACTION_GETTING_EVENTHUB_KEYS)",
+                "name": "Microsoft-GetEventHubKeys"
+            },
+            {
+                "displayname": "$translate(INIT_ACTION_CREATING_APIM_LOGGER)",
+                "name": "Microsoft-CreateApiManagementLogger"
+            },
+            {
+                "AzureArmFile": "Service/ARM/StreamAnalytics.json",
+                "AzureArmParametersUnique": {
+                    "nameStreamAnalyticsJob": "bpst-apim-saj-"
+                },
+                "displayname": "$translate(INIT_ACTION_CREATING_STREAM_ANALYTICS_JOB)",
+                "name": "Microsoft-DeployAzureArmTemplate"
+            },
+            {
+                "displayname": "$translate(INIT_ACTION_CONFIGURING_STREAM_ANALYTICS_INPUT_EVENTHUB)",
+                "inputSerialization": "CSV",
+                "name": "Microsoft-AddStreamAnalyticsInputEventHub",
+                "nameStreamAnalyticsInputEventHub": "APIMEventHub"
+            },
+            {
+                "displayname": "$translate(INIT_ACTION_CONFIGURING_STREAM_ANALYTICS_OUTPUT_SQL)",
+                "name": "Microsoft-AddStreamAnalyticsOutputSql",
+                "streamAnalyticsOutputSql": {
+                    "name": "TemplatesSQLRequest",
+                    "table": "pbist_apimgmt.Request"
+                }
+            },
+            {
+                "displayname": "$translate(INIT_ACTION_CONFIGURING_STREAM_ANALYTICS_OUTPUT_SQL)",
+                "name": "Microsoft-AddStreamAnalyticsOutputSql",
+                "streamAnalyticsOutputSql": {
+                    "name": "TemplatesSQLResponse",
+                    "table": "pbist_apimgmt.Response"
+                }
+            },
+            {
+                "displayname": "$translate(INIT_ACTION_CONFIGURING_STREAM_ANALYTICS_OUTPUT_SQL)",
+                "name": "Microsoft-AddStreamAnalyticsOutputSql",
+                "streamAnalyticsOutputSql": {
+                    "name": "TemplatesSQLError",
+                    "table": "pbist_apimgmt.Error"
+                }
+            },
+            {
+                "displayname": "$translate(INIT_ACTION_CONFIGURING_STREAM_ANALYTICS_QUERY)",
+                "name": "Microsoft-UpdateStreamAnalyticsQuery"
+            },
+            {
+                "displayname": "$translate(INIT_ACTION_DEPLOYING_STREAM_ANALYTICS)",
+                "name": "Microsoft-ToggleStreamAnalytics"
+            },
+            {
+                "displayname": "$translate(INIT_ACTION_UPDATING_APIM_POLICY)",
+                "name": "Microsoft-UpdateApiManagementPolicy"
+            },
+            {
+                "displayname": "$translate(INIT_ACTION_DEPLOYING_STORAGE_ACCOUNT)",
+                "DeploymentName": "StorageAccount",
+                "name": "Microsoft-CreateAzureStorageAccount",
+                "StorageAccountEncryptionEnabled": "false",
+                "StorageAccountName": "$save('storage' + this.MS.DataStore.getValue('uniqueId'))",
+                "StorageAccountType": "Standard_LRS"
+            },
+            {
+                "DeploymentName": "StorageAccount",
+                "displayname": "$translate(INIT_ACTION_VALIDATING_STORAGE_ACCOUNT)",
+                "name": "Microsoft-WaitForArmDeploymentStatus"
+            },
+            {
+                "DeploymentName": "StorageAccount",
+                "displayname": "$translate(INIT_ACTION_GETTING_STORAGE_ACCOUNT_KEY)",
+                "name": "Microsoft-GetStorageAccountKey"
+            },
+            {
+                "DeploymentName": "StorageAccount",
+                "displayname": "$translate(INIT_ACTION_VALIDATING_STORAGE_ACCOUNT_KEY)",
+                "name": "Microsoft-WaitForArmDeploymentStatus"
+            },
+            {
+                "CommitmentPlan": "commitmentplan",
+                "DeploymentName": "AzureML",
+                "displayname": "$translate(INIT_ACTION_APIM_DEPLOY_AZUREML_SERVICE)",
+                "name": "Microsoft-DeployAzureMLWebServiceFromFile",
+                "WebServiceFile": "Service/AzureML/Experiments/FFTWebService.json",
+                "WebServiceName": "$run('FFTWebService' + this.MS.DataStore.getValue('uniqueId'))"
+            },
+            {
+                "DeploymentName": "Function",
+                "displayname": "$translate(INIT_ACTION_APIM_DEPLOY_FUNCTION)",
+                "FunctionName": "$save(this.MS.DataStore.getValue('uniqueIdFunction'))",
+                "name": "Microsoft-DeployAzureFunction",
+                "RepoUrl": "https://github.com/juluczni/AzureFunctionsNewsTemplate",
+                "Branch": "apim"
+            },
+            {
+                "DeploymentName": "Function",
+                "displayname": "$translate(INIT_ACTION_APIM_DEPLOY_FUNCTION_VALIDATING)",
+                "name": "Microsoft-WaitForArmDeploymentStatus"
+            },
+            {
+                "AppSettingKeys": {
+                    "TemplatesSQL": "$dsall(SqlConnectionString)[0]"
+                },
+
+                "DeploymentName": "FunctionSettings",
+                "displayname": "$translate(INIT_ACTION_APIM_DEPLOY_FUNCTION_SETTINGS)",
+                "name": "Microsoft-DeployAzureFunctionConnectionStrings"
+            },
+            {
+                "ConnectorDisplayName": "SQLConnector",
+                "ConnectorName": "sql",
+                "ConnectorPayload": {
+                    "authType": "windows",
+                    "database": "$ds(Database)",
+                    "password": "$ds(Password)",
+                    "server": "$ds(Server)",
+                    "username": "$ds(Username)"
+                },
+                "DeploymentName": "sql",
+                "displayname": "$translate(INIT_ACTION_APIM_DEPLOY_SQL_CONNECTOR)",
+                "name": "Microsoft-UpdateBlobStorageConnector"
+            },
+            {
+                "ConnectorDisplayName": "azureml",
+                "ConnectorName": "azureml",
+                "ConnectorPayload": {},
+                "DeploymentName": "azureml",
+                "displayname": "$translate(INIT_ACTION_APIM_DEPLOY_AZUREML_CONNECTOR)",
+                "name": "Microsoft-UpdateBlobStorageConnector"
+            },
+            {
+                "DeploymentName": "GeoIP",
+                "displayname": "Deploying IP Database Logic App",
+                "LogicAppName": "GeoIPFillTable",
+                "name": "Microsoft-DeployGeoFill"
+            },
+            {
+                "DeploymentName": "GeoIP",
+                "displayname": "$translate(INIT_ACTION_VALIDATING_LOGIC_APP)",
+                "name": "Microsoft-WaitForArmDeploymentStatus"
+            },
+            {
+                "DeploymentName": "CallFrequencyLogicApp",
+                "displayname": "$translate(INIT_ACTION_APIM_DEPLOY_CALL_FREQ_LOGIC_APP)",
+                "LogicAppName": "CallFrequencyLogicApp",
+                "name": "Microsoft-CallFrequencyLogicApp"
+            },
+            {
+                "DeploymentName": "CallFrequencyLogicApp",
+                "displayname": "$translate(INIT_ACTION_VALIDATING_LOGIC_APP)",
+                "name": "Microsoft-WaitForArmDeploymentStatus"
+            },
+            {
+                "DeploymentName": "GraphLogicApp",
+                "displayname": "$translate(INIT_ACTION_APIM_DEPLOY_CALL_GRAPH_LOGIC_APP)",
+                "LogicAppName": "GraphLogicApp",
+                "name": "Microsoft-DeployGraphCallsLogicApp"
+            },
+            {
+                "DeploymentName": "GraphLogicApp",
+                "displayname": "$translate(INIT_ACTION_VALIDATING_LOGIC_APP)",
+                "name": "Microsoft-WaitForArmDeploymentStatus"
+            },
+            {
+                "DeploymentName": "ProcessIPAddressesLogicApp",
+                "displayname": "$translate(INIT_ACTION_APIM_DEPLOY_IPADDRESS_LOGIC_APP)",
+                "LogicAppName": "ProcessIPAddressesLogicApp",
+                "name": "Microsoft-ProcessIPAddressesLogicApp"
+            },
+            {
+                "DeploymentName": "ProcessIPAddressesLogicApp",
+                "displayname": "$translate(INIT_ACTION_VALIDATING_LOGIC_APP)",
+                "name": "Microsoft-WaitForArmDeploymentStatus"
+            }
+        ]
+    }
+}

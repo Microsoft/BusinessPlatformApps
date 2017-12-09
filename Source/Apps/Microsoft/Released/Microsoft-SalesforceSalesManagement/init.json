@@ -6,7 +6,7 @@
     "Install": {
         "Pages": [
             {
-                "architectureDiagram": "dist/Apps/Microsoft/Released/Microsoft-SalesforceSalesManagement/Web/Images/salesforceArchitectureDiagram.png",
+                "architectureDiagram": "$run(this.MS.etl === 'Informatica' ? 'dist/Apps/Microsoft/Released/Microsoft-SalesforceSalesManagement/Web/Images/informatica.png' : 'dist/Apps/Microsoft/Released/Microsoft-SalesforceSalesManagement/Web/Images/salesforceArchitectureDiagram.png')",
                 "displayname": "Getting Started",
                 "list1": [
                     "$translate(INIT_GETTING_STARTED_AZURE_SUBSCRIPTION)",
@@ -17,7 +17,7 @@
                 ],
                 "list2": [
                     "$translate(INIT_GETTING_STARTED_CLOUD_SOLUTION)",
-                    "$translate(INIT_GETTING_STARTED_DATA_PULL_SALESFORCE)",
+                    "$run(this.MS.etl === 'Informatica' ? this.MS.Translate.INIT_GETTING_STARTED_DATA_PULL_SALESFORCE_INFORMATICA : this.MS.Translate.INIT_GETTING_STARTED_DATA_PULL_SALESFORCE)",
                     "$translate(INIT_GETTING_STARTED_CONNECT_AS_PBI)"
                 ],
                 "name": "$SiteCommon$/pages-gallery/getting-started.html",
@@ -47,21 +47,19 @@
                 "templateName": "$translate(INIT_SALESFORCE_TITLE)"
             },
             {
-                "azureProviders": [
-                    "Microsoft.AnalysisServices"
-                ],
                 "displayname": "Azure",
                 "name": "$SiteCommon$/pages-gallery/azure-login.html",
                 "pricingCalculatorUrl": "$translate(INIT_SALESFORCE_PRICING_CALCULATOR_URL)",
                 "pricingCost": "$translate(INIT_SALESFORCE_PRICING_COST)",
                 "pricingUrl": "$translate(INIT_SALESFORCE_PRICING_URL)",
-                "skip": "$(this.MS.HttpService.isOnPremise)"
+                "skip": "$run(this.MS.HttpService.isOnPremise)"
             },
             {
-                "dataMovement": "$run(this.MS.HttpService.isOnPremise ? 'Informatica' : 'ADF')",
+                "dataMovement": "$run(this.MS.HttpService.isOnPremise || this.MS.etl === 'Informatica' ? 'Informatica' : 'ADF')",
                 "displayname": "Data Movement",
                 "name": "$SiteCommon$/pages-gallery/data-movement.html",
-                "showAdf": "$run(!this.MS.HttpService.isOnPremise)"
+                "showAdf": "$run(!this.MS.HttpService.isOnPremise && this.MS.etl !== 'Informatica')",
+                "showScribe": "$run(this.MS.etl !== 'Informatica')"
             },
             {
                 "displayname": "Salesforce",
@@ -134,7 +132,7 @@
                     "SqlConnectionString"
                 ],
                 "displayname": "Progress",
-                "enablePublishReport": "$run(!this.MS.HttpService.isOnPremise)",
+                "enablePublishReport": "$run(!this.MS.HttpService.isOnPremise && this.MS.DataStore.getValue('ssasDisabled') === 'false')",
                 "filename": "$save('SalesManagementReport.pbix')",
                 "filenameSSAS": "SalesManagementReportAS.pbix",
                 "finishedActionName": "$run(this.MS.DataStore.getValue('DataMovement') === 'ADF' ? 'Microsoft-ADFSliceStatus' : this.MS.DataStore.getValue('DataMovement') === 'Scribe' ? 'Microsoft-GetScribeSolutionStatus' : 'Microsoft-GetInformaticaTaskStatus')",
@@ -168,9 +166,14 @@
                 "SqlServerIndex": "0"
             },
             {
-                "displayname": "$translate(INIT_ACTION_RETRIEVING_SALESFORCE_METADATA)",
-                "name": "Microsoft-SalesforceGetObjectMetadata",
-                "skip": "$run(this.MS.DataStore.getValue('DataMovement') !== 'ADF')"
+                "displayname": "$translate(INIT_ACTION_DEPLOYING_DATABASE_CONFIGURATION)",
+                "name": "Microsoft-SetConfigValueInSql",
+                "SqlConfigTable": "[smgt].[configuration]",
+                "SqlEntryName": "Tables",
+                "SqlEntryValue": "account,opportunity,userrole,lead,opportunitylineitem,product2,user,opportunitystage",
+                "SqlGroup": "SolutionTemplate",
+                "SqlServerIndex": "0",
+                "SqlSubGroup": "StandardConfiguration"
             },
             {
                 "displayname": "$translate(INIT_ACTION_CREATING_SALESFORCE_TABLES)",
@@ -330,7 +333,6 @@
             },
             {
                 "displayname": "$translate(INIT_ACTION_CREATING_INFORMATICA_TASK)",
-                "Entities": "Account,Lead,Opportunity,OpportunityLineItem,OpportunityStage,UserRole,User,Product2",
                 "name": "Microsoft-CreateInformaticaTask",
                 "skip": "$run(this.MS.DataStore.getValue('DataMovement') !== 'Informatica')"
             },
@@ -364,7 +366,6 @@
             },
             {
                 "displayname": "$translate(INIT_ACTION_CREATING_SCRIBE_SOLUTION)",
-                "Entities": "Account,Lead,Opportunity,OpportunityLineItem,OpportunityStage,UserRole,User,Product2",
                 "name": "Microsoft-CreateScribeSolution",
                 "skip": "$run(this.MS.DataStore.getValue('DataMovement') !== 'Scribe')"
             },
@@ -388,7 +389,6 @@
         "Pages": [
             {
                 "displayname": "Uninstall Progress",
-                "HasNavigated": "(true)",
                 "isUninstall": true,
                 "name": "$SiteCommon$/pages-gallery/progress.html",
                 "successMessage": "$translate(INIT_UNINSTALL_SUCCESS)"

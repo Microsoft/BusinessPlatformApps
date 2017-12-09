@@ -1,21 +1,13 @@
 ﻿using System;
 using System.ComponentModel.Composition;
-using System.IO;
-using System.Linq;
-using System.Threading;
+using System.Net.Http;
 using System.Threading.Tasks;
 
-using Microsoft.Azure;
-using Microsoft.Azure.Management.Resources;
-using Microsoft.Azure.Management.Resources.Models;
+using Newtonsoft.Json.Linq;
 
 using Microsoft.Deployment.Common.ActionModel;
 using Microsoft.Deployment.Common.Actions;
-using Microsoft.Deployment.Common.Enums;
-using Microsoft.Deployment.Common.ErrorCode;
 using Microsoft.Deployment.Common.Helpers;
-using System.Net.Http;
-using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Deployment.Actions.AzureCustom.CognitiveServices
 {
@@ -31,13 +23,18 @@ namespace Microsoft.Deployment.Actions.AzureCustom.CognitiveServices
                 CognitiveServicePayload payloadObj = new CognitiveServicePayload();
                 payloadObj.Documents.Add(new Document());
 
-                HttpClient client = new HttpClient();
-                client.DefaultRequestHeaders.Add("Ocp-Apim-Subscription-Key", cognitiveServiceKey);
-                HttpContent content = new StringContent(JObject.FromObject(payloadObj).ToString(), System.Text.Encoding.UTF8, "application/json");
-                var response = client.PostAsync("https://westus.api.cognitive.microsoft.com/text/analytics/v2.0/keyPhrases", content).Result;
+                HttpResponseMessage response;
+
+                using (HttpClient client = new HttpClient())
+                {
+                    client.DefaultRequestHeaders.Add("Ocp-Apim-Subscription-Key", cognitiveServiceKey);
+                    HttpContent content = new StringContent(JObject.FromObject(payloadObj).ToString(), System.Text.Encoding.UTF8, "application/json");
+                    response = client.PostAsync("https://westus.api.cognitive.microsoft.com/text/analytics/v2.0/keyPhrases", content).Result;
+                }
+
                 string result = response.Content.ReadAsStringAsync().Result;
                 if (!response.IsSuccessStatusCode)
-                { 
+                {
                     throw new Exception();
                 }
             });

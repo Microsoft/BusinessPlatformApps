@@ -1,0 +1,1833 @@
+{
+    "create":
+    {
+        "database":
+        {
+            "name": "FieldService",
+            "compatibilityLevel": 1200,
+            "model":
+            {
+                "culture": "en-US",
+                "dataSources": [
+                    {
+                        "name": "ST_DS",
+                        "connectionString": "Provider=SQLNCLI11;Data Source=tcp:a.database.windows.net;Persist Security Info=False;User ID=pbiadmin;Initial Catalog=FieldServiceDB",
+                        "impersonationMode": "impersonateServiceAccount",
+                        "annotations": [
+                            {
+                                "name": "ConnectionEditUISource",
+                                "value": "SqlServer"
+                            }
+                        ]
+                    }
+                ],
+                "tables": [
+                    {
+                        "name": "Booking Status",
+                        "columns": [
+                            {
+                                "name": "Booking Status Id",
+                                "dataType": "string",
+                                "sourceColumn": "Booking Status Id",
+                                "sourceProviderType": "uniqueidentifier"
+                            },
+                            {
+                                "name": "Booking Status Code",
+                                "dataType": "int64",
+                                "sourceColumn": "Booking Status Code",
+                                "sourceProviderType": "int"
+                            },
+                            {
+                                "name": "Booking Status Name",
+                                "dataType": "string",
+                                "sourceColumn": "Booking Status Name",
+                                "sourceProviderType": "nvarchar"
+                            },
+                            {
+                                "name": "Booking System Status",
+                                "dataType": "string",
+                                "sourceColumn": "Booking System Status",
+                                "sourceProviderType": "nvarchar"
+                            },
+                            {
+                                "name": "Booking System Status Code",
+                                "dataType": "int64",
+                                "sourceColumn": "Booking System Status Code",
+                                "sourceProviderType": "int"
+                            }
+                        ],
+                        "partitions": [
+                            {
+                                "name": "Booking StatusV",
+                                "dataView": "full",
+                                "source":
+                                {
+                                    "query": " SELECT [fso].[BookingStatusView].* FROM [fso].[BookingStatusView] ",
+                                    "dataSource": "ST_DS"
+                                }
+                            }
+                        ],
+                        "annotations": [
+                            {
+                                "name": "_TM_ExtProp_QueryDefinition",
+                                "value": " SELECT [fso].[BookingStatusView].* FROM [fso].[BookingStatusView] "
+                            },
+                            {
+                                "name": "_TM_ExtProp_DbTableName",
+                                "value": "BookingStatusView"
+                            },
+                            {
+                                "name": "_TM_ExtProp_DbSchemaName",
+                                "value": "fso"
+                            }
+                        ]
+                    },
+                    {
+                        "name": "configuration",
+                        "columns": [
+                            {
+                                "name": "id",
+                                "dataType": "int64",
+                                "sourceColumn": "id",
+                                "sourceProviderType": "int"
+                            },
+                            {
+                                "name": "configuration_group",
+                                "dataType": "string",
+                                "sourceColumn": "configuration_group",
+                                "sourceProviderType": "varchar"
+                            },
+                            {
+                                "name": "configuration_subgroup",
+                                "dataType": "string",
+                                "sourceColumn": "configuration_subgroup",
+                                "sourceProviderType": "varchar"
+                            },
+                            {
+                                "name": "name",
+                                "dataType": "string",
+                                "sourceColumn": "name",
+                                "sourceProviderType": "varchar"
+                            },
+                            {
+                                "name": "value",
+                                "dataType": "string",
+                                "sourceColumn": "value",
+                                "sourceProviderType": "varchar"
+                            },
+                            {
+                                "name": "visible",
+                                "dataType": "boolean",
+                                "sourceColumn": "visible",
+                                "formatString": "\"TRUE\";\"TRUE\";\"FALSE\"",
+                                "sourceProviderType": "bit"
+                            }
+                        ],
+                        "partitions": [
+                            {
+                                "name": "configuration",
+                                "dataView": "full",
+                                "source":
+                                {
+                                    "query": " SELECT [fso].[configuration].* FROM [fso].[configuration] ",
+                                    "dataSource": "ST_DS"
+                                }
+                            }
+                        ],
+                        "annotations": [
+                            {
+                                "name": "_TM_ExtProp_QueryDefinition",
+                                "value": " SELECT [fso].[configuration].* FROM [fso].[configuration] "
+                            },
+                            {
+                                "name": "_TM_ExtProp_DbTableName",
+                                "value": "configuration"
+                            },
+                            {
+                                "name": "_TM_ExtProp_DbSchemaName",
+                                "value": "fso"
+                            }
+                        ]
+                    },
+                    {
+                        "name": "Customer Equipment",
+                        "columns": [
+                            {
+                                "name": "Customer Id",
+                                "dataType": "string",
+                                "sourceColumn": "Customer Id",
+                                "sourceProviderType": "uniqueidentifier"
+                            },
+                            {
+                                "name": "Product Id",
+                                "dataType": "string",
+                                "sourceColumn": "Product Id",
+                                "sourceProviderType": "uniqueidentifier"
+                            },
+                            {
+                                "name": "Equipment Id",
+                                "dataType": "string",
+                                "sourceColumn": "Equipment Id",
+                                "sourceProviderType": "uniqueidentifier"
+                            },
+                            {
+                                "name": "Equipment Name",
+                                "dataType": "string",
+                                "sourceColumn": "Equipment Name",
+                                "sourceProviderType": "nvarchar"
+                            },
+                            {
+                                "name": "Parent Asset Id",
+                                "dataType": "string",
+                                "sourceColumn": "Parent Asset Id",
+                                "sourceProviderType": "uniqueidentifier"
+                            },
+                            {
+                                "name": "Master Asset Id",
+                                "dataType": "string",
+                                "sourceColumn": "Master Asset Id",
+                                "sourceProviderType": "uniqueidentifier"
+                            },
+                            {
+                                "name": "Equipment Latitude",
+                                "dataType": "double",
+                                "sourceColumn": "Equipment Latitude",
+                                "sourceProviderType": "decimal",
+                                "dataCategory": "Latitude"
+                            },
+                            {
+                                "name": "Equipment Longitude",
+                                "dataType": "double",
+                                "sourceColumn": "Equipment Longitude",
+                                "sourceProviderType": "decimal",
+                                "dataCategory": "Longitude"
+                            },
+                            {
+                                "name": "Equipment Status Code",
+                                "dataType": "int64",
+                                "sourceColumn": "Equipment Status Code",
+                                "sourceProviderType": "int"
+                            },
+                            {
+                                "name": "Equipment Status",
+                                "dataType": "string",
+                                "sourceColumn": "Equipment Status",
+                                "sourceProviderType": "nvarchar"
+                            }
+                        ],
+                        "partitions": [
+                            {
+                                "name": "Customer Equipment",
+                                "dataView": "full",
+                                "source":
+                                {
+                                    "query": " SELECT [fso].[CustomerEquipmentView].* FROM [fso].[CustomerEquipmentView] ",
+                                    "dataSource": "ST_DS"
+                                }
+                            }
+                        ],
+                        "annotations": [
+                            {
+                                "name": "_TM_ExtProp_QueryDefinition",
+                                "value": " SELECT [fso].[CustomerEquipmentView].* FROM [fso].[CustomerEquipmentView] "
+                            },
+                            {
+                                "name": "_TM_ExtProp_DbTableName",
+                                "value": "CustomerEquipmentView"
+                            },
+                            {
+                                "name": "_TM_ExtProp_DbSchemaName",
+                                "value": "fso"
+                            }
+                        ]
+                    },
+                    {
+                        "name": "Customer",
+                        "columns": [
+                            {
+                                "name": "Customer Id",
+                                "dataType": "string",
+                                "sourceColumn": "Customer Id",
+                                "sourceProviderType": "uniqueidentifier"
+                            },
+                            {
+                                "name": "Customer Name",
+                                "dataType": "string",
+                                "sourceColumn": "Customer Name",
+                                "sourceProviderType": "nvarchar"
+                            },
+                            {
+                                "name": "Customer SIC",
+                                "dataType": "string",
+                                "sourceColumn": "Customer SIC",
+                                "sourceProviderType": "nvarchar"
+                            },
+                            {
+                                "name": "Customer Postal Code",
+                                "dataType": "string",
+                                "sourceColumn": "Customer Postal Code",
+                                "sourceProviderType": "nvarchar",
+                                "dataCategory": "PostalCode"
+                            },
+                            {
+                                "name": "Customer Phone",
+                                "dataType": "string",
+                                "sourceColumn": "Customer Phone",
+                                "sourceProviderType": "nvarchar"
+                            },
+                            {
+                                "name": "Customer State or Province",
+                                "dataType": "string",
+                                "sourceColumn": "Customer State or Province",
+                                "sourceProviderType": "nvarchar"
+                            },
+                            {
+                                "name": "Customer Country",
+                                "dataType": "string",
+                                "sourceColumn": "Customer Country",
+                                "sourceProviderType": "nvarchar",
+                                "dataCategory": "Country"
+                            },
+                            {
+                                "name": "Customer City",
+                                "dataType": "string",
+                                "sourceColumn": "Customer City",
+                                "sourceProviderType": "nvarchar",
+                                "dataCategory": "City"
+                            },
+                            {
+                                "name": "Customer E-Mail",
+                                "dataType": "string",
+                                "sourceColumn": "Customer E-Mail",
+                                "sourceProviderType": "nvarchar"
+                            },
+                            {
+                                "name": "Customer Type",
+                                "dataType": "string",
+                                "sourceColumn": "Customer Type",
+                                "sourceProviderType": "nvarchar"
+                            },
+                            {
+                                "name": "Customer State Code",
+                                "dataType": "int64",
+                                "sourceColumn": "Customer State Code",
+                                "sourceProviderType": "int"
+                            },
+                            {
+                                "name": "Customer State",
+                                "dataType": "string",
+                                "sourceColumn": "Customer State",
+                                "sourceProviderType": "nvarchar"
+                            }
+                        ],
+                        "partitions": [
+                            {
+                                "name": "Customer",
+                                "dataView": "full",
+                                "source":
+                                {
+                                    "query": " SELECT [fso].[CustomerView].* FROM [fso].[CustomerView] ",
+                                    "dataSource": "ST_DS"
+                                }
+                            }
+                        ],
+                        "annotations": [
+                            {
+                                "name": "_TM_ExtProp_QueryDefinition",
+                                "value": " SELECT [fso].[CustomerView].* FROM [fso].[CustomerView] "
+                            },
+                            {
+                                "name": "_TM_ExtProp_DbTableName",
+                                "value": "CustomerView"
+                            },
+                            {
+                                "name": "_TM_ExtProp_DbSchemaName",
+                                "value": "fso"
+                            }
+                        ]
+                    },
+                    {
+                        "name": "Booking Date",
+                        "columns": [
+                            {
+                                "name": "date_key",
+                                "dataType": "int64",
+                                "isHidden": true,
+                                "sourceColumn": "date_key",
+                                "sourceProviderType": "int"
+                            },
+                            {
+                                "name": "Weekday Flag",
+                                "dataType": "string",
+                                "sourceColumn": "Weekday Flag",
+                                "sourceProviderType": "char"
+                            },
+                            {
+                                "name": "Booking Date",
+                                "dataType": "dateTime",
+                                "sourceColumn": "Date",
+                                "formatString": "General Date",
+                                "sourceProviderType": "date"
+                            },
+                            {
+                                "name": "Booking Day of the Week",
+                                "dataType": "int64",
+                                "sourceColumn": "Day of the Week",
+                                "sourceProviderType": "tinyint"
+                            },
+                            {
+                                "name": "Booking Day Number of the Month",
+                                "dataType": "int64",
+                                "sourceColumn": "Day Number of the Month",
+                                "sourceProviderType": "tinyint"
+                            },
+                            {
+                                "name": "Booking Day Name",
+                                "dataType": "string",
+                                "sourceColumn": "Day Name",
+                                "sourceProviderType": "char"
+                            },
+                            {
+                                "name": "Booking Day Abbreviated",
+                                "dataType": "string",
+                                "sourceColumn": "Day Abbreviated",
+                                "sourceProviderType": "char"
+                            },
+                            {
+                                "name": "Booking Month",
+                                "dataType": "int64",
+                                "sourceColumn": "month",
+                                "sourceProviderType": "tinyint"
+                            },
+                            {
+                                "name": "Booking Month Name",
+                                "dataType": "string",
+                                "sourceColumn": "Month Name",
+                                "sourceProviderType": "char"
+                            },
+                            {
+                                "name": "Booking Month Short Name",
+                                "dataType": "string",
+                                "sourceColumn": "month_abbrev",
+                                "sourceProviderType": "char"
+                            },
+                            {
+                                "name": "Booking Quarter",
+                                "dataType": "int64",
+                                "sourceColumn": "quarter",
+                                "sourceProviderType": "tinyint"
+                            },
+                            {
+                                "name": "Booking Year",
+                                "dataType": "int64",
+                                "sourceColumn": "year",
+                                "sourceProviderType": "smallint"
+                            },
+                            {
+                                "name": "Booking Same Day a Year Ago Date",
+                                "dataType": "dateTime",
+                                "sourceColumn": "same_day_year_ago_date",
+                                "formatString": "General Date",
+                                "sourceProviderType": "date"
+                            },
+                            {
+                                "name": "Booking Week Begin Date",
+                                "dataType": "dateTime",
+                                "sourceColumn": "Week Begin Date",
+                                "formatString": "General Date",
+                                "sourceProviderType": "date"
+                            },
+                            {
+                                "name": "Booking Month Begin Date",
+                                "dataType": "dateTime",
+                                "sourceColumn": "Month Begin Date",
+                                "formatString": "General Date",
+                                "sourceProviderType": "datetime"
+                            },
+                            {
+                                "type": "calculated",
+                                "name": "Booking Relative Day Number",
+                                "dataType": "int64",
+                                "isDataTypeInferred": true,
+                                "expression": " if(TODAY()<'Booking Date'[Booking Date], DATEDIFF(TODAY(),'Booking Date'[Booking Date],DAY), -DATEDIFF('Booking Date'[Booking Date],today(),DAY))"
+                            },
+                            {
+                                "type": "calculated",
+                                "name": "Booking Relative Week Number",
+                                "dataType": "int64",
+                                "isDataTypeInferred": true,
+                                "expression": " if(TODAY()<'Booking Date'[Booking Date], DATEDIFF(TODAY(),'Booking Date'[Booking Date],WEEK), -DATEDIFF('Booking Date'[Booking Date],today(),Week))"
+                            },
+                            {
+                                "type": "calculated",
+                                "name": "Booking Relative Month Number",
+                                "dataType": "int64",
+                                "isDataTypeInferred": true,
+                                "expression": " if(TODAY()<'Booking Date'[Booking Date], DATEDIFF(TODAY(),'Booking Date'[Booking Date],Month), -DATEDIFF('Booking Date'[Booking Date],today(),MONTH))"
+                            },
+                            {
+                                "type": "calculated",
+                                "name": "Booking Relative Year Number",
+                                "dataType": "int64",
+                                "isDataTypeInferred": true,
+                                "expression": " if(TODAY()<'Booking Date'[Booking Date], DATEDIFF(TODAY(),'Booking Date'[Booking Date],YEAR), -DATEDIFF('Booking Date'[Booking Date],today(),YEAR))"
+                            }
+                        ],
+                        "partitions": [
+                            {
+                                "name": "Date",
+                                "dataView": "full",
+                                "source":
+                                {
+                                    "query": " SELECT [fso].[DateView].* FROM [fso].[DateView] ",
+                                    "dataSource": "ST_DS"
+                                }
+                            }
+                        ],
+                        "annotations": [
+                            {
+                                "name": "_TM_ExtProp_QueryDefinition",
+                                "value": " SELECT [fso].[DateView].* FROM [fso].[DateView] "
+                            },
+                            {
+                                "name": "_TM_ExtProp_DbTableName",
+                                "value": "DateView"
+                            },
+                            {
+                                "name": "_TM_ExtProp_DbSchemaName",
+                                "value": "fso"
+                            }
+                        ]
+                    },
+                    {
+                        "name": "Incident Type",
+                        "columns": [
+                            {
+                                "name": "Incident Type Id",
+                                "dataType": "string",
+                                "sourceColumn": "Incident Type Id",
+                                "sourceProviderType": "uniqueidentifier"
+                            },
+                            {
+                                "name": "Incident Type",
+                                "dataType": "string",
+                                "sourceColumn": "Incident Type",
+                                "sourceProviderType": "nvarchar"
+                            },
+                            {
+                                "name": "Incident Type Estimated Duration",
+                                "dataType": "int64",
+                                "sourceColumn": "Incident Type Estimated Duration",
+                                "sourceProviderType": "int"
+                            },
+                            {
+                                "name": "Incident Default Work Order Type Id",
+                                "dataType": "string",
+                                "sourceColumn": "Incident Default Work Order Type Id",
+                                "sourceProviderType": "uniqueidentifier"
+                            }
+                        ],
+                        "partitions": [
+                            {
+                                "name": "Incident Type",
+                                "dataView": "full",
+                                "source":
+                                {
+                                    "query": " SELECT [fso].[IncidentTypeView].* FROM [fso].[IncidentTypeView] ",
+                                    "dataSource": "ST_DS"
+                                }
+                            }
+                        ],
+                        "annotations": [
+                            {
+                                "name": "_TM_ExtProp_QueryDefinition",
+                                "value": " SELECT [fso].[IncidentTypeView].* FROM [fso].[IncidentTypeView] "
+                            },
+                            {
+                                "name": "_TM_ExtProp_DbTableName",
+                                "value": "IncidentTypeView"
+                            },
+                            {
+                                "name": "_TM_ExtProp_DbSchemaName",
+                                "value": "fso"
+                            }
+                        ]
+                    },
+                    {
+                        "name": "Calculations",
+                        "columns": [
+                            {
+                                "name": "MeasureValues",
+                                "dataType": "int64",
+                                "sourceColumn": "MeasureValues",
+                                "sourceProviderType": "int"
+                            }
+                        ],
+                        "partitions": [
+                            {
+                                "name": "Calculations",
+                                "dataView": "full",
+                                "source":
+                                {
+                                    "query": " SELECT [fso].[MeasuresView].* FROM [fso].[MeasuresView] ",
+                                    "dataSource": "ST_DS"
+                                }
+                            }
+                        ],
+                        "measures": [
+                            {
+                                "name": "Resource Wage",
+                                "expression": " CALCULATE(SUM('Resource Booking'[Booking Duration Hours])*SUM('Resource'[Resource Hourly Wage]))"
+                            }
+                        ],
+                        "annotations": [
+                            {
+                                "name": "_TM_ExtProp_QueryDefinition",
+                                "value": " SELECT [fso].[MeasuresView].* FROM [fso].[MeasuresView] "
+                            },
+                            {
+                                "name": "_TM_ExtProp_DbTableName",
+                                "value": "MeasuresView"
+                            },
+                            {
+                                "name": "_TM_ExtProp_DbSchemaName",
+                                "value": "fso"
+                            }
+                        ]
+                    },
+                    {
+                        "name": "Product",
+                        "columns": [
+                            {
+                                "name": "Product Id",
+                                "dataType": "string",
+                                "sourceColumn": "Product Id",
+                                "sourceProviderType": "uniqueidentifier"
+                            },
+                            {
+                                "name": "Service Name",
+                                "dataType": "string",
+                                "sourceColumn": "Service Name",
+                                "sourceProviderType": "nvarchar"
+                            },
+                            {
+                                "name": "Service Number",
+                                "dataType": "string",
+                                "sourceColumn": "Service Number",
+                                "sourceProviderType": "nvarchar"
+                            },
+                            {
+                                "name": "Product Type Code",
+                                "dataType": "int64",
+                                "sourceColumn": "Product Type Code",
+                                "sourceProviderType": "int"
+                            },
+                            {
+                                "name": "Product Type",
+                                "dataType": "string",
+                                "sourceColumn": "Product Type",
+                                "sourceProviderType": "nvarchar"
+                            },
+                            {
+                                "name": "Product State Code",
+                                "dataType": "int64",
+                                "sourceColumn": "Product State Code",
+                                "sourceProviderType": "int"
+                            },
+                            {
+                                "name": "Product State",
+                                "dataType": "string",
+                                "sourceColumn": "Product State",
+                                "sourceProviderType": "nvarchar"
+                            }
+                        ],
+                        "partitions": [
+                            {
+                                "name": "Product",
+                                "dataView": "full",
+                                "source":
+                                {
+                                    "query": " SELECT [fso].[ProductView].* FROM [fso].[ProductView] ",
+                                    "dataSource": "ST_DS"
+                                }
+                            }
+                        ],
+                        "annotations": [
+                            {
+                                "name": "_TM_ExtProp_QueryDefinition",
+                                "value": " SELECT [fso].[ProductView].* FROM [fso].[ProductView] "
+                            },
+                            {
+                                "name": "_TM_ExtProp_DbTableName",
+                                "value": "ProductView"
+                            },
+                            {
+                                "name": "_TM_ExtProp_DbSchemaName",
+                                "value": "fso"
+                            }
+                        ]
+                    },
+                    {
+                        "name": "Resource Booking",
+                        "columns": [
+                            {
+                                "name": "Booking Status Id",
+                                "dataType": "string",
+                                "sourceColumn": "Booking Status Id",
+                                "sourceProviderType": "uniqueidentifier"
+                            },
+                            {
+                                "name": "Booking Type Code",
+                                "dataType": "int64",
+                                "sourceColumn": "Booking Type Code",
+                                "sourceProviderType": "int"
+                            },
+                            {
+                                "name": "Booking Status",
+                                "dataType": "string",
+                                "sourceColumn": "Booking Status",
+                                "sourceProviderType": "nvarchar"
+                            },
+                            {
+                                "name": "Booking System Status",
+                                "dataType": "string",
+                                "sourceColumn": "Booking System Status",
+                                "sourceProviderType": "nvarchar"
+                            },
+                            {
+                                "name": "Booking Type",
+                                "dataType": "string",
+                                "sourceColumn": "Booking Type",
+                                "sourceProviderType": "nvarchar"
+                            },
+                            {
+                                "name": "Start Time",
+                                "dataType": "dateTime",
+                                "sourceColumn": "Start Time",
+                                "formatString": "General Date",
+                                "sourceProviderType": "datetime"
+                            },
+                            {
+                                "name": "End Time",
+                                "dataType": "dateTime",
+                                "sourceColumn": "End Time",
+                                "formatString": "General Date",
+                                "sourceProviderType": "datetime"
+                            },
+                            {
+                                "name": "Booking Duration Minutes",
+                                "dataType": "int64",
+                                "sourceColumn": "Booking Duration Minutes",
+                                "sourceProviderType": "int"
+                            },
+                            {
+                                "name": "Booking Duration Hours",
+                                "dataType": "double",
+                                "sourceColumn": "Booking Duration Hours",
+                                "sourceProviderType": "numeric"
+                            },
+                            {
+                                "name": "Booking Date",
+                                "dataType": "dateTime",
+                                "sourceColumn": "Booking Date",
+                                "formatString": "General Date",
+                                "sourceProviderType": "date"
+                            },
+                            {
+                                "name": "Booked Resource Group Id",
+                                "dataType": "string",
+                                "sourceColumn": "Booked Resource Group Id",
+                                "sourceProviderType": "uniqueidentifier"
+                            },
+                            {
+                                "name": "Booked Resource Id",
+                                "dataType": "string",
+                                "sourceColumn": "Booked Resource Id",
+                                "sourceProviderType": "uniqueidentifier"
+                            },
+                            {
+                                "name": "Booked Resource Work Order Id",
+                                "dataType": "string",
+                                "sourceColumn": "Booked Resource Work Order Id",
+                                "sourceProviderType": "uniqueidentifier"
+                            },
+                            {
+                                "name": "Actual Travel Time",
+                                "dataType": "int64",
+                                "sourceColumn": "Actual Travel Time",
+                                "sourceProviderType": "int"
+                            },
+                            {
+                                "name": "Estimated Travel Time",
+                                "dataType": "int64",
+                                "sourceColumn": "Estimated Travel Time",
+                                "sourceProviderType": "int"
+                            },
+                            {
+                                "name": "Actual Arrival Time",
+                                "dataType": "dateTime",
+                                "sourceColumn": "Actual Arrival Time",
+                                "formatString": "General Date",
+                                "sourceProviderType": "datetime"
+                            },
+                            {
+                                "name": "Estimated Arrival Time",
+                                "dataType": "dateTime",
+                                "sourceColumn": "Estimated Arrival Time",
+                                "formatString": "General Date",
+                                "sourceProviderType": "datetime"
+                            },
+                            {
+                                "name": "Minutes Late",
+                                "dataType": "int64",
+                                "sourceColumn": "Minutes Late",
+                                "sourceProviderType": "int"
+                            },
+                            {
+                                "name": "Resource Booking Id",
+                                "dataType": "string",
+                                "sourceColumn": "Resource Booking Id",
+                                "sourceProviderType": "uniqueidentifier"
+                            },
+                            {
+                                "name": "Booked Resource Total Cost",
+                                "dataType": "double",
+                                "sourceColumn": "Booked Resource Total Cost",
+                                "sourceProviderType": "decimal"
+                            }
+                        ],
+                        "partitions": [
+                            {
+                                "name": "Resource Booking",
+                                "dataView": "full",
+                                "source":
+                                {
+                                    "query": " SELECT [fso].[ResourceBookingView].* FROM [fso].[ResourceBookingView] ",
+                                    "dataSource": "ST_DS"
+                                }
+                            }
+                        ],
+                        "annotations": [
+                            {
+                                "name": "_TM_ExtProp_QueryDefinition",
+                                "value": " SELECT [fso].[ResourceBookingView].* FROM [fso].[ResourceBookingView] "
+                            },
+                            {
+                                "name": "_TM_ExtProp_DbTableName",
+                                "value": "ResourceBookingView"
+                            },
+                            {
+                                "name": "_TM_ExtProp_DbSchemaName",
+                                "value": "fso"
+                            }
+                        ]
+                    },
+                    {
+                        "name": "Resource",
+                        "columns": [
+                            {
+                                "name": "Resource Id",
+                                "dataType": "string",
+                                "sourceColumn": "Resource Id",
+                                "sourceProviderType": "uniqueidentifier"
+                            },
+                            {
+                                "name": "Resource Name",
+                                "dataType": "string",
+                                "sourceColumn": "Resource Name",
+                                "sourceProviderType": "nvarchar"
+                            },
+                            {
+                                "name": "Resource Type",
+                                "dataType": "string",
+                                "sourceColumn": "Resource Type",
+                                "sourceProviderType": "nvarchar"
+                            },
+                            {
+                                "name": "Resource Type Code",
+                                "dataType": "int64",
+                                "sourceColumn": "Resource Type Code",
+                                "sourceProviderType": "int"
+                            },
+                            {
+                                "name": "Resource State",
+                                "dataType": "string",
+                                "sourceColumn": "Resource State",
+                                "sourceProviderType": "nvarchar"
+                            },
+                            {
+                                "name": "Resource State Code",
+                                "dataType": "int64",
+                                "sourceColumn": "Resource State Code",
+                                "sourceProviderType": "int"
+                            },
+                            {
+                                "name": "Resource Hourly Wage",
+                                "dataType": "double",
+                                "sourceColumn": "Resource Hourly Wage",
+                                "sourceProviderType": "decimal"
+                            }
+                        ],
+                        "partitions": [
+                            {
+                                "name": "Resource",
+                                "dataView": "full",
+                                "source":
+                                {
+                                    "query": " SELECT [fso].[ResourceView].* FROM [fso].[ResourceView] ",
+                                    "dataSource": "ST_DS"
+                                }
+                            }
+                        ],
+                        "annotations": [
+                            {
+                                "name": "_TM_ExtProp_QueryDefinition",
+                                "value": " SELECT [fso].[ResourceView].* FROM [fso].[ResourceView] "
+                            },
+                            {
+                                "name": "_TM_ExtProp_DbTableName",
+                                "value": "ResourceView"
+                            },
+                            {
+                                "name": "_TM_ExtProp_DbSchemaName",
+                                "value": "fso"
+                            }
+                        ]
+                    },
+                    {
+                        "name": "Service",
+                        "columns": [
+                            {
+                                "name": "Product Id",
+                                "dataType": "string",
+                                "sourceColumn": "Product Id",
+                                "sourceProviderType": "uniqueidentifier"
+                            },
+                            {
+                                "name": "Service Name",
+                                "dataType": "string",
+                                "sourceColumn": "Service Name",
+                                "sourceProviderType": "nvarchar"
+                            },
+                            {
+                                "name": "Service Number",
+                                "dataType": "string",
+                                "sourceColumn": "Service Number",
+                                "sourceProviderType": "nvarchar"
+                            },
+                            {
+                                "name": "Product Type Code",
+                                "dataType": "int64",
+                                "sourceColumn": "Product Type Code",
+                                "sourceProviderType": "int"
+                            },
+                            {
+                                "name": "Product Type",
+                                "dataType": "string",
+                                "sourceColumn": "Product Type",
+                                "sourceProviderType": "nvarchar"
+                            },
+                            {
+                                "name": "Product State Code",
+                                "dataType": "int64",
+                                "sourceColumn": "Product State Code",
+                                "sourceProviderType": "int"
+                            },
+                            {
+                                "name": "Product State",
+                                "dataType": "string",
+                                "sourceColumn": "Product State",
+                                "sourceProviderType": "nvarchar"
+                            }
+                        ],
+                        "partitions": [
+                            {
+                                "name": "Service",
+                                "dataView": "full",
+                                "source":
+                                {
+                                    "query": " SELECT [fso].[ServiceView].* FROM [fso].[ServiceView] ",
+                                    "dataSource": "ST_DS"
+                                }
+                            }
+                        ],
+                        "annotations": [
+                            {
+                                "name": "_TM_ExtProp_QueryDefinition",
+                                "value": " SELECT [fso].[ServiceView].* FROM [fso].[ServiceView] "
+                            },
+                            {
+                                "name": "_TM_ExtProp_DbTableName",
+                                "value": "ServiceView"
+                            },
+                            {
+                                "name": "_TM_ExtProp_DbSchemaName",
+                                "value": "fso"
+                            }
+                        ]
+                    },
+                    {
+                        "name": "Service Territory",
+                        "columns": [
+                            {
+                                "name": "Service Territory",
+                                "dataType": "string",
+                                "sourceColumn": "Service Territory",
+                                "sourceProviderType": "nvarchar"
+                            },
+                            {
+                                "name": "Territory Id",
+                                "dataType": "string",
+                                "sourceColumn": "Territory Id",
+                                "sourceProviderType": "uniqueidentifier"
+                            }
+                        ],
+                        "partitions": [
+                            {
+                                "name": "Territory",
+                                "dataView": "full",
+                                "source":
+                                {
+                                    "query": " SELECT [fso].[TerritoryView].* FROM [fso].[TerritoryView] ",
+                                    "dataSource": "ST_DS"
+                                }
+                            }
+                        ],
+                        "annotations": [
+                            {
+                                "name": "_TM_ExtProp_QueryDefinition",
+                                "value": " SELECT [fso].[TerritoryView].* FROM [fso].[TerritoryView] "
+                            },
+                            {
+                                "name": "_TM_ExtProp_DbTableName",
+                                "value": "TerritoryView"
+                            },
+                            {
+                                "name": "_TM_ExtProp_DbSchemaName",
+                                "value": "fso"
+                            }
+                        ]
+                    },
+                    {
+                        "name": "Work Order Product",
+                        "columns": [
+                            {
+                                "name": "Work Order Product Item Id",
+                                "dataType": "string",
+                                "sourceColumn": "Work Order Product Item Id",
+                                "sourceProviderType": "uniqueidentifier"
+                            },
+                            {
+                                "name": "Work Order Product Line Status",
+                                "dataType": "string",
+                                "sourceColumn": "Work Order Product Line Status",
+                                "sourceProviderType": "nvarchar"
+                            },
+                            {
+                                "name": "Work Order Product Line Status Code",
+                                "dataType": "int64",
+                                "sourceColumn": "Work Order Product Line Status Code",
+                                "sourceProviderType": "int"
+                            },
+                            {
+                                "name": "Work Order Product Revenue",
+                                "dataType": "double",
+                                "sourceColumn": "Work Order Product Revenue",
+                                "sourceProviderType": "decimal"
+                            },
+                            {
+                                "name": "Work Order Total Product Cost",
+                                "dataType": "double",
+                                "sourceColumn": "Work Order Total Product Cost",
+                                "sourceProviderType": "decimal"
+                            },
+                            {
+                                "name": "Work Order Product Quantity",
+                                "dataType": "double",
+                                "sourceColumn": "Work Order Product Quantity",
+                                "sourceProviderType": "decimal"
+                            },
+                            {
+                                "name": "Work Order Id",
+                                "dataType": "string",
+                                "sourceColumn": "Work Order Id",
+                                "sourceProviderType": "uniqueidentifier"
+                            },
+                            {
+                                "name": "Work Order Product Customer Asset Id",
+                                "dataType": "string",
+                                "sourceColumn": "Work Order Product Customer Asset Id",
+                                "sourceProviderType": "uniqueidentifier"
+                            }
+                        ],
+                        "partitions": [
+                            {
+                                "name": "Work Order Products",
+                                "dataView": "full",
+                                "source":
+                                {
+                                    "query": " SELECT [fso].[WorkOrderProductsView].* FROM [fso].[WorkOrderProductsView] ",
+                                    "dataSource": "ST_DS"
+                                }
+                            }
+                        ],
+                        "annotations": [
+                            {
+                                "name": "_TM_ExtProp_QueryDefinition",
+                                "value": " SELECT [fso].[WorkOrderProductsView].* FROM [fso].[WorkOrderProductsView] "
+                            },
+                            {
+                                "name": "_TM_ExtProp_DbTableName",
+                                "value": "WorkOrderProductsView"
+                            },
+                            {
+                                "name": "_TM_ExtProp_DbSchemaName",
+                                "value": "fso"
+                            }
+                        ]
+                    },
+                    {
+                        "name": "Work Order Service",
+                        "columns": [
+                            {
+                                "name": "Work Order Service Estimated Unit Cost",
+                                "dataType": "double",
+                                "sourceColumn": "Work Order Service Estimated Unit Cost",
+                                "sourceProviderType": "decimal"
+                            },
+                            {
+                                "name": "Work Order Service Total Cost",
+                                "dataType": "double",
+                                "sourceColumn": "Work Order Service Total Cost",
+                                "sourceProviderType": "decimal"
+                            },
+                            {
+                                "name": "Work Order Service Work Order Incident Id",
+                                "dataType": "string",
+                                "sourceColumn": "Work Order Service Work Order Incident Id",
+                                "sourceProviderType": "uniqueidentifier"
+                            },
+                            {
+                                "name": "Work Order Service Product Id",
+                                "dataType": "string",
+                                "sourceColumn": "Work Order Service Product Id",
+                                "sourceProviderType": "uniqueidentifier"
+                            },
+                            {
+                                "name": "Work Order Service Duration to Bill",
+                                "dataType": "int64",
+                                "sourceColumn": "Work Order Service Duration to Bill",
+                                "sourceProviderType": "int"
+                            },
+                            {
+                                "name": "Work Order Service Duration",
+                                "dataType": "int64",
+                                "sourceColumn": "Work Order Service Duration",
+                                "sourceProviderType": "int"
+                            },
+                            {
+                                "name": "Work Order Service Estimated Duration",
+                                "dataType": "int64",
+                                "sourceColumn": "Work Order Service Estimated Duration",
+                                "sourceProviderType": "int"
+                            },
+                            {
+                                "name": "Work Order Service Line Status Code",
+                                "dataType": "int64",
+                                "sourceColumn": "Work Order Service Line Status Code",
+                                "sourceProviderType": "int"
+                            },
+                            {
+                                "name": "Work Order Service Line Status",
+                                "dataType": "string",
+                                "sourceColumn": "Work Order Service Line Status",
+                                "sourceProviderType": "nvarchar"
+                            },
+                            {
+                                "name": "Work Order Service Line Order",
+                                "dataType": "int64",
+                                "sourceColumn": "Work Order Service Line Order",
+                                "sourceProviderType": "int"
+                            },
+                            {
+                                "name": "Work Order Id",
+                                "dataType": "string",
+                                "sourceColumn": "Work Order Id",
+                                "sourceProviderType": "uniqueidentifier"
+                            },
+                            {
+                                "name": "Work Order Service Resource Booking Id",
+                                "dataType": "string",
+                                "sourceColumn": "Work Order Service Resource Booking Id",
+                                "sourceProviderType": "uniqueidentifier"
+                            },
+                            {
+                                "name": "Work Order Service Revenue",
+                                "dataType": "double",
+                                "sourceColumn": "Work Order Service Revenue",
+                                "sourceProviderType": "decimal"
+                            },
+                            {
+                                "type": "calculated",
+                                "name": "Service Duration Category",
+                                "dataType": "string",
+                                "isDataTypeInferred": true,
+                                "expression": " IF('Work Order Service'[Work Order Service Duration]<= 60, \"0-1 hours\", IF('Work Order Service'[Work Order Service Duration]<= 120, \"1-2 hours\", IF('Work Order Service'[Work Order Service Duration]<= 180, \"2-3 hours\", \"3+ hours\")))"
+                            }
+                        ],
+                        "partitions": [
+                            {
+                                "name": "Work Order Service",
+                                "dataView": "full",
+                                "source":
+                                {
+                                    "query": " SELECT [fso].[WorkOrderServiceView].* FROM [fso].[WorkOrderServiceView] ",
+                                    "dataSource": "ST_DS"
+                                }
+                            }
+                        ],
+                        "annotations": [
+                            {
+                                "name": "_TM_ExtProp_QueryDefinition",
+                                "value": " SELECT [fso].[WorkOrderServiceView].* FROM [fso].[WorkOrderServiceView] "
+                            },
+                            {
+                                "name": "_TM_ExtProp_DbTableName",
+                                "value": "WorkOrderServiceView"
+                            },
+                            {
+                                "name": "_TM_ExtProp_DbSchemaName",
+                                "value": "fso"
+                            }
+                        ]
+                    },
+                    {
+                        "name": "Work Order Type",
+                        "columns": [
+                            {
+                                "name": "Work Order Type Id",
+                                "dataType": "string",
+                                "sourceColumn": "Work Order Type Id",
+                                "sourceProviderType": "uniqueidentifier"
+                            },
+                            {
+                                "name": "Work Order Type",
+                                "dataType": "string",
+                                "sourceColumn": "Work Order Type",
+                                "sourceProviderType": "nvarchar"
+                            },
+                            {
+                                "name": "Is Taxable",
+                                "dataType": "string",
+                                "sourceColumn": "Is Taxable",
+                                "sourceProviderType": "varchar"
+                            }
+                        ],
+                        "partitions": [
+                            {
+                                "name": "Work Order Type",
+                                "dataView": "full",
+                                "source":
+                                {
+                                    "query": " SELECT [fso].[WorkOrderTypeView].* FROM [fso].[WorkOrderTypeView] ",
+                                    "dataSource": "ST_DS"
+                                }
+                            }
+                        ],
+                        "annotations": [
+                            {
+                                "name": "_TM_ExtProp_QueryDefinition",
+                                "value": " SELECT [fso].[WorkOrderTypeView].* FROM [fso].[WorkOrderTypeView] "
+                            },
+                            {
+                                "name": "_TM_ExtProp_DbTableName",
+                                "value": "WorkOrderTypeView"
+                            },
+                            {
+                                "name": "_TM_ExtProp_DbSchemaName",
+                                "value": "fso"
+                            }
+                        ]
+                    },
+                    {
+                        "name": "Work Order",
+                        "columns": [
+                            {
+                                "name": "Work Order System Status Code",
+                                "dataType": "int64",
+                                "sourceColumn": "Work Order System Status Code",
+                                "sourceProviderType": "int"
+                            },
+                            {
+                                "name": "Work Order System Status",
+                                "dataType": "string",
+                                "sourceColumn": "Work Order System Status",
+                                "sourceProviderType": "nvarchar"
+                            },
+                            {
+                                "name": "Customer Id",
+                                "dataType": "string",
+                                "sourceColumn": "Customer Id",
+                                "sourceProviderType": "uniqueidentifier"
+                            },
+                            {
+                                "name": "Work Order City",
+                                "dataType": "string",
+                                "sourceColumn": "Work Order City",
+                                "sourceProviderType": "nvarchar",
+                                "dataCategory": "City"
+                            },
+                            {
+                                "name": "Work Order State or Province",
+                                "dataType": "string",
+                                "sourceColumn": "Work Order State or Province",
+                                "sourceProviderType": "nvarchar",
+                                "dataCategory": "StateOrProvince"
+                            },
+                            {
+                                "name": "Work Order Postal Code",
+                                "dataType": "string",
+                                "sourceColumn": "Work Order Postal Code",
+                                "sourceProviderType": "nvarchar",
+                                "dataCategory": "PostalCode"
+                            },
+                            {
+                                "name": "Work Order Country",
+                                "dataType": "string",
+                                "sourceColumn": "Work Order Country",
+                                "sourceProviderType": "nvarchar",
+                                "dataCategory": "Country"
+                            },
+                            {
+                                "name": "Work Order Incident Description",
+                                "dataType": "string",
+                                "sourceColumn": "Work Order Incident Description",
+                                "sourceProviderType": "nvarchar"
+                            },
+                            {
+                                "name": "Work Order Date Created On",
+                                "dataType": "dateTime",
+                                "sourceColumn": "Work Order Date Created On",
+                                "formatString": "General Date",
+                                "sourceProviderType": "date"
+                            },
+                            {
+                                "name": "Work Order Id",
+                                "dataType": "string",
+                                "sourceColumn": "Work Order Id",
+                                "sourceProviderType": "uniqueidentifier"
+                            },
+                            {
+                                "name": "Work Order Number",
+                                "dataType": "string",
+                                "sourceColumn": "Work Order Number",
+                                "sourceProviderType": "nvarchar"
+                            },
+                            {
+                                "name": "Parent Work Order Id",
+                                "dataType": "string",
+                                "sourceColumn": "Parent Work Order Id",
+                                "sourceProviderType": "uniqueidentifier"
+                            },
+                            {
+                                "name": "Work Order Address",
+                                "dataType": "string",
+                                "sourceColumn": "Work Order Address",
+                                "sourceProviderType": "nvarchar",
+                                "dataCategory": "Address"
+                            },
+                            {
+                                "name": "Work Order Type Id",
+                                "dataType": "string",
+                                "sourceColumn": "Work Order Type Id",
+                                "sourceProviderType": "uniqueidentifier"
+                            },
+                            {
+                                "name": "Incident Type Id",
+                                "dataType": "string",
+                                "sourceColumn": "Incident Type Id",
+                                "sourceProviderType": "uniqueidentifier"
+                            },
+                            {
+                                "name": "Work Order Estimated Duration",
+                                "dataType": "int64",
+                                "sourceColumn": "Work Order Estimated Duration",
+                                "sourceProviderType": "int"
+                            },
+                            {
+                                "name": "Work Order Status Code",
+                                "dataType": "int64",
+                                "sourceColumn": "Work Order Status Code",
+                                "sourceProviderType": "int"
+                            },
+                            {
+                                "name": "Work Order Status",
+                                "dataType": "string",
+                                "sourceColumn": "Work Order Status",
+                                "sourceProviderType": "nvarchar"
+                            },
+                            {
+                                "name": "Work Order Subtotal",
+                                "dataType": "double",
+                                "sourceColumn": "Work Order Subtotal",
+                                "sourceProviderType": "decimal"
+                            },
+                            {
+                                "name": "Work Order Revenue",
+                                "dataType": "double",
+                                "sourceColumn": "Work Order Revenue",
+                                "sourceProviderType": "decimal"
+                            },
+                            {
+                                "name": "Work Order Latitude",
+                                "dataType": "double",
+                                "sourceColumn": "Work Order Latitude",
+                                "sourceProviderType": "decimal"
+                            },
+                            {
+                                "name": "Work Order Longitude",
+                                "dataType": "double",
+                                "sourceColumn": "Work Order Longitude",
+                                "sourceProviderType": "decimal"
+                            },
+                            {
+                                "name": "Service Territory Id",
+                                "dataType": "string",
+                                "sourceColumn": "Service Territory Id",
+                                "sourceProviderType": "uniqueidentifier"
+                            },
+                            {
+                                "name": "Work Order Date Closed",
+                                "dataType": "dateTime",
+                                "sourceColumn": "Work Order Date Closed",
+                                "formatString": "General Date",
+                                "sourceProviderType": "date"
+                            }
+                        ],
+                        "partitions": [
+                            {
+                                "name": "Work Order",
+                                "dataView": "full",
+                                "source":
+                                {
+                                    "query": " SELECT [fso].[WorkOrderView].* FROM [fso].[WorkOrderView] ",
+                                    "dataSource": "ST_DS"
+                                }
+                            }
+                        ],
+                        "annotations": [
+                            {
+                                "name": "_TM_ExtProp_QueryDefinition",
+                                "value": " SELECT [fso].[WorkOrderView].* FROM [fso].[WorkOrderView] "
+                            },
+                            {
+                                "name": "_TM_ExtProp_DbTableName",
+                                "value": "WorkOrderView"
+                            },
+                            {
+                                "name": "_TM_ExtProp_DbSchemaName",
+                                "value": "fso"
+                            }
+                        ]
+                    },
+                    {
+                        "name": "Created On",
+                        "columns": [
+                            {
+                                "name": "date_key",
+                                "dataType": "int64",
+                                "sourceColumn": "date_key",
+                                "sourceProviderType": "int"
+                            },
+                            {
+                                "name": "Created Date",
+                                "dataType": "dateTime",
+                                "sourceColumn": "Date",
+                                "formatString": "General Date",
+                                "sourceProviderType": "date"
+                            },
+                            {
+                                "name": "Created Day of the Week",
+                                "dataType": "int64",
+                                "sourceColumn": "Day of the Week",
+                                "sourceProviderType": "tinyint"
+                            },
+                            {
+                                "name": "Created Day Number of the Month",
+                                "dataType": "int64",
+                                "sourceColumn": "Day Number of the Month",
+                                "sourceProviderType": "tinyint"
+                            },
+                            {
+                                "name": "Created Day Name",
+                                "dataType": "string",
+                                "sourceColumn": "Day Name",
+                                "sourceProviderType": "char"
+                            },
+                            {
+                                "name": "Created Day Abbreviated",
+                                "dataType": "string",
+                                "sourceColumn": "Day Abbreviated",
+                                "sourceProviderType": "char"
+                            },
+                            {
+                                "name": "Weekday Flag",
+                                "dataType": "string",
+                                "sourceColumn": "Weekday Flag",
+                                "sourceProviderType": "char"
+                            },
+                            {
+                                "name": "Created Month",
+                                "dataType": "int64",
+                                "sourceColumn": "month",
+                                "sourceProviderType": "tinyint"
+                            },
+                            {
+                                "name": "Created Month Name",
+                                "dataType": "string",
+                                "sourceColumn": "Month Name",
+                                "sourceProviderType": "char"
+                            },
+                            {
+                                "name": "Created Month Short Name",
+                                "dataType": "string",
+                                "sourceColumn": "month_abbrev",
+                                "sourceProviderType": "char"
+                            },
+                            {
+                                "name": "Created Quarter",
+                                "dataType": "int64",
+                                "sourceColumn": "quarter",
+                                "sourceProviderType": "tinyint"
+                            },
+                            {
+                                "name": "Created Year",
+                                "dataType": "int64",
+                                "sourceColumn": "year",
+                                "sourceProviderType": "smallint"
+                            },
+                            {
+                                "name": "Created Same Day a Year Ago Date",
+                                "dataType": "dateTime",
+                                "sourceColumn": "same_day_year_ago_date",
+                                "formatString": "General Date",
+                                "sourceProviderType": "date"
+                            },
+                            {
+                                "name": "Created Week Begin Date",
+                                "dataType": "dateTime",
+                                "sourceColumn": "Week Begin Date",
+                                "formatString": "General Date",
+                                "sourceProviderType": "date"
+                            },
+                            {
+                                "name": "Created Month Begin Date",
+                                "dataType": "dateTime",
+                                "sourceColumn": "Month Begin Date",
+                                "formatString": "General Date",
+                                "sourceProviderType": "datetime"
+                            }
+                        ],
+                        "partitions": [
+                            {
+                                "name": "DateView",
+                                "dataView": "full",
+                                "source":
+                                {
+                                    "query": " SELECT [fso].[DateView].* FROM [fso].[DateView] ",
+                                    "dataSource": "ST_DS"
+                                }
+                            }
+                        ],
+                        "annotations": [
+                            {
+                                "name": "_TM_ExtProp_QueryDefinition",
+                                "value": " SELECT [fso].[DateView].* FROM [fso].[DateView] "
+                            },
+                            {
+                                "name": "_TM_ExtProp_DbTableName",
+                                "value": "DateView"
+                            },
+                            {
+                                "name": "_TM_ExtProp_DbSchemaName",
+                                "value": "fso"
+                            }
+                        ]
+                    },
+                    {
+                        "name": "Closed On",
+                        "columns": [
+                            {
+                                "name": "date_key",
+                                "dataType": "int64",
+                                "sourceColumn": "date_key",
+                                "sourceProviderType": "int"
+                            },
+                            {
+                                "name": "Closed Date",
+                                "dataType": "dateTime",
+                                "sourceColumn": "Date",
+                                "formatString": "General Date",
+                                "sourceProviderType": "date"
+                            },
+                            {
+                                "name": "Closed Day of the Week",
+                                "dataType": "int64",
+                                "sourceColumn": "Day of the Week",
+                                "sourceProviderType": "tinyint"
+                            },
+                            {
+                                "name": "Closed Day Number of the Month",
+                                "dataType": "int64",
+                                "sourceColumn": "Day Number of the Month",
+                                "sourceProviderType": "tinyint"
+                            },
+                            {
+                                "name": "Closed Day Name",
+                                "dataType": "string",
+                                "sourceColumn": "Day Name",
+                                "sourceProviderType": "char"
+                            },
+                            {
+                                "name": "Closed Day Abbreviated",
+                                "dataType": "string",
+                                "sourceColumn": "Day Abbreviated",
+                                "sourceProviderType": "char"
+                            },
+                            {
+                                "name": "Weekday Flag",
+                                "dataType": "string",
+                                "sourceColumn": "Weekday Flag",
+                                "sourceProviderType": "char"
+                            },
+                            {
+                                "name": "Closed Month",
+                                "dataType": "int64",
+                                "sourceColumn": "month",
+                                "sourceProviderType": "tinyint"
+                            },
+                            {
+                                "name": "Closed Month Name",
+                                "dataType": "string",
+                                "sourceColumn": "Month Name",
+                                "sourceProviderType": "char"
+                            },
+                            {
+                                "name": "Closed Month Short Name",
+                                "dataType": "string",
+                                "sourceColumn": "month_abbrev",
+                                "sourceProviderType": "char"
+                            },
+                            {
+                                "name": "Closed Quarter",
+                                "dataType": "int64",
+                                "sourceColumn": "quarter",
+                                "sourceProviderType": "tinyint"
+                            },
+                            {
+                                "name": "Closed Year",
+                                "dataType": "int64",
+                                "sourceColumn": "year",
+                                "sourceProviderType": "smallint"
+                            },
+                            {
+                                "name": "Closed Same Day a Year Ago Date",
+                                "dataType": "dateTime",
+                                "sourceColumn": "same_day_year_ago_date",
+                                "formatString": "General Date",
+                                "sourceProviderType": "date"
+                            },
+                            {
+                                "name": "Closed Week Begin Date",
+                                "dataType": "dateTime",
+                                "sourceColumn": "Week Begin Date",
+                                "formatString": "General Date",
+                                "sourceProviderType": "date"
+                            },
+                            {
+                                "name": "Closed Month Begin Date",
+                                "dataType": "dateTime",
+                                "sourceColumn": "Month Begin Date",
+                                "formatString": "General Date",
+                                "sourceProviderType": "datetime"
+                            },
+                            {
+                                "type": "calculated",
+                                "name": "Closed Relative Day Number",
+                                "dataType": "int64",
+                                "isDataTypeInferred": true,
+                                "expression": " if(TODAY()<'Closed On'[Closed Date], DATEDIFF(TODAY(),'Closed On'[Closed Date],DAY), -DATEDIFF('Closed On'[Closed Date],today(),DAY))"
+                            },
+                            {
+                                "type": "calculated",
+                                "name": "Closed Relative Week Number",
+                                "dataType": "int64",
+                                "isDataTypeInferred": true,
+                                "expression": " if(TODAY()<'Closed On'[Closed Date], DATEDIFF(TODAY(),'Closed On'[Closed Date],WEEK), -DATEDIFF('Closed On'[Closed Date],today(),WEEK))"
+                            },
+                            {
+                                "type": "calculated",
+                                "name": "Closed Relative Month Number",
+                                "dataType": "int64",
+                                "isDataTypeInferred": true,
+                                "expression": " if(TODAY()<'Closed On'[Closed Date], DATEDIFF(TODAY(),'Closed On'[Closed Date],Month), -DATEDIFF('Closed On'[Closed Date],today(),MONTH))"
+                            }
+                        ],
+                        "partitions": [
+                            {
+                                "name": "DateView",
+                                "dataView": "full",
+                                "source":
+                                {
+                                    "query": " SELECT [fso].[DateView].* FROM [fso].[DateView] ",
+                                    "dataSource": "ST_DS"
+                                }
+                            }
+                        ],
+                        "annotations": [
+                            {
+                                "name": "_TM_ExtProp_QueryDefinition",
+                                "value": " SELECT [fso].[DateView].* FROM [fso].[DateView] "
+                            },
+                            {
+                                "name": "_TM_ExtProp_DbTableName",
+                                "value": "DateView"
+                            },
+                            {
+                                "name": "_TM_ExtProp_DbSchemaName",
+                                "value": "fso"
+                            }
+                        ]
+                    }
+                ],
+                "relationships": [
+                    {
+                        "name": "a5d452e9-56d7-4fb3-b7d2-e55442f375dd",
+                        "fromTable": "Resource Booking",
+                        "fromColumn": "Booked Resource Id",
+                        "toTable": "Resource",
+                        "toColumn": "Resource Id",
+                        "crossFilteringBehavior": "bothDirections"
+                    },
+                    {
+                        "name": "27d2cd98-7599-4876-9e32-47097ae9b900",
+                        "fromTable": "Resource Booking",
+                        "fromColumn": "Booked Resource Work Order Id",
+                        "toTable": "Work Order",
+                        "toColumn": "Work Order Id",
+                        "crossFilteringBehavior": "bothDirections"
+                    },
+                    {
+                        "name": "e98e7a34-8ae3-47d4-bd60-588ff78f96cb",
+                        "fromTable": "Resource Booking",
+                        "fromColumn": "Booking Status Id",
+                        "toTable": "Booking Status",
+                        "toColumn": "Booking Status Id",
+                        "crossFilteringBehavior": "bothDirections"
+                    },
+                    {
+                        "name": "e652465f-d708-4021-b4d7-8dc6d2255edc",
+                        "fromTable": "Work Order",
+                        "fromColumn": "Work Order Type Id",
+                        "toTable": "Work Order Type",
+                        "toColumn": "Work Order Type Id",
+                        "crossFilteringBehavior": "bothDirections"
+                    },
+                    {
+                        "name": "1bf52765-9d9a-465b-bc83-bdb5495d399a",
+                        "fromTable": "Work Order",
+                        "fromColumn": "Incident Type Id",
+                        "toTable": "Incident Type",
+                        "toColumn": "Incident Type Id"
+                    },
+                    {
+                        "name": "85eacd33-f627-4fe3-aa02-169e225efc77",
+                        "fromTable": "Work Order",
+                        "fromColumn": "Customer Id",
+                        "toTable": "Customer",
+                        "toColumn": "Customer Id"
+                    },
+                    {
+                        "name": "a2092b5e-de87-4545-ba71-5fa3ef065ed3",
+                        "fromTable": "Work Order Service",
+                        "fromColumn": "Work Order Service Product Id",
+                        "toTable": "Service",
+                        "toColumn": "Product Id"
+                    },
+                    {
+                        "name": "0e1cda75-c0ba-49f1-a392-cd7236a0ae8e",
+                        "fromTable": "Work Order Service",
+                        "fromColumn": "Work Order Service Resource Booking Id",
+                        "toTable": "Resource Booking",
+                        "toColumn": "Resource Booking Id",
+                        "isActive": false,
+                        "crossFilteringBehavior": "bothDirections"
+                    },
+                    {
+                        "name": "b2202531-1c4c-4204-9172-3b585a0a1bdc",
+                        "fromTable": "Work Order Service",
+                        "fromColumn": "Work Order Id",
+                        "toTable": "Work Order",
+                        "toColumn": "Work Order Id",
+                        "crossFilteringBehavior": "bothDirections"
+                    },
+                    {
+                        "name": "3978f4db-b923-4b3b-89cf-23949a81ef20",
+                        "fromTable": "Work Order",
+                        "fromColumn": "Service Territory Id",
+                        "toTable": "Service Territory",
+                        "toColumn": "Territory Id"
+                    },
+                    {
+                        "name": "707efb03-bb47-4cd6-9ec9-0832ec802609",
+                        "fromTable": "Work Order Product",
+                        "fromColumn": "Work Order Product Item Id",
+                        "toTable": "Product",
+                        "toColumn": "Product Id"
+                    },
+                    {
+                        "name": "522ebbbc-053c-49aa-8e04-47554e34b24d",
+                        "fromTable": "Work Order Product",
+                        "fromColumn": "Work Order Id",
+                        "toTable": "Work Order",
+                        "toColumn": "Work Order Id"
+                    },
+                    {
+                        "name": "9f667b3e-fda6-4f66-9cbd-d85f5fd50e77",
+                        "fromTable": "Work Order Product",
+                        "fromColumn": "Work Order Product Customer Asset Id",
+                        "toTable": "Customer Equipment",
+                        "toColumn": "Equipment Id"
+                    },
+                    {
+                        "name": "7b9699d0-ec58-4b3a-af64-9cdcf67ce0d9",
+                        "fromTable": "Work Order",
+                        "fromColumn": "Work Order Date Closed",
+                        "toTable": "Closed On",
+                        "toColumn": "Closed Date"
+                    },
+                    {
+                        "name": "0d8bda9f-707b-4524-825d-77fc6d9f1c78",
+                        "fromTable": "Work Order",
+                        "fromColumn": "Work Order Date Created On",
+                        "toTable": "Created On",
+                        "toColumn": "Created Date"
+                    },
+                    {
+                        "name": "b7e05280-b5e5-48dc-8540-76f89b6204ea",
+                        "fromTable": "Resource Booking",
+                        "fromColumn": "Booking Date",
+                        "toTable": "Booking Date",
+                        "toColumn": "Booking Date"
+                    }
+                ],
+                "annotations": [
+                    {
+                        "name": "ClientCompatibilityLevel",
+                        "value": "400"
+                    }
+                ]
+            }
+        }
+    }
+}

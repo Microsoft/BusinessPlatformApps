@@ -1,16 +1,14 @@
-﻿using System;
-using System.ComponentModel.Composition;
-using System.Threading;
-using System.Threading.Tasks;
-
-using Microsoft.Azure;
+﻿using Microsoft.Azure;
 using Microsoft.Azure.Management.Resources;
 using Microsoft.Azure.Management.Resources.Models;
-
 using Microsoft.Deployment.Common.ActionModel;
 using Microsoft.Deployment.Common.Actions;
 using Microsoft.Deployment.Common.Enums;
-using Microsoft.Deployment.Common.Helpers;
+
+using System;
+using System.ComponentModel.Composition;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Microsoft.Deployment.Actions.AzureCustom.Common
 {

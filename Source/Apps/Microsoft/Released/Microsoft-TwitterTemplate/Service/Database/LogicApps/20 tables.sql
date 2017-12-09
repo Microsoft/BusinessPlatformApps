@@ -25,6 +25,7 @@ CREATE TABLE pbist_twitter.tweets_normalized
     hashtags        INT,
     tweet           NCHAR(200),
     twitterhandle   NCHAR(100),
+	userlocation	NCHAR(100),
     usernumber      NCHAR(100),
     sentiment       FLOAT,
     sentimentbin    FLOAT,
@@ -44,6 +45,7 @@ CREATE TABLE pbist_twitter.tweets_processed
     masterid         NCHAR(25),-- UNIQUE NOT NULL,
     retweet          NCHAR(6),
     username         NCHAR(100),
+	userlocation	 NCHAR(100),
     usernumber       NCHAR(100),
     image_url        NCHAR(200),
     authorimage_url  NCHAR(200),
@@ -94,6 +96,38 @@ CREATE TABLE pbist_twitter.authormention_graph
 ALTER TABLE pbist_twitter.authormention_graph ADD CONSTRAINT ck_tweetmentiongraph FOREIGN KEY(tweetid) REFERENCES pbist_twitter.tweets_processed(tweetid);
 
 
+--CREATE TABLE pbist_twitter.search_terms
+--(
+--    tweetid      NCHAR(20),
+--    searchterm   NCHAR(200),
+--    accountid    NCHAR(200),
+--    direction	 NCHAR(100),
+--	PRIMARY KEY(tweetid, searchterm, direction)
+--);
+
+--CREATE TABLE pbist_twitter.accounts
+--(
+--    accountname NCHAR(200) PRIMARY KEY,
+--    accountid   NCHAR(200)
+--);
+
+--CREATE TABLE pbist_twitter.account_details
+--(
+--    accountname			NCHAR(200),
+--    accountid			NCHAR(200),
+--	dateHour			datetime,
+--	accountofficialname NCHAR(200),
+--	accountdescription	NCHAR(200),
+--	followercount		NCHAR(10),
+--	statuscount			NCHAR(10),
+--	friendscount		NCHAR(10),
+--	favouritescount		NCHAR(10),
+--	image_url			NCHAR(200),
+--	PRIMARY KEY(accountname, dateHour)
+--);
+--ALTER TABLE pbist_twitter.account_details ADD CONSTRAINT ck_account_details FOREIGN KEY(accountname) REFERENCES pbist_twitter.accounts(accountname);
+
+
 CREATE TABLE pbist_twitter.minimum_tweets
 (
     MinimumTweets SMALLINT NOT NULL
@@ -103,7 +137,7 @@ CREATE TABLE pbist_twitter.minimum_tweets
 CREATE TABLE pbist_twitter.twitter_query
 (
     Id            INT NOT NULL PRIMARY KEY,
-    IsAdvanced    NCHAR(20) NOT NULL,
+    IsAdvanced    BIT NOT NULL,
     QueryString   NVARCHAR(MAX) NOT NULL,
     TweetId       NCHAR(20) NULL
 );

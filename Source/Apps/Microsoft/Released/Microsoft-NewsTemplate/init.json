@@ -2,7 +2,7 @@
     "Install": {
         "Pages": [
             {
-                "architectureDiagram": "dist/Apps/Test/TemplateApps/Microsoft-NewsTemplateTest/Web/Images/newsarchdiagram.png",
+                "architectureDiagram": "dist/Apps/Microsoft/Released/Microsoft-NewsTemplate/Web/Images/newsarchdiagram.png",
                 "displayname": "Getting Started",
                 "list1": [
                     "$translate(INIT_GETTING_STARTED_AZURE_SUBSCRIPTION)",
@@ -77,7 +77,7 @@
                 ],
                 "displayname": "Deploy",
                 "downloadPbiText": "$translate(INIT_NEWS_DOWNLOAD)",
-                "enablePublishReport": true,
+                "enablePublishReport": "$run(this.MS.DataStore.getValue('ssasDisabled') === 'false')",
                 "filename": "$save('BingNewsTemplate.pbix')",
                 "name": "$SiteCommon$/pages-gallery/progress.html",
                 "uniqueId": "$save(this.MS.UtilityService.getUniqueId(8))"
@@ -90,6 +90,11 @@
                 "name": "Microsoft-DeploySQLScripts",
                 "SqlScriptsFolder": "Service/Database/",
                 "SqlServerIndex": "0"
+            },
+            {
+                "displayname": "$translate(INIT_ACTION_POPULATE_NEWS_ENTITIES)",
+                "name": "Microsoft-PopulateUserDefinedEntities",
+                "skip": "$run(this.MS.DataStore.getValue('BringYourOwnEntities') === this.MS.Option.NO)"
             },
             {
                 "CognitiveServiceName": "TextCognitiveService",
@@ -109,8 +114,8 @@
             {
                 "CognitiveServiceKey": "",
                 "CognitiveServiceName": "BingCognitiveService",
-                "CognitiveServiceType": "Bing.Search",
-                "CognitiveSkuName": "S2",
+                "CognitiveServiceType": "Bing.Search.v7",
+                "CognitiveSkuName": "S5",
                 "DeploymentName": "CognitiveBing",
                 "displayname": "$translate(INIT_ACTION_DEPLOYING_COGNITIVE_SERVICE)",
                 "KeyNumber": "1",
@@ -128,7 +133,8 @@
                 "displayname": "$translate(INIT_ACTION_DEPLOYING_NEWS)",
                 "FunctionName": "$save('function' + this.MS.DataStore.getValue('uniqueId'))",
                 "name": "Microsoft-DeployAzureFunction",
-                "RepoUrl": "https://github.com/juluczni/AzureFunctionsNewsTemplate"
+                "RepoUrl": "https://github.com/juluczni/AzureFunctionsNewsTemplate",
+                "Branch": "newsbranch"
             },
             {
                 "DeploymentName": "Function",
@@ -244,7 +250,8 @@
                 "ConnectorDisplayName": "bingsearch",
                 "ConnectorName": "bingsearch",
                 "ConnectorPayload": {
-                    "apiKey": "$dsall(CognitiveServiceKey)[1]"
+                    "apiKey": "$dsall(CognitiveServiceKey)[1]",
+                    "apiVersion": "v7.0"
                 },
                 "DeploymentName": "CognitiveBing",
                 "displayname": "$translate(INIT_ACTION_UPDATING_COGNITIVE_SERVICE_CONNECTOR)",

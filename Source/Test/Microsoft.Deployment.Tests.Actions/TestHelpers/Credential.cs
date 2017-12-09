@@ -13,6 +13,10 @@ namespace Microsoft.Deployment.Tests.Actions.TestHelpers
 
         public SalesforceCreds Salesforce { get; set; }
 
+        public StorageAccountCreds StorageAccount { get; set; }
+
+        public SocialGistCreds SocialGist { get; set; }
+
         public static void Load()
         {
             Credential cred = new Credential();

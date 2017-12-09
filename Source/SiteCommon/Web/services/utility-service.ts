@@ -24,6 +24,14 @@ export class UtilityService {
         window.location.href = await this.MS.HttpService.getExecuteResponseAsync('Microsoft-GetAzureAuthUri', 'value', { oauthType: openAuthorizationType });
     }
 
+    async connectToAzureSPN(): Promise<void> {
+        window.location.href = await this.MS.HttpService.getExecuteResponseAsync('Microsoft-GetAzureAuthUriForSPN');
+    }
+
+    async connectToFacebook(): Promise<void> {
+        window.location.href = await this.MS.HttpService.getExecuteResponseAsync('Microsoft-GetFacebookAuthUri');
+    }
+
     extractDomain(username: string): string {
         let usernameSplit: string[] = username.split('\\');
         return usernameSplit[0];
@@ -71,7 +79,11 @@ export class UtilityService {
             if (token === '') {
                 this.MS.ErrorService.set(this.MS.Translate.AZURE_LOGIN_UNKNOWN_ERROR, this.MS.UtilityService.getQueryParameterFromUrl(QueryParameter.ERROR_DESCRIPTION, queryParam));
             } else {
-                if (await this.MS.HttpService.isExecuteSuccessAsync('Microsoft-GetAzureToken', { code: token, oauthType: openAuthorizationType })) {
+                if (openAuthorizationType === 'Facebook') {
+                    await this.MS.HttpService.isExecuteSuccessAsync('Microsoft-GetPermanentPageToken', { code: token, oauthType: openAuthorizationType })
+                    await callback();
+                }
+                else if (await this.MS.HttpService.isExecuteSuccessAsync('Microsoft-GetAzureToken', { code: token, oauthType: openAuthorizationType })) {
                     await callback();
                 }
             }

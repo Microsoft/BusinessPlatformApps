@@ -1,0 +1,12 @@
+﻿<template>
+    <require from="../templates/bpst-link.html"></require>
+
+    <h1 class="st-title">${MS.Translate.AX_LOGIN_CONNECT}</h1>
+    <p class="st-subtitle">${MS.Translate.AX_LOGIN_SUBTITLE}</p>
+
+    <div class="st-float">
+        <button class="primary" click.trigger="connect()" disabled.bind="MS.HttpService.isServiceBusy">${MS.Translate.AX_LOGIN_CONNECT}</button>
+    </div>
+
+
+</template>

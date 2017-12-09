@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Dynamic;
 using System.Globalization;
@@ -23,7 +24,55 @@ namespace Microsoft.Deployment.Common.Helpers
 
         public static T Deserialize<T>(string json)
         {
-            return JsonConvert.DeserializeObject<T>(json);
+            return string.IsNullOrEmpty(json) ? default(T) : JsonConvert.DeserializeObject<T>(json);
+        }
+
+        public static T Deserialize<T>(JToken json)
+        {
+            return json == null ? default(T) : Deserialize<T>(json.ToString());
+        }
+
+        public static T DeserializeContent<T>(string content)
+        {
+            T value = default(T);
+
+            JObject obj = GetJsonObjectFromJsonString(content);
+
+            if (obj != null && obj["value"] != null)
+            {
+                value = JsonUtility.Deserialize<T>(obj["value"].ToString());
+            }
+
+            return value;
+        }
+
+        public static List<string> DeserializeEntities(string entitiesJson, string entitiesJsonAdditional = "")
+        {
+            List<string> entities = new List<string>();
+
+            try
+            {
+                Dictionary<string, string> dictionary = Deserialize<Dictionary<string, string>>(entitiesJson);
+
+                if (dictionary != null)
+                {
+                    foreach (KeyValuePair<string, string> pair in dictionary)
+                    {
+                        entities.Add(pair.Key);
+                    }
+                }
+            }
+            catch
+            {
+                entities = entitiesJson.SplitByCommaSpaceTabReturnList();
+            }
+
+            if (!string.IsNullOrEmpty(entitiesJsonAdditional))
+            {
+                entities.AddRange(entitiesJsonAdditional.SplitByCommaSpaceTabReturnList());
+            }
+
+            return entities;
         }
 
         public static dynamic GetDynamicFromJObject(JObject json)

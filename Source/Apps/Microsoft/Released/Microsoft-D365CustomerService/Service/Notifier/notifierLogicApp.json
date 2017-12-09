@@ -1,0 +1,273 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "logicAppName": {
+      "defaultValue": "newLA",
+      "type": "String"
+    },
+    "logicAppTrigger": {
+      "defaultValue": "triggerurl",
+      "type": "String"
+    },
+    "sqlConnectionName": {
+      "defaultValue": "connection",
+      "type": "String"
+    },
+    "resourcegroup": {
+      "defaultValue": "stresourcegroup",
+      "type": "string"
+    },
+    "subscription": {
+      "defaultValue": "idrequired",
+      "type": "string"
+    }
+  },
+  "variables": {},
+  "resources": [
+    {
+      "comments": "Generalized from resource: '/subscriptions/20ea4e8d-d3d9-4f1d-947c-441675acd4f7/resourceGroups/localNotifier/providers/Microsoft.Logic/workflows/newLA'.",
+      "type": "Microsoft.Logic/workflows",
+      "name": "[parameters('logicAppName')]",
+      "apiVersion": "2016-06-01",
+      "location": "[resourceGroup().location]",
+      "properties": {
+        "state": "Enabled",
+        "definition": {
+          "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+          "actions": {
+            "Condition": {
+              "actions": {
+                "DeploymentId": {
+                  "inputs": {
+                    "host": {
+                      "api": {
+                        "runtimeUrl": "https://logic-apis-westus.azure-apim.net/apim/sql"
+                      },
+                      "connection": {
+                        "name": "@parameters('$connections')['sql']['connectionId']"
+                      }
+                    },
+                    "method": "get",
+                    "path": "/datasets/default/tables/@{encodeURIComponent(encodeURIComponent('[csrv].[configuration]'))}/items",
+                    "queries": {
+                      "$filter": "configuration_subgroup eq 'Notifier' and name eq 'DeploymentId'",
+                      "$select": "name,value"
+                    }
+                  },
+                  "runAfter": {
+                    "NotificationEmails": [
+                      "Succeeded"
+                    ]
+                  },
+                  "type": "ApiConnection"
+                },
+                "HTTP": {
+                  "inputs": {
+                    "body": {
+                      "deploymentId": "@body('DeploymentId')?['value']?[0]?['value']",
+                      "statuscode": "@body('DataPullStatus')?['value']?[0]?['value']",
+                      "templateName": "@body('TemplateName')?['value']?[0]?['value']",
+                      "to": "@body('NotificationEmails')?['value']?[0]?['value']"
+                    },
+                    "headers": {
+                      "Content-Type": "application/json"
+                    },
+                    "method": "POST",
+                    "uri": "@{body('NotifierUrl')?['value']?[0]?['value']}"
+                  },
+                  "runAfter": {
+                    "TemplateName": [
+                      "Succeeded"
+                    ]
+                  },
+                  "type": "Http"
+                },
+                "NotificationEmails": {
+                  "inputs": {
+                    "host": {
+                      "api": {
+                        "runtimeUrl": "https://logic-apis-westus.azure-apim.net/apim/sql"
+                      },
+                      "connection": {
+                        "name": "@parameters('$connections')['sql']['connectionId']"
+                      }
+                    },
+                    "method": "get",
+                    "path": "/datasets/default/tables/@{encodeURIComponent(encodeURIComponent('[csrv].[configuration]'))}/items",
+                    "queries": {
+                      "$filter": "configuration_subgroup eq 'Notifier' and name eq 'NotificationEmails'",
+                      "$select": "name,value"
+                    }
+                  },
+                  "runAfter": {
+                    "NotifierUrl": [
+                      "Succeeded"
+                    ]
+                  },
+                  "type": "ApiConnection"
+                },
+                "NotifierUrl": {
+                  "inputs": {
+                    "host": {
+                      "api": {
+                        "runtimeUrl": "https://logic-apis-westus.azure-apim.net/apim/sql"
+                      },
+                      "connection": {
+                        "name": "@parameters('$connections')['sql']['connectionId']"
+                      }
+                    },
+                    "method": "get",
+                    "path": "/datasets/default/tables/@{encodeURIComponent(encodeURIComponent('[csrv].[configuration]'))}/items",
+                    "queries": {
+                      "$filter": "configuration_subgroup eq 'Notifier' and name eq 'NotifierUrl'",
+                      "$select": "name, value"
+                    }
+                  },
+                  "runAfter": {},
+                  "type": "ApiConnection"
+                },
+                "TemplateName": {
+                  "inputs": {
+                    "host": {
+                      "api": {
+                        "runtimeUrl": "https://logic-apis-westus.azure-apim.net/apim/sql"
+                      },
+                      "connection": {
+                        "name": "@parameters('$connections')['sql']['connectionId']"
+                      }
+                    },
+                    "method": "get",
+                    "path": "/datasets/default/tables/@{encodeURIComponent(encodeURIComponent('[csrv].[configuration]'))}/items",
+                    "queries": {
+                      "$filter": "configuration_subgroup eq 'Notifier' and name eq 'TemplateName'",
+                      "$select": "name,value"
+                    }
+                  },
+                  "runAfter": {
+                    "DeploymentId": [
+                      "Succeeded"
+                    ]
+                  },
+                  "type": "ApiConnection"
+                }
+              },
+              "else": {
+                "actions": {
+                  "Delay": {
+                    "inputs": {
+                      "interval": {
+                        "count": 1,
+                        "unit": "Minute"
+                      }
+                    },
+                    "runAfter": {},
+                    "type": "Wait"
+                  },
+                  "HTTP_2": {
+                    "inputs": {
+                      "body": {
+                        "value": "run"
+                      },
+                      "headers": {
+                        "Content-Type": "Application/json"
+                      },
+                      "method": "POST",
+                                            "uri": "[parameters('logicAppTrigger')]"
+                    },
+                    "runAfter": {
+                      "Delay": [
+                        "Succeeded"
+                      ]
+                    },
+                    "type": "Http"
+                  }
+                }
+              },
+              "expression": "@not(equals(body('DataPullStatus')?['value']?[0]?['value'], '-1'))",
+              "runAfter": {
+                "DataPullStatus": [
+                  "Succeeded"
+                ]
+              },
+              "type": "If"
+            },
+            "DataPullStatus": {
+              "inputs": {
+                "host": {
+                  "api": {
+                    "runtimeUrl": "https://logic-apis-westus.azure-apim.net/apim/sql"
+                  },
+                  "connection": {
+                    "name": "@parameters('$connections')['sql']['connectionId']"
+                  }
+                },
+                "method": "get",
+                "path": "/datasets/default/tables/@{encodeURIComponent(encodeURIComponent('[csrv].[configuration]'))}/items",
+                "queries": {
+                  "$filter": "configuration_subgroup eq 'Notifier' and name eq 'DataPullStatus'",
+                  "$select": "name,value"
+                }
+              },
+              "runAfter": {
+                "Execute_stored_procedure": [
+                  "Succeeded"
+                ]
+              },
+              "type": "ApiConnection"
+            },
+            "Execute_stored_procedure": {
+              "inputs": {
+                "host": {
+                  "api": {
+                    "runtimeUrl": "https://logic-apis-westus.azure-apim.net/apim/sql"
+                  },
+                  "connection": {
+                    "name": "@parameters('$connections')['sql']['connectionId']"
+                  }
+                },
+                "method": "post",
+                "path": "/datasets/default/procedures/@{encodeURIComponent(encodeURIComponent('[dbo].[sp_get_pull_status]'))}"
+              },
+              "runAfter": {},
+              "type": "ApiConnection"
+            }
+          },
+          "contentVersion": "1.0.0.0",
+          "outputs": {},
+          "parameters": {
+            "$connections": {
+              "defaultValue": {},
+              "type": "Object"
+            }
+          },
+          "triggers": {
+            "manual": {
+              "inputs": {
+                "schema": {
+                  "value": "run"
+                }
+              },
+              "kind": "Http",
+              "type": "Request"
+            }
+          }
+        },
+        "parameters": {
+          "$connections": {
+            "value": {
+              "sql": {
+                "connectionId": "[concat('/subscriptions/', parameters('subscription'), '/resourceGroups/',parameters('resourcegroup'),'/providers/Microsoft.Web/connections/',parameters('sqlConnectionName'))]",
+                "connectionName": "[parameters('sqlConnectionName')]",
+                "id": "[concat('/subscriptions/', parameters('subscription'), '/providers/Microsoft.Web/locations/', resourceGroup().location, '/managedApis/sql')]"
+              }
+            }
+          }
+        }
+      },
+      "resources": [],
+      "dependsOn": []
+    }
+  ],
+  "outputs": {}
+}

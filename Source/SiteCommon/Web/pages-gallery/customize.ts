@@ -27,7 +27,7 @@ export class Customize extends ViewModelBase {
     async onLoaded(): Promise<void> {
         this.emailRegex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
         this.isValidated = true;
-        
+
         if (this.sourceApplication === 'DynamicsCRM' && this.MS.DataStore.getValue('DataMovement') !== 'Scribe') {
             await this.getEntities();
             this.addAdditionalEntities = true;
@@ -149,7 +149,7 @@ export class Customize extends ViewModelBase {
         this.MS.DataStore.addToDataStoreWithCustomRoute('CustomizeSourceApplication', 'SqlSubGroup', 'SalesManagement', DataStoreType.Public);
         this.MS.DataStore.addToDataStoreWithCustomRoute('CustomizeSourceApplication', 'SqlEntryName', 'AdditionalTables', DataStoreType.Public);
         this.MS.DataStore.addToDataStoreWithCustomRoute('CustomizeSourceApplication', 'SqlEntryValue', this.entitiesToReplicate.join(), DataStoreType.Public);
-        
+
         if (this.showRefreshSchedule) {
             this.MS.DataStore.addToDataStore('RefreshSchedule', this.refreshSchedule, DataStoreType.Public);
         }
@@ -168,7 +168,7 @@ export class Customize extends ViewModelBase {
         }
 
         if (this.sourceApplication === "DynamicsCRM") {
-        this.additionalEntities = await this.MS.HttpService.getResponseAsync('Microsoft-CrmGetEntities');
+            this.additionalEntities = await this.MS.HttpService.getResponseAsync('Microsoft-CrmGetEntities');
         }
     }
 
@@ -187,6 +187,14 @@ export class Customize extends ViewModelBase {
     sortArrays() {
         this.additionalEntities.sort((a, b) => { if (a > b) return 1; if (a < b) return -1; return 0; });
         this.entitiesToReplicate.sort((a, b) => { if (a > b) return 1; if (a < b) return -1; return 0; });
+        
+        if (this.entitiesToReplicate.length >= 30) {
+            this.isValidated = false;
+            this.MS.ErrorService.message = 'You can only select a maximum of 30 additional entities.';
+        }
+        else {
+            this.isValidated = true;
+            this.MS.ErrorService.clear();
+        }
     }
-
 }

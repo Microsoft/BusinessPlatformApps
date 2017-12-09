@@ -15,6 +15,75 @@ namespace Microsoft.Deployment.Common.Helpers
         private const int MAX_RETRIES = 10;
         private const string writeableDatabaseQuery = "CREATE TABLE {0}(pbi INT); INSERT INTO {0}(pbi) VALUES(1); DROP TABLE {0};";
 
+        public static string SanitizeSchemaName(string value)
+        {
+            if (string.IsNullOrWhiteSpace(value))
+                return string.Empty;
+
+            Regex invalidCharacters = new Regex("[^a-zA-Z_0-9]");
+            return invalidCharacters.Replace(value, string.Empty);
+
+        }
+
+        public static SqlParameter[] MapValuesToSqlParameters(params object[] list)
+        {
+            if (list == null)
+                return null;
+
+            SqlParameter[] result = new SqlParameter[list.Length];
+            for (int i=0; i<list.Length; i++)
+            {
+                result[i] = new SqlParameter();
+                if (list[i] is int)
+                    result[i].DbType = DbType.Int32;
+                else if (list[i] is uint)
+                    result[i].DbType = DbType.UInt32;
+                else if (list[i] is long)
+                    result[i].DbType = DbType.Int64;
+                else if (list[i] is ulong)
+                    result[i].DbType = DbType.UInt64;
+                else if (list[i] is short)
+                    result[i].DbType = DbType.Int16;
+                else if (list[i] is ushort)
+                    result[i].DbType = DbType.UInt16;
+                else if (list[i] is byte)
+                    result[i].DbType = DbType.Byte;
+                else if (list[i] is float)                     // Floating types
+                    result[i].DbType = DbType.Single;
+                else if (list[i] is double)
+                    result[i].DbType = DbType.Double;
+                else if (list[i] is DateTime)                  // Date and time
+                    result[i].DbType = DbType.DateTime;
+                else if (list[i] is bool)                      // Boolean
+                    result[i].DbType = DbType.Boolean;
+                else if (list[i] is char || list[i] is string) // Character type
+                    result[i].DbType = DbType.String;
+                else
+                    throw new Exception("Unexpected data type"); // OUR code should not use other types
+                
+                result[i].Value = list[i];
+                result[i].ParameterName = $"@p{i+1}"; // SqlClient doesn't accept anonymous parameters (expecting queries to use 1 based numbering for parameter names: @p1, @p2, etc...)
+            }
+
+
+            return result;
+        }
+
+        public static void ExecuteQueryWithParameters(string connectionString,  string command, SqlParameter[] parameters)
+        {
+            using (SqlConnection cn = new SqlConnection(connectionString))
+            {
+                cn.Open();
+                using (SqlCommand cmd = new SqlCommand(command, cn) { CommandType = CommandType.Text, CommandTimeout = 0 })
+                {
+                    if (parameters != null)
+                        cmd.Parameters.AddRange(parameters);
+
+                    cmd.ExecuteNonQuery();
+                }
+            }
+        }
+
         private static List<string> GetListOfDatabases(string connectionString)
         {
             var result = new List<string>();

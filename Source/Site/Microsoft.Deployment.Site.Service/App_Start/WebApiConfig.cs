@@ -38,6 +38,12 @@ namespace Microsoft.Deployment.Site.Service
 
             Constants.BpstDeploymentIdDatabase = ConfigurationManager.ConnectionStrings["BpstDeploymentIdDatabase"].ToString();
             Constants.BpstNotifierUrl = ConfigurationManager.ConnectionStrings["BpstNotifierUrl"].ToString();
+            Constants.AxLocatorClientId = ConfigurationManager.ConnectionStrings["AxLocatorClientId"].ToString();
+            Constants.AxLocatorSecret = ConfigurationManager.ConnectionStrings["AxLocatorSecret"].ToString();
+            Constants.FacebookClientSecret = ConfigurationManager.ConnectionStrings["FacebookSecret"].ToString();
+            Constants.InformaticaRegistrationCode = ConfigurationManager.ConnectionStrings["InformaticaRegistrationCode"].ToString();
+            Constants.SocialGistProvisionKeyUserName = ConfigurationManager.ConnectionStrings["SocialGistRedditUserName"].ToString();
+            Constants.SocialGistProvisionKeyPassphrase = ConfigurationManager.ConnectionStrings["SocialGistRedditPassphrase"].ToString();
 
             var appXmlType = config.Formatters.XmlFormatter.SupportedMediaTypes.FirstOrDefault(t => t.MediaType == "application/xml");
             config.Formatters.XmlFormatter.SupportedMediaTypes.Remove(appXmlType);

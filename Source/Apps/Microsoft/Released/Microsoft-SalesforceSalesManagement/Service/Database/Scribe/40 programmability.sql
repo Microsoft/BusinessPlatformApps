@@ -9,36 +9,43 @@ go
 CREATE PROCEDURE dbo.sp_get_replication_counts
 AS
 BEGIN
-	SET NOCOUNT ON;
+    SET NOCOUNT ON;
 
-	IF OBJECT_ID('dbo.Scribe_ReplicationStatus') IS NULL
-	   SELECT TOP 0 '' AS EntityName, 0 AS [COUNT], '' AS [Status];
-	ELSE
-		WITH TableCounts AS
-		(
-			SELECT UPPER(LEFT(ta.name, 1)) + LOWER(SUBSTRING(ta.name, 2, 100)) AS EntityName, SUM(pa.rows) AS [Count]
-			FROM sys.tables ta INNER JOIN sys.partitions pa ON pa.OBJECT_ID = ta.OBJECT_ID
-								INNER JOIN sys.schemas sc ON ta.schema_id = sc.schema_id
-			WHERE
-				sc.name='dbo' AND ta.is_ms_shipped = 0 AND pa.index_id IN (0,1) AND
-				ta.name IN ('Account', 'Lead', 'Opportunity', 'OpportunityLineItem', 'OpportunityStage', 'UserRole', 'User', 'Product2')
-			GROUP BY ta.name
-		),
-		LastStats(EntityName, SCRIBE_CREATEDON) AS
-		(
-			SELECT EntityName, Max(SCRIBE_CREATEDON) AS SCRIBE_CREATEDON
-		    FROM dbo.Scribe_ReplicationStatus
-			GROUP BY EntityName
-		)
-		SELECT TableCounts.*,
-				CASE
-					WHEN s.EntityName IS NULL THEN 'Not started'
-					WHEN s.EndDate IS NULL AND s.EntityName IS NOT NULL THEN 'In progress'
-					ELSE 'Finished'
-				END As [Status]
-		FROM TableCounts LEFT OUTER JOIN dbo.Scribe_ReplicationStatus s ON TableCounts.EntityName COLLATE Latin1_General_100_CI_AS = s.EntityName COLLATE Latin1_General_100_CI_AS
-		                 INNER JOIN LastStats ON s.EntityName=LastStats.EntityName AND s.SCRIBE_CREATEDON=LastStats.SCRIBE_CREATEDON
-		ORDER BY TableCounts.EntityName;
+    DECLARE @tables NVARCHAR(MAX);
+    SELECT @tables = REPLACE([value],' ','')
+    FROM [smgt].[configuration]
+    WHERE configuration_group = 'SolutionTemplate'
+    AND	configuration_subgroup = 'StandardConfiguration' 
+    AND	name = 'Tables';
+
+    IF OBJECT_ID('dbo.Scribe_ReplicationStatus') IS NULL
+       SELECT TOP 0 '' AS EntityName, 0 AS [COUNT], '' AS [Status];
+    ELSE
+        WITH TableCounts AS
+        (
+            SELECT UPPER(LEFT(ta.name, 1)) + LOWER(SUBSTRING(ta.name, 2, 100)) AS EntityName, SUM(pa.rows) AS [Count]
+            FROM sys.tables ta INNER JOIN sys.partitions pa ON pa.object_id = ta.object_id
+                                INNER JOIN sys.schemas sc ON ta.schema_id = sc.schema_id
+            WHERE
+                sc.name='dbo' AND ta.is_ms_shipped = 0 AND pa.index_id IN (0,1) AND
+                ta.name COLLATE SQL_Latin1_General_CP1_CI_AS IN (SELECT [value] COLLATE SQL_Latin1_General_CP1_CI_AS FROM STRING_SPLIT(@tables,',') WHERE RTRIM([value])<>'')
+            GROUP BY ta.name
+        ),
+        LastStats(EntityName, SCRIBE_CREATEDON) AS
+        (
+            SELECT EntityName, Max(SCRIBE_CREATEDON) AS SCRIBE_CREATEDON
+            FROM dbo.Scribe_ReplicationStatus
+            GROUP BY EntityName
+        )
+        SELECT TableCounts.*,
+                CASE
+                    WHEN s.EntityName IS NULL THEN 'Not started'
+                    WHEN s.EndDate IS NULL AND s.EntityName IS NOT NULL THEN 'In progress'
+                    ELSE 'Finished'
+                END As [Status]
+        FROM TableCounts LEFT OUTER JOIN dbo.Scribe_ReplicationStatus s ON TableCounts.EntityName COLLATE Latin1_General_100_CI_AS = s.EntityName COLLATE Latin1_General_100_CI_AS
+                         INNER JOIN LastStats ON s.EntityName=LastStats.EntityName AND s.SCRIBE_CREATEDON=LastStats.SCRIBE_CREATEDON
+        ORDER BY TableCounts.EntityName;
 END;
 go
 
@@ -54,13 +61,20 @@ BEGIN
     -- 3 -> No data is present
 
     DECLARE @StatusCode INT = -1;
+    
+    DECLARE @tables NVARCHAR(MAX);
+    SELECT @tables = REPLACE([value],' ','')
+    FROM [smgt].[configuration]
+    WHERE configuration_group = 'SolutionTemplate'
+    AND	configuration_subgroup = 'StandardConfiguration' 
+    AND	name = 'Tables';
 
     SELECT ta.[name] AS EntityName, SUM(pa.[rows]) AS [Count] INTO #counts
-    FROM sys.tables ta INNER JOIN sys.partitions pa ON pa.OBJECT_ID = ta.OBJECT_ID
+    FROM sys.tables ta INNER JOIN sys.partitions pa ON pa.object_id = ta.object_id
                        INNER JOIN sys.schemas sc ON ta.schema_id = sc.schema_id
     WHERE
         sc.name='dbo' AND ta.is_ms_shipped = 0 AND pa.index_id IN (0,1) AND
-        ta.name IN ('Account', 'Lead', 'Opportunity', 'OpportunityLineItem', 'OpportunityStage', 'UserRole', 'User', 'Product2')
+        ta.name COLLATE SQL_Latin1_General_CP1_CI_AS IN (SELECT [value] COLLATE SQL_Latin1_General_CP1_CI_AS FROM STRING_SPLIT(@tables,',') WHERE RTRIM([value])<>'')
     GROUP BY ta.[name];
 
     SELECT CASE
@@ -91,18 +105,18 @@ BEGIN
     FROM smgt.[configuration] WHERE configuration_group = 'SolutionTemplate' AND configuration_subgroup = 'Notifier' AND [name] = 'DataPullCompleteThreshold';
 
     DECLARE @CountsRows INT, @CountRowsComplete INT;
-	SELECT @CountsRows = COUNT(*) FROM #counts;
-	
-	SELECT p.[Percentage], p.[EntityName], i.lasttimestamp,  DATEDIFF(MINUTE, i.lasttimestamp, Sysdatetime()) AS [TimeDifference] INTO #entitiesComplete
+    SELECT @CountsRows = COUNT(*) FROM #counts;
+    
+    SELECT p.[Percentage], p.[EntityName], i.lasttimestamp,  DATEDIFF(MINUTE, i.lasttimestamp, Sysdatetime()) AS [TimeDifference] INTO #entitiesComplete
     FROM #percentages p
               INNER JOIN smgt.entityinitialcount i ON i.entityName = p.EntityName
               WHERE 
-			  ((p.[Percentage] >= @CompletePercentage) AND DATEDIFF(MINUTE, i.lasttimestamp, Sysdatetime()) > 5) OR
-			  (p.[Percentage] >= 100) OR
-			  ((p.[Percentage] >= 100) AND DATEDIFF(MINUTE, i.lasttimestamp, Sysdatetime()) > 5)
+              ((p.[Percentage] >= @CompletePercentage) AND DATEDIFF(MINUTE, i.lasttimestamp, Sysdatetime()) > 5) OR
+              (p.[Percentage] >= 100) OR
+              ((p.[Percentage] >= 100) AND DATEDIFF(MINUTE, i.lasttimestamp, Sysdatetime()) > 5)
 
-	SELECT @CountRowsComplete = COUNT(*) FROM #entitiesComplete;
-			  
+    SELECT @CountRowsComplete = COUNT(*) FROM #entitiesComplete;
+              
     IF (@CountRowsComplete = @CountsRows)
         SET @StatusCode = 2 --Data pull complete
 
@@ -145,10 +159,10 @@ go
 CREATE PROCEDURE dbo.sp_get_prior_content
 AS
 BEGIN
-	SET NOCOUNT ON;
+    SET NOCOUNT ON;
 
     SELECT Count(*) AS ExistingObjectCount
-    FROM   information_schema.tables
+    FROM   INFORMATION_SCHEMA.TABLES
     WHERE  ( table_schema = 'dbo' AND
              table_name IN ('account', 'lead', 'opportunity', 'opportunitylineitem', 'opportunitystage', 'product2', 'user', 'userrole')
            ) OR

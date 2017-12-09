@@ -20,5 +20,5 @@ INSERT pbist_twitter.[configuration] (configuration_group, configuration_subgrou
 GO
 
 
-INSERT pbist_twitter.[minimum_tweets] (MinimumTweets) VALUES (0), (1), (2), (3), (4), (5), (10), (20), (50), (100);
+INSERT pbist_twitter.[minimum_tweets] (MinimumTweets) VALUES (1), (2), (3), (4), (5), (10), (20), (50), (100);
 go

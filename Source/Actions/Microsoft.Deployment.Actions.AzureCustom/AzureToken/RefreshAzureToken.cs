@@ -80,6 +80,18 @@ namespace Microsoft.Deployment.Actions.AzureCustom.AzureToken
                 }
             }
 
+            if (request.DataStore.GetValue("AxToken") != null && request.DataStore.GetJson("AxToken", "expires_on") != null)
+            {
+                var expiryDateTime = UnixTimeStampToDateTime(request.DataStore.GetJson("AxToken", "expires_on"));
+                if ((expiryDateTime - DateTime.Now).TotalMinutes < 5)
+                {
+                    var dataStoreItem = request.DataStore.GetDataStoreItem("AxToken");
+                    var meta = AzureTokenUtility.GetMetaFromOAuthType("axerp");
+                    var newToken = AzureTokenUtility.GetTokenForResourceFromExistingToken("axerp", request.Info.WebsiteRootUrl, dataStoreItem.Value, meta.Resource);
+                    UpdateToken(dataStoreItem.Value, newToken);
+                }
+            }
+
             return new ActionResponse(ActionStatus.Success);
         }
 
@@ -116,6 +128,15 @@ namespace Microsoft.Deployment.Actions.AzureCustom.AzureToken
             if (request.DataStore.GetValue("AzureTokenAS") != null && request.DataStore.GetJson("AzureTokenAS", "expires_on") != null)
             {
                 var expiryDateTime = UnixTimeStampToDateTime(request.DataStore.GetJson("AzureTokenAS", "expires_on"));
+                if ((expiryDateTime - DateTime.Now).TotalMinutes < 5)
+                {
+                    return InterceptorStatus.Intercept;
+                }
+            }
+
+            if (request.DataStore.GetValue("AxToken") != null && request.DataStore.GetJson("AxToken", "expires_on") != null)
+            {
+                var expiryDateTime = UnixTimeStampToDateTime(request.DataStore.GetJson("AxToken", "expires_on"));
                 if ((expiryDateTime - DateTime.Now).TotalMinutes < 5)
                 {
                     return InterceptorStatus.Intercept;

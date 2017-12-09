@@ -90,7 +90,7 @@
     <div class="st-float" if.bind="MS.DeploymentService.isFinished && !MS.DeploymentService.hasError && !isUninstall && hasPowerApp">
         <p class="smallFontSize" if.bind="isPowerAppReady">
             <a class="st-float" href.bind="powerAppDownloadLink" target="${MS.HttpService.isOnPremise ? '_self' : '_blank'}">
-                <button class="primary">${MS.Translate.PROGRESS_DOWNLOAD_POWERAPP}</button>
+                <button class="primary">${MS.Translate.PROGRESS_VIEW_POWERAPP}</button>
             </a>
             <bpst-link class="st-float" a-description="${MS.Translate.PROGRESS_DOWNLOAD_POWERAPP_INFO}" a-link="https://powerapps.microsoft.com/en-us/downloads/" a-link-text="${MS.Translate.COMMON_HERE}"></bpst-link>
         </p>

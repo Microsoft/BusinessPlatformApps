@@ -1,0 +1,9 @@
+﻿{
+  "frameworks": {
+    "net46":{
+      "dependencies": {
+        "System.Data.SqlClient": "4.3.0"
+      }
+    }
+  }
+}

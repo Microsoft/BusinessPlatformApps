@@ -1,0 +1,93 @@
+﻿{
+    "Install": {
+      "Pages": [
+        {
+          "architectureDiagram": "dist/Apps/Microsoft/Released/Microsoft-O365UsageAnalytics/Web/Images/OAUAPBIST.png",
+          "displayname": "Getting Started",
+          "list1": [
+            "Office 365 subscription",
+            "You must be an office 365 Administrator of any one of the following types: Global Admin, Product Admin of Reporting Admin",
+            "A valid Azure subscription in the same Azure tenant as the Office 365 instance",
+            "The target Azure Database must support the volume of data being replicated from your Office 365 instance",
+            "Any additional user metadata file that you may want to bring to join with Office 365 usage data",
+            "Power BI Desktop (latest version)",
+            "Power BI Pro (to share the template with your organization)"
+          ],
+          "list2": [
+            "Full cloud solution with minimum set up and maintenance considerations",
+            "Scheduled data pull from Office 365",
+            "Connect to Azure SQL and import data into Power BI"
+          ],
+          "name": "$SiteCommon$/pages-gallery/getting-started.html",
+          "subtitle": "",
+          "templateName": "Office 365 Advanced Usage Analytics"
+        },
+        {
+          "azureProviders": [
+            "Microsoft.EventHub",
+            "microsoft.insights",
+            "Microsoft.StreamAnalytics"
+          ],
+          "defaultLocation": "5",
+          "displayname": "Login",
+          "name": "$SiteCommon$/pages-gallery/azure-login.html",
+          "pricingCalculatorUrl": "",
+          "pricingCost": "",
+          "pricingUrl": ""
+        },
+        {
+          "displayname": "Target",
+          "isAzureSql": true,
+          "name": "$SiteCommon$/pages-gallery/sql.html",
+          "newSqlDatabase": "ActivityLogTable",
+          "showAzureSql": false,
+          "showNewSqlOption": true,
+          "sqlInstance": "NewSql",
+          "subtitle": "$translate(INIT_SQL_SUBTITLE_AAL)",
+          "title": "$translate(INIT_SQL_TITLE)"
+        },
+        {
+          "displayname": "Bring Your Own Data",
+          "name": "bring-your-own-entities.html"
+        },
+        {
+          "displayname": "Customize",
+          "name": "customize.html",
+          "skip": "$run(this.MS.DataStore.getValue('BringYourOwnEntities') === this.MS.Option.NO)"
+        },
+        {
+          "displayCompletionNotification": false,
+          "displayname": "Summary",
+          "name": "$SiteCommon$/pages-gallery/summary.html",
+          "sendCompletionNotification": false,
+          "values": {
+            "Subscription": "$(this.MS.DataStore.getJson('SelectedSubscription').DisplayName)",
+            "Resource Group": "$(this.MS.DataStore.getValue('SelectedResourceGroup'))",
+            "Target Server": "$(this.MS.DataStore.getValue('Server'))",
+            "Target Database": "$(this.MS.DataStore.getValue('Database'))",
+            "Target Username": "$(this.MS.DataStore.getValue('Username'))"
+          }
+        },
+        {
+          "datastoreEntriesToValidate": [
+            "AzureToken",
+            "SqlConnectionString"
+          ],
+          "displayname": "Deploy",
+          "filename": "$save('ActivityLogTemplate.pbix')",
+          "name": "$SiteCommon$/pages-gallery/progress.html",
+          "targetSchema": "bpst_aal",
+          "uniqueId": "$save(this.MS.UtilityService.getUniqueId(10))"
+        }
+      ],
+
+      "Actions": [
+        {
+          "displayname": "$translate(INIT_ACTION_DEPLOYING_SQL_SCRIPTS)",
+          "name": "Microsoft-DeploySQLScripts",
+          "SqlScriptsFolder": "Service/Database/",
+          "SqlServerIndex": "0"
+        }
+      ]
+    }
+}

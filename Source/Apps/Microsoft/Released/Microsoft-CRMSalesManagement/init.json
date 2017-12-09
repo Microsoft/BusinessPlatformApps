@@ -55,28 +55,27 @@
                 "subtitle": "$translate(DATA_MOVEMENT_SUBTITLE_D365)"
             },
             {
-                "azureProviders": [
-                    "Microsoft.AnalysisServices"
-                ],
-                "displayname": "Azure",
-                "name": "$SiteCommon$/pages-gallery/azure-login.html",
-                "pricingCalculatorUrl": "$translate(INIT_D365_CALCULATOR)",
-                "pricingCost": "$translate(INIT_D365_PRICING_COST)",
-                "pricingUrl": "$translate(INIT_D365_PRICING_URL)",
-                "skip": "$(this.MS.DataStore.getValue('DataMovement') !== 'Scribe')"
-            },
-            {
-                "azureProviders": [
-                    "Microsoft.AnalysisServices"
-                ],
                 "displayname": "Dynamics 365 Login",
-                "entities": "account,lead,opportunity,opportunityproduct,product,systemuser,systemusermanagermap,territory,team",
+                // Dictionary of entities and their ID columns
+                // This is used to get the counts via a FetchXML command
+                "entities": {
+                    "account": "accountid",
+                    "lead": "leadid",
+                    "opportunity": "opportunityid",
+                    "opportunityproduct": "opportunityproductid",
+                    "product": "productid",
+                    "systemuser": "systemuserid",
+                    "systemusermanagermap": "systemusermanagermapid",
+                    "territory": "territoryid",
+                    "team": "teamid"
+                },
                 "isScribe": "$run(this.MS.DataStore.getValue('DataMovement') === 'Scribe')",
                 "name": "$SiteCommon$/pages-gallery/mscrm-login.html",
                 "oauthType": "mscrm",
                 "pricingCalculatorUrl": "$translate(INIT_D365_CALCULATOR)",
                 "pricingCost": "$translate(INIT_D365_PRICING_COST)",
-                "pricingUrl": "$translate(INIT_D365_PRICING_URL)"
+                "pricingUrl": "$translate(INIT_D365_PRICING_URL)",
+                "ProfileName": "$save('bpst-mscrm-profile')"
             },
             {
                 "displayname": "Login to the Key Vault",
@@ -87,14 +86,14 @@
             {
                 "checkSqlVersion": true,
                 "displayname": "Target",
-                "isAzureSql": true,
+                "isAzureSql": "$run(!this.MS.HttpService.isOnPremise)",
                 "name": "$SiteCommon$/pages-gallery/sql.html",
                 "newSqlDatabase": "$(this.MS.UtilityService.getUniqueId(10))",
                 "showAzureSql": false,
-                "showCredsWhenWindowsAuth": "$run(this.MS.DataStore.getValue('DataMovement') === 'Scribe')",
-                "showNewSqlOption": true,
+                "showCredsWhenWindowsAuth": "$run(this.MS.HttpService.isOnPremise)",
+                "showNewSqlOption": "$run(this.MS.DataStore.getValue('DataMovement') === 'D365')",
                 "showSkuS1": false,
-                "sqlInstance": "NewSql",
+                "sqlInstance": "$run(this.MS.DataStore.getValue('DataMovement') === 'D365' ? 'NewSql' : 'ExistingSql')",
                 "sqlSku": "S2",
                 "subtitle": "$translate(INIT_SQL_SUBTITLE_D365)",
                 "title": "$translate(INIT_SQL_TITLE)"
@@ -102,9 +101,21 @@
             {
                 "name": "$SiteCommon$/pages-gallery/choose-analysis-server.html",
                 "displayname": "AAS",
+                "registerAnalysisServices": "$run(this.MS.DataStore.getValue('DataMovement') === 'D365')",
                 "showDescription": true,
                 "skip": "$dsall(azureSqlDisabled)[0]",
                 "ssasEnabled": "true"
+            },
+            {
+                "azureProviders": [
+                    "Microsoft.AnalysisServices"
+                ],
+                "displayname": "Azure",
+                "name": "$SiteCommon$/pages-gallery/azure-login.html",
+                "pricingCalculatorUrl": "$translate(INIT_D365_CALCULATOR)",
+                "pricingCost": "$translate(INIT_D365_PRICING_COST)",
+                "pricingUrl": "$translate(INIT_D365_PRICING_URL)",
+                "skip": "$run(this.MS.DataStore.getValue('DataMovement') !== 'Scribe' || this.MS.DataStore.getAllValues('azureSqlDisabled')[0] === 'true' || this.MS.DataStore.getValue('ssasDisabled') === 'true' ? 'true' : 'false')"
             },
             {
                 "displayname": "Login to Analysis Services",
@@ -138,7 +149,7 @@
                     }
                 ],
                 "values": {
-                    "Subscription": "$(this.MS.DataStore.getJson('SelectedSubscription').DisplayName)",
+                    "Subscription": "$(this.MS.DataStore.getValue('DataMovement') === 'D365' ? this.MS.DataStore.getJson('SelectedSubscription').DisplayName : '')",
                     "ResourceGroup": "$(this.MS.DataStore.getValue('SelectedResourceGroup'))",
                     "Organization URL": "$(this.MS.DataStore.getValue('OrganizationUrl'))",
                     "Target Server": "$(this.MS.DataStore.getValue('Server'))",
@@ -152,7 +163,7 @@
                     "SqlConnectionString"
                 ],
                 "displayname": "Progress",
-                "enablePublishReport": true,
+                "enablePublishReport": "$run(!this.MS.HttpService.isOnPremise && this.MS.DataStore.getValue('ssasDisabled') === 'false')",
                 "filename": "$save('SalesManagementReport.pbix')",
                 "filenameSSAS": "SalesManagementReportAS.pbix",
                 "finishedActionName": "$run(this.MS.DataStore.getValue('DataMovement') === 'D365' ? 'Microsoft-CrmGetProfileStatus' : 'Microsoft-GetScribeSolutionStatus')",
@@ -182,6 +193,16 @@
                 "name": "Microsoft-SetConfigValueInSql",
                 "SqlServerIndex": "0",
                 "SqlConfigTable": "[smgt].[configuration]"
+            },
+            {
+                "displayname": "$translate(INIT_ACTION_DEPLOYING_DATABASE_CONFIGURATION)",
+                "name": "Microsoft-SetConfigValueInSql",
+                "SqlConfigTable": "[smgt].[configuration]",
+                "SqlEntryName": "Tables",
+                "SqlEntryValue": "account,lead,opportunity,opportunityproduct,product,team,systemuser,systemusermanagermap,territory",
+                "SqlGroup": "SolutionTemplate",
+                "SqlServerIndex": "0",
+                "SqlSubGroup": "StandardConfiguration"
             },
             {
                 "displayname": "$translate(INIT_ACTION_DEPLOYING_DATABASE_CONFIGURATION)",
@@ -352,7 +373,6 @@
         "Pages": [
             {
                 "displayname": "Uninstall Progress",
-                "HasNavigated": "$save(true)",
                 "isUninstall": true,
                 "name": "$SiteCommon$/pages-gallery/progress.html",
                 "successMessage": "$translate(INIT_UNINSTALL_SUCCESS)"

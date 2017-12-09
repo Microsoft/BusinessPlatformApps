@@ -2,7 +2,6 @@
 using System.ComponentModel.Composition;
 using System.Dynamic;
 using System.Linq;
-using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 
@@ -22,26 +21,25 @@ namespace Microsoft.Deployment.Actions.AzureCustom.Twitter
             var accounts = accountsWithSpaces.Split(' ').ToList();
 
             List<string> invalid = new List<string>();
-            Dictionary<string,string> valid = new Dictionary<string, string>();
-
+            Dictionary<string, string> valid = new Dictionary<string, string>();
 
             foreach (var accountItem in accounts)
             {
                 var accountTrimmed = accountItem.ToString().Trim();
                 accountTrimmed = accountTrimmed.Replace("@", "");
-                HttpClientUtility client = new HttpClientUtility();
-                Dictionary<string, string> customHeader = new Dictionary<string, string>();
-                customHeader.Add("X-Push-State-Request", "true");
-                var result = await client.ExecuteGenericAsync(HttpMethod.Get, $"https://www.twitter.com/{accountTrimmed}", "","", customHeader);
-                
-                var responseString = await result.Content.ReadAsStringAsync();
-                
-                if (result.StatusCode == HttpStatusCode.OK)
+
+                AzureHttpClient client = new AzureHttpClient(new Dictionary<string, string>()
                 {
-                    var obj = JsonUtility.GetJObjectFromJsonString(responseString);
+                    { "X-Push-State-Request", "true" }
+                });
+
+                string json = await client.GetJson(HttpMethod.Get, $"https://www.twitter.com/{accountTrimmed}");
+
+                if (!string.IsNullOrEmpty(json))
+                {
+                    var obj = JsonUtility.GetJObjectFromJsonString(json);
                     var id = obj.SelectToken("init_data")?.SelectToken("profile_user")?.SelectToken("id_str")?.ToString();
                     valid.Add(accountTrimmed, id);
-                    
                 }
                 else
                 {
@@ -57,7 +55,7 @@ namespace Microsoft.Deployment.Actions.AzureCustom.Twitter
 
             if (invalid.Any())
             {
-                return new ActionResponse(ActionStatus.FailureExpected, JsonUtility.GetJObjectFromObject(response),null, AzureErrorCodes.TwitterAccountsInvalid);
+                return new ActionResponse(ActionStatus.FailureExpected, JsonUtility.GetJObjectFromObject(response), null, AzureErrorCodes.TwitterAccountsInvalid);
             }
 
             return new ActionResponse(ActionStatus.Success, JsonUtility.GetJObjectFromObject(response));

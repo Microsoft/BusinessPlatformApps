@@ -1,0 +1,11 @@
+{
+  "frameworks": {
+    "net46":{
+      "dependencies": {
+        "TikaOnDotnet.TextExtractor": "1.14.1",
+        "TikaOnDotNet": "1.14.1",
+        "IKVM": "8.1.5717.0"
+      }
+    }
+  }
+}

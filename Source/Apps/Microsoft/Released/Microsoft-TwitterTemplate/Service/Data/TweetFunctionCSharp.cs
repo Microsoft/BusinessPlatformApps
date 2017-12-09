@@ -10,6 +10,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Text.RegularExpressions;
+using System.Data;
 using System.Data.SqlClient;
 using Newtonsoft.Json.Linq;
 using System.Net.Http.Headers;
@@ -49,6 +50,59 @@ public static async Task<object> Run(HttpRequestMessage req, TraceWriter log)
 
 public class TweetHandler
 {
+    public static string SanitizeSimpleName(string value)
+    {
+        if (string.IsNullOrWhiteSpace(value))
+            return string.Empty;
+
+        Regex invalidCharacters = new Regex("[^a-zA-Z_0-9]");
+        return invalidCharacters.Replace(value, string.Empty);
+    }
+
+    public static SqlParameter[] MapValuesToSqlParameters(params object[] list)
+    {
+        if (list == null)
+            return null;
+
+        SqlParameter[] result = new SqlParameter[list.Length];
+        for (int i = 0; i < list.Length; i++)
+        {
+            result[i] = new SqlParameter();
+            if (list[i] is int)
+                result[i].DbType = DbType.Int32;
+            else if (list[i] is uint)
+                result[i].DbType = DbType.UInt32;
+            else if (list[i] is long)
+                result[i].DbType = DbType.Int64;
+            else if (list[i] is ulong)
+                result[i].DbType = DbType.UInt64;
+            else if (list[i] is short)
+                result[i].DbType = DbType.Int16;
+            else if (list[i] is ushort)
+                result[i].DbType = DbType.UInt16;
+            else if (list[i] is byte)
+                result[i].DbType = DbType.Byte;
+            else if (list[i] is float)                     // Floating types
+                result[i].DbType = DbType.Single;
+            else if (list[i] is double)
+                result[i].DbType = DbType.Double;
+            else if (list[i] is DateTime)                  // Date and time
+                result[i].DbType = DbType.DateTime;
+            else if (list[i] is bool)                      // Boolean
+                result[i].DbType = DbType.Boolean;
+            else if (list[i] is char || list[i] is string) // Character type
+                result[i].DbType = DbType.String;
+            else
+                throw new Exception("Unexpected data type"); // OUR code should not use other types
+
+            result[i].Value = list[i];
+            result[i].ParameterName = $"@p{i + 1}"; // SqlClient doesn't accept anonymous parameters (expecting queries to use 1 based numbering for parameter names: @p1, @p2, etc...)
+        }
+
+
+        return result;
+    }
+
     public TweetHandler(string connection, TraceWriter log)
     {
         if (string.IsNullOrEmpty(connection))
@@ -128,19 +182,22 @@ public class TweetHandler
 
     public async Task<bool> ParseTweet(string entireTweet, TraceWriter log, int i)
     {
+        SqlParameter[] parameters;
         // Convert JSON to dynamic C# object
+
+        if (string.IsNullOrEmpty(entireTweet))
+            return true;
+
         tweetObj = JObject.Parse(entireTweet);
         tweet = tweetObj;
 
         //Connect to Azure SQL Database & bring in Twitter Handles & IDs
-        string twitterHandles =
-            ExecuteSqlQuery("select value FROM pbist_twitter.configuration where name = \'twitterHandle\'", "value");
-        string twitterHandleId =
-            ExecuteSqlQuery("select value FROM pbist_twitter.configuration where name = \'twitterHandleId\'",
-                "value");
+        string twitterHandles = (string)ExecuteSqlScalar("SELECT [value] FROM pbist_twitter.configuration where name = \'twitterHandle\'");
+        string twitterHandleId = (string)ExecuteSqlScalar("SELECT [value] FROM pbist_twitter.configuration where name = \'twitterHandleId\'");
         if (i == 0)
         {
-            ExecuteSqlNonQuery($"UPDATE pbist_twitter.twitter_query SET TweetId='{tweet["TweetId"]}' WHERE Id = 1");
+            parameters = MapValuesToSqlParameters(new object[] { tweet["TweetId"].ToString() });
+            ExecuteSqlNonQuery($"UPDATE pbist_twitter.twitter_query SET TweetId=@p1 WHERE Id = 1", parameters);
         }
 
         // Split out all the handles & create dictionary
@@ -268,16 +325,19 @@ public class TweetHandler
         }
 
         //Save processed tweets into SQL
-        int response = 0;
-        response = ExecuteSqlScalar(
-            $"Select count(1) FROM pbist_twitter.tweets_processed WHERE tweetid = '{processedTweets["tweetid"]}'");
+        parameters = MapValuesToSqlParameters(new object[] { processedTweets["tweetid"].ToString() });
+        int response = (int)ExecuteSqlScalar($"SELECT count(*) FROM pbist_twitter.tweets_processed WHERE tweetid = @p1");
         if (response == 0)
         {
             try
             {
-                ExecuteSqlNonQuery(generateSQLQuery("pbist_twitter.tweets_processed", processedTweets));
+                parameters = MapValuesToSqlParameters(processedTweets.Values.ToArray());
+                ExecuteSqlNonQuery(generateInsertSQLQuery("pbist_twitter.tweets_processed", processedTweets), parameters);
             }
-            catch (Exception e) { }
+            catch (Exception e)
+            {
+
+            }
         }
 
         string text = tweet.TweetText.ToString();
@@ -315,46 +375,33 @@ public class TweetHandler
     }
 
     //Execute SQL query without returning anything
-    private void ExecuteSqlNonQuery(string sqlQuery)
+    private void ExecuteSqlNonQuery(string sqlQuery, SqlParameter[] parameters = null)
     {
-        using (SqlConnection connection = new SqlConnection(connectionString.ToString()))
+        using (SqlConnection connection = new SqlConnection(connectionString))
         {
             connection.Open();
-            var command = new SqlCommand(sqlQuery, connection);
-            //log.Info("*********************************ExecuteSqlNonQuery************************** Query: " + sqlQuery);
-            command.ExecuteNonQuery();
-        }
-    }
-
-    //Execute SQL query returning something 
-    private int ExecuteSqlScalar(string sqlQuery)
-    {
-        using (SqlConnection connection = new SqlConnection(connectionString.ToString()))
-        {
-            connection.Open();
-            //log.Info("*********************************ExecuteSqlScalar************************** Query: " + sqlQuery);
-            var command = new SqlCommand(sqlQuery, connection);
-            return (int)command.ExecuteScalar();
-        }
-    }
-
-    //Execute SQL query using a reader
-    private string ExecuteSqlQuery(string sqlQuery, string value)
-    {
-        using (SqlConnection connection = new SqlConnection(connectionString.ToString()))
-        {
-            connection.Open();
-            var command = new SqlCommand(sqlQuery, connection);
-            SqlDataReader reader = command.ExecuteReader();
-            string returnObject = string.Empty;
-            if (reader.HasRows)
+            using (SqlCommand command = new SqlCommand(sqlQuery, connection) { CommandTimeout = 0 })
             {
-                while (reader.Read())
-                {
-                    returnObject = reader[value].ToString();
-                }
+                if (parameters != null)
+                    command.Parameters.AddRange(parameters);
+
+                //log.Info("*********************************ExecuteSqlNonQuery************************** Query: " + sqlQuery);
+                command.ExecuteNonQuery();
             }
-            return returnObject;
+        }
+    }
+
+     //Execute SQL query using a reader
+    private object ExecuteSqlScalar(string sqlQuery, SqlParameter[] parameters = null)
+    {
+        using (SqlConnection connection = new SqlConnection(connectionString))
+        {
+            connection.Open();
+            using (SqlCommand command = new SqlCommand(sqlQuery, connection) { CommandTimeout = 0 })
+            {
+                object result = command.ExecuteScalar();
+                return (result != null && result != DBNull.Value) ? result.ToString() : null;
+            }
         }
     }
 
@@ -364,14 +411,15 @@ public class TweetHandler
         originalTweets["masterid"] = tweetType.TweetId.ToString();
         processedTweets["masterid"] = tweetType.TweetId.ToString();
         originalTweets["tweet"] = tweetType.TweetText.ToString();
-        int response = 0;
-        response = ExecuteSqlScalar(
-            $"Select count(1) FROM pbist_twitter.tweets_normalized WHERE masterid = '{originalTweets["masterid"]}'");
+
+        SqlParameter[] parameters = MapValuesToSqlParameters(new object[] { originalTweets["masterid"].ToString() });
+        int response = (int)ExecuteSqlScalar("Select count(*) FROM pbist_twitter.tweets_normalized WHERE masterid = @p1", parameters);
         if (response == 0)
         {
             try
             {
-                ExecuteSqlNonQuery(generateSQLQuery("pbist_twitter.tweets_normalized", originalTweets));
+                parameters = MapValuesToSqlParameters(originalTweets.Values.ToArray());
+                ExecuteSqlNonQuery(generateInsertSQLQuery("pbist_twitter.tweets_normalized", originalTweets), parameters);
             }
             catch (Exception e)
             {
@@ -381,18 +429,20 @@ public class TweetHandler
     }
 
     //Generate SQL Statement
-    private string generateSQLQuery(string tableName, Dictionary<string, string> dictionary)
+    private string generateInsertSQLQuery(string tableName, Dictionary<string, string> dictionary)
     {
+        
+        StringBuilder values = new StringBuilder();
+        for (int i = 0; i < dictionary.Keys.Count; i++)
+        {
+            values.Append("@p"); values.Append(i+1);
+            if (i < dictionary.Keys.Count - 2)
+                values.Append(", ");
+        }
+        
         string sqlQueryGenerator = $"insert into " + tableName + "(" +
-                                   String.Join(", ", dictionary.Select(x => x.Key)) + ")" + " VALUES " + "('" +
-                                   String.Join("',N'", dictionary.Select(x => {
-                                       if (string.IsNullOrEmpty(x.Value))
-                                       {
-                                           return x.Value;
-                                       }
-                                       //log.Info("********************generateSQLQuery************************** Text: " + x.Value);
-                                       return x.Value.Replace("'", "''");
-                                   })) + "')";
+                                   String.Join(", ", dictionary.Select(x => SanitizeSimpleName(x.Key))) + ")" + " VALUES " + "(" + values.ToString() + ")";
+        log.Info("******************Query gen******************** :" + sqlQueryGenerator);
         return sqlQueryGenerator;
     }
 
@@ -418,8 +468,7 @@ public class TweetHandler
     }
 
     //Figure out direction of tweet
-    private void MessageDirectionCheck(KeyValuePair<string, string> currentEntry, JToken userMentions,
-        string retweet = "")
+    private void MessageDirectionCheck(KeyValuePair<string, string> currentEntry, JToken userMentions, string retweet = "")
     {
         if (currentEntry.Value.Contains(tweet.UserDetails.Id.ToString()))
         {
@@ -468,7 +517,8 @@ public class TweetHandler
         foreach (Match match in matches)
         {
             dictionary[field] = match.ToString();
-            ExecuteSqlNonQuery(generateSQLQuery(sqlTable, dictionary));
+            SqlParameter[] parameters = MapValuesToSqlParameters(dictionary.Values.ToArray());
+            ExecuteSqlNonQuery(generateInsertSQLQuery(sqlTable, dictionary), parameters);
         }
     }
 

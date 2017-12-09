@@ -1,7 +1,8 @@
-﻿import { AzureLogin } from './azure-login';
+﻿import { ViewModelBase } from '../services/view-model-base';
 
-export class KeyVaultLogin extends AzureLogin {
+export class KeyVaultLogin extends ViewModelBase {
     hasToken: boolean = false;
+    oauthType: string = '';
 
     async connect(): Promise<void> {
         this.MS.UtilityService.connectToAzure(this.oauthType, this.MS.Translate.DEFAULT_TENANT);

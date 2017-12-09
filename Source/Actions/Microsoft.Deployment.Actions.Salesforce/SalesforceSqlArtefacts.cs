@@ -30,12 +30,11 @@ namespace Microsoft.Deployment.Actions.Salesforce
             string schema = "dbo";
             string connString = request.DataStore.GetValue("SqlConnectionString");
             coreObjects = request.DataStore.GetValue("ObjectTables").SplitByCommaSpaceTabReturnList();
-            var objectMetadata = request.DataStore.GetValue("Objects");
+            var objectMetadata = SalesforceUtility.GetMetadata(request).Result;
 
-            List<DescribeSObjectResult> metadataList = JsonConvert.DeserializeObject(objectMetadata, typeof(List<DescribeSObjectResult>)) as List<DescribeSObjectResult>;
             List<Tuple<string, List<ADFField>>> adfFields = new List<Tuple<string, List<ADFField>>>();
 
-            foreach (var obj in metadataList)
+            foreach (var obj in objectMetadata)
             {
                 var simpleMetadata = ExtractSimpleMetadata(obj);
 
@@ -201,7 +200,7 @@ namespace Microsoft.Deployment.Actions.Salesforce
 
                 string size = string.Empty;
 
-                if (nvarcharSize > 4000)
+                if (nvarcharSize > 255)
                 {
                     size = "max";
                 }

@@ -15,19 +15,13 @@ namespace Microsoft.Deployment.Actions.AzureCustom.Common
 
         public override async Task<ActionResponse> ExecuteActionAsync(ActionRequest request)
         {
-            string azureToken = request.DataStore.GetJson("AzureToken", "access_token");
             string bapiService = request.DataStore.GetLastValue("BapiService");
 
-            AzureHttpClient client = new AzureHttpClient(azureToken);
+            AzureHttpClient ahc = new AzureHttpClient(request.DataStore.GetJson("AzureToken", "access_token"));
 
-            string enrollBody = "{}";
-            string enrollUrl = $"{BASE_AZURE_ENROLL_URL}/{bapiService}/enroll?api-version=2016-11-01&id=@id";
-
-            var enrollResponse = await client.ExecuteGenericRequestWithHeaderAsync(HttpMethod.Post, enrollUrl, enrollBody);
+            var enrollResponse = await ahc.ExecuteGenericRequestWithHeaderAsync(HttpMethod.Post, $"{BASE_AZURE_ENROLL_URL}/{bapiService}/enroll?api-version=2016-11-01&id=@id", "{}");
             if (enrollResponse.StatusCode != System.Net.HttpStatusCode.OK)
             {
-                //var enrollString = await enrollResponse.Content.ReadAsStringAsync();
-                //return new ActionResponse(ActionStatus.Failure, JsonUtility.GetJsonObjectFromJsonString(enrollString), "RegisterProviderError");
                 request.DataStore.AddToDataStore("SkipPowerApp", "true", DataStoreType.Public);
             }
 

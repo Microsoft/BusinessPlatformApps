@@ -13,13 +13,15 @@
       //    "SqlServerIndex": "0",
       //    "SqlConfigTable": "[bpst_news].[configuration]"
       //},
-      {
-        "name": "Microsoft-DeployAzureFunction",
-        "displayname": "Deploy News Functions",
-        "DeploymentName": "Function",
-        "FunctionName": "$save('function' + this.MS.DataStore.getValue('uniqueId'))",
-        "RepoUrl": "https://github.com/juluczni/AzureFunctionsNewsTemplate"
-      },
+        {
+            "name": "Microsoft-DeployAzureFunction",
+            "displayname": "Deploy News Functions",
+            "DeploymentName": "Function",
+            "FunctionName": "$save('function' + this.MS.DataStore.getValue('uniqueId'))",
+            "RepoUrl": "https://github.com/Microsoft/BusinessPlatformApps",
+            "ProjectPath": "Functions\\FunctionCode\\News",
+            "branch": "dev-facebook"
+        },
       {
         "name": "Microsoft-WaitForArmDeploymentStatus",
         "displayname": "Validating News Function",

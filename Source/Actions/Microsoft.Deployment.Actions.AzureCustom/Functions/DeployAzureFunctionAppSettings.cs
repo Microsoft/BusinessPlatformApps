@@ -1,15 +1,14 @@
-﻿using System.Collections.Generic;
-using System.ComponentModel.Composition;
-using System.Dynamic;
+﻿using System.ComponentModel.Composition;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
+
+using Newtonsoft.Json.Linq;
 
 using Microsoft.Deployment.Common.ActionModel;
 using Microsoft.Deployment.Common.Actions;
 using Microsoft.Deployment.Common.ErrorCode;
 using Microsoft.Deployment.Common.Helpers;
-using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Deployment.Actions.AzureCustom.Common
 {
@@ -49,8 +48,7 @@ namespace Microsoft.Deployment.Actions.AzureCustom.Common
             var response = await appSettingCreated.Content.ReadAsStringAsync();
             if (!appSettingCreated.IsSuccessStatusCode)
             {
-                return new ActionResponse(ActionStatus.Failure, JsonUtility.GetJObjectFromJsonString(response),
-                    null, DefaultErrorCodes.DefaultErrorCode, "Error creating appsetting");
+                return new ActionResponse(ActionStatus.Failure, JsonUtility.GetJObjectFromJsonString(response), null, DefaultErrorCodes.DefaultErrorCode, "Error creating appsetting");
             }
 
             return new ActionResponse(ActionStatus.Success);

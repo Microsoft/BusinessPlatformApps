@@ -1,0 +1,84 @@
+﻿<!--               
+    IMPORTANT:
+    - Policy elements can appear only within the <inbound>, <outbound>, <backend> section elements.
+    - Only the <forward-request> policy element can appear within the <backend> section element.
+    - To apply a policy to the incoming request (before it is forwarded to the backend service), place a corresponding policy element within the <inbound> section element.
+    - To apply a policy to the outgoing response (before it is sent back to the caller), place a corresponding policy element within the <outbound> section element.
+    - To add a policy position the cursor at the desired insertion point and click on the round button associated with the policy.
+    - To remove a policy, delete the corresponding policy statement from the policy document.
+    - Policies are applied in the order of their appearance, from the top down.
+               -->
+
+<!-- 
+    This policy has been added as part of the Power BI Solution Template for advanced API analytics. For more information go to: http://powerbi.com/
+-->
+<policies>
+    <inbound>
+        <log-to-eventhub partition-id="0" logger-id="$(idLogger)">
+            @{
+                
+                var name = "";
+                if(context.User != null)
+                {
+                    name = context.User.FirstName + " " + context.User.LastName;
+                };
+                
+                var subId = "0";
+                if(context.Subscription != null)
+                {
+                    subId = context.Subscription.Id;
+                };
+                
+                var title = "CreatedDate,ServiceName,RequestId,IPAddress,Operation,OperationId,Api,ApiId,Product,ProductId,SubscriptionName,SubscriptionId,Length,Type";
+                var values = string.Join(",", DateTime.UtcNow.ToString("o"), 
+                                                context.Deployment.ServiceName, 
+                                                context.RequestId, 
+                                                context.Request.IpAddress, 
+                                                context.Operation.Name,
+                                                context.Operation.Id,
+                                                context.Api.Name,
+                                                context.Api.Id,
+                                                context.Product.Name,
+                                                context.Product.Id,                                                
+                                                name, 
+                                                subId,
+                                                context.Request.Headers.GetValueOrDefault("Content-Length", "0"),
+                                                "Request");
+                return title + "\r\n"+ values;
+            }
+        </log-to-eventhub>
+    </inbound>
+    <backend>
+        <forward-request follow-redirects="true"/>
+    </backend>
+    <outbound>
+        <log-to-eventhub partition-id="1" logger-id="$(idLogger)">
+            @{
+                var title = "CreatedDate,ServiceName,RequestId,StatusCode,StatusReason,Length,Type";
+                var values = string.Join(",", DateTime.UtcNow.ToString("o"), 
+                                                context.Deployment.ServiceName, 
+                                                context.RequestId, 
+                                                context.Response.StatusCode.ToString(),
+                                                context.Response.StatusReason,
+                                                context.Response.Headers.GetValueOrDefault("Content-Length", "0"),
+                                                "Response");
+                return title + "\r\n"+ values;
+            }
+        </log-to-eventhub>
+    </outbound>
+    <on-error>
+        <log-to-eventhub partition-id="2" logger-id="$(idLogger)">
+            @{
+                var title = "CreatedDate,ServiceName,RequestId,Source,Reason,Message,Type";
+                var values = string.Join(",", DateTime.UtcNow.ToString("o"), 
+                                                context.Deployment.ServiceName, 
+                                                context.RequestId, 
+                                                context.LastError.Source,
+                                                context.LastError.Reason,
+                                                context.LastError.Message,
+                                                "Error");
+                return title + "\r\n"+ values;
+            }
+        </log-to-eventhub>
+    </on-error>
+</policies>

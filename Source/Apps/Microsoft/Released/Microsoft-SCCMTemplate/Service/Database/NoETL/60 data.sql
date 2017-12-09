@@ -45,7 +45,7 @@ select @curDate = @startDate
 while @curDate <= @endDate
 Begin
 
-	select @dateKey = datepart(yyyy,@curDate)*10000 + datepart(mm,@curdate)*100 + datepart(dd, @curdate)
+	select @dateKey = datepart(yyyy,@curDate)*10000 + datepart(mm,@curDate)*100 + datepart(dd, @curDate)
 	select @dayOfWeek = datepart(dw,@curDate)
 	select @dayOfMonth = day(@curDate)
 	select @dayName =  datename(dw,@curDate)
@@ -56,8 +56,8 @@ Begin
 	select @monthNo = datepart(m, @curDate)
 	select @monthName = datename(mm, @curDate)
 	select @monthAbbrev = Left(@monthName, 3)
-	select @quarter = datepart(q, @curdate)
-	select @year = datepart(yy, @curdate)
+	select @quarter = datepart(q, @curDate)
+	select @year = datepart(yy, @curDate)
 	select @yearmo = @year*100+@monthNo
 	select @sameDayYearAgo = dateadd(yy,-1,@curDate)
 
@@ -70,7 +70,7 @@ Begin
 	,@monthAbbrev, @quarter, @year, @yearmo,@sameDayYearAgo )
 
 	-- Go to the next day
-	Select @CurDate = dateadd(dd,1,@curDate)
+	Select @curDate = dateadd(dd,1,@curDate)
 End
 
 COMMIT TRANSACTION;
@@ -85,7 +85,7 @@ INSERT pbist_sccm.[configuration] (configuration_group, configuration_subgroup, 
            (N'SolutionTemplate', N'System Center', N'endpointcompliancetarget', N'0.99', 1),
            (N'SolutionTemplate', N'System Center', N'healthevaluationtarget', N'0.99', 1),
            (N'SolutionTemplate', N'System Center', N'dataretentiondays', N'120', 1),
-		   (N'SolutionTemplate', N'System Center', N'lastLoadTimestamp', '2017-01-01T01:00:00.000', 1),
+           (N'SolutionTemplate', N'System Center', N'lastLoadTimestamp', '2017-01-01T01:00:00.000', 1),
            (N'SolutionTemplate', N'System Center', N'versionImage', N'https://bpstservice.azurewebsites.net/api/telemetry/Microsoft-SCCMTemplate', 1);
 go
 

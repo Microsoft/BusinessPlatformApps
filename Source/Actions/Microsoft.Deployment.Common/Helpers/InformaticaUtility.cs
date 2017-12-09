@@ -29,9 +29,11 @@ namespace Microsoft.Deployment.Common.Helpers
         private const string URL_LOGOUTALL = "ma/api/v2/user/logoutall";
         private const string URL_TASKS = "api/v2/task?type=DRS";
 
-        public static async Task<RestClient> Initialize(string username, string password)
+        public static async Task<RestClient> Initialize(string username, string password, bool isRegistration = false)
         {
             RestClient rc = new RestClient(ENDPOINT_LOGIN);
+
+            if (isRegistration) return rc;
 
             //InformaticaLogout lo = new InformaticaLogout() { UserName = username, Password = password };
             //await rc.Post(URL_LOGOUTALL, JsonConvert.SerializeObject(lo));

@@ -14,6 +14,7 @@
     <PackageTargetFallback>$(PackageTargetFallback);dotnet5.6;dnxcore50;portable-net45+win8</PackageTargetFallback>
     <GenerateAssemblyTitleAttribute>false</GenerateAssemblyTitleAttribute>
     <GenerateAssemblyDescriptionAttribute>false</GenerateAssemblyDescriptionAttribute>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <PreBuildEvent>IF "%IS_TEAM_CITY%" == "y" (
     call gulp.cmd pre-build
     call gulp.cmd strip-typescript-reference-paths
@@ -22,11 +23,14 @@
     call gulp.cmd build-typescript
     call gulp.cmd post-build
 )</PostBuildEvent>
+    <TypeScriptToolsVersion>Latest</TypeScriptToolsVersion>
   </PropertyGroup>
 
   <ItemGroup>
     <Compile Remove="node_modules" />
     <Compile Remove="typings" />
+    <Content Include="wwwroot\dist\Apps\Microsoft\Released\Microsoft-ActivityLogTemplate\Web\Images\3B31F9EA.PNG" />
+    <Content Include="wwwroot\dist\Apps\Microsoft\Released\Microsoft-ActivityLogTemplate\Web\Images\Log (2).png" />
     <None Update="wwwroot\**\*">
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
     </None>

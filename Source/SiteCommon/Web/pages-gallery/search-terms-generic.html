@@ -1,0 +1,13 @@
+﻿<template>
+    <h1 class="st-title">Search Temrs</h1>
+    <p class="st-subtitle">Please enter in the search terms you would like to use</p>
+
+    <div class="st-float">
+        <p class="st-text">Terms:</p>
+        <input class="st-input" type="text" change.delegate="viewmodel.onInvalidate()" disabled.bind="MS.HttpService.isServiceBusy" value.bind="viewmodel.searchQuery" />
+    </div>
+
+    <p class="st-float">
+        <button class="primary" click.trigger="viewmodel.onValidate()" if.bind="!MS.HttpService.isServiceBusy">${MS.Translate.COMMON_VALIDATE}</button>
+    </p>
+</template>

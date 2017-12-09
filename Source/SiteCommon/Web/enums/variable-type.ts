@@ -4,6 +4,8 @@
     Run,
     RunAndSave,
     RunAndSaveOld,
+    RunAndTestFalse,
+    RunAndTestTrue,
     RunAndTranslate,
     RunAndTranslateList,
     Static,

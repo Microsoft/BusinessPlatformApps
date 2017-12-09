@@ -19,9 +19,8 @@ namespace Microsoft.Deployment.Actions.Common.PBI
         public override async Task<ActionResponse> ExecuteActionAsync(ActionRequest request)
         {
             AzureHttpClient client = new AzureHttpClient(request.DataStore.GetJson("PBIToken", "access_token"));
-            string pbiClusterUri = request.DataStore.GetValue("PBIClusterUri");
 
-            PBIWorkspaces pbiWorkspaces = JsonUtility.Deserialize<PBIWorkspaces>(await client.Request(HttpMethod.Get, pbiClusterUri + PBI_ENDPOINT_GROUPS));
+            PBIWorkspaces pbiWorkspaces = await client.Request<PBIWorkspaces>(HttpMethod.Get, request.DataStore.GetValue("PBIClusterUri") + PBI_ENDPOINT_GROUPS);
 
             pbiWorkspaces.Workspaces.Insert(0, new PBIWorkspace(PBI_DEFAULT_WORKSPACE));
 

@@ -1,0 +1,47 @@
+﻿{
+    "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json",
+    "contentVersion": "1.1.0.0",
+    "parameters": {
+        "name": {
+            "type": "string"
+        }
+    },
+    "resources": [
+        {
+            "apiVersion": "2015-08-01",
+            "name": "[parameters('nameNamespace')]",
+            "type": "Microsoft.EventHub/namespaces",
+            "location": "[resourceGroup().location]",
+            "sku": {
+                "name": "Standard",
+                "tier": "Standard"
+            },
+            "resources": [
+                {
+                    "apiVersion": "2015-08-01",
+                    "name": "[parameters('nameEventHub')]",
+                    "type": "EventHubs",
+                    "dependsOn": [
+                        "[concat('Microsoft.EventHub/namespaces/', parameters('nameNamespace'))]"
+                    ],
+                    "properties": {
+                        "path": "[parameters('nameEventHub')]"
+                    },
+                    "resources": [
+                        {
+                            "apiVersion": "2015-08-01",
+                            "name": "[parameters('nameConsumerGroup')]",
+                            "type": "ConsumerGroups",
+                            "dependsOn": [
+                                "[parameters('nameEventHub')]"
+                            ],
+                            "properties": {
+
+                            }
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

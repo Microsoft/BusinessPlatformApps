@@ -117,8 +117,10 @@ namespace Microsoft.Deployment.Actions.Salesforce
                     query = CreateQuery(o, tableFields, true, pipelineStart, pipelineEnd);
                     armTemplate = CreateOneTimePipeline(armTemplate);
                 }
-
-                query = CreateQuery(o, tableFields, false);
+                else
+                {
+                    query = CreateQuery(o, tableFields, false);
+                }
 
                 if (historicalOnly && pipelineType == "PostDeployment")
                 {
@@ -151,7 +153,7 @@ namespace Microsoft.Deployment.Actions.Salesforce
                 {
                     var deploymentItem = client.Deployments.CreateOrUpdateAsync(resourceGroup, deploymentName, deployment, new CancellationToken()).Result;
                     var helper = new DeploymentHelper();
-                    return helper.WaitForDeployment(resourceGroup, deploymentName, client);
+                    return helper.WaitForDeployment(client, resourceGroup, deploymentName).Result;
                 }));
             }
 
@@ -160,13 +162,13 @@ namespace Microsoft.Deployment.Actions.Salesforce
                 t.Start();
             }
 
-            Task.WaitAll(task.ToArray());
+            var results = Task.WhenAll(task.ToArray());
 
-            foreach (var t in task)
+            foreach (var t in results.Result)
             {
-                if (t.Result.Status != ActionStatus.Success)
+                if (t.Status != ActionStatus.Success)
                 {
-                    return new ActionResponse(ActionStatus.Failure, t.Result.ExceptionDetail.FriendlyErrorMessage);
+                    return new ActionResponse(ActionStatus.Failure, t.ExceptionDetail.FriendlyErrorMessage);
                 }
             }
 
@@ -296,9 +298,9 @@ namespace Microsoft.Deployment.Actions.Salesforce
 
             if (oneTimePipeline)
             {
-                if (tableFields.Contains("CreatedDate"))
+                if (tableFields.ToLowerInvariant().Contains("createddate"))
                 {
-                    if (tableFields.Contains("IsDeleted"))
+                    if (tableFields.ToLowerInvariant().Contains("isdeleted"))
                     {
                         query.Append(" FROM " + o.Item1 + $" WHERE (IsDeleted = FALSE OR IsDeleted = TRUE) AND ((CreatedDate > {startTime} AND CreatedDate <= {endTime}) OR (LastModifiedDate > {startTime} AND LastModifiedDate <= {endTime}))')\"");
                     }
@@ -309,7 +311,7 @@ namespace Microsoft.Deployment.Actions.Salesforce
                 }
                 else
                 {
-                    if (tableFields.Contains("IsDeleted"))
+                    if (tableFields.Contains("isdeleted"))
                     {
                         query.Append(" FROM " + o.Item1 + $" WHERE (IsDeleted = FALSE OR IsDeleted = TRUE) AND (LastModifiedDate > {startTime} AND LastModifiedDate <=  {endTime})')\"");
                     }
@@ -321,11 +323,11 @@ namespace Microsoft.Deployment.Actions.Salesforce
             }
             else
             {
-                if (!tableFields.Contains("LastModifiedDate"))
+                if (!tableFields.ToLowerInvariant().Contains("lastmodifieddate"))
                 {
-                    if (tableFields.Contains("CreatedDate"))
+                    if (tableFields.ToLowerInvariant().Contains("createddate"))
                     {
-                        if (tableFields.Contains("IsDeleted"))
+                        if (tableFields.ToLowerInvariant().Contains("isdeleted"))
                         {
                             query.Append(" FROM " + o.Item1 + " WHERE (IsDeleted = FALSE OR IsDeleted = TRUE) AND (CreatedDate > {0:yyyy-MM-ddTHH:mm:sssZ} AND CreatedDate <= {1:yyyy-MM-ddTHH:mm:sssZ})', WindowStart,WindowEnd)\"");
                         }
@@ -336,21 +338,21 @@ namespace Microsoft.Deployment.Actions.Salesforce
                     }
                     else
                     {
-                        if (tableFields.Contains("IsDeleted"))
+                        if (tableFields.ToLowerInvariant().Contains("isdeleted"))
                         {
                             query.Append(" FROM " + o.Item1 + " WHERE (IsDeleted = FALSE OR IsDeleted = TRUE)', WindowStart,WindowEnd)\"");
                         }
                         else
                         {
-                            query.Append(" FROM " + o.Item1);
+                            query.Append(" FROM " + o.Item1 + "')\"");
                         }
                     }
                 }
                 else
                 {
-                    if (tableFields.Contains("CreatedDate"))
+                    if (tableFields.ToLowerInvariant().Contains("createddate"))
                     {
-                        if (tableFields.Contains("IsDeleted"))
+                        if (tableFields.ToLowerInvariant().Contains("isdeleted"))
                         {
                             query.Append(" FROM " + o.Item1 + " WHERE (IsDeleted = FALSE OR IsDeleted = TRUE) AND ((CreatedDate > {0:yyyy-MM-ddTHH:mm:sssZ} AND CreatedDate <= {1:yyyy-MM-ddTHH:mm:sssZ}) OR (LastModifiedDate > {0:yyyy-MM-ddTHH:mm:sssZ} AND LastModifiedDate <= {1:yyyy-MM-ddTHH:mm:sssZ}))', WindowStart,WindowEnd)\"");
                         }
@@ -361,7 +363,7 @@ namespace Microsoft.Deployment.Actions.Salesforce
                     }
                     else
                     {
-                        if (tableFields.Contains("IsDeleted"))
+                        if (tableFields.ToLowerInvariant().Contains("isdeleted"))
                         {
                             query.Append(" FROM " + o.Item1 + " WHERE (IsDeleted = FALSE OR IsDeleted = TRUE) AND (LastModifiedDate > {0:yyyy-MM-ddTHH:mm:sssZ} AND LastModifiedDate <= {1:yyyy-MM-ddTHH:mm:sssZ})', WindowStart,WindowEnd)\"");
                         }

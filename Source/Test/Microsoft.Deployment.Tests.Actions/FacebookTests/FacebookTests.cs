@@ -1,14 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Dynamic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.Deployment.Common.Helpers;
+﻿using System.Threading.Tasks;
+
+using Newtonsoft.Json.Linq;
+
+using Microsoft.Deployment.Common.ActionModel;
 using Microsoft.Deployment.Tests.Actions.TestHelpers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Microsoft.Deployment.Common.ActionModel;
-using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Deployment.Tests.Actions.Facebook
 {
@@ -200,7 +196,6 @@ namespace Microsoft.Deployment.Tests.Actions.Facebook
             dataStore.AddToDataStore("SqlServerIndex", "0");
             dataStore.AddToDataStore("SqlScriptsFolder", "Database");
 
-
             dataStore.AddToDataStore("SqlGroup", "SolutionTemplate");
             dataStore.AddToDataStore("SqlSubGroup", "ETL");
             dataStore.AddToDataStore("SqlEntryName", "PagesToFollow");
@@ -283,9 +278,18 @@ namespace Microsoft.Deployment.Tests.Actions.Facebook
             response = await TestManager.ExecuteActionAsync("Microsoft-DeployAzureArmTemplate", dataStore, "Microsoft-FacebookTemplate");
             Assert.IsTrue(response.IsSuccess);
 
-
             dataStore.AddToDataStore("DeploymentName", "FunctionDeploymentTest8");
             response = TestManager.ExecuteAction("Microsoft-WaitForArmDeploymentStatus", dataStore);
+            Assert.IsTrue(response.IsSuccess);
+        }
+
+        [TestMethod]
+        public void ValidateFacebookPermanentPageToken()
+        {
+            var dataStore = new DataStore();
+            dataStore.AddToDataStore("PageId", "");
+            dataStore.AddToDataStore("PermanentPageToken", "");
+            var response = TestManager.ExecuteAction("Microsoft-ValidateFacebookPermanentPageToken", dataStore);
             Assert.IsTrue(response.IsSuccess);
         }
     }

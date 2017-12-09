@@ -33,6 +33,14 @@ export class DataStore {
         this.cacheDataStores();
     }
 
+    addTestToDataStore(key: string, value: boolean): void {
+        if (value === null || value === undefined) {
+            value = false;
+        }
+        this.updateValue(DataStoreType.Public, this.currentRoute(), key, value.toString());
+        this.cacheDataStores();
+    }
+
     addToDataStore(key: string, value: any, dataStoreType: DataStoreType): void {
         this.updateValue(dataStoreType, this.currentRoute(), key, value);
         this.cacheDataStores();
@@ -287,8 +295,7 @@ export class DataStore {
             found = true;
             if (value === null) {
                 store.get(route).remove(key);
-            }
-            else {
+            } else {
                 store.get(route).modify(key, value);
             }
         }

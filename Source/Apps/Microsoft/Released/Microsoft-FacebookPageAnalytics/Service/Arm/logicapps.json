@@ -1,0 +1,275 @@
+﻿{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "functionname": {
+      "defaultValue": "function",
+      "type": "String"
+    },
+    "storageName": {
+      "defaultValue": "functionstorage12345",
+      "type": "String"
+    },
+    "subscription": {
+      "defaultValue": "1a38f0df-b8c1-4cd7-8acf-ff6af08ba57e",
+      "type": "String"
+    },
+    "resourceGroup": {
+      "defaultValue": "resourceGroups",
+      "type": "String"
+    },
+    "days": {
+      "defaultValue": 3000,
+      "type": "Integer"
+    }
+  },
+  "variables": {},
+  "resources": [
+    {
+      "type": "Microsoft.Logic/workflows",
+      "name": "GetHistoryForFacebookPages",
+      "apiVersion": "2016-06-01",
+      "location": "[resourceGroup().location]",
+      "scale": null,
+      "properties": {
+        "state": "Enabled",
+        "definition": {
+          "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+          "contentVersion": "1.0.0.0",
+          "parameters": {
+            "$connections": {
+              "defaultValue": {},
+              "type": "Object"
+            }
+          },
+          "triggers": {
+            "Recurrence": {
+              "recurrence": {
+                "frequency": "Day",
+                "interval": 352
+              },
+              "type": "Recurrence"
+            }
+          },
+          "actions": {
+            "Create_a_new_queue": {
+              "inputs": {
+                "host": {
+                  "connection": {
+                    "name": "@parameters('$connections')['azurequeues']['connectionId']"
+                  }
+                },
+                "method": "put",
+                "path": "/putQueue",
+                "queries": {
+                  "queueName": "history"
+                }
+              },
+              "runAfter": {},
+              "type": "ApiConnection"
+            },
+            "Initialize_variable": {
+              "runAfter": {
+                "Create_a_new_queue": [
+                  "Succeeded"
+                ]
+              },
+              "type": "InitializeVariable",
+              "inputs": {
+                "variables": [
+                  {
+                    "name": "days",
+                    "type": "Integer",
+                    "value": 0
+                  }
+                ]
+              }
+            },
+            "Until": {
+              "actions": {
+                "GetDate": {
+                  "runAfter": {},
+                  "type": "Function",
+                  "inputs": {
+                    "body": {
+                      "value": "@{variables('days')}"
+                    },
+                    "function": {
+                      "id": "[concat(resourceId('Microsoft.Web/sites', parameters('functionname')), '/functions/GetDate')]"
+                    }
+                  }
+                },
+                "Increment_variable": {
+                  "runAfter": {
+                    "Put_a_message_on_a_queue": [
+                      "Succeeded"
+                    ]
+                  },
+                  "type": "IncrementVariable",
+                  "inputs": {
+                    "name": "days",
+                    "value": 1
+                  }
+                },
+                "Put_a_message_on_a_queue": {
+                  "runAfter": {
+                    "GetDate": [
+                      "Succeeded"
+                    ]
+                  },
+                  "type": "ApiConnection",
+                  "inputs": {
+                    "body": "@{body('GetDate')}",
+                    "host": {
+                      "connection": {
+                        "name": "@parameters('$connections')['azurequeues']['connectionId']"
+                      }
+                    },
+                    "method": "post",
+                    "path": "/@{encodeURIComponent('history')}/messages"
+                  }
+                }
+              },
+              "runAfter": {
+                "Initialize_variable": [
+                  "Succeeded"
+                ]
+              },
+              "expression": "@greater(variables('days'), 90)",
+              "limit": {
+                "timeout": "PT10H"
+              },
+              "type": "Until"
+            }
+          },
+          "outputs": {}
+        },
+        "parameters": {
+          "$connections": {
+            "value": {
+              "azurequeues": {
+                "connectionId": "[concat('/subscriptions/', parameters('subscription'), '/resourceGroups/' ,parameters('resourceGroup'),'/providers/Microsoft.Web/connections/azurequeues')]",
+                "connectionName": "azurequeues",
+                "id": "[concat('/subscriptions/', parameters('subscription'),'/providers/Microsoft.Web/locations/', resourceGroup().location, '/managedApis/azurequeues')]"
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "type": "Microsoft.Logic/workflows",
+      "name": "GetLatestPosts",
+      "apiVersion": "2016-06-01",
+      "location": "[resourceGroup().location]",
+      "scale": null,
+      "properties": {
+        "state": "Enabled",
+        "definition": {
+          "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+          "contentVersion": "1.0.0.0",
+          "parameters": {
+            "$connections": {
+              "defaultValue": {},
+              "type": "Object"
+            }
+          },
+          "triggers": {
+            "Recurrence": {
+              "recurrence": {
+                "frequency": "hour",
+                "interval": 12
+              },
+              "type": "Recurrence"
+            }
+          },
+          "actions": {
+            "Initialize_variable": {
+              "runAfter": {},
+              "type": "InitializeVariable",
+              "inputs": {
+                "variables": [
+                  {
+                    "name": "days",
+                    "type": "Integer",
+                    "value": 0
+                  }
+                ]
+              }
+            },
+            "Until": {
+              "actions": {
+                "GetDate": {
+                  "runAfter": {},
+                  "type": "Function",
+                  "inputs": {
+                    "body": {
+                      "value": "@{variables('days')}"
+                    },
+                    "function": {
+                      "id": "[concat(resourceId('Microsoft.Web/sites', parameters('functionname')), '/functions/GetDate')]"
+                    }
+                  }
+                },
+                "Increment_variable": {
+                  "runAfter": {
+                    "Put_a_message_on_a_queue": [
+                      "Succeeded"
+                    ]
+                  },
+                  "type": "IncrementVariable",
+                  "inputs": {
+                    "name": "days",
+                    "value": 1
+                  }
+                },
+                "Put_a_message_on_a_queue": {
+                  "runAfter": {
+                    "GetDate": [
+                      "Succeeded"
+                    ]
+                  },
+                  "type": "ApiConnection",
+                  "inputs": {
+                    "body": "@{body('GetDate')}",
+                    "host": {
+
+                      "connection": {
+                        "name": "@parameters('$connections')['azurequeues']['connectionId']"
+                      }
+                    },
+                    "method": "post",
+                    "path": "/@{encodeURIComponent('history')}/messages"
+                  }
+                }
+              },
+              "runAfter": {
+                "Initialize_variable": [
+                  "Succeeded"
+                ]
+              },
+              "expression": "@greater(variables('days'), 7)",
+              "limit": {
+                "count": 60,
+                "timeout": "PT1H"
+              },
+              "type": "Until"
+            }
+          },
+          "outputs": {}
+        },
+          "parameters": {
+            "$connections": {
+              "value": {
+                "azurequeues": {
+                  "connectionId": "[concat('/subscriptions/', parameters('subscription'), '/resourceGroups/' ,parameters('resourceGroup'),'/providers/Microsoft.Web/connections/azurequeues')]",
+                  "connectionName": "azurequeues",
+                  "id": "[concat('/subscriptions/', parameters('subscription'),'/providers/Microsoft.Web/locations/', resourceGroup().location, '/managedApis/azurequeues')]"
+                }
+              }
+            }
+          }
+        }
+    }
+  ]
+}

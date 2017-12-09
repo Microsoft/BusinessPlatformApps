@@ -11,6 +11,8 @@
     <AssemblyName>Microsoft.Deployment.Common</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -31,32 +33,65 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Microsoft.ApplicationInsights, Version=2.3.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Microsoft.ApplicationInsights.2.3.0\lib\net45\Microsoft.ApplicationInsights.dll</HintPath>
+    <Reference Include="Hyak.Common, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Hyak.Common.1.1.3\lib\net45\Hyak.Common.dll</HintPath>
+      <Private>True</Private>
     </Reference>
-    <Reference Include="Microsoft.IdentityModel.Logging, Version=1.1.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Microsoft.IdentityModel.Logging.1.1.3\lib\net451\Microsoft.IdentityModel.Logging.dll</HintPath>
+    <Reference Include="Microsoft.ApplicationInsights, Version=2.4.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Microsoft.ApplicationInsights.2.4.0\lib\net45\Microsoft.ApplicationInsights.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.IdentityModel.Tokens, Version=5.1.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Microsoft.IdentityModel.Tokens.5.1.3\lib\net451\Microsoft.IdentityModel.Tokens.dll</HintPath>
+    <Reference Include="Microsoft.Azure.Common, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Microsoft.Azure.Common.2.1.4\lib\net45\Microsoft.Azure.Common.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.Azure.ResourceManager, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Microsoft.Azure.Management.Resources.2.20.1-preview\lib\net40\Microsoft.Azure.ResourceManager.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.IdentityModel.Logging, Version=1.1.4.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Microsoft.IdentityModel.Logging.1.1.4\lib\net451\Microsoft.IdentityModel.Logging.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.IdentityModel.Tokens, Version=5.1.4.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Microsoft.IdentityModel.Tokens.5.1.4\lib\net451\Microsoft.IdentityModel.Tokens.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Threading.Tasks, Version=1.0.12.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Microsoft.Bcl.Async.1.0.168\lib\net40\Microsoft.Threading.Tasks.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Threading.Tasks.Extensions, Version=1.0.12.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Microsoft.Bcl.Async.1.0.168\lib\net40\Microsoft.Threading.Tasks.Extensions.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Threading.Tasks.Extensions.Desktop, Version=1.0.168.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Microsoft.Bcl.Async.1.0.168\lib\net40\Microsoft.Threading.Tasks.Extensions.Desktop.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Newtonsoft.Json.10.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
-      <Private>True</Private>
+      <HintPath>..\..\packages\Newtonsoft.Json.10.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.Composition" />
     <Reference Include="System.Core" />
-    <Reference Include="System.IdentityModel.Tokens.Jwt, Version=5.1.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\System.IdentityModel.Tokens.Jwt.5.1.3\lib\net451\System.IdentityModel.Tokens.Jwt.dll</HintPath>
+    <Reference Include="System.Diagnostics.DiagnosticSource, Version=4.0.2.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\System.Diagnostics.DiagnosticSource.4.4.0\lib\net45\System.Diagnostics.DiagnosticSource.dll</HintPath>
+    </Reference>
+    <Reference Include="System.IdentityModel.Tokens.Jwt, Version=5.1.4.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\System.IdentityModel.Tokens.Jwt.5.1.4\lib\net451\System.IdentityModel.Tokens.Jwt.dll</HintPath>
     </Reference>
     <Reference Include="System.IO.Compression" />
+    <Reference Include="System.Net" />
+    <Reference Include="System.Net.Http.Extensions, Version=2.2.29.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Microsoft.Net.Http.2.2.29\lib\net45\System.Net.Http.Extensions.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Net.Http.Primitives, Version=4.2.29.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Microsoft.Net.Http.2.2.29\lib\net45\System.Net.Http.Primitives.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Net.Http.WebRequest" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Net.Http" />
+    <Reference Include="System.Security" />
     <Reference Include="System.Xml" />
+    <Reference Include="System.Xml.Linq" />
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
@@ -104,15 +139,16 @@
     <Compile Include="Helpers\ErrorUtility.cs" />
     <Compile Include="Helpers\FileUtility.cs" />
     <Compile Include="Helpers\FTPUtility.cs" />
-    <Compile Include="Helpers\HttpClientUtility.cs" />
     <Compile Include="Helpers\ImpersonateUtility.cs" />
     <Compile Include="Helpers\InformaticaUtility.cs" />
     <Compile Include="Helpers\JsonUtility.cs" />
     <Compile Include="Helpers\JsonUtilityLowercaseSerializer.cs" />
     <Compile Include="Helpers\ListExtension.cs" />
+    <Compile Include="Helpers\DeploymentHelper.cs" />
     <Compile Include="Helpers\NTHelper.cs" />
     <Compile Include="Helpers\NTPermissionUtility.cs" />
     <Compile Include="Helpers\PBIXUtils.cs" />
+    <Compile Include="Helpers\PowerAppUtility.cs" />
     <Compile Include="Helpers\RandomGenerator.cs" />
     <Compile Include="Helpers\RequestUtility.cs" />
     <Compile Include="Helpers\ResponseObjectConverter.cs" />
@@ -123,7 +159,38 @@
     <Compile Include="Helpers\StringEnumConverterLower.cs" />
     <Compile Include="Helpers\StringExtension.cs" />
     <Compile Include="Controller\Logger.cs" />
+    <Compile Include="Model\ActivityLog\ActivityLogProfile.cs" />
+    <Compile Include="Model\ActivityLog\ActivityLogProfileProperties.cs" />
+    <Compile Include="Model\ActivityLog\ActivityLogProfileRetentionPolicy.cs" />
+    <Compile Include="Model\ApiManagement\ApiManagementLogger.cs" />
+    <Compile Include="Model\ApiManagement\ApiManagementLoggerProperties.cs" />
+    <Compile Include="Model\ApiManagement\ApiManagementLoggerPropertiesCredentials.cs" />
+    <Compile Include="Model\ApiManagement\ApiManagementPolicy.cs" />
+    <Compile Include="Model\ApiManagement\ApiManagementPolicyProperties.cs" />
+    <Compile Include="Model\ApiManagement\ApiManagementService.cs" />
+    <Compile Include="Model\ApiManagement\ApiManagementServiceProperties.cs" />
+    <Compile Include="Model\ApiManagement\ApiManagementServiceSku.cs" />
+    <Compile Include="Model\Azure\Function.cs" />
+    <Compile Include="Model\Azure\FunctionProperties.cs" />
+    <Compile Include="Model\Azure\FunctionPropertiesConfig.cs" />
+    <Compile Include="Model\Azure\FunctionPropertiesConfigBinding.cs" />
+    <Compile Include="Model\Azure\FunctionStatus.cs" />
+    <Compile Include="Model\Azure\FunctionStatusLog.cs" />
+    <Compile Include="Model\Azure\FunctionStatusProperties.cs" />
+    <Compile Include="Model\Azure\FunctionStatusWrapper.cs" />
+    <Compile Include="Model\Azure\FunctionWrapper.cs" />
+    <Compile Include="Model\Bpst\BpstAzure.cs" />
+    <Compile Include="Model\Bpst\BpstSql.cs" />
+    <Compile Include="Model\Custom\NewsEntity.cs" />
     <Compile Include="Model\DataPullStatus.cs" />
+    <Compile Include="Model\EventHub\EventHub.cs" />
+    <Compile Include="Model\EventHub\EventHubKeys.cs" />
+    <Compile Include="Model\EventHub\EventHubProperties.cs" />
+    <Compile Include="Model\EventHub\LogProfile.cs" />
+    <Compile Include="Model\EventHub\LogProfileProperties.cs" />
+    <Compile Include="Model\Http\HttpErrorResponse.cs" />
+    <Compile Include="Model\Http\HttpErrorResponseWrapper.cs" />
+    <Compile Include="Model\Http\HttpResponseDetails.cs" />
     <Compile Include="Model\Informatica\InformaticaActivityLog.cs" />
     <Compile Include="Model\Informatica\InformaticaAgent.cs" />
     <Compile Include="Model\Informatica\InformaticaConnection.cs" />
@@ -138,6 +205,9 @@
     <Compile Include="Model\Informatica\InformaticaObject.cs" />
     <Compile Include="Model\Informatica\InformaticaOrganizationEdition.cs" />
     <Compile Include="Model\Informatica\InformaticaOrganizationLicenseInformation.cs" />
+    <Compile Include="Model\Informatica\InformaticaRegistration.cs" />
+    <Compile Include="Model\Informatica\InformaticaRegistrationOrganization.cs" />
+    <Compile Include="Model\Informatica\InformaticaRegistrationUser.cs" />
     <Compile Include="Model\Informatica\InformaticaRuntimeEnvironment.cs" />
     <Compile Include="Model\Informatica\InformaticaSchedule.cs" />
     <Compile Include="Model\Informatica\InformaticaTask.cs" />
@@ -151,6 +221,31 @@
     <Compile Include="Model\PBI\PBIReport.cs" />
     <Compile Include="Model\PBI\PBIWorkspace.cs" />
     <Compile Include="Model\PBI\PBIWorkspaces.cs" />
+    <Compile Include="Model\PowerApp\PowerAppConsent.cs" />
+    <Compile Include="Model\PowerApp\PowerAppConsents.cs" />
+    <Compile Include="Model\PowerApp\PowerAppConsentScopes.cs" />
+    <Compile Include="Model\PowerApp\PowerAppMetadata.cs" />
+    <Compile Include="Model\PowerApp\PowerAppConnection.cs" />
+    <Compile Include="Model\PowerApp\PowerAppConnectionReferences.cs" />
+    <Compile Include="Model\PowerApp\PowerAppDocumentUri.cs" />
+    <Compile Include="Model\PowerApp\PowerAppEnvironment.cs" />
+    <Compile Include="Model\PowerApp\PowerAppEnvironmentProperties.cs" />
+    <Compile Include="Model\PowerApp\PowerAppEnvironmentPropertiesCreatedBy.cs" />
+    <Compile Include="Model\PowerApp\PowerAppEnvironmentPropertiesPermission.cs" />
+    <Compile Include="Model\PowerApp\PowerAppEnvironmentPropertiesPermissions.cs" />
+    <Compile Include="Model\PowerApp\PowerAppEnvironmentWrapper.cs" />
+    <Compile Include="Model\PowerApp\PowerAppPublish.cs" />
+    <Compile Include="Model\PowerApp\PowerAppPublishProperties.cs" />
+    <Compile Include="Model\PowerApp\PowerAppPublishTags.cs" />
+    <Compile Include="Model\PowerApp\PowerAppResourceStorage.cs" />
+    <Compile Include="Model\PowerApp\PowerAppSqlConnection.cs" />
+    <Compile Include="Model\PowerApp\PowerAppSqlConnectionPropertiesConnectionParameters.cs" />
+    <Compile Include="Model\PowerApp\PowerAppSqlConnectionProperties.cs" />
+    <Compile Include="Model\PowerApp\PowerAppSqlConnectionUpdate.cs" />
+    <Compile Include="Model\PowerApp\PowerAppSqlConnectionUpdateProperties.cs" />
+    <Compile Include="Model\PowerApp\PowerAppUris.cs" />
+    <Compile Include="Model\PowerApp\PowerAppVersion.cs" />
+    <Compile Include="Model\PowerApp\ReadableQueryPart.cs" />
     <Compile Include="Model\QDEFF.cs" />
     <Compile Include="Model\Scribe\D365Organization.cs" />
     <Compile Include="Model\Scribe\ScribeAgent.cs" />
@@ -167,6 +262,32 @@
     <Compile Include="Model\Scribe\ScribeSolutionSchedule.cs" />
     <Compile Include="Model\Scribe\ScribeSubscription.cs" />
     <Compile Include="Model\SqlCredentials.cs" />
+    <Compile Include="Model\StreamAnalytics\ActivityLogEntry.cs" />
+    <Compile Include="Model\StreamAnalytics\ActivityLogResponse.cs" />
+    <Compile Include="Model\StreamAnalytics\StreamAnalyticsAuthorization.cs" />
+    <Compile Include="Model\StreamAnalytics\StreamAnalyticsCategory.cs" />
+    <Compile Include="Model\StreamAnalytics\StreamAnalyticsClaims.cs" />
+    <Compile Include="Model\StreamAnalytics\StreamAnalyticsEventName.cs" />
+    <Compile Include="Model\StreamAnalytics\StreamAnalyticsEventSource.cs" />
+    <Compile Include="Model\StreamAnalytics\StreamAnalyticsHttpRequest.cs" />
+    <Compile Include="Model\StreamAnalytics\StreamAnalyticsInputDatasource.cs" />
+    <Compile Include="Model\StreamAnalytics\StreamAnalyticsInputDatasourceProperties.cs" />
+    <Compile Include="Model\StreamAnalytics\StreamAnalyticsInputProperties.cs" />
+    <Compile Include="Model\StreamAnalytics\StreamAnalyticsInputPropertiesWrapper.cs" />
+    <Compile Include="Model\StreamAnalytics\StreamAnalyticsInputSerialization.cs" />
+    <Compile Include="Model\StreamAnalytics\StreamAnalyticsInputSerializationProperties.cs" />
+    <Compile Include="Model\StreamAnalytics\StreamAnalyticsOperationName.cs" />
+    <Compile Include="Model\StreamAnalytics\StreamAnalyticsOutputSql.cs" />
+    <Compile Include="Model\StreamAnalytics\StreamAnalyticsOutputSqlProperties.cs" />
+    <Compile Include="Model\StreamAnalytics\StreamAnalyticsOutputSqlPropertiesDatasource.cs" />
+    <Compile Include="Model\StreamAnalytics\StreamAnalyticsOutputSqlPropertiesDatasourceProperties.cs" />
+    <Compile Include="Model\StreamAnalytics\StreamAnalyticsOutputSqlPropertiesWrapper.cs" />
+    <Compile Include="Model\StreamAnalytics\StreamAnalyticsProperties.cs" />
+    <Compile Include="Model\StreamAnalytics\StreamAnalyticsQueryProperties.cs" />
+    <Compile Include="Model\StreamAnalytics\StreamAnalyticsQueryPropertiesWrapper.cs" />
+    <Compile Include="Model\StreamAnalytics\StreamAnalyticsResourceProviderName.cs" />
+    <Compile Include="Model\StreamAnalytics\StreamAnalyticsStatus.cs" />
+    <Compile Include="Model\StreamAnalytics\StreamAnalyticsSubStatus.cs" />
     <Compile Include="Model\TagReturn.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Tags\ActionsTagHandler.cs" />
@@ -192,6 +313,13 @@
     </None>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Import Project="..\..\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets" Condition="Exists('..\..\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets')" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\..\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets'))" />
+  </Target>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

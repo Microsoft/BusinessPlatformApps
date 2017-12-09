@@ -24,6 +24,7 @@ DROP TABLE dbo.msdyn_resourcerequirementdetail;
 DROP TABLE dbo.msdyn_resourcerequirement;
 DROP TABLE dbo.msdyn_resourcerequest;
 DROP TABLE dbo.msdyn_project;
+DROP TABLE dbo.msdyn_projecttask;
 DROP TABLE dbo.msdyn_organizationalunit;
 DROP TABLE dbo.msdyn_orderlineresourcecategory;
 DROP TABLE dbo.msdyn_estimateline;

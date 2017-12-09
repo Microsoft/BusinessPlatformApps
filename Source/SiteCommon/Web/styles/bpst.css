@@ -733,6 +733,20 @@ ul {
 .st-multiple-selector {
     background-color: #E9E9E9;
 }
+
+.st-warning {
+    background-color: #F9E385;
+    padding: 10px 8px;
+}
+
+.st-warning-icon {
+    font-size: 18px;
+}
+
+.st-warning-message {
+    padding-left: 21px;
+}
+
 /********************************************************************************************
 * Spinner
 ********************************************************************************************/

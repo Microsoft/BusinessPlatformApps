@@ -1,0 +1,19 @@
+﻿<template>
+    <h1 class="st-title">${MS.Translate.COMMON_CUSTOMIZE}</h1>
+    <h4 class="st-subtitle">${MS.Translate.CUSTOMIZE_SPECIFIC}</h4>
+
+    <div class="st-float-clear" if.bind="instances && instances.length > 0">
+        <p class="st-text">${MS.Translate.AX_INSTANCES}</p>
+        <select class="btn btn-default dropdown-toggle st-input" disabled.bind="MS.HttpService.isServiceBusy || axBaseUrl" value.bind="selectedInstance">
+            <option repeat.for="item of instances" value.bind="item">${item}</option>
+        </select>
+    </div>
+
+    <!-- AX url -->
+    <div class="st-float-clear">
+        <p class="st-text" if.bind="instances && instances.length > 0" title="${MS.Translate.CUSTOMIZE_BASE_URL_DESCRIPTION}">${MS.Translate.AX_CUSTOM_URL}</p>
+        <p class="st-text" if.bind="!instances" title="${MS.Translate.CUSTOMIZE_BASE_URL_DESCRIPTION}">${MS.Translate.AX_CUSTOM_URL_NO_DROPDOWN}</p>
+        <input class="st-input" type="text" placeholder="https://yourinstance.cloudax.dynamics.com/" value.bind="axBaseUrl" change.delegate="onInvalidate()">
+    </div>
+
+</template>

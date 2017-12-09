@@ -27,7 +27,14 @@
         <div if.bind="dataMovement == dataMovementType.Informatica">
             <div class="st-float st-text">
                 <p>${MS.Translate.DATA_MOVEMENT_INFORMATICA_DESCRIPTION}</p>
-                <bpst-link class="st-float" a-description="${MS.Translate.DATA_MOVEMENT_INFORMATICA_NEW_ACCOUNT}" a-link="https://www.informatica.com/trials/informatica-cloud.html" a-link-text="${MS.Translate.COMMON_HERE}"></bpst-link>
+            </div>
+
+            <div class="st-float st-text" if.bind="!isRegistered">
+                <p class="st-text">${MS.Translate.DATA_MOVEMENT_INFORMATICA_ACCOUNT}</p>
+                <select class="btn btn-default dropdown-toggle st-input" disabled.bind="MS.HttpService.isServiceBusy" value.bind="informaticaAccount">
+                    <option value="Existing">${MS.Translate.DATA_MOVEMENT_INFORMATICA_ACCOUNT_EXISTING}</option>
+                    <option value="New">${MS.Translate.DATA_MOVEMENT_INFORMATICA_ACCOUNT_NEW}</option>
+                </select>
             </div>
         </div>
 
@@ -47,7 +54,21 @@
             <input class="st-input" type="password" change.delegate="onInvalidate()" disabled.bind="MS.HttpService.isServiceBusy" value.bind="password" />
         </div>
 
-        <button class="primary st-float" click.trigger="onValidate()" if.bind="!MS.HttpService.isServiceBusy">${MS.Translate.COMMON_LOGIN}</button>
+        <div class="st-float" if.bind="dataMovement == dataMovementType.Informatica && informaticaAccount == 'New'">
+            <p class="st-text">${MS.Translate.DATA_MOVEMENT_PASSWORD_CONFIRMATION}</p>
+            <input class="st-input" type="password" change.delegate="onInvalidate()" disabled.bind="MS.HttpService.isServiceBusy" value.bind="passwordConfirmation" />
+
+            <p class="st-text">${MS.Translate.DATA_MOVEMENT_COMPANY}</p>
+            <input class="st-input" type="text" change.delegate="onInvalidate()" disabled.bind="MS.HttpService.isServiceBusy" value.bind="company" />
+
+            <p class="st-text">${MS.Translate.DATA_MOVEMENT_NAMEFIRST}</p>
+            <input class="st-input" type="text" change.delegate="onInvalidate()" disabled.bind="MS.HttpService.isServiceBusy" value.bind="nameFirst" />
+
+            <p class="st-text">${MS.Translate.DATA_MOVEMENT_NAMELAST}</p>
+            <input class="st-input" type="text" change.delegate="onInvalidate()" disabled.bind="MS.HttpService.isServiceBusy" value.bind="nameLast" />
+        </div>
+
+        <button class="primary st-float" click.trigger="onValidate()" if.bind="!MS.HttpService.isServiceBusy">${dataMovement == dataMovementType.Informatica && informaticaAccount == 'New' ? MS.Translate.COMMON_REGISTER : MS.Translate.COMMON_LOGIN}</button>
 
         <div class="st-float" if.bind="informaticaAgents && informaticaAgents.length > 0">
             <p class="st-text">${MS.Translate.DATA_MOVEMENT_INFORMATICA_AGENT}</p>
@@ -57,7 +78,7 @@
         </div>
 
         <div class="st-float" if.bind="informaticaAgentLocation">
-            <bpst-link class="st-float" a-description="${MS.Translate.DATA_MOVEMENT_INFORMATICA_ONPREMISE_AGENT}" a-link="informaticaAgentLocation" a-link-text="${MS.Translate.COMMON_HERE}"></bpst-link>
+            <bpst-link class="st-float" a-description="${MS.Translate.DATA_MOVEMENT_INFORMATICA_ONPREMISE_AGENT}" a-link="${informaticaAgentLocation}" a-link-text="${MS.Translate.COMMON_HERE}"></bpst-link>
         </div>
 
         <div class="st-float" change.delegate="OnScribeOrganizationChanged()" if.bind="scribeOrganizations && scribeOrganizations.length > 0">

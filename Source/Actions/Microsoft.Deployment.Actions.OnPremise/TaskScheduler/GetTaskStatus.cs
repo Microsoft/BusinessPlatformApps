@@ -36,44 +36,39 @@ namespace Microsoft.Deployment.Actions.OnPremise.TaskScheduler
 
         public override async Task<ActionResponse> ExecuteActionAsync(ActionRequest request)
         {
-            const int MAX_RETRIES = 15;
+            // The status could change if we're patient
+            System.Threading.Thread.Sleep(250);
 
-            // This loop tries to avoid an unknown task state, thinking it's transient
-            Task task = null;
-            for (int i = 0; i <= MAX_RETRIES; i++)
-            {
-                System.Threading.Thread.Sleep(100);
-                task = GetScheduledTask(request.DataStore.GetValue("TaskName"));
-                if (task == null)
-                    return new ActionResponse(ActionStatus.Failure, JsonUtility.GetEmptyJObject(), "SccmTaskNotFound");
-
-                if (task.State == TaskState.Unknown)
-                    continue;
-                else
-                    break;
-            }
+            Task task = GetScheduledTask(request.DataStore.GetValue("TaskName"));
+            if (task == null)
+                return new ActionResponse(ActionStatus.Failure, JsonUtility.GetEmptyJObject(), "SccmTaskNotFound");
 
             // Let it run
-            if (task.State == TaskState.Queued || task.State == TaskState.Running)
+            if (task.State == TaskState.Queued || task.State == TaskState.Running || task.State == TaskState.Unknown)
                 return new ActionResponse(ActionStatus.InProgress);
 
-            // If we're here, the task completed
-            if (task.LastTaskResult == 0)
-                return new ActionResponse(ActionStatus.Success);
+            switch (task.LastTaskResult)
+            {
+                case 0:
+                    return new ActionResponse(ActionStatus.Success);
+                case 0x00041303: // SCHED_S_TASK_HAS_NOT_RUN: The task has not yet run.
+                case 0x00041325: // SCHED_S_TASK_QUEUED: The Task Scheduler service has asked the task to run
+                    return new ActionResponse(ActionStatus.InProgress); 
+                default:
+                    // there was an error since we haven't exited above
+                    uploadLogs(request);
+                    if (NTHelper.IsCredentialGuardEnabled())
+                        return new ActionResponse(ActionStatus.Failure, JsonUtility.GetEmptyJObject(), "CredentialGuardEnabled");
 
-            // there was an error since we haven't exited above
-            uploadLogs(request);
-            if (NTHelper.IsCredentialGuardEnabled())
-                return new ActionResponse(ActionStatus.Failure, JsonUtility.GetEmptyJObject(), "CredentialGuardEnabled");
+                    // azurebcp exits with 0, 1, 2, the powershell script might return 1 - anything else must be a Windows error
+                    Exception e = (uint)task.LastTaskResult > 2 ?
+                                                    new Exception($"Scheduled task exited with code {task.LastTaskResult}", new System.ComponentModel.Win32Exception(task.LastTaskResult)) :
+                                                    new Exception($"Scheduled task exited with code {task.LastTaskResult}");
 
-            // azurebcp exits with 0, 1, 2, the powershell script might return 1 - anything else must be a Windows error
-            Exception e = (uint)task.LastTaskResult > 2 ?
-                                            new Exception($"Scheduled task exited with code {task.LastTaskResult}", new System.ComponentModel.Win32Exception(task.LastTaskResult)) :
-                                            new Exception($"Scheduled task exited with code {task.LastTaskResult}");
-
-            ActionResponse response = new ActionResponse(ActionStatus.Failure, JsonUtility.GetEmptyJObject(), e, "TaskSchedulerRunFailed");
-            response.ExceptionDetail.LogLocation = FileUtility.GetLocalTemplatePath(request.Info.AppName);
-            return response;
+                    ActionResponse response = new ActionResponse(ActionStatus.Failure, JsonUtility.GetEmptyJObject(), e, "TaskSchedulerRunFailed");
+                    response.ExceptionDetail.LogLocation = FileUtility.GetLocalTemplatePath(request.Info.AppName);
+                    return response;
+            }
         }
 
 

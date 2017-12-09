@@ -127,5 +127,11 @@
         <select class="btn btn-default dropdown-toggle st-input" disabled.bind="MS.HttpService.isServiceBusy" value.bind="database">
             <option repeat.for="database of databases">${database}</option>
         </select>
+        <div class="st-label-wrapper" if.bind="showCreateAzureSqlPrompt">
+            <label class="st-label">
+                <input type="checkbox" tabindex="-1" checked.bind="isCreateAzureSqlSelected" disabled.bind="MS.HttpService.isServiceBusy">
+                <span class="smallFontSize">${MS.Translate.SQL_SERVER_CREATE_AZURE_SQL}</span>
+            </label>
+        </div>
     </div>
 </template>

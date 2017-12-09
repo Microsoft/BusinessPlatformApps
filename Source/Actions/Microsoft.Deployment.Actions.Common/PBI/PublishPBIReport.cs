@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.Composition;
+﻿using System;
+using System.ComponentModel.Composition;
 using System.Net;
 using System.Net.Http;
 using System.Threading;
@@ -15,14 +16,14 @@ namespace Microsoft.Deployment.Actions.Common.PBI
     public class PublishPBIReport : BaseAction
     {
         private const int MAXIMUM_IMPORT_STATUS_ATTEMPTS = 92;
-        private const int WAIT_IMPORT_STATUS = 5000;
+        private const int WAIT_IMPORT_STATUS = 5;
 
         private const string PBI_IMPORT_STATUS_URI = "beta/myorg/{0}imports/{1}";
         private const string PBI_IMPORT_URI = "beta/myorg/{0}imports/?datasetDisplayName={1}&nameConflict=Abort";
 
         public override async Task<ActionResponse> ExecuteActionAsync(ActionRequest request)
         {
-            AzureHttpClient client = new AzureHttpClient(request.DataStore.GetJson("PBIToken", "access_token"));
+            AzureHttpClient ahc = new AzureHttpClient(request.DataStore.GetJson("PBIToken", "access_token"));
             string pbiClusterUri = request.DataStore.GetValue("PBIClusterUri");
             string pbiWorkspaceId = request.DataStore.GetValue("PBIWorkspaceId");
             string pbixLocation = request.DataStore.GetValue("PBIXLocation");
@@ -37,18 +38,18 @@ namespace Microsoft.Deployment.Actions.Common.PBI
 
             string filename = request.Info.AppName + RandomGenerator.GetDateStamp() + ".pbix";
 
-            PBIImport pbiImport = JsonUtility.Deserialize<PBIImport>(await client.Request(pbiClusterUri + string.Format(PBI_IMPORT_URI, pbiWorkspaceId, filename), file, filename));
+            PBIImport pbiImport = JsonUtility.Deserialize<PBIImport>(await ahc.Request(pbiClusterUri + string.Format(PBI_IMPORT_URI, pbiWorkspaceId, filename), file, filename));
 
             PBIImportStatus pbiImportStatus = null;
             int attempts = 0;
             bool isImportInProgress = true;
             while (isImportInProgress && attempts < MAXIMUM_IMPORT_STATUS_ATTEMPTS)
             {
-                pbiImportStatus = JsonUtility.Deserialize<PBIImportStatus>(await client.Request(HttpMethod.Get, pbiClusterUri + string.Format(PBI_IMPORT_STATUS_URI, pbiWorkspaceId, pbiImport.Id)));
+                pbiImportStatus = await ahc.Request<PBIImportStatus>(HttpMethod.Get, pbiClusterUri + string.Format(PBI_IMPORT_STATUS_URI, pbiWorkspaceId, pbiImport.Id));
                 switch (pbiImportStatus.ImportState)
                 {
                     case "Publishing":
-                        Thread.Sleep(WAIT_IMPORT_STATUS);
+                        Thread.Sleep(new TimeSpan(0, 0, WAIT_IMPORT_STATUS));
                         break;
                     case "Succeeded":
                         isImportInProgress = false;

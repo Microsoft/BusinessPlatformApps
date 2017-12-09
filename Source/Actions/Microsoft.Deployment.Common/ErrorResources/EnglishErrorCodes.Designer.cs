@@ -19,7 +19,7 @@ namespace Microsoft.Deployment.Common.ErrorResources {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class EnglishErrorCodes {
@@ -57,6 +57,78 @@ namespace Microsoft.Deployment.Common.ErrorResources {
             }
             set {
                 resourceCulture = value;
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to An error occurred while exporting the Activity Log to EventHub.
+        /// </summary>
+        public static string ActivityLogsErrorExportingToEventHub {
+            get {
+                return ResourceManager.GetString("ActivityLogsErrorExportingToEventHub", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Time out occurred while exporting the Activity Log to Event Hub.
+        /// </summary>
+        public static string ActivityLogsExportEventHubTimeout {
+            get {
+                return ResourceManager.GetString("ActivityLogsExportEventHubTimeout", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to An error occurred while pulling historical Activity Log data.
+        /// </summary>
+        public static string ActivityLogsGetHistoricalDataError {
+            get {
+                return ResourceManager.GetString("ActivityLogsGetHistoricalDataError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Your account has insufficient permissions to export activity logs to Event Hub in this subscription.
+        /// </summary>
+        public static string ActivityLogsInsufficientPermissions {
+            get {
+                return ResourceManager.GetString("ActivityLogsInsufficientPermissions", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Timed out while waiting for the Activity Log Exported Event Hub to become available.
+        /// </summary>
+        public static string ActivityLogsVerifyInsightsTimeout {
+            get {
+                return ResourceManager.GetString("ActivityLogsVerifyInsightsTimeout", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No fully provisioned API Management Services were found in your Azure Subscription.
+        /// </summary>
+        public static string ApiManagementErrorNoServicesFound {
+            get {
+                return ResourceManager.GetString("ApiManagementErrorNoServicesFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Failed to create a new API Management Logger.
+        /// </summary>
+        public static string ApiManagementFailedToCreateLogger {
+            get {
+                return ResourceManager.GetString("ApiManagementFailedToCreateLogger", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to It seems you&apos;re not running the correct platform version of Dynamics 365 for Finance and Operations. The template requires at least Platform Update 8..
+        /// </summary>
+        public static string AxWrongPlatform {
+            get {
+                return ResourceManager.GetString("AxWrongPlatform", resourceCulture);
             }
         }
         
@@ -106,7 +178,7 @@ namespace Microsoft.Deployment.Common.ErrorResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Credential Guard is enabled on this computer and does not yet support Windows Task Scheduler. Please choose a different computer..
+        ///   Looks up a localized string similar to This particular version of Windows 10 has Credential Guard enabled and a known issue prevents our scheduled job from running correctly. Please disable Credential Guard (https://www.microsoft.com/en-us/download/details.aspx?id=53337) or upgrade to Windows 10 Creators Update..
         /// </summary>
         public static string CredentialGuardEnabled {
             get {
@@ -169,11 +241,29 @@ namespace Microsoft.Deployment.Common.ErrorResources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to An error occurred while querying Event Hub access keys.
+        /// </summary>
+        public static string EventHubFailedToQueryKeys {
+            get {
+                return ResourceManager.GetString("EventHubFailedToQueryKeys", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to One or more of the pages you entered could not be found.
         /// </summary>
         public static string FacebookPagesInvalid {
             get {
                 return ResourceManager.GetString("FacebookPagesInvalid", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The page id or token provided is invalid..
+        /// </summary>
+        public static string FacebookTokenAuthFailed {
+            get {
+                return ResourceManager.GetString("FacebookTokenAuthFailed", resourceCulture);
             }
         }
         
@@ -358,6 +448,15 @@ namespace Microsoft.Deployment.Common.ErrorResources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to You may not have read access to one of the following objects: Opportunity, Account, Lead, Product2, OpportunityLineItem, OpportunityStage, User, UserRole. Please check..
+        /// </summary>
+        public static string SalesforceInvalidType {
+            get {
+                return ResourceManager.GetString("SalesforceInvalidType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Login failed, check that you have entered the correct username, password and token..
         /// </summary>
         public static string SalesforceLoginInvalid {
@@ -507,6 +606,42 @@ namespace Microsoft.Deployment.Common.ErrorResources {
         public static string SqlLoginFailed {
             get {
                 return ResourceManager.GetString("SqlLoginFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Failed to set a new Stream Analytics Input.
+        /// </summary>
+        public static string StreamAnalyticsSetInputFailure {
+            get {
+                return ResourceManager.GetString("StreamAnalyticsSetInputFailure", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Failed to set Stream Analytics output.
+        /// </summary>
+        public static string StreamAnalyticsSetOutputFailure {
+            get {
+                return ResourceManager.GetString("StreamAnalyticsSetOutputFailure", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Failed to toggle the state of the Stream Analytics job.
+        /// </summary>
+        public static string StreamAnalyticsToggleFailure {
+            get {
+                return ResourceManager.GetString("StreamAnalyticsToggleFailure", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Failed to update the Stream Analytics Job query.
+        /// </summary>
+        public static string StreamAnalyticsUpdateQueryFailure {
+            get {
+                return ResourceManager.GetString("StreamAnalyticsUpdateQueryFailure", resourceCulture);
             }
         }
         

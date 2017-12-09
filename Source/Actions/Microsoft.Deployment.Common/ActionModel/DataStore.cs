@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 using Newtonsoft.Json.Linq;
@@ -124,6 +125,14 @@ namespace Microsoft.Deployment.Common.ActionModel
             {
                 this.UpdateValue(dataStoreType, this.CurrentRoute, val.Key, val.Value);
             }
+        }
+
+        public int GetCount(string key)
+        {
+            string value = this.GetValue(key);
+            int count;
+            Int32.TryParse(value, out count);
+            return count;
         }
 
         public string GetValue(string route, string key, DataStoreType dataStoreType = DataStoreType.Any)

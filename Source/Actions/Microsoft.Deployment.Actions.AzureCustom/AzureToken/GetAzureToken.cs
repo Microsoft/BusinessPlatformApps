@@ -44,6 +44,9 @@ namespace Microsoft.Deployment.Actions.AzureCustom.AzureToken
                 case "as":
                     request.DataStore.AddToDataStore("AzureTokenAS", token);
                     break;
+                case "axerp":
+                    request.DataStore.AddToDataStore("AxToken", token);
+                    break;
                 case "mscrm":
                     JObject crmToken = AzureTokenUtility.GetTokenForResourceFromExistingToken(oauthType, request.Info.WebsiteRootUrl, token, Constants.MsCrmResource);
                     request.DataStore.AddToDataStore("MsCrmToken", crmToken);

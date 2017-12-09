@@ -44,6 +44,7 @@ export class ProgressViewModel extends ViewModelBase {
     }
 
     async executeActions(): Promise<void> {
+        //if (await this.MS.DeploymentService.executeActions(this.showCounts) && !this.isUninstall) {
         if (await this.MS.DeploymentService.executeActions() && !this.isUninstall) {
             await this.wrangle();
 
@@ -70,8 +71,6 @@ export class ProgressViewModel extends ViewModelBase {
                     this.showPBIWorkspaces = true;
                 }
             });
-        } else if (this.MS.DataStore.getValue('HasNavigated') === null) {
-            this.MS.NavigationService.navigateHome();
         } else {
             let isDataStoreValid: boolean = true;
 
@@ -94,22 +93,40 @@ export class ProgressViewModel extends ViewModelBase {
 
     async queryRecordCounts(): Promise<void> {
         if (this.showCounts && !this.isDataPullDone && !this.MS.DeploymentService.hasError) {
-            let dataPullStatus: DataPullStatus = new DataPullStatus(await this.MS.HttpService.getResponseAsync('Microsoft-GetDataPullStatus', {
+            let dataPullStatusResponse: ActionResponse = await this.MS.HttpService.executeAsync('Microsoft-GetDataPullStatus', {
                 FinishedActionName: this.finishedActionName,
                 SqlServerIndex: this.sqlServerIndex,
                 TargetSchema: this.targetSchema
-            }));
-            if (dataPullStatus) {
-                this.recordCounts = dataPullStatus.status;
-                this.sliceStatus = dataPullStatus.slices;
-                this.isDataPullDone = dataPullStatus.isFinished;
-                this.queryRecordCounts();
+            });
+
+            if (dataPullStatusResponse.IsSuccess) {
+                let dataPullStatus: DataPullStatus = new DataPullStatus(dataPullStatusResponse);
+
+                if (dataPullStatus) {
+                    this.recordCounts = dataPullStatus.status;
+                    this.sliceStatus = dataPullStatus.slices;
+                    this.isDataPullDone = dataPullStatus.isFinished;
+
+                    //if (this.isDataPullDone) {
+                    //    this.MS.LoggerService.trackDeploymentEnd(true);
+                    //}
+
+                    this.queryRecordCounts();
+                } else {
+                    this.queryRecordCountsError();
+                }
             } else {
-                this.MS.DeploymentService.hasError = true;
+                this.queryRecordCountsError();
             }
         } else {
             this.showPublishReport = this.enablePublishReport;
         }
+    }
+
+    queryRecordCountsError(): void {
+        this.isDataPullDone = false;
+        this.MS.DeploymentService.hasError = true;
+        //this.MS.LoggerService.trackDeploymentEnd(false);
     }
 
     async wrangle(): Promise<void> {
@@ -126,11 +143,11 @@ export class ProgressViewModel extends ViewModelBase {
         }
 
         if (this.hasPowerApp) {
-            let responsePowerApp = await this.MS.HttpService.executeAsync('Microsoft-WranglePowerApp', { PowerAppFileName: this.powerAppFileName });
+            let powerAppUri: string = this.MS.DataStore.getValue('PowerAppUri');
 
-            if (responsePowerApp.IsSuccess && responsePowerApp.Body.value) {
+            if (powerAppUri) {
                 this.isPowerAppReady = true;
-                this.powerAppDownloadLink = responsePowerApp.Body.value;
+                this.powerAppDownloadLink = powerAppUri;
             } else {
                 this.hasPowerApp = false;
             }

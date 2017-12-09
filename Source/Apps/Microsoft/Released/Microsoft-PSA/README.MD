@@ -185,6 +185,7 @@ The Project Service Automation solution template utilizes Scribe replication job
 -	msdyn_orderlineresourcecategory
 -   msdyn_organizationalunit
 -   msdyn_project
+-   msdyn_projecttask
 -   msdyn_resourcerequest
 -   msdyn_resourcerequirement
 -   msdyn_resourcerequirementdetail

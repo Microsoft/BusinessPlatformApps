@@ -91,6 +91,9 @@
                 }
             },
             {
+                "datastoreEntriesToValidate": [
+                    "ImpersonationPassword"
+                ],
                 "displayname": "Progress",
                 "filename": "$save('SCCMSolutionTemplate2.pbix')",
                 "finishedActionName": "Microsoft-GetTaskStatus",
@@ -151,7 +154,6 @@
         "Pages": [
             {
                 "displayname": "Uninstall Progress",
-                "HasNavigated": "$save(true)",
                 "isUninstall": true,
                 "name": "$SiteCommon$/pages-gallery/progress.html",
                 "successMessage": "$translate(INIT_UNINSTALL_SUCCESS)"

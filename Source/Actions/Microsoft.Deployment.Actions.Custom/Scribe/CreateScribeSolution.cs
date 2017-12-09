@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Threading.Tasks;
 
@@ -7,7 +6,6 @@ using Microsoft.Deployment.Common.ActionModel;
 using Microsoft.Deployment.Common.Actions;
 using Microsoft.Deployment.Common.Helpers;
 using Microsoft.Deployment.Common.Model.Scribe;
-using System.Linq;
 
 namespace Microsoft.Deployment.Actions.Custom.Scribe
 {
@@ -20,21 +18,14 @@ namespace Microsoft.Deployment.Actions.Custom.Scribe
 
             string orgId = request.DataStore.GetValue("ScribeOrganizationId");
 
-            var sfObjects = request.DataStore.GetValue("Entities").SplitByCommaSpaceTabReturnList();
-            var additionalObjects = request.DataStore.GetValue("AdditionalObjects");
-
-            if (!string.IsNullOrEmpty(additionalObjects))
-            {
-                var add = additionalObjects.Split(',').ToList();
-                sfObjects.AddRange(add);
-            }
+            List<string> entities = JsonUtility.DeserializeEntities(request.DataStore.GetValue("Entities"), request.DataStore.GetValue("AdditionalObjects"));
 
             ScribeSolution solution = new ScribeSolution
             {
                 Name = ScribeUtility.BPST_SOLUTION_NAME,
                 Description = string.Empty,
                 SolutionType = "Replication",
-                ReplicationSettings = new ScribeReplicationSettings(sfObjects.ToArray()),
+                ReplicationSettings = new ScribeReplicationSettings(entities.ToArray()),
                 ConnectionIdForSource = await GetConnectionId(rc, orgId, ScribeUtility.BPST_SOURCE_NAME),
                 ConnectionIdForTarget = await GetConnectionId(rc, orgId, ScribeUtility.BPST_TARGET_NAME),
                 AgentId = await GetAgentId(rc, orgId, request.DataStore.GetValue("ScribeAgentName"))

@@ -32,6 +32,10 @@
     "LogicAppName": {
       "defaultValue": "LogicApp",
       "type": "string"
+    },
+    "logicAppUri": {
+      "defaultValue": "logicAppUri",
+      "type": "string"
     }
   },
   "variables": {},
@@ -43,7 +47,6 @@
       "location": "[resourceGroup().location]",
       "properties": {
         "state": "Enabled",
-
         "definition": {
           "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-04-01-preview/workflowdefinition.json#",
           "contentVersion": "1.0.0.0",
@@ -66,110 +69,132 @@
             }
           },
           "actions": {
-            "Delay": {
+            "HTTP": {
               "inputs": {
-                "interval": {
-                  "count": "@{triggerBody()['Delay']}",
-                  "unit": "Minute"
+                "body": {
+                  "Delay": "3",
+                  "PreviousCount": "10"
+                },
+                "method": "POST",
+                "uri": "[parameters('logicAppUri')]"
+              },
+              "runAfter": {
+                "Scope": [
+                  "Failed"
+                ]
+              },
+              "type": "Http"
+            },
+            "Scope": {
+              "actions": {
+                "Delay": {
+                  "inputs": {
+                    "interval": {
+                      "count": "@{triggerBody()['Delay']}",
+                      "unit": "Minute"
+                    }
+                  },
+                  "runAfter": {},
+                  "type": "Wait"
+                },
+                "Get_row": {
+                  "inputs": {
+                    "host": {
+                      "api": {
+                        "runtimeUrl": "https://logic-apis-westus.azure-apim.net/apim/sql"
+                      },
+                      "connection": {
+                        "name": "@parameters('$connections')['sql']['connectionId']"
+                      }
+                    },
+                    "method": "get",
+                    "path": "/datasets/default/tables/@{encodeURIComponent(encodeURIComponent('[pbist_twitter].[twitter_query]'))}/items/@{encodeURIComponent(encodeURIComponent('1'))}"
+                  },
+                  "runAfter": {
+                    "Delay": [
+                      "Succeeded"
+                    ]
+                  },
+                  "type": "ApiConnection"
+                },
+                "CalculateDelay": {
+                  "inputs": {
+                    "body": {
+                      "CurrentCount": "@{body('TweetProcessingFunction')}",
+                      "Delay": "@{triggerBody()['Delay']}",
+                      "PreviousCount": "@{triggerBody()['PreviousCount']}"
+                    },
+                    "function": {
+                      "id": "[concat('/subscriptions/', parameters('subscription'), '/resourceGroups/',parameters('resourcegroup'),'/providers/Microsoft.Web/sites/', parameters('sitename'), '/Functions/CalculateDelay')]"
+                    }
+                  },
+                  "runAfter": {
+                    "TweetProcessingFunction": [
+                      "Succeeded"
+                    ]
+                  },
+                  "type": "Function"
+                },
+                "Search_tweets": {
+                  "inputs": {
+                    "host": {
+                      "connection": {
+                        "name": "@parameters('$connections')['twitter']['connectionId']"
+                      }
+                    },
+                    "method": "get",
+                    "path": "/searchtweets",
+                    "queries": {
+                      "maxResults": 100,
+                      "searchQuery": "@{body('Get_row')['QueryString']}",
+                      "sinceId": "@{body('Get_row')?['TweetId']}"
+                    }
+                  },
+                  "runAfter": {
+                    "Get_row": [
+                      "Succeeded"
+                    ]
+                  },
+                  "type": "ApiConnection"
+                },
+                "TweetProcessingFunction": {
+                  "inputs": {
+                    "body": "@body('Search_tweets')",
+                    "function": {
+                      "id": "[concat('/subscriptions/', parameters('subscription'), '/resourceGroups/',parameters('resourcegroup'),'/providers/Microsoft.Web/sites/', parameters('sitename'), '/Functions/TweetProcessingFunction')]"
+                    }
+                  },
+                  "runAfter": {
+                    "Search_tweets": [
+                      "Succeeded"
+                    ]
+                  },
+                  "type": "Function"
                 }
               },
               "runAfter": {},
-              "type": "Wait"
-            },
-            "Get_row": {
-              "inputs": {
-                "host": {
-                  "api": {
-                    "runtimeUrl": "https://logic-apis-westus.azure-apim.net/apim/sql"
-                  },
-                  "connection": {
-                    "name": "@parameters('$connections')['sql']['connectionId']"
-                  }
-                },
-                "method": "get",
-                "path": "/datasets/default/tables/@{encodeURIComponent(encodeURIComponent('[pbist_twitter].[twitter_query]'))}/items/@{encodeURIComponent(encodeURIComponent('1'))}"
-              },
-              "runAfter": {
-                "Delay": [
-                  "Succeeded"
-                ]
-              },
-              "type": "ApiConnection"
-            },
-            "CalculateDelay": {
-              "inputs": {
-                "body": {
-                  "CurrentCount": "@{body('TweetProcessingFunction')}",
-                  "Delay": "@{triggerBody()['Delay']}",
-                  "PreviousCount": "@{triggerBody()['PreviousCount']}"
-                },
-                "function": {
-                  "id": "[concat('/subscriptions/', parameters('subscription'), '/resourceGroups/',parameters('resourcegroup'),'/providers/Microsoft.Web/sites/', parameters('sitename'), '/Functions/CalculateDelay')]"
-                }
-              },
-              "runAfter": {
-                "TweetProcessingFunction": [
-                  "Succeeded"
-                ]
-              },
-              "type": "Function"
-            },
-            "Search_tweets": {
-              "inputs": {
-                "host": {
-                  "connection": {
-                    "name": "@parameters('$connections')['twitter']['connectionId']"
-                  }
-                },
-                "method": "get",
-                "path": "/searchtweets",
-                "queries": {
-                  "maxResults": 100,
-                  "searchQuery": "@{body('Get_row')['QueryString']}",
-                  "sinceId": "@{body('Get_row')?['TweetId']}"
-                }
-              },
-              "runAfter": {
-                "Get_row": [
-                  "Succeeded"
-                ]
-              },
-              "type": "ApiConnection"
-            },
-            "TweetProcessingFunction": {
-              "inputs": {
-                "body": "@body('Search_tweets')",
-                "function": {
-                  "id": "[concat('/subscriptions/', parameters('subscription'), '/resourceGroups/',parameters('resourcegroup'),'/providers/Microsoft.Web/sites/', parameters('sitename'), '/Functions/TweetProcessingFunction')]"
-                }
-              },
-              "runAfter": {
-                "Search_tweets": [
-                  "Succeeded"
-                ]
-              },
-              "type": "Function"
+              "type": "Scope"
             }
           },
-          "outputs": {}
-        },
-        "parameters": {
-          "$connections": {
-            "value": {
-              "sql": {
-                "connectionId": "[concat('/subscriptions/', parameters('subscription'), '/resourceGroups/' ,parameters('resourceGroup'),'/providers/Microsoft.Web/connections/sql')]",
-                "connectionName": "sql",
-                "id": "[concat('/subscriptions/' , parameters('subscription'), '/providers/Microsoft.Web/locations/',resourceGroup().location , '/managedApis/sql')]"
-              },
-              "twitter": {
-                "connectionId": "[concat('/subscriptions/', parameters('subscription'), '/resourceGroups/' ,parameters('resourceGroup'),'/providers/Microsoft.Web/connections/twitter')]",
-                "connectionName": "twitter",
-                "id": "[concat('/subscriptions/' , parameters('subscription'), '/providers/Microsoft.Web/locations/',resourceGroup().location , '/managedApis/twitter')]"
+              "outputs": {}
+            },
+            "parameters": {
+              "$connections": {
+                "value": {
+                  "sql": {
+                    "connectionId": "[concat('/subscriptions/', parameters('subscription'), '/resourceGroups/' ,parameters('resourceGroup'),'/providers/Microsoft.Web/connections/sql')]",
+                    "connectionName": "sql",
+                    "id": "[concat('/subscriptions/' , parameters('subscription'), '/providers/Microsoft.Web/locations/',resourceGroup().location , '/managedApis/sql')]"
+                  },
+                  "twitter": {
+                    "connectionId": "[concat('/subscriptions/', parameters('subscription'), '/resourceGroups/' ,parameters('resourceGroup'),'/providers/Microsoft.Web/connections/twitter')]",
+                    "connectionName": "twitter",
+                    "id": "[concat('/subscriptions/' , parameters('subscription'), '/providers/Microsoft.Web/locations/',resourceGroup().location , '/managedApis/twitter')]"
+                  }
+                }
               }
             }
-          }
-        }
-      },
+          },
       "resources": [],
       "dependsOn": [
       ]

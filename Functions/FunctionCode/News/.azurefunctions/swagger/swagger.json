@@ -1,0 +1,270 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "function6v1jltvm85.azurewebsites.net",
+    "version": "1.0.0"
+  },
+  "host": "function6v1jltvm85.azurewebsites.net",
+  "basePath": "/",
+  "schemes": [
+    "https",
+    "http"
+  ],
+  "paths": {
+    "/api/AbstractExtractor": {
+      "post": {
+        "operationId": "/api/AbstractExtractor/post",
+        "produces": [],
+        "consumes": [],
+        "parameters": [],
+        "description": "Replace with Operation Object #http://swagger.io/specification/#operationObject",
+        "responses": {
+          "200": {
+            "description": "Success operation"
+          }
+        },
+        "security": [
+          {
+            "apikeyQuery": []
+          }
+        ]
+      }
+    },
+    "/api/ArticleExtractor": {
+      "post": {
+        "operationId": "/api/ArticleExtractor/post",
+        "produces": [],
+        "consumes": [],
+        "parameters": [],
+        "description": "Replace with Operation Object #http://swagger.io/specification/#operationObject",
+        "responses": {
+          "200": {
+            "description": "Success operation"
+          }
+        },
+        "security": [
+          {
+            "apikeyQuery": []
+          }
+        ]
+      }
+    },
+    "/api/ASCIICleanerWebhook": {
+      "post": {
+        "operationId": "/api/ASCIICleanerWebhook/post",
+        "produces": [],
+        "consumes": [],
+        "parameters": [],
+        "description": "Replace with Operation Object #http://swagger.io/specification/#operationObject",
+        "responses": {
+          "200": {
+            "description": "Success operation"
+          }
+        },
+        "security": [
+          {
+            "apikeyQuery": []
+          }
+        ]
+      }
+    },
+    "/api/DocumentToText": {
+      "post": {
+        "operationId": "/api/DocumentToText/post",
+        "produces": [],
+        "consumes": [],
+        "parameters": [],
+        "description": "Replace with Operation Object #http://swagger.io/specification/#operationObject",
+        "responses": {
+          "200": {
+            "description": "Success operation"
+          }
+        },
+        "security": [
+          {
+            "apikeyQuery": []
+          }
+        ]
+      }
+    },
+    "/api/EmailAddressExtractor": {
+      "post": {
+        "operationId": "/api/EmailAddressExtractor/post",
+        "produces": [
+          "application/json"
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "code",
+            "in": "query",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "toAddresses",
+            "in": "body",
+            "description": "List of addresses from E-Mail messages",
+            "required": false,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "toAddresses": {
+                  "type": "string",
+                  "description": "List of TO addresses as string"
+                },
+                "ccAddresses": {
+                  "type": "string",
+                  "description": "List of CC addresses as string"
+                },
+                "bccAddresses": {
+                  "type": "string",
+                  "description": "List of BCC addresses as string"
+                },
+                "fromAddress": {
+                  "type": "string",
+                  "description": "Address the email was sent FROM"
+                }
+              }
+            }
+          }
+        ],
+        "description": "Replace with Operation Object #http://swagger.io/specification/#operationObject",
+        "responses": {
+          "200": {
+            "description": "Success operation"
+          }
+        },
+        "security": [
+          {
+            "apikeyQuery": []
+          }
+        ]
+      }
+    },
+    "/api/HTMLCleanerWebhook": {
+      "post": {
+        "operationId": "/api/HTMLCleanerWebhook/post",
+        "produces": [],
+        "consumes": [],
+        "parameters": [],
+        "description": "Replace with Operation Object #http://swagger.io/specification/#operationObject",
+        "responses": {
+          "200": {
+            "description": "Success operation"
+          }
+        },
+        "security": [
+          {
+            "apikeyQuery": []
+          }
+        ]
+      }
+    },
+    "/api/MainImageExtractor": {
+      "post": {
+        "operationId": "/api/MainImageExtractor/post",
+        "produces": [],
+        "consumes": [],
+        "parameters": [],
+        "description": "Replace with Operation Object #http://swagger.io/specification/#operationObject",
+        "responses": {
+          "200": {
+            "description": "Success operation"
+          }
+        },
+        "security": [
+          {
+            "apikeyQuery": []
+          }
+        ]
+      }
+    },
+    "/api/TimeUtilsWebhook": {
+      "post": {
+        "operationId": "/api/TimeUtilsWebhook/post",
+        "produces": [],
+        "consumes": [],
+        "parameters": [],
+        "description": "Replace with Operation Object #http://swagger.io/specification/#operationObject",
+        "responses": {
+          "200": {
+            "description": "Success operation"
+          }
+        },
+        "security": [
+          {
+            "apikeyQuery": []
+          }
+        ]
+      }
+    },
+    "/api/UrlCleaner": {
+      "post": {
+        "operationId": "/api/UrlCleaner/post",
+        "produces": [],
+        "consumes": [],
+        "parameters": [],
+        "description": "Replace with Operation Object #http://swagger.io/specification/#operationObject",
+        "responses": {
+          "200": {
+            "description": "Success operation"
+          }
+        },
+        "security": [
+          {
+            "apikeyQuery": []
+          }
+        ]
+      }
+    },
+    "/api/UrlDomainWebhook": {
+      "post": {
+        "operationId": "/api/UrlDomainWebhook/post",
+        "produces": [],
+        "consumes": [],
+        "parameters": [],
+        "description": "Replace with Operation Object #http://swagger.io/specification/#operationObject",
+        "responses": {
+          "200": {
+            "description": "Success operation"
+          }
+        },
+        "security": [
+          {
+            "apikeyQuery": []
+          }
+        ]
+      }
+    },
+    "/api/UserDefinedEntities": {
+      "post": {
+        "operationId": "/api/UserDefinedEntities/post",
+        "produces": [],
+        "consumes": [],
+        "parameters": [],
+        "description": "Replace with Operation Object #http://swagger.io/specification/#operationObject",
+        "responses": {
+          "200": {
+            "description": "Success operation"
+          }
+        },
+        "security": [
+          {
+            "apikeyQuery": []
+          }
+        ]
+      }
+    }
+  },
+  "definitions": {},
+  "securityDefinitions": {
+    "apikeyQuery": {
+      "type": "apiKey",
+      "name": "code",
+      "in": "query"
+    }
+  }
+}

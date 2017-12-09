@@ -18,9 +18,12 @@ namespace Microsoft.Deployment.Actions.Common.PBI
         {
             AzureHttpClient client = new AzureHttpClient(request.DataStore.GetJson("PBIToken", "access_token"));
 
-            PBIClusterUri pbiClusterUri = JsonUtility.Deserialize<PBIClusterUri>(await client.Request(HttpMethod.Put, PBI_CLUSTER_URIS_URL));
+            PBIClusterUri pbiClusterUri = await client.Request<PBIClusterUri>(HttpMethod.Put, PBI_CLUSTER_URIS_URL);
 
-            request.DataStore.AddToDataStore("PBIClusterUri", pbiClusterUri.FixedClusterUri);
+            if (pbiClusterUri != null)
+            {
+                request.DataStore.AddToDataStore("PBIClusterUri", pbiClusterUri.FixedClusterUri);
+            }
 
             return new ActionResponse(ActionStatus.Success);
         }

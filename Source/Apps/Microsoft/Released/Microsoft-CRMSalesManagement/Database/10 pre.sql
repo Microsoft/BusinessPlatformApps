@@ -12,28 +12,31 @@ DECLARE @cr CURSOR;
 
 IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA='smgt' AND TABLE_NAME='configuration' AND TABLE_TYPE='BASE TABLE')
 BEGIN
-	DECLARE @additionalTables NVARCHAR(MAX);
-	SELECT @additionalTables = [value]
-	FROM smgt.[configuration] WHERE configuration_group = 'SolutionTemplate' AND configuration_subgroup = 'SalesManagement' AND [name] = 'AdditionalTables';
+    DECLARE @additionalTables NVARCHAR(MAX);
+    SELECT @additionalTables = [value]
+    FROM smgt.[configuration] WHERE configuration_group = 'SolutionTemplate' AND configuration_subgroup = 'SalesManagement' AND [name] = 'AdditionalTables';
 SET @cr = CURSOR FAST_FORWARD FOR
               SELECT [value] FROM STRING_SPLIT(@additionalTables,',')
 
+IF(@additionalTables <> '')
+BEGIN
 OPEN @cr;
 FETCH NEXT FROM @cr INTO @p1;
 WHILE @@FETCH_STATUS = 0  
 BEGIN 
     SET @stmt = 'IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA=''dbo'' AND TABLE_NAME='''+REPLACE(REPLACE(QuoteName(@p1),'[',''),']','')+''' AND TABLE_TYPE=''BASE TABLE'') DROP TABLE dbo.' + QuoteName(@p1);
-	EXEC (@stmt);
-	SET @stmt = 'IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.ROUTINES WHERE ROUTINE_SCHEMA=''dbo'' AND ROUTINE_NAME=''spMerge'+REPLACE(REPLACE(QuoteName(@p1),'[',''),']','')+''' AND ROUTINE_TYPE=''PROCEDURE'')   DROP PROCEDURE dbo.spMerge'+ REPLACE(REPLACE(QuoteName(@p1),'[',''),']','');
-	EXEC (@stmt);
-	SET @stmt = 'IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.DOMAINS WHERE DOMAIN_SCHEMA=''dbo'' AND DOMAIN_NAME='''+REPLACE(REPLACE(QuoteName(@p1),'[',''),']','')+'Idtype'' ) DROP TYPE dbo.'+ REPLACE(REPLACE(QuoteName(@p1),'[',''),']','')+'Idtype';
-	EXEC (@stmt);
-	SET @stmt = 'IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.DOMAINS WHERE DOMAIN_SCHEMA=''dbo'' AND DOMAIN_NAME='''+REPLACE(REPLACE(QuoteName(@p1),'[',''),']','')+'type'' ) DROP TYPE dbo.'+ REPLACE(REPLACE(QuoteName(@p1),'[',''),']','')+'type';
-	EXEC (@stmt);
-	FETCH NEXT FROM @cr INTO @p1;
+    EXEC (@stmt);
+    SET @stmt = 'IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.ROUTINES WHERE ROUTINE_SCHEMA=''dbo'' AND ROUTINE_NAME=''spMerge'+REPLACE(REPLACE(QuoteName(@p1),'[',''),']','')+''' AND ROUTINE_TYPE=''PROCEDURE'')   DROP PROCEDURE dbo.spMerge'+ REPLACE(REPLACE(QuoteName(@p1),'[',''),']','');
+    EXEC (@stmt);
+    SET @stmt = 'IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.DOMAINS WHERE DOMAIN_SCHEMA=''dbo'' AND DOMAIN_NAME='''+REPLACE(REPLACE(QuoteName(@p1),'[',''),']','')+'Idtype'' ) DROP TYPE dbo.'+ REPLACE(REPLACE(QuoteName(@p1),'[',''),']','')+'Idtype';
+    EXEC (@stmt);
+    SET @stmt = 'IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.DOMAINS WHERE DOMAIN_SCHEMA=''dbo'' AND DOMAIN_NAME='''+REPLACE(REPLACE(QuoteName(@p1),'[',''),']','')+'type'' ) DROP TYPE dbo.'+ REPLACE(REPLACE(QuoteName(@p1),'[',''),']','')+'type';
+    EXEC (@stmt);
+    FETCH NEXT FROM @cr INTO @p1;
 END;
 CLOSE @cr;
 DEALLOCATE @cr;
+END;
 END;
 
 -- Regular views
@@ -76,7 +79,7 @@ IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA='smgt' AND
 IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA='smgt' AND TABLE_NAME='userMapping' AND TABLE_TYPE='BASE TABLE')
     DROP TABLE smgt.userMapping;
 IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA='smgt' AND TABLE_NAME='entityinitialcount' AND TABLE_TYPE='BASE TABLE')
-	DROP TABLE smgt.entityinitialcount;
+    DROP TABLE smgt.entityinitialcount;
 
 IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA='dbo' AND TABLE_NAME='account' AND TABLE_TYPE='BASE TABLE')
     DROP TABLE dbo.account;
@@ -134,53 +137,53 @@ IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.ROUTINES WHERE ROUTINE_SCHEMA='dbo' 
     DROP PROCEDURE dbo.sp_get_pull_status;
 
 
-IF EXISTS (SELECT * FROM sys.Types WHERE is_user_defined=1 AND is_table_type=1 AND [name]='StateMetadataList')
+IF EXISTS (SELECT * FROM sys.types WHERE is_user_defined=1 AND is_table_type=1 AND [name]='StateMetadataList')
     DROP TYPE dbo.StateMetadataList;
-IF EXISTS (SELECT * FROM sys.Types WHERE is_user_defined=1 AND is_table_type=1 AND [name]='StatusMetadataList')
+IF EXISTS (SELECT * FROM sys.types WHERE is_user_defined=1 AND is_table_type=1 AND [name]='StatusMetadataList')
     DROP TYPE dbo.StatusMetadataList;
-IF EXISTS (SELECT * FROM sys.Types WHERE is_user_defined=1 AND is_table_type=1 AND [name]='OptionSetMetadataList')
+IF EXISTS (SELECT * FROM sys.types WHERE is_user_defined=1 AND is_table_type=1 AND [name]='OptionSetMetadataList')
     DROP TYPE dbo.OptionSetMetadataList;
-IF EXISTS (SELECT * FROM sys.Types WHERE is_user_defined=1 AND is_table_type=1 AND [name]='TargetMetadataList')
+IF EXISTS (SELECT * FROM sys.types WHERE is_user_defined=1 AND is_table_type=1 AND [name]='TargetMetadataList')
     DROP TYPE dbo.TargetMetadataList;
-IF EXISTS (SELECT * FROM sys.Types WHERE is_user_defined=1 AND is_table_type=1 AND [name]='AttributeMetadataList')
+IF EXISTS (SELECT * FROM sys.types WHERE is_user_defined=1 AND is_table_type=1 AND [name]='AttributeMetadataList')
     DROP TYPE dbo.AttributeMetadataList;
-IF EXISTS (SELECT * FROM sys.Types WHERE is_user_defined=1 AND is_table_type=1 AND [name]='systemusermanagermapType')
+IF EXISTS (SELECT * FROM sys.types WHERE is_user_defined=1 AND is_table_type=1 AND [name]='systemusermanagermapType')
     DROP TYPE dbo.systemusermanagermapType;
-IF EXISTS (SELECT * FROM sys.Types WHERE is_user_defined=1 AND is_table_type=1 AND [name]='systemusermanagermapIdType')
+IF EXISTS (SELECT * FROM sys.types WHERE is_user_defined=1 AND is_table_type=1 AND [name]='systemusermanagermapIdType')
     DROP TYPE dbo.systemusermanagermapIdType;
-IF EXISTS (SELECT * FROM sys.Types WHERE is_user_defined=1 AND is_table_type=1 AND [name]='territoryType')
+IF EXISTS (SELECT * FROM sys.types WHERE is_user_defined=1 AND is_table_type=1 AND [name]='territoryType')
     DROP TYPE dbo.territoryType;
-IF EXISTS (SELECT * FROM sys.Types WHERE is_user_defined=1 AND is_table_type=1 AND [name]='territoryIdType')
+IF EXISTS (SELECT * FROM sys.types WHERE is_user_defined=1 AND is_table_type=1 AND [name]='territoryIdType')
     DROP TYPE dbo.territoryIdType;
-IF EXISTS (SELECT * FROM sys.Types WHERE is_user_defined=1 AND is_table_type=1 AND [name]='productType')
+IF EXISTS (SELECT * FROM sys.types WHERE is_user_defined=1 AND is_table_type=1 AND [name]='productType')
     DROP TYPE dbo.productType;
-IF EXISTS (SELECT * FROM sys.Types WHERE is_user_defined=1 AND is_table_type=1 AND [name]='productIdType')
+IF EXISTS (SELECT * FROM sys.types WHERE is_user_defined=1 AND is_table_type=1 AND [name]='productIdType')
     DROP TYPE dbo.productIdType;
-IF EXISTS (SELECT * FROM sys.Types WHERE is_user_defined=1 AND is_table_type=1 AND [name]='opportunityproductType')
+IF EXISTS (SELECT * FROM sys.types WHERE is_user_defined=1 AND is_table_type=1 AND [name]='opportunityproductType')
     DROP TYPE dbo.opportunityproductType;
-IF EXISTS (SELECT * FROM sys.Types WHERE is_user_defined=1 AND is_table_type=1 AND [name]='opportunityproductIdType')
+IF EXISTS (SELECT * FROM sys.types WHERE is_user_defined=1 AND is_table_type=1 AND [name]='opportunityproductIdType')
     DROP TYPE dbo.opportunityproductIdType;
-IF EXISTS (SELECT * FROM sys.Types WHERE is_user_defined=1 AND is_table_type=1 AND [name]='systemuserType')
+IF EXISTS (SELECT * FROM sys.types WHERE is_user_defined=1 AND is_table_type=1 AND [name]='systemuserType')
     DROP TYPE dbo.systemuserType;
-IF EXISTS (SELECT * FROM sys.Types WHERE is_user_defined=1 AND is_table_type=1 AND [name]='systemuserIdType')
+IF EXISTS (SELECT * FROM sys.types WHERE is_user_defined=1 AND is_table_type=1 AND [name]='systemuserIdType')
     DROP TYPE dbo.systemuserIdType;
-IF EXISTS (SELECT * FROM sys.Types WHERE is_user_defined=1 AND is_table_type=1 AND [name]='opportunityType')
+IF EXISTS (SELECT * FROM sys.types WHERE is_user_defined=1 AND is_table_type=1 AND [name]='opportunityType')
     DROP TYPE dbo.opportunityType;
-IF EXISTS (SELECT * FROM sys.Types WHERE is_user_defined=1 AND is_table_type=1 AND [name]='opportunityIdType')
+IF EXISTS (SELECT * FROM sys.types WHERE is_user_defined=1 AND is_table_type=1 AND [name]='opportunityIdType')
     DROP TYPE dbo.opportunityIdType;
-IF EXISTS (SELECT * FROM sys.Types WHERE is_user_defined=1 AND is_table_type=1 AND [name]='leadType')
+IF EXISTS (SELECT * FROM sys.types WHERE is_user_defined=1 AND is_table_type=1 AND [name]='leadType')
     DROP TYPE dbo.leadType;
-IF EXISTS (SELECT * FROM sys.Types WHERE is_user_defined=1 AND is_table_type=1 AND [name]='leadIdType')
+IF EXISTS (SELECT * FROM sys.types WHERE is_user_defined=1 AND is_table_type=1 AND [name]='leadIdType')
     DROP TYPE dbo.leadIdType;
-IF EXISTS (SELECT * FROM sys.Types WHERE is_user_defined=1 AND is_table_type=1 AND [name]='accountType')
+IF EXISTS (SELECT * FROM sys.types WHERE is_user_defined=1 AND is_table_type=1 AND [name]='accountType')
     DROP TYPE dbo.accountType;
-IF EXISTS (SELECT * FROM sys.Types WHERE is_user_defined=1 AND is_table_type=1 AND [name]='accountIdType')
+IF EXISTS (SELECT * FROM sys.types WHERE is_user_defined=1 AND is_table_type=1 AND [name]='accountIdType')
     DROP TYPE dbo.accountIdType;
-IF EXISTS (SELECT * FROM sys.Types WHERE is_user_defined=1 AND is_table_type=1 AND [name]='teamType')
+IF EXISTS (SELECT * FROM sys.types WHERE is_user_defined=1 AND is_table_type=1 AND [name]='teamType')
     DROP TYPE dbo.teamType;
-IF EXISTS (SELECT * FROM sys.Types WHERE is_user_defined=1 AND is_table_type=1 AND [name]='teamIdType')
+IF EXISTS (SELECT * FROM sys.types WHERE is_user_defined=1 AND is_table_type=1 AND [name]='teamIdType')
     DROP TYPE dbo.teamIdType;
-	
+    
 IF NOT EXISTS (SELECT * FROM sys.schemas WHERE name='smgt')
 BEGIN
     EXEC ('CREATE SCHEMA smgt AUTHORIZATION dbo'); -- Avoid batch error

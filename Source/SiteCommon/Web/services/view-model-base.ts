@@ -2,14 +2,14 @@
 
 import { activationStrategy } from 'aurelia-router';
 
-import { DataStoreType } from '../enums/data-store-type';
-
 import { OpenAuthorizationType } from '../models/open-authorization-type';
 
 import { InitParser } from './init-parser';
 import { MainService } from './main-service';
 
 export class ViewModelBase {
+    downloadLink: string = null;
+    hasConsent: boolean = false;
     isActivated: boolean = false;
     isAuthenticated: boolean = true;
     isValidated: boolean = false;
@@ -62,6 +62,11 @@ export class ViewModelBase {
         return activationStrategy.replace;
     }
 
+    downloadMsi(): void {
+        this.setConsent();
+        window.open(this.viewmodel.downloadLink, '_blank');
+    }
+
     loadParameters(): void {
         var parameters = this.MS.NavigationService.getCurrentSelectedPage().Parameters;
         InitParser.loadVariables(this, this.MS.UtilityService.clone(parameters), this.MS, this);
@@ -109,9 +114,11 @@ export class ViewModelBase {
                     this.isValidated = true;
                 }
             } catch (e) {
+                // do nothing
             } finally {
                 this.MS.NavigationService.isCurrentlyNavigating = false;
-                this.MS.DataStore.addToDataStore('HasNavigated', true, DataStoreType.Public);
+                this.navigationMessage = '';
+                this.setConsent();
             }
         }
     }
@@ -155,6 +162,15 @@ export class ViewModelBase {
             }
         }
         return cleanedViewModel;
+    }
+
+    setConsent(): void {
+        if (!this.hasConsent) {
+            if (!this.MS.HttpService.isOnPremise) {
+                this.MS.mscc.setConsent();
+            }
+            this.hasConsent = true;
+        }
     }
 
     setValidated(showValidation: boolean = true): boolean {

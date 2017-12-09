@@ -1,0 +1,130 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "logicappname": {
+      "defaultValue": "LogicApp",
+      "type": "string"
+    },
+    "resourcegroup": {
+      "defaultValue": "stresourcegroup",
+      "type": "string"
+    },
+    "subscription": {
+      "defaultValue": "idrequired",
+      "type": "string"
+    }
+  },
+  "variables": {},
+  "resources": [
+    {
+      "comments": "",
+      "type": "Microsoft.Logic/workflows",
+      "name": "[parameters('logicappname')]",
+      "apiVersion": "2016-06-01",
+      "location": "[resourceGroup().location]",
+      "scale": null,
+      "properties": {
+        "state": "Enabled",
+        "definition": {
+          "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+          "contentVersion": "1.0.0.0",
+          "parameters": {},
+          "triggers": {
+            "Recurrence": {
+              "recurrence": {
+                "frequency": "Day",
+                "interval": 30
+              },
+              "type": "Recurrence"
+            }
+          },
+          "actions": {
+            "DownloadIPTable": {
+              "runAfter": {
+                "EmptyTable": [
+                  "Succeeded"
+                ]
+              },
+              "type": "Function",
+              "inputs": {
+                "function": {
+                  "id": "[concat('/subscriptions/', parameters('subscription'), '/resourceGroups/',parameters('resourcegroup'),'/providers/Microsoft.Web/sites/', parameters('sitename'), '/functions/DownloadIPTable')]"
+                }
+              }
+            },
+            "EmptyTable": {
+              "runAfter": {},
+              "type": "Function",
+              "inputs": {
+                "function": {
+                  "id": "[concat('/subscriptions/', parameters('subscription'), '/resourceGroups/',parameters('resourcegroup'),'/providers/Microsoft.Web/sites/', parameters('sitename'), '/functions/EmptyTable')]"
+                }
+              }
+            },
+            "Initialize_variable": {
+              "runAfter": {
+                "DownloadIPTable": [
+                  "Succeeded"
+                ]
+              },
+              "type": "InitializeVariable",
+              "inputs": {
+                "variables": [
+                  {
+                    "name": "Index",
+                    "type": "Integer",
+                    "value": 1
+                  }
+                ]
+              }
+            },
+            "Until": {
+              "actions": {
+                "BatchInsert": {
+                  "runAfter": {},
+                  "type": "Function",
+                  "inputs": {
+                    "body": "@variables('Index')",
+                    "function": {
+                      "id": "[concat('/subscriptions/', parameters('subscription'), '/resourceGroups/',parameters('resourcegroup'),'/providers/Microsoft.Web/sites/', parameters('sitename'), '/functions/BatchInsert')]"
+                    }
+                  }
+                },
+                "Set_variable": {
+                  "runAfter": {
+                    "BatchInsert": [
+                      "Succeeded"
+                    ]
+                  },
+                  "type": "SetVariable",
+                  "inputs": {
+                    "name": "Index",
+                    "value": "@body('BatchInsert')"
+                  }
+                }
+              },
+              "runAfter": {
+                "Initialize_variable": [
+                  "Succeeded"
+                ]
+              },
+              "expression": "@equals(variables('Index'), -1)",
+              "limit": {
+                "count": 60,
+                "timeout": "PT1H"
+              },
+              "type": "Until"
+            }
+          },
+          "outputs": {}
+        },
+        "parameters": {}
+      },
+      "dependsOn": [
+      ]
+    }
+  ],
+  "outputs": {}
+}
+        
