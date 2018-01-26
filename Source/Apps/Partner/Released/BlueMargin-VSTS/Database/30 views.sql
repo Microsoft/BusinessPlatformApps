@@ -180,7 +180,7 @@ SELECT [ProjectId]
       ,[Name]
       ,[Description]
       ,[url]
-	  ,LEFT([url],CHARINDEX('/',[url],10)) + REPLACE([Name],' ','') + '/_home' as ProjectHomeLink
+	  ,LEFT([url],CHARINDEX('/',[url],10)) + REPLACE([Name],' ','%20') + '/_home' as ProjectHomeLink
       ,[State]
       ,[Revision]
       ,[Visibility]
