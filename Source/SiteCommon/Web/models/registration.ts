@@ -7,6 +7,7 @@
     download: string = '';
     email: string = '';
     emailConfirmation: string = '';
+    emailDomain: string = '';
     emailsToBlock: string = '';
     eulaLink: string = '';
     eulaLinkText: string = '';

@@ -54,10 +54,22 @@ namespace Microsoft.Deployment.Tests.Actions.Reddit
             var passphrase = Credential.Instance.SocialGist.SocialGistRedditPassphrase;
 
             var retriever = new RetrieveSocialGistApiKey();
+
+            var description = retriever.DescriptionFromFields(
+                "Frodo",
+                "Baggins",
+                "example@example.org",
+                "Burglar",
+                "Bag End Holdings, Inc.",
+                false,
+                "Rings and such"
+            );
+
             var key = await retriever.RetrieveKey(
                 uri, 
                 username,
-                passphrase
+                passphrase,
+                description
             );
             // now delete it by key
             if (key != null)

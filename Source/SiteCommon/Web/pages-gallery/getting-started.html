@@ -73,6 +73,20 @@
         <p>
     </div>
 
+    <!-- Terms -->
+    <div class="st-text" if.bind="terms.link">
+        <p class="smallFontSize">
+            <bpst-link a-description="${terms.privacy}" a-link="${terms.link}" a-link-text="${terms.privacyTitle}" a-description2="${MS.Translate.COMMON_AND}" a-link2="${terms.eulaLink}" a-link-text2="${terms.eulaLinkText}"></bpst-link>
+        <p>
+    </div>
+
+    <!-- Contact -->
+    <div class="st-text" if.bind="contact.email">
+        <p class="smallFontSize">
+            <a href="${'mailto:' + contact.email + '@' + contact.emailDomain}" target="_top">${contact.text}</a>
+        </p>
+    </div>
+
     <!-- Download new version -->
     <div class="st-modal-background" if.bind="upgrade"></div>
     <div class="st-modal-background st-modal-wrapper" click.trigger="upgrade = false" if.bind="upgrade">

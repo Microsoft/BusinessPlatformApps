@@ -28,7 +28,7 @@
                 "defaultLocation": "5",
                 "displayname": "Azure Login",
                 "name": "$SiteCommon$/pages-gallery/azure-login.html",
-                "pricingCalculatorUrl": "$translate(INIT_REDDIT_PRICING_CALCULATOR)",
+                "pricingCalculatorUrl": "$translate(INIT_REDDIT_PRICING_CALCULATOR_URL)",
                 "pricingCost": "$translate(INIT_REDDIT_PRICING_COST)",
                 "pricingUrl": "$translate(INIT_REDDIT_PRICING_URL)"
             },

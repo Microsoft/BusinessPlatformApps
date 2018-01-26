@@ -366,6 +366,35 @@ CREATE VIEW reddit.ChordChartEmbeddedUrlsView AS
 	GROUP BY subreddit, embeddedUrlDomain
 GO
 
+CREATE VIEW reddit.CoauthorRelationshipsView AS
+	SELECT a.id AS id,
+		a.author AS author1, 
+		b.author AS author2
+	FROM reddit.AllPostsView a 
+	INNER JOIN reddit.AllCommentsView b ON a.id=b.postId 
+	WHERE NOT(a.author=b.author)	--commenting on your own posts doesn't count
+		
+	UNION ALL
+		
+	--select where b is post author and a comments on post, pulling in subreddit and entity (author/commenter relationship appears in both directions)
+	SELECT a.id AS id,
+		a.author AS author1, 
+		b.author AS author2 
+	FROM reddit.AllCommentsView a 
+	INNER JOIN reddit.AllPostsView b ON a.postId=b.id 
+	WHERE NOT(a.author=b.author)
+
+	UNION ALL
+
+	--coauthors on the same post
+	SELECT a1.id,
+		a1.author AS author1,
+		b1.author AS author2
+	FROM reddit.AllCommentsView a1
+	INNER JOIN reddit.AllCommentsView b1 ON a1.postId=b1.postId
+	WHERE NOT(a1.author=b1.author)
+GO
+
 /*
 All documents to run through Machine Learning.  This is done in a view
 so that the AML runner can check for available data before running

@@ -1,0 +1,101 @@
+﻿{
+  "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "storageaccountname": {
+      "defaultValue": "ststorage",
+      "type": "string"
+    },
+
+    "name": {
+      "defaultValue": "stsite",
+      "type": "string"
+    },
+
+    "repoUrl": {
+      "defaultValue": "",
+      "type": "string"
+    },
+
+    "resourcegroup": {
+      "defaultValue": "stresourcegroup",
+      "type": "string"
+    },
+
+    "subscription": {
+      "defaultValue": "idrequired",
+      "type": "string"
+    },
+    "branch": {
+      "defaultValue": "master",
+      "type": "string"
+    }
+  },
+    "resources": [
+      {
+        "apiVersion": "2016-03-01",
+        "name": "[parameters('name')]",
+        "type": "Microsoft.Web/sites",
+        "properties": {
+          "name": "[parameters('name')]",
+          "siteConfig": {
+            "appSettings": [
+              {
+                "name": "AzureWebJobsDashboard",
+                "value": "[concat('DefaultEndpointsProtocol=https;AccountName=',parameters('storageaccountname'),';AccountKey=',listKeys(resourceId('Microsoft.Storage/storageAccounts', parameters('storageaccountname')), '2015-05-01-preview').key1)]"
+              },
+              {
+                "name": "AzureWebJobsStorage",
+                "value": "[concat('DefaultEndpointsProtocol=https;AccountName=',parameters('storageaccountname'),';AccountKey=',listKeys(resourceId('Microsoft.Storage/storageAccounts', parameters('storageaccountname')), '2015-05-01-preview').key1)]"
+              },
+              {
+                "name": "FUNCTIONS_EXTENSION_VERSION",
+                "value": "~1"
+              },
+              {
+                "name": "WEBSITE_CONTENTAZUREFILECONNECTIONSTRING",
+                "value": "[concat('DefaultEndpointsProtocol=https;AccountName=',parameters('storageaccountname'),';AccountKey=',listKeys(resourceId('Microsoft.Storage/storageAccounts', parameters('storageaccountname')), '2015-05-01-preview').key1)]"
+              },
+              {
+                "name": "WEBSITE_CONTENTSHARE",
+                "value": "[toLower(parameters('name'))]"
+              },
+              {
+                "name": "WEBSITE_NODE_DEFAULT_VERSION",
+                "value": "6.5.0"
+              }
+            ]
+          }
+        },
+        "dependsOn": [
+          "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageaccountname'))]"
+        ],
+        "resources": [
+          {
+            "apiVersion": "2015-08-01",
+            "name": "web",
+            "type": "sourcecontrols",
+            "dependsOn": [
+              "[resourceId('Microsoft.Web/sites/', parameters('name'))]"
+            ],
+            "properties": {
+              "RepoUrl": "[parameters('repoUrl')]",
+              "branch": "[parameters('branch')]",
+              "IsManualIntegration": "true"
+            }
+          }
+        ],
+        "location": "[resourceGroup().location]",
+        "kind": "functionapp"
+      },
+      {
+        "apiVersion": "2015-05-01-preview",
+        "type": "Microsoft.Storage/storageAccounts",
+        "name": "[parameters('storageaccountname')]",
+        "location": "[resourceGroup().location]",
+        "properties": {
+          "accountType": "Standard_LRS"
+        }
+      }
+    ]
+}

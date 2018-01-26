@@ -1,0 +1,24 @@
+﻿<template>
+    <require from="../../../../../SiteCommon/Web/templates/bpst-link.html"></require>
+
+    <h1 class="st-title">Visual Studio Instance</h1>
+    <p class="st-subtitle">Please provide your instance name and personal access token</p>
+
+    <p>
+        <bpst-link a-description="${MS.Translate.VSTS_DETAILS_DESCRIPTION}" a-link="${MS.Translate.VSTS_DETAILS_LINK}" a-link-text="${MS.Translate.COMMON_HERE}"></bpst-link>
+    </p>
+
+    <div class="st-float">
+        <p class="st-text">Visual Studio instance name</p>
+        <input class="st-input" type="text" placeholder="myvstsinstance" change.delegate="onInvalidate()" disabled.bind="MS.HttpService.isServiceBusy" value.bind="vstsinstance" />
+    </div>
+
+    <div class="st-float">
+        <p class="st-text">Visual Studio personal access token</p>
+        <input class="st-input" type="text" placeholder="" change.delegate="onInvalidate()" disabled.bind="MS.HttpService.isServiceBusy" value.bind="vststoken" />
+    </div>
+
+    <p class="st-float">
+        <button class="primary" click.trigger="onValidate()" if.bind="!MS.HttpService.isServiceBusy">${MS.Translate.COMMON_VALIDATE}</button>
+    </p>
+</template>

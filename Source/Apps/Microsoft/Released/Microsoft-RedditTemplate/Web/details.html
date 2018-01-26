@@ -1,6 +1,40 @@
 ﻿<template>
-    <h1 class="st-title">${MS.Translate.REDDIT_DETAILS_TITLE}</h1>
-    <p class="st-subtitle">${MS.Translate.REDDIT_DETAILS_SUBTITLE}</p>
+    <require from="../../../../../SiteCommon/Web/templates/bpst-link.html"></require>
 
-    <p class="st-text">${MS.Translate.REDDIT_DETAILS_ABOUT_SOCIALGIST}</p>
+    <h1 class="st-title">${MS.Translate.REDDIT_DETAILS_TITLE}</h1>
+    <p>
+        ${MS.Translate.DETAILS_REDDIT_TRIAL}<a href="${MS.Translate.DETAILS_REDDIT_CONTACT_URL}" target="_blank">${MS.Translate.DETAILS_REDDIT_CONTACT}</a>
+    </p>
+    <p>
+        ${MS.Translate.DETAILS_REDDIT_PRIVACY_TOS1}<a href="${MS.Translate.DETAILS_SOCIALGIST_TERMS_OF_SERVICE_URL}" target="_blank">${MS.Translate.DETAILS_SOCIALGIST_TERMS_OF_SERVICE_TITLE}</a>${MS.Translate.DETAILS_REDDIT_PRIVACY_TOS2}<a href="${MS.Translate.DETAILS_REDDIT_PRIVACY_URL}" target="_blank">${MS.Translate.DETAILS_REDDIT_PRIVACY_TITLE}</a>
+    </p>
+    
+    <p>${MS.Translate.DETAILS_REQUIRED_FIELDS}</p>
+
+    <p>${MS.Translate.DETAILS_REDDIT_FIRST_NAME}</p>
+    <input class="st-input" type="text" disabled.bind="MS.HttpService.isServiceBusy" value.bind="registration.nameFirst" change.delegate="viewmodel.onInvalidate()" />
+    <p>${MS.Translate.DETAILS_REDDIT_LAST_NAME}</p>
+    <input class="st-input" type="text" disabled.bind="MS.HttpService.isServiceBusy" value.bind="registration.nameLast" change.delegate="viewmodel.onInvalidate()" />
+    <p>${MS.Translate.DETAILS_REDDIT_COMPANY}</p>
+    <input class="st-input" type="text" disabled.bind="MS.HttpService.isServiceBusy" value.bind="registration.company" change.delegate="viewmodel.onInvalidate()" />
+    <p>${MS.Translate.DETAILS_REDDIT_JOB_TITLE}</p>
+    <input class="st-input" type="text" disabled.bind="MS.HttpService.isServiceBusy" value.bind="registration.jobTitle" change.delegate="viewmodel.onInvalidate()" />
+    <p>${MS.Translate.DETAILS_REDDIT_EMAIL}</p>
+    <input class="st-input" type="text" disabled.bind="MS.HttpService.isServiceBusy" value.bind="registration.email" change.delegate="viewmodel.onInvalidate()" />
+    <p>${MS.Translate.DETAILS_REDDIT_EMAIL_CONFIRMATION}</p>
+    <input class="st-input" type="text" disabled.bind="MS.HttpService.isServiceBusy" value.bind="registration.emailConfirmation" change.delegate="viewmodel.onInvalidate()" />
+    <p>${MS.Translate.DETAILS_REDDIT_DESCRIPTION_OF_USE}</p>
+    <input class="st-input" type="text" disabled.bind="MS.HttpService.isServiceBusy" value.bind="registration.descriptionOfUse" change.delegate="viewmodel.onInvalidate()" />
+
+    <div class="st-label-wrapper">
+        <label class="st-label">
+            <input type="checkbox" tabindex="-1" checked.bind="registration.accepted" disabled.bind="MS.HttpService.isServiceBusy">
+            <span class="st-text">${MS.Translate.DETAILS_REDDIT_ACCEPT_TERMS}</span>
+        </label>
+    </div>
+
+    <p class="st-float">
+        <button class="primary" click.trigger="onValidate()" if.bind="!MS.HttpService.isServiceBusy">${MS.Translate.COMMON_VALIDATE}</button>
+    </p>
+
 </template>

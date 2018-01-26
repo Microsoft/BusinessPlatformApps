@@ -29,8 +29,6 @@
   <ItemGroup>
     <Compile Remove="node_modules" />
     <Compile Remove="typings" />
-    <Content Include="wwwroot\dist\Apps\Microsoft\Released\Microsoft-ActivityLogTemplate\Web\Images\3B31F9EA.PNG" />
-    <Content Include="wwwroot\dist\Apps\Microsoft\Released\Microsoft-ActivityLogTemplate\Web\Images\Log (2).png" />
     <None Update="wwwroot\**\*">
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
     </None>

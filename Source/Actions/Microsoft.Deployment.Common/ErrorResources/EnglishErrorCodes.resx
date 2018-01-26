@@ -318,4 +318,7 @@
   <data name="ActivityLogsVerifyInsightsTimeout" xml:space="preserve">
     <value>Timed out while waiting for the Activity Log Exported Event Hub to become available</value>
   </data>
+  <data name="LithiumCredentialsInvalid" xml:space="preserve">
+    <value>Login failed, check that you have entered in the correct TenantID, ClientID, ClientSecret, RefreshToken</value>
+  </data>
 </root>

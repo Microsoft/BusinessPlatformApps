@@ -176,6 +176,7 @@
     <Compile Include="Reddit\UploadAssetBlobStorageTests.cs" />
     <Compile Include="ScribeTests\ScribeTests.cs" />
     <Compile Include="Sql\DeploySqlScripts.cs" />
+    <Compile Include="TemplateTests\VstsTests.cs" />
     <Compile Include="TestHelpers\AAD.cs" />
     <Compile Include="TestHelpers\Credential.cs" />
     <Compile Include="TestHelpers\ObjectExtensionMethods.cs" />

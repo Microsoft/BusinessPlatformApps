@@ -1,0 +1,36 @@
+﻿<template>
+    <require from="../templates/bpst-link.html"></require>
+    
+    <h1 class="st-title">${MS.Translate.LITHIUM_LOGIN_CONNECT_TITLE}</h1>
+    <h4 class="st-subtitle">${MS.Translate.LITHIUM_LOGIN_CONNECT_SUBTITLE}</h4>
+    
+    <div>
+        <bpst-link a-description="${MS.Translate.LITHIUM_LOGIN_DESCRIPTION_1}" a-link="${MS.Translate.LITHIUM_LOGIN_LINK_1}" a-link-text="${MS.Translate.COMMON_HERE}"></bpst-link>
+        <bpst-link a-description="${MS.Translate.LITHIUM_LOGIN_DESCRIPTION_2}" a-link="${MS.Translate.LITHIUM_LOGIN_LINK_2}" a-link-text="${MS.Translate.COMMON_HERE}"></bpst-link>
+        <bpst-link a-description="${MS.Translate.LITHIUM_LOGIN_DESCRIPTION_3}" a-link="${MS.Translate.LITHIUM_LOGIN_LINK_3}" a-link-text="${MS.Translate.COMMON_HERE}"></bpst-link>
+    </div>
+    <div>
+        <p class="st-text">${MS.Translate.LITHIUM_LOGIN_TENANT_ID}</p>
+        <input class="st-input" type="text" change.delegate="onInvalidate()" disabled.bind="MS.HttpService.isServiceBusy" value.bind="lithiumTenantId" />
+    </div>
+    <div>
+        <p class="st-text">${MS.Translate.LITHIUM_LOGIN_CLIENT_ID}</p>
+        <input class="st-input" type="text" change.delegate="onInvalidate()" disabled.bind="MS.HttpService.isServiceBusy" value.bind="lithiumClientId" />
+    </div>
+    <div>
+        <p class="st-text">${MS.Translate.LITHIUM_LOGIN_CLIENT_SECRET}</p>
+        <input class="st-input" type="text" change.delegate="onInvalidate()" disabled.bind="MS.HttpService.isServiceBusy" value.bind="lithiumClientSecret" />
+    </div>
+    <div>
+        <p class="st-text">${MS.Translate.LITHIUM_LOGIN_REFRESH_TOKEN}</p>
+        <input class="st-input" type="text" change.delegate="onInvalidate()" disabled.bind="MS.HttpService.isServiceBusy" value.bind="lithiumRefreshToken" />
+    </div>
+    <div>
+        <p class="st-float">
+            <button class="primary" disabled.bind="!lithiumTenantId || !lithiumClientId || !lithiumClientSecret || !lithiumRefreshToken" click.trigger="onValidate()" if.bind="!MS.HttpService.isServiceBusy">${MS.Translate.COMMON_VALIDATE}</button>
+        </p>
+    </div>
+    <p class="st-text">
+        <bpst-link a-description="${MS.Translate.INIT_GETTING_STARTED_TANDC_MESSAGE}" a-link="${MS.Translate.INIT_GETTING_STARTED_TANDC_LINK}" a-link-text="${MS.Translate.ITALENT_COMP_NAME}"></bpst-link>
+    </p>
+</template>

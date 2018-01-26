@@ -1,0 +1,108 @@
+﻿{
+  "Install": {
+    "Pages": [
+      {
+        "architectureDiagram": "dist/Apps/Partner/Released/BlueMargin-VSTS/Web/ArchitectureDiagram.png",
+        "displayname": "Getting Started",
+        "list1": [
+          "$translate(INIT_GETTING_STARTED_AZURE_SUBSCRIPTION)",
+          "$translate(INIT_GETTING_STARTED_PBI_DESKTOP)",
+          "$translate(INIT_GETTING_STARTED_PBI_PRO)",
+          "Visual Studio Team Foundation Services account"
+        ],
+        "list2": [
+          "$translate(INIT_GETTING_STARTED_CLOUD_SOLUTION)",
+          "$translate(INIT_GETTING_STARTED_CONNECT_AS_PBI)"
+        ],
+        "name": "$SiteCommon$/pages-gallery/getting-started.html",
+        "templateName": "Visual Studio Team Foundation Services Analytics"
+      },
+      {
+        "defaultLocation": "5",
+        "displayname": "Login",
+        "name": "$SiteCommon$/pages-gallery/azure-login.html",
+        "pricingCalculatorUrl": "$translate(INIT_NEWS_PRICING_CALCULATOR)",
+        "pricingCost": "",
+        "pricingUrl": ""
+      },
+      {
+        "displayname": "VSTS Instance",
+        "name": "vstsdetails.html"
+      },
+      {
+        "checkSqlVersion": true,
+        "displayname": "Target",
+        "isAzureSql": true,
+        "name": "$SiteCommon$/pages-gallery/sql.html",
+        "newSqlDatabase": "vsts",
+        "showAzureSql": false,
+        "showNewSqlOption": "true",
+        "showSkuS1": true,
+        "sqlInstance": "NewSql",
+        "sqlSku": "S1",
+        "subtitle": "$translate(INIT_SQL_TITLE)",
+        "title": "$translate(INIT_SQL_TITLE)"
+      },
+      {
+        "displayCompletionNotification": false,
+        "displayname": "Summary",
+        "name": "$SiteCommon$/pages-gallery/summary.html",
+        "sendCompletionNotification": false,
+        "values": {
+          "Subscription": "$(this.MS.DataStore.getJson('SelectedSubscription').DisplayName)",
+          "Resource Group": "$(this.MS.DataStore.getValue('SelectedResourceGroup'))",
+          "Target Server": "$(this.MS.DataStore.getValue('Server'))",
+          "Target Database": "$(this.MS.DataStore.getValue('Database'))",
+          "Target Username": "$(this.MS.DataStore.getValue('Username'))"
+        }
+      },
+      {
+        "datastoreEntriesToValidate": [
+          "SqlConnectionString"
+        ],
+        "displayname": "Progress",
+        "enablePublishReport": "$run(this.MS.DataStore.getValue('ssasDisabled') === 'false')",
+        "filename": "$save('VSTSReport.pbix')",
+        "name": "$SiteCommon$/pages-gallery/progress.html",
+        "Schema": "$save('vs')",
+        "showCounts": false,
+        "uniqueId": "$save(this.MS.UtilityService.getUniqueId(10))"
+      }
+    ],
+
+    "Actions": [
+      {
+        "displayname": "$translate(INIT_ACTION_DEPLOYING_SQL_SCRIPTS)",
+        "name": "Microsoft-DeploySQLScripts",
+        "SqlServerIndex": "0",
+        "SqlScriptsFolder": "Database"
+      },
+      {
+        "DeploymentName": "Deployment1",
+        "displayname": "$translate(INIT_ACTION_DEPLOYING_AZURE_FUNCTION)",
+        "FunctionName": "$save('solutiontemplatefunc' + this.MS.DataStore.getValue('uniqueId'))",
+        "name": "Microsoft-DeployAzureFunction",
+        "RepoUrl": "https://github.com/mohaali/vsts",
+        "sku": "Standard"
+      },
+      {
+        "DeploymentName": "Deployment1",
+        "displayname": "$translate(INIT_ACTION_WAITING_DEPLOYMENT)",
+        "name": "Microsoft-WaitForArmDeploymentStatus"
+      },
+      {
+        "displayname": "$translate(INIT_ACTION_CREATING_FUNCTION)",
+        "name": "Microsoft-CheckFunctionStatus"
+      },
+      {
+        "AppSettingKeys": {
+          "AzSQLDB": "$ds(SqlConnectionString)",
+          "PATok": "$ds(vststoken)",
+          "Instance": "$ds(vstsinstance)"
+        },
+        "displayname": "$translate(INIT_ACTION_DEPLOYING_CONNECTION_STRINGS)",
+        "name": "Microsoft-DeployAzureFunctionConnectionStrings"
+      }
+    ]
+  }
+}

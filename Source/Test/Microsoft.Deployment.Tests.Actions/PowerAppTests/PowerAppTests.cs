@@ -20,7 +20,8 @@ namespace Microsoft.Deployment.Tests.Actions.PowerApp
             Assert.IsTrue(await TestManager.IsSuccessAsync("Microsoft-DeploySQLScripts", ds, "Microsoft-TwitterTemplate"));
 
             //ds.AddToDataStore("SearchQuery", "cricket rights OR english cricket OR \"Sky AND cricket\"");
-            ds.AddToDataStore("SearchQuery", "FA and women's performance");
+            //ds.AddToDataStore("SearchQuery", "FA and women's performance");
+            ds.AddToDataStore("SearchQuery", "LCW OR “lc Waikiki”");
 
             Assert.IsTrue(await TestManager.IsSuccessAsync("Microsoft-ConfigurePowerAppTables", ds));
         }

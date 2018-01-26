@@ -38,3 +38,25 @@ See https://docs.microsoft.com/en-us/azure/azure-functions/functions-bindings-ti
 
 ### Known Limitations
 -  32 query parameters - if you have more, see if you can group them into broader terms and later further refine them via the *UserDefinedEntityDefinitions* entries
+
+### Estimated Costs
+
+Here is an estimate of the Azure costs:
+
+Please keep in mind these are **estimated costs and subject to change.** For a more detailed breakdown of the various components please refer to the [Azure calculator](https://azure.microsoft.com/en-us/pricing/calculator/) and select the resources listed below. You can tweak all the options to see what the costs will look like and what modifications may suit your needs best.
+
+The following defaults are set for you in the template (you can modify any of these after things get set up):
+
+-   Azure SQL: Standard S1 database and server
+
+-   App Service Plan: Consumption Small
+
+-   Azure Functions (One call per Reddit post found + up to 150 overhead calls per day)
+
+-   Two Standard LRS storage accounts
+
+-   Azure ML (S1)
+
+-   Socialgist API key (free during the trial period)
+
+Whilst the default setting should cater to most Reddit template requirements, we encourage you to familiarize yourself with the various pricing options and tweak things to suit your needs.

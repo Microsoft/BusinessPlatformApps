@@ -1,0 +1,139 @@
+{
+    "Install": {
+        "Pages": [
+            {
+                "architectureDiagram": "dist/Apps/Partner/Released/NealAnalytics-PbiUsageMetrics/Web/pbi-telemetry.png",
+                "contact": {
+                    "email": "davidb",
+                    "emailDomain": "nealanalytics.com",
+                    "text": "$translate(INIT_PBI_TELEMETRY_CONTACT)"
+                },
+                "displayname": "Getting Started",
+                "list1": [
+                    "$translate(INIT_GETTING_STARTED_AZURE_SUBSCRIPTION)",
+                    "$translate(INIT_GETTING_STARTED_PBI_DESKTOP)",
+                    "$translate(INIT_GETTING_STARTED_PBI_PRO)",
+                    "$translate(INIT_GETTING_STARTED_O365_ADMIN_CREDENTIALS)"
+                ],
+                "list2": [
+                    "$translate(INIT_GETTING_STARTED_CLOUD_SOLUTION)",
+                    "$translate(INIT_GETTING_STARTED_CONNECT_AS_PBI)"
+                ],
+                "name": "$SiteCommon$/pages-gallery/getting-started.html",
+                "subtitle": "$translate(INIT_PBI_TELEMETRY_SUBTITLE)",
+                "templateName": "$translate(INIT_PBI_TELEMETRY_TEMPLATE_NAME)",
+                "terms": {
+                    "eulaLink": "http://www.nealanalytics.com/tou",
+                    "eulaLinkText": "$translate(COMMON_TERMS_OF_USE)",
+                    "link": "http://www.nealanalytics.com/privacy-policy",
+                    "privacy": "$translate(INIT_O365_PRIVACY)",
+                    "privacyTitle": "$translate(INIT_O365_PRIVACY_TITLE)"
+                }
+            },
+            {
+                "displayname": "Login",
+                "name": "$SiteCommon$/pages-gallery/azure-login.html",
+                "pricingCalculatorUrl": "$translate(INIT_PBI_TELEMETRY_PRICING_CALCULATOR_URL)",
+                "pricingCost": "$translate(INIT_PBI_TELEMETRY_PRICING_COST)",
+                "pricingUrl": "$translate(INIT_PBI_TELEMETRY_PRICING_URL)"
+            },
+            {
+                "displayname": "Office 365 Login",
+                "name": "$SiteCommon$/pages-gallery/o365-login.html",
+                "permissions": {
+                    "requiredResourceAccess": [
+                        {
+                            "resourceAppId": "c5393580-f805-4401-95e8-94b7a6ef2fc2",
+                            "resourceAccess": [
+                                {
+                                    "id": "594c1fb6-4f81-4475-ae41-0c394909246c",
+                                    "type": "Role"
+                                },
+                                {
+                                    "id": "b3b78c39-cb1d-4d17-820a-25d9196a800e",
+                                    "type": "Role"
+                                }
+                            ]
+                        }
+                    ]
+                }
+            },
+            {
+                "displayname": "Target",
+                "isAzureSql": true,
+                "name": "$SiteCommon$/pages-gallery/sql.html",
+                "newSqlDatabase": "pbiTelemetry",
+                "showAzureSql": false,
+                "showNewSqlOption": "true",
+                "sqlInstance": "NewSql",
+                "subtitle": "$translate(INIT_SQL_SUBTITLE)",
+                "title": "$translate(INIT_SQL_TITLE)"
+            },
+            {
+                "displayname": "Summary",
+                "displayCompletionNotification": false,
+                "name": "$SiteCommon$/pages-gallery/summary.html",
+                "sendCompletionNotification": false,
+                "values": {
+                    "Target Server": "$(this.MS.DataStore.getValue('Server'))",
+                    "Target Database": "$(this.MS.DataStore.getValue('Database'))",
+                    "Target Username": "$(this.MS.DataStore.getValue('Username'))"
+                }
+            },
+            {
+                "datastoreEntriesToValidate": [
+                    "SqlConnectionString"
+                ],
+
+                "displayname": "Progress",
+                "filename": "$save('PbiUsageMetrics.pbix')",
+                "name": "$SiteCommon$/pages-gallery/progress.html",
+                "enablePublishReport": false,
+                "Schema": "$save('adtlog')",
+                "showCounts": false,
+                "uniqueId": "$save(this.MS.UtilityService.getUniqueId(10))"
+            }
+        ],
+
+        "Actions": [
+            {
+                "displayname": "$translate(INIT_ACTION_DEPLOYING_SQL_SCRIPTS)",
+                "name": "Microsoft-DeploySQLScripts",
+                "SqlServerIndex": "0",
+                "SqlScriptsFolder": "Database"
+            },
+            {
+                "DeploymentName": "Deployment1",
+                "displayname": "$translate(INIT_ACTION_DEPLOYING_AZURE_FUNCTION)",
+                "FunctionName": "$save('solutiontemplatefunc' + this.MS.DataStore.getValue('uniqueId'))",
+                "name": "Microsoft-DeployAzureFunction",
+                "RepoUrl": "https://github.com/mohaali/NealEtl",
+                "sku": "Standard"
+            },
+            {
+                "DeploymentName": "Deployment1",
+                "displayname": "$translate(INIT_ACTION_WAITING_DEPLOYMENT)",
+                "name": "Microsoft-WaitForArmDeploymentStatus"
+            },
+            {
+                "displayname": "$translate(INIT_ACTION_CREATING_FUNCTION)",
+                "name": "Microsoft-CheckFunctionStatus"
+            },
+            {
+                "AppSettingKeys": {
+                    "AuditDb": "$ds(SqlConnectionString)",
+                    "Schema": "$ds(Schema)",
+                    "ClientSecret": "$ds(SPNKey)",
+                    "Tenant": "$ds(SPNTenantId)",
+                    "ClientId": "$ds(SPNAppId)"
+                },
+                "displayname": "$translate(INIT_ACTION_DEPLOYING_CONNECTION_STRINGS)",
+                "name": "Microsoft-DeployAzureFunctionConnectionStrings"
+            },
+            {
+                "displayname": "Start Audit Data",
+                "name": "Microsoft-StartAuditData"
+            }
+        ]
+    }
+}

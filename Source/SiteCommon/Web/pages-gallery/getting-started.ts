@@ -7,6 +7,7 @@ import { ViewModelBase } from '../services/view-model-base';
 
 export class Gettingstarted extends ViewModelBase {
     architectureDiagram: string = '';
+    contact: Registration = new Registration();
     downloadLink: string = '';
     isDownload: boolean = false;
     list1: string[] = [];
@@ -22,6 +23,7 @@ export class Gettingstarted extends ViewModelBase {
     showSelection: boolean = false;
     subtitle: string = '';
     templateName: string = '';
+    terms: Registration = new Registration();
     upgrade: boolean = false;
 
     async clickRegister(): Promise<void> {
