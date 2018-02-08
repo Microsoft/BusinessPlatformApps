@@ -175,6 +175,7 @@
     <Compile Include="Informatica\RegisterInformaticaAccount.cs" />
     <Compile Include="Informatica\StartInformaticaTask.cs" />
     <Compile Include="Informatica\VerifyInformaticaCredentials.cs" />
+    <Compile Include="Lithium\ValidateLithiumCredentials.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RemoveFiles.cs" />
     <Compile Include="SAP\ValidateSAP.cs" />

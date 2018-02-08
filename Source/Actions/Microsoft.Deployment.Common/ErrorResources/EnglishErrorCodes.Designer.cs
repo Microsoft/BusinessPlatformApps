@@ -295,6 +295,15 @@ namespace Microsoft.Deployment.Common.ErrorResources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Login failed, check that you have entered in the correct TenantID, ClientID, ClientSecret, RefreshToken.
+        /// </summary>
+        public static string LithiumCredentialsInvalid {
+            get {
+                return ResourceManager.GetString("LithiumCredentialsInvalid", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to PowerShell version too low - please upgrade to latest version https://msdn.microsoft.com/en-us/powershell/wmf/5.0/requirements&quot;.
         /// </summary>
         public static string LowPowerShellVersion {

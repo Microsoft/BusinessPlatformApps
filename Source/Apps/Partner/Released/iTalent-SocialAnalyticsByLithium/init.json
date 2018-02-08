@@ -1,0 +1,110 @@
+{
+  "Install": {
+    "Pages": [
+      {
+        "architectureDiagram": "dist/Apps/Partner/Released/iTalent-SocialAnalyticsByLithium/Web/Images/lithiumArchitectureDiagram.png",
+        "displayname": "Getting Started",
+        "list1": [
+          "$translate(INIT_GETTING_STARTED_AZURE_SUBSCRIPTION)",
+          "$translate(INIT_GETTING_STARTED_PBI_DESKTOP)",
+          "$translate(INIT_GETTING_STARTED_PBI_PRO)",
+          "$translate(INIT_GETTING_STARTED_LITHIUM_ACCOUNT)"
+        ],
+        "list2": [
+          "$translate(INIT_GETTING_STARTED_CLOUD_SOLUTION)",
+          "$translate(INIT_GETTING_STARTED_CONNECT_AS_PBI)"
+        ],
+        "name": "$SiteCommon$/pages-gallery/getting-started.html",
+        "templateName": "Social Analytics for Lithium by iTalent Digital"
+      },
+      {
+        "displayname": "Lithium Login",
+        "name": "$SiteCommon$/pages-gallery/lithium-login.html"
+      },
+      {
+        "defaultLocation": "5",
+        "displayname": "Azure Login",
+        "name": "$SiteCommon$/pages-gallery/azure-login.html",
+        "pricingCalculatorUrl": "$translate(INIT_NEWS_PRICING_CALCULATOR)",
+        "pricingCost": "$translate(INIT_LITHIUM_PRICING_COST)",
+        "pricingUrl": "$translate(INIT_LITHIUM_PRICING_URL)"
+      },
+      {
+        "checkSqlVersion": true,
+        "displayname": "Azure SQL",
+        "isAzureSql": true,
+        "name": "$SiteCommon$/pages-gallery/sql.html",
+        "newSqlDatabase": "LithiumSocialAnalytics",
+        "showAzureSql": false,
+        "showNewSqlOption": true,
+        "showSkuS1": true,
+        "sqlInstance": "NewSql",
+        "sqlSku": "S1",
+        "subtitle": "$translate(INIT_SQL_TITLE)",
+        "title": "$translate(INIT_SQL_TITLE)"
+      },
+      {
+        "displayname": "Summary",
+        "displayCompletionNotification": false,
+        "sendCompletionNotification": true,        
+        "name": "$SiteCommon$/pages-gallery/summary.html",
+        "values": {
+          "Lithium TenantID": "$(this.MS.DataStore.getValue('LithiumTenantId'))",
+          "Azure Subscription": "$(this.MS.DataStore.getJson('SelectedSubscription').DisplayName)",
+          "Resource Group": "$(this.MS.DataStore.getValue('SelectedResourceGroup'))",
+          "Target Server": "$(this.MS.DataStore.getValue('Server'))",
+          "Target Database": "$(this.MS.DataStore.getValue('Database'))",
+          "Target Username": "$(this.MS.DataStore.getValue('Username'))"
+        }
+      },
+      {
+        "displayname": "Progress",
+        "filename": "$save('SocialAnalyticsforLithium.pbix')",
+        "name": "$SiteCommon$/pages-gallery/progress.html",
+        "showCounts": false,
+        "uniqueId": "$save(this.MS.UtilityService.getUniqueId(10))",
+        "SiteName": "$save(this.uniqueIdFunction)",
+        "datastoreEntriesToValidate": [
+          "AzureToken",
+          "SqlConnectionString"
+        ]
+      }
+    ],
+    "Actions": [
+      {
+        "displayname": "$translate(INIT_ACTION_DEPLOYING_SQL_SCRIPTS)",
+        "name": "Microsoft-DeploySQLScripts",
+        "SqlServerIndex": "0",
+        "SqlScriptsFolder": "Database"
+      },
+      {
+        "DeploymentName": "DeployAzureFunction",
+        "displayname": "$translate(INIT_ACTION_DEPLOYING_AZURE_FUNCTION)",
+        "FunctionName": "$save('LithiumSolutionTemplate-' + this.MS.DataStore.getValue('uniqueId'))",
+        "name": "Microsoft-DeployAzureFunction",
+        "RepoUrl": "https://github.com/sekharpusuluri/iTalent",
+        "sku": "Standard"
+      },
+      {
+        "DeploymentName": "DeployAzureFunction",
+        "displayname": "$translate(INIT_ACTION_WAITING_DEPLOYMENT)",
+        "name": "Microsoft-WaitForArmDeploymentStatus"
+      },
+      {
+        "displayname": "$translate(INIT_ACTION_CREATING_FUNCTION)",
+        "name": "Microsoft-CheckFunctionStatus"
+      },
+      {
+        "AppSettingKeys": {
+          "LithiumTenantId": "$ds(LithiumTenantId)",
+          "LithiumClientId": "$ds(LithiumClientId)",
+          "LithiumClientSecret": "$ds(LithiumClientSecret)",
+          "LithiumRefreshToken": "$ds(LithiumRefreshToken)",
+          "SqlConnectionString": "$ds(SqlConnectionString)"
+        },
+        "displayname": "$translate(INIT_ACTION_DEPLOYING_APP_SETTINGS)",
+        "name": "Microsoft-DeployAzureFunctionAppSettings"
+      }
+    ]
+  }
+}

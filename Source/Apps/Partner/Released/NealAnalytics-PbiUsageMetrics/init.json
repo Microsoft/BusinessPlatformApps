@@ -65,6 +65,7 @@
                 "newSqlDatabase": "pbiTelemetry",
                 "showAzureSql": false,
                 "showNewSqlOption": "true",
+                "sqlSku": "S1",
                 "sqlInstance": "NewSql",
                 "subtitle": "$translate(INIT_SQL_SUBTITLE)",
                 "title": "$translate(INIT_SQL_TITLE)"

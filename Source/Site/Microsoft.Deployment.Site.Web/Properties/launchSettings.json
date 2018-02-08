@@ -3,11 +3,15 @@
     "windowsAuthentication": false,
     "anonymousAuthentication": true,
     "iisExpress": {
-      "applicationUrl": "http://localhost:1503/index.html?name=Microsoft-TwitterTemplate",
+      "applicationUrl": "http://localhost:1503/index.html?name=iTalent-SocialAnalyticsByLithium",
       "sslPort": 0
     }
   },
   "profiles": {
+    "Start": {
+      "commandName": "IISExpress",
+      "ErrorString": "Invalid property identifier character: <. Path 'iisSettings.iisExpress', line 6, position 0."
+    },
     "IIS Express": {
       "commandName": "IISExpress",
       "launchBrowser": true,
