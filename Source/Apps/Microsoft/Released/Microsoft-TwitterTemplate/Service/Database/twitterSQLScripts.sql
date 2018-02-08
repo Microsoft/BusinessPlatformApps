@@ -26,7 +26,7 @@ CREATE TABLE dbo.tweets_normalized
 	masterid        NCHAR(25) NOT NULL PRIMARY KEY,-- foreign key references tweets_processed(masterid),
 	mentions        INT,
 	hashtags        INT,
-	tweet           NCHAR(200),
+	tweet           NCHAR(500),
 	twitterhandle   NCHAR(100),
 	usernumber      NCHAR(100),
 	sentiment       FLOAT,
