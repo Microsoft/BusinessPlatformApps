@@ -75,6 +75,8 @@ CREATE TABLE [adtlog].[staging_20_PowerBI](
 	[ReportName] [varchar](8000) NULL,
 	[DatasetId] [varchar](8000) NULL,
 	[DatasetName] [varchar](8000) NULL,
+	[DatasourceId] [varchar](8000) NULL,
+	[DatasourceName] [varchar](8000) NULL,
 	[CapacityId] [varchar](8000) NULL,
 	[CapacityName] [varchar](8000) NULL,
 	[DataConnectivityMode] [varchar](8000) NULL,
