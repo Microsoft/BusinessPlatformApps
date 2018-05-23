@@ -48,7 +48,7 @@ namespace Microsoft.Deployment.Actions.AzureCustom.Twitter
                 }
                 */
                 
-                valid.add(accountTrimmed, accountTrimmed);
+                valid.Add(accountTrimmed, accountTrimmed);
             }
 
             dynamic response = new ExpandoObject();
