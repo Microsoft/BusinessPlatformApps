@@ -28,6 +28,7 @@ namespace Microsoft.Deployment.Actions.AzureCustom.Twitter
                 var accountTrimmed = accountItem.ToString().Trim();
                 accountTrimmed = accountTrimmed.Replace("@", "");
 
+                /*
                 AzureHttpClient client = new AzureHttpClient(new Dictionary<string, string>()
                 {
                     { "X-Push-State-Request", "true" }
@@ -45,6 +46,9 @@ namespace Microsoft.Deployment.Actions.AzureCustom.Twitter
                 {
                     invalid.Add(accountItem.ToString());
                 }
+                */
+                
+                valid.add(accountTrimmed, accountTrimmed);
             }
 
             dynamic response = new ExpandoObject();
