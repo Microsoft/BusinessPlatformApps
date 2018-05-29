@@ -1,0 +1,12 @@
+{
+  "bindings": [
+    {
+      "name": "myBlob",
+      "type": "blobTrigger",
+      "direction": "in",
+      "path": "{container}/devices/{year}/{month}/{day}/{hour}/{minute}/{name}",
+      "connection": "Blob_STORAGE"
+    }
+  ],
+  "disabled": false
+}

@@ -12,6 +12,7 @@ using Microsoft.Deployment.Common.ActionModel;
 using Microsoft.Deployment.Common.AppLoad;
 using Microsoft.Deployment.Common.Controller;
 using Microsoft.Deployment.Common.Helpers;
+using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Deployment.Tests.Actions.TestHelpers
 {
@@ -24,7 +25,7 @@ namespace Microsoft.Deployment.Tests.Actions.TestHelpers
         private static CommonController Controller { get; set; }
         public static string TemplateName = "Microsoft-NewsTemplateTest";
 
-        private static async Task<DataStore> GetDataStoreWithToken(bool force = false, Dictionary<string, string> extraTokens = null)
+        private static async Task<DataStore> GetDataStoreWithToken(bool force = false, Dictionary<string, string> extraTokens = null, string subscriptionId = null, string resourceGroup = null, string region = null)
         {
             // Read from file DataStore
             if (File.Exists("datastore.json") && !force)
@@ -72,14 +73,34 @@ namespace Microsoft.Deployment.Tests.Actions.TestHelpers
             }
 
             var subscriptionResult = await TestManager.ExecuteActionAsync("Microsoft-GetAzureSubscriptions", dataStore);
+
+            JToken subscription = null;
             Assert.IsTrue(subscriptionResult.IsSuccess);
-            var subscriptionId = subscriptionResult.Body.GetJObject()["value"].SingleOrDefault(p => p["DisplayName"].ToString().StartsWith("PBI_"));
-            dataStore.AddToDataStore("SelectedSubscription", subscriptionId, DataStoreType.Public);
+            if (subscriptionId == null)
+            {
+                subscription = subscriptionResult.Body.GetJObject()["value"].SingleOrDefault(p => p["DisplayName"].ToString().StartsWith("PBI_"));
+                if (subscription == null)
+                {
+                    subscription = subscriptionResult.Body.GetJObject()["value"].FirstOrDefault();
+                }
+            }
+            else
+            {
+                subscription = subscriptionResult.Body.GetJObject()["value"].SingleOrDefault(p => p["SubscriptionId"].ToString().Equals(subscriptionId, StringComparison.OrdinalIgnoreCase));
+            }
+
+            dataStore.AddToDataStore("SelectedSubscription", subscription, DataStoreType.Public);
 
             var locationResult = await TestManager.ExecuteActionAsync("Microsoft-GetLocations", dataStore);
             var location = locationResult.Body.GetJObject()["value"][5];
+
+            if (!string.IsNullOrWhiteSpace(region))
+            {
+                location = locationResult.Body.GetJObject()["value"].SingleOrDefault(l => l["Name"].ToString().Equals(region, StringComparison.OrdinalIgnoreCase));
+            }
+
             dataStore.AddToDataStore("SelectedLocation", location, DataStoreType.Public);
-            dataStore.AddToDataStore("SelectedResourceGroup", ResourceGroup);
+            dataStore.AddToDataStore("SelectedResourceGroup", resourceGroup ?? ResourceGroup);
 
             var resourceGroupResult = await TestManager.ExecuteActionAsync("Microsoft-CreateResourceGroup", dataStore);
 
@@ -87,9 +108,9 @@ namespace Microsoft.Deployment.Tests.Actions.TestHelpers
             return dataStore;
         }
 
-        public static async Task<DataStore> GetDataStore(bool force = false, Dictionary<string, string> extraTokens = null)
+        public static async Task<DataStore> GetDataStore(bool force = false, Dictionary<string, string> extraTokens = null, string subscriptionId = null, string resourceGroup = null, string region = null)
         {
-            var dataStore = await GetDataStoreWithToken(force, extraTokens);
+            var dataStore = await GetDataStoreWithToken(force, extraTokens, subscriptionId, resourceGroup, region);
             return dataStore;
         }
 

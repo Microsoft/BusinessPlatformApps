@@ -164,6 +164,9 @@
     <Compile Include="AzureTests\LogicAppTests.cs" />
     <Compile Include="AcademicTests\AcademicTests.cs" />
     <Compile Include="FacebookTests\FacebookTests.cs" />
+    <Compile Include="IoTContinuousDataExportTests\GetAzureStoragesTest.cs" />
+    <Compile Include="IoTContinuousDataExportTests\DeployDataFactoryTest.cs" />
+    <Compile Include="IoTContinuousDataExportTests\DeployAzureFunctionTest.cs" />
     <Compile Include="NewsTests\NewsTests.cs" />
     <Compile Include="NotifierTests.cs" />
     <Compile Include="AzureTests\ServicePrincipalTests.cs" />

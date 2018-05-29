@@ -1,0 +1,30 @@
+﻿<template>
+    <require from="../templates/bpst-link.html"></require>
+
+    <h1 class="st-title">${MS.Translate.INIT_IOT_CDE_SELECT_STORAGE_TITLE}</h1>
+    <p class="st-subtitle">${MS.Translate.INIT_IOT_CDE_SELECT_STORAGE_SUBTITLE}</p>
+
+    <bpst-link if.bind="prerequisiteDescription" a-description="${prerequisiteDescription}" a-link="${prerequisiteLink}" a-link-text="${prerequisiteLinkText}"></bpst-link>
+    
+    <div>
+        <p class="st-text"></p>
+        <label class="st-float st-text">
+            <span class="st-text">${MS.Translate.AZURE_SUBSCRIPTION_STORAGE}${selectedSubscriptionName}</span>
+        </label>
+    </div>
+
+    <div class="st-float" if.bind="storagesList && storagesList.length > 0">
+        <p class="st-text">${MS.Translate.AZURE_STORAGE_ACCOUNT}</p>
+        <select class="btn btn-default dropdown-toggle st-input" click.trigger="changeContainers()" disabled.bind="MS.HttpService.isServiceBusy" value.bind="selectedStorageName">
+            <option repeat.for="item of storagesList" value.bind="item.StorageAccountName">${item.StorageAccountName}</option>
+        </select>
+    </div>
+
+    <div class="st-float" if.bind="containersList && containersList.length > 0">
+        <p class="st-text">${MS.Translate.AZURE_STORAGE_CONTAINER}</p>
+        <select class="btn btn-default dropdown-toggle st-input" disabled.bind="MS.HttpService.isServiceBusy" value.bind="selectedContainerName">
+            <option repeat.for="item of containersList" value.bind="item.Name">${item.Name}</option>
+        </select>
+    </div>
+
+</template>

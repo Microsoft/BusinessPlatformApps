@@ -1,0 +1,9 @@
+{
+    "frameworks": {
+        "net46": {
+            "dependencies": {
+                "Microsoft.Hadoop.Avro": "1.5.6"
+            }
+        }
+    }
+}

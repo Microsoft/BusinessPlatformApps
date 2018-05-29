@@ -65,11 +65,12 @@ export class Sql extends ViewModelBase {
                 let locationsResponse: ActionResponse = await this.MS.HttpService.executeAsync('Microsoft-GetLocations');
                 if (locationsResponse.IsSuccess) {
                     this.azureLocations = locationsResponse.Body.value;
-                    if (this.azureLocations && this.azureLocations.length > 23) {
+                    if (!this.sqlLocation && this.azureLocations && this.azureLocations.length > 23) {
                         this.sqlLocation = this.azureLocations[23].Name;
                     }
                 }
             }
+
             this.sqlLocation = this.sqlLocation || 'westus2';
         }
     }

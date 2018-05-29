@@ -31,7 +31,7 @@ namespace Microsoft.Deployment.Common.Helpers
                 return null;
 
             SqlParameter[] result = new SqlParameter[list.Length];
-            for (int i=0; i<list.Length; i++)
+            for (int i = 0; i < list.Length; i++)
             {
                 result[i] = new SqlParameter();
                 if (list[i] is int)
@@ -60,16 +60,16 @@ namespace Microsoft.Deployment.Common.Helpers
                     result[i].DbType = DbType.String;
                 else
                     throw new Exception("Unexpected data type"); // OUR code should not use other types
-                
+
                 result[i].Value = list[i];
-                result[i].ParameterName = $"@p{i+1}"; // SqlClient doesn't accept anonymous parameters (expecting queries to use 1 based numbering for parameter names: @p1, @p2, etc...)
+                result[i].ParameterName = $"@p{i + 1}"; // SqlClient doesn't accept anonymous parameters (expecting queries to use 1 based numbering for parameter names: @p1, @p2, etc...)
             }
 
 
             return result;
         }
 
-        public static void ExecuteQueryWithParameters(string connectionString,  string command, SqlParameter[] parameters)
+        public static void ExecuteQueryWithParameters(string connectionString, string command, SqlParameter[] parameters)
         {
             using (SqlConnection cn = new SqlConnection(connectionString))
             {
@@ -200,13 +200,13 @@ namespace Microsoft.Deployment.Common.Helpers
             return result;
         }
 
-        public static void InvokeSqlCommand(string connectionString, string script, Dictionary<string, string> args)
+        public static void InvokeSqlCommand(string connectionString, string script, Dictionary<string, string> args, bool enableTransaction = true)
         {
             string[] batches = ParseSql(script);
             for (int i = 0; i < batches.Length; i++)
             {
                 batches[i] = ReplaceScriptWithArgs(batches[i], args);
-                RunCommand(connectionString, batches[i], SqlCommandType.ExecuteWithoutData);
+                RunCommand(connectionString, batches[i], SqlCommandType.ExecuteWithoutData, enableTransaction: enableTransaction);
             }
         }
 
@@ -228,7 +228,7 @@ namespace Microsoft.Deployment.Common.Helpers
             return RunCommand(connectionString, script, SqlCommandType.ExecuteWithData);
         }
 
-        public static DataTable RunCommand(string connectionString, string rawScript, SqlCommandType commandType, SqlParameter[] parameters = null)
+        public static DataTable RunCommand(string connectionString, string rawScript, SqlCommandType commandType, SqlParameter[] parameters = null, bool enableTransaction = true)
         {
             DataTable table = null;
 
@@ -243,7 +243,10 @@ namespace Microsoft.Deployment.Common.Helpers
                 try
                 {
                     cn.Open();
-                    transaction = cn.BeginTransaction(IsolationLevel.ReadCommitted);
+                    if (enableTransaction)
+                    {
+                        transaction = cn.BeginTransaction(IsolationLevel.ReadCommitted);
+                    }
                     using (var command = cn.CreateCommand())
                     {
                         command.Transaction = transaction;
@@ -278,8 +281,10 @@ namespace Microsoft.Deployment.Common.Helpers
                                 }
                         }
                     }
-
-                    transaction.Commit();
+                    if (enableTransaction)
+                    {
+                        transaction.Commit();
+                    }
                     break;
                 }
                 catch (Exception)
@@ -289,7 +294,10 @@ namespace Microsoft.Deployment.Common.Helpers
                         // The transaction must have been rolledback with the client being disconnected
                         try
                         {
-                            transaction?.Rollback();
+                            if (enableTransaction)
+                            {
+                                transaction?.Rollback();
+                            }
                         }
                         catch (Exception)
                         {

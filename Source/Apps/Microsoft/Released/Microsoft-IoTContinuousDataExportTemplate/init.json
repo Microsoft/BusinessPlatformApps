@@ -1,0 +1,117 @@
+﻿{
+  "Install": {
+    "Pages": [
+      {
+        "architectureDiagram": "dist/Apps/Microsoft/Released/Microsoft-IoTContinuousDataExportTemplate/Web/Images/iot-continuous-data-export.png",
+        "displayname": "Getting Started",
+        "list1": [
+          "$translate(INIT_GETTING_STARTED_AZURE_IOT_CENTRAL)",
+          "$translate(INIT_GETTING_STARTED_AZURE_SUBSCRIPTION)",
+          "$translate(INIT_GETTING_STARTED_PBI_DESKTOP)",
+          "$translate(INIT_GETTING_STARTED_PBI_PRO)"
+        ],
+        "list2": [
+          "$translate(INIT_GETTING_STARTED_AZURE_FUNCTION_BLOB_STORAGE)",
+          "$translate(INIT_GETTING_STARTED_AZURE_DATA_FACTORY)",
+          "$translate(INIT_GETTING_STARTED_CONNECT_AS_PBI)"
+        ],
+        "name": "$SiteCommon$/pages-gallery/getting-started.html",
+        "subtitle": "$translate(INIT_IOT_CDE_SUBTITLE)",
+        "templateName": "$translate(INIT_IOT_CDE_TITLE)",
+        "uniqueId": "$save(this.MS.UtilityService.getUniqueId(10))",
+        "prerequisiteDescription": "$translate(GETTING_STARTED_IOT_CDE_PREREQUISITE_DESCRIPTION)",
+        "prerequisiteLinkText": "$translate(GETTING_STARTED_IOT_CDE_PREREQUISITE_LINKTEXT)",
+        "prerequisiteLink": "$translate(GETTING_STARTED_IOT_CDE_PREREQUISITE_LINK)"
+      },
+      {
+        "azureProviders": [
+          "Microsoft.DataFactory"
+        ],
+        "defaultLocationName": "eastus",
+        "displayname": "Login",
+        "name": "$SiteCommon$/pages-gallery/azure-login.html",
+        "pricingCalculatorUrl": "$translate(INIT_NEWS_PRICING_CALCULATOR)",
+        "pricingCost": "$translate(INIT_IOT_CDE_PRICING_COST)",
+        "pricingUrl": "$translate(INIT_IOT_CDE_PRICING_URL)",
+        "functionName": "$save('iot-cde-func-' + this.MS.DataStore.getValue('uniqueId'))",
+        "functionStorageAccountName": "$save('func' + this.MS.DataStore.getValue('uniqueId'))",
+        "dataFactoryName": "$save('iot-cde-dataf-'+ this.MS.DataStore.getValue('uniqueId'))",
+        "showLocations": true,
+        "allowedLocations": "eastus,eastus2,westeurope,southeastasia,eastus2euap"
+      },
+      {
+        "displayname": "Blob Storage",
+        "name": "$SiteCommon$/pages-gallery/select-storage.html",
+        "prerequisiteDescription": "$translate(INIT_IOT_CDE_SELECT_STORAGE_SUBTITLE2)",
+        "prerequisiteLink": "$translate(INIT_IOT_CDE_SETUP_DOC_LINK)",
+        "prerequisiteLinkText": "$translate(COMMON_HERE)"
+      },
+      {
+        "displayname": "Database",
+        "isAzureSql": true,
+        "name": "$SiteCommon$/pages-gallery/sql.html",
+        "newSqlDatabase": "continuousDataExportDB",
+        "showAzureSql": false,
+        "showNewSqlOption": true,
+        "sqlInstance": "NewSql",
+        "subtitle": "$translate(INIT_SQL_SUBTITLE_IOT_CDE)",
+        "title": "$translate(INIT_SQL_TITLE)",
+        "sqlLocation": "eastus"
+      },
+      {
+        "displayCompletionNotification": false,
+        "displayname": "Summary",
+        "name": "$SiteCommon$/pages-gallery/summary.html",
+        "sendCompletionNotification": false,
+        "values": {
+          "Subscription": "$(this.MS.DataStore.getJson('SelectedSubscription').DisplayName)",
+          "Resource Group": "$(this.MS.DataStore.getValue('SelectedResourceGroup'))",
+          "Blob Storage": "$(this.MS.DataStore.getValue('SelectedStorageAccountName'))",
+          "Blob Container": "$(this.MS.DataStore.getValue('SelectedContainer'))",
+          "Function Name": "$(this.MS.DataStore.getValue('functionName'))",
+          "DataFactory Name": "$(this.MS.DataStore.getValue('dataFactoryName'))",
+          "SQL Server": "$(this.MS.DataStore.getValue('Server'))",
+          "SQL Database": "$(this.MS.DataStore.getValue('Database'))",
+          "SQL Username": "$(this.MS.DataStore.getValue('Username'))"
+        }
+      },
+      {
+        "datastoreEntriesToValidate": [
+          "AzureToken",
+          "SqlConnectionString"
+        ],
+        "displayname": "Deploy",
+        "filename": "$save('IoT-Continuous-Data-Export-Template.pbix')",
+        "name": "$SiteCommon$/pages-gallery/progress.html",
+        "showCounts": false,
+        "successMessage": "$translate(INIT_IOT_CDE_SUCCEEDED)",
+        "successMessage2": ""
+      }
+    ],
+
+    "Actions": [
+      {
+        "displayname": "$translate(INIT_ACTION_DEPLOYING_SQL_SCRIPTS)",
+        "name": "Microsoft-DeploySQLScripts",
+        "SqlServerIndex": "0",
+        "SqlScriptsFolder": "Database",
+        "enableTransaction": false
+      },
+      {
+        "AzureArmFile": "Service/ARM/functions-dedicated.json",
+        "displayname": "$translate(INIT_ACTION_CREATING_FUNCTION_IOT)",
+        "name": "Microsoft-DeployIoTCDEAzureFunction"
+      },
+      {
+        "baseFunctionFolder": "service/data",
+        "displayname": "$translate(INIT_ACTION_DEPLOYING_FUNCTION_CODE)",
+        "name": "Microsoft-DeployIoTCDEFunctionCode"
+      },
+      {
+        "AzureArmFile": "Service/ARM/datafactory.json",
+        "displayname": "$translate(INIT_ACTION_CREATING_DATA_FACTORY)",
+        "name": "Microsoft-DeployIoTCDEDataFactory"
+      }
+    ]
+  }
+}

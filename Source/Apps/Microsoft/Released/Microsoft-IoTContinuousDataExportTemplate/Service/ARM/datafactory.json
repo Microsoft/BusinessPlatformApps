@@ -1,0 +1,136 @@
+{
+  "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "factoryName": {
+      "type": "string",
+      "metadata": "Data Factory Name",
+      "defaultValue": "jeffscratch"
+    },
+    "databaseConnectionString": {
+      "type": "secureString",
+      "metadata": "Secure string for 'connectionString' of 'SQL'",
+      "defaultValue": "don't know yet"
+    },
+    "startTime": {
+      "type": "string"
+    }
+  },
+  "variables": {
+    "factoryName": "[parameters('factoryName')]",
+    "factoryId": "[concat('Microsoft.DataFactory/factories/', variables('factoryName'))]",
+    "leftBracket": "["
+  },
+  "resources": [
+    {
+      "name": "[variables('factoryName')]",
+      "apiVersion": "2017-09-01-preview",
+      "type": "Microsoft.DataFactory/factories",
+      "location": "[resourceGroup().location]",
+      "properties": {},
+      "resources": [
+        {
+          "name": "[concat(variables('factoryName'), '/SQL')]",
+          "type": "Microsoft.DataFactory/factories/linkedServices",
+          "apiVersion": "2017-09-01-preview",
+          "properties": {
+            "type": "AzureSqlDatabase",
+            "typeProperties": {
+              "connectionString": {
+                "type": "SecureString",
+                "value": "[parameters('databaseConnectionString')]"
+              }
+            }
+          },
+          "dependsOn": [ "[variables('factoryName')]" ]
+        },
+        {
+          "name": "[concat(variables('factoryName'), '/ETL')]",
+          "type": "Microsoft.DataFactory/factories/pipelines",
+          "apiVersion": "2017-09-01-preview",
+          "properties": {
+            "activities": [
+              {
+                "name": "UpdateMeasurements",
+                "type": "SqlServerStoredProcedure",
+                "dependsOn": [],
+                "policy": {
+                  "timeout": "01:00:00",
+                  "retry": 0,
+                  "retryIntervalInSeconds": 30
+                },
+                "typeProperties": {
+                  "storedProcedureName": "UpdateMeasurements",
+                  "storedProcedureParameters": {}
+                },
+                "linkedServiceName": {
+                  "referenceName": "SQL",
+                  "type": "LinkedServiceReference"
+                }
+              },
+              {
+                "name": "TransformMeasurements",
+                "type": "SqlServerStoredProcedure",
+                "dependsOn": [
+                  {
+                    "activity": "UpdateMeasurements",
+                    "dependencyConditions": [
+                      "Succeeded"
+                    ]
+                  }
+                ],
+                "policy": {
+                  "timeout": "01:00:00",
+                  "retry": 0,
+                  "retryIntervalInSeconds": 30
+                },
+                "typeProperties": {
+                  "storedProcedureName": "TransformMeasurements",
+                  "storedProcedureParameters": {}
+                },
+                "linkedServiceName": {
+                  "referenceName": "SQL",
+                  "type": "LinkedServiceReference"
+                }
+              }
+            ]
+          },
+          "dependsOn": [
+            "[variables('factoryName')]",
+            "[concat(variables('factoryId'), '/linkedServices/SQL')]"
+          ]
+        },
+        {
+          "name": "[concat(parameters('factoryName'), '/DefaultTrigger')]",
+          "type": "Microsoft.DataFactory/factories/triggers",
+          "apiVersion": "2017-09-01-preview",
+          "properties": {
+            "type": "TumblingWindowTrigger",
+            "runtimeState": "Started",
+            "typeProperties": {
+              "frequency": "Minute",
+              "interval": "15",
+              "startTime": "[parameters('startTime')]",
+              "delay": "00:00:00",
+              "maxConcurrency": 1,
+              "retryPolicy": {
+                "intervalInSeconds": 30
+              }
+            },
+            "pipeline": {
+              "pipelineReference": {
+                "referenceName": "ETL",
+                "type": "PipelineReference"
+              },
+              "parameters": {}
+            }
+          },
+          "dependsOn": [
+            "[variables('factoryName')]",
+            "[concat(variables('factoryId'), '/pipelines/ETL')]"
+          ]
+        }
+      ]
+    }
+  ]
+}
