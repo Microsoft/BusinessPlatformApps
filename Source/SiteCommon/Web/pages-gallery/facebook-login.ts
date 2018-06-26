@@ -8,7 +8,7 @@ export class AzureLogin extends ViewModelBase {
     selectedPage: any;
     pageId: string = '';
     permanentPageToken: string = '';
-    ownsPage: boolean = null;
+    ownsPage: boolean = true;
     showOldLogin: boolean = false;
     facebookClientId: string = '';
     facebookClientSecret: string = '';
@@ -25,7 +25,7 @@ export class AzureLogin extends ViewModelBase {
     async onLoaded(): Promise<void> {
         super.onLoaded();
         this.onInvalidate();
-        this.ownsPage = null;
+        this.ownsPage = true;
         this.showOldLogin = false;
         this.oauthType = "Facebook";
         await this.MS.UtilityService.getToken(this.oauthType, async () => { this.setValidated(); });
@@ -33,7 +33,7 @@ export class AzureLogin extends ViewModelBase {
 
         if (this.MS.DataStore.getJson("data") && this.pages.length == 0) {
             this.MS.ErrorService.set(this.MS.Translate.FACEBOOK_NO_PAGES_ERROR);
-            this.ownsPage = null;
+            this.ownsPage = true;
             this.pages = null;
         }
 

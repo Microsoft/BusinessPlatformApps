@@ -33,6 +33,30 @@ https://github.com/Microsoft/BusinessPlatformApps
 
 Keep in mind that the dev branch acts as the master branch of this repository. If you are unfamiliar with the GitHub branching system, simply make all changes to your forked copy of the dev branch.
 
+## Node Installation
+
+1. Install [NodeJS >= 6.X](https://nodejs.org/en/)
+    * Confirm a successful installation by running `node -v` in a command prompt
+    * Also confirm npm availability by running `npm -v`
+2. Install [Git](https://git-scm.com/downloads)
+    * Confirm a successful installation by running `git --version` in a command prompt
+3. In a fresh command prompt, install gulp by running `npm install gulp -g`
+4. Install typings by running `npm install typings -g`
+5. In a fresh command prompt, navigate to the directory where the repository cloned
+6. Navigate down to Source/Site/Microsoft.Deployment.Site.Web
+7. Run `npm install`
+
+## .NET Core Installation
+
+The solution requires .NET Core 1.0.4, for which the installer is no longer easily available online
+
+1. Download the latest version of [.NET Core SDK >= 2.X](https://www.microsoft.com/net/download/windows)
+2. Download the [.NET Core 1.0.4 SDK Binaries](https://www.microsoft.com/net/download/dotnet-core/sdk-1.0.4)
+3. Extract the downloaded .zip
+4. From inside the .zip, copy shared\Microsoft.NETCore.App\* to C:\Program Files\dotnet\Microsoft.NETCore.App\ (or wherever you installed the latest .NET Core)
+5. From inside the .zip, copy sdk\* to C:\Program Files\dotnet\sdk\ (or wherever you installed the latest .NET Core)
+6. From inside the .zip, copy host\fxr\* to C:\Program Files\dotnet\host\fxr\ (or wherever you installed the latest .NET Core)
+
 ## Debugging Locally
 
 1. Open Visual Studio 2017
