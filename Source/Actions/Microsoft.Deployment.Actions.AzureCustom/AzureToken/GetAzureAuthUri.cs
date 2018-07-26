@@ -48,6 +48,8 @@ namespace Microsoft.Deployment.Actions.AzureCustom.AzureToken
 
             string oauthType = (request.DataStore.GetValue("oauthType") ?? string.Empty).ToLowerInvariant();
 
+            string currentPage = request.DataStore.GetValue("currentPage");
+
             switch (oauthType)
             {
                 case "keyvault":
@@ -59,7 +61,7 @@ namespace Microsoft.Deployment.Actions.AzureCustom.AzureToken
                     break;
             }
 
-            string authUri = AzureTokenUtility.GetAzureAuthUri(oauthType, request.Info.WebsiteRootUrl + Constants.WebsiteRedirectPath, authBase);
+            string authUri = AzureTokenUtility.GetAzureAuthUri(oauthType, request.Info.WebsiteRootUrl + Constants.WebsiteRedirectPath, authBase, currentPage);
             return new ActionResponse(ActionStatus.Success, JsonUtility.GetJObjectFromStringValue(authUri.ToString()));
         }
 

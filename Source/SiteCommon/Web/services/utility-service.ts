@@ -21,7 +21,10 @@ export class UtilityService {
 
     async connectToAzure(openAuthorizationType: string, azureActiveDirectoryTenant: string = this.MS.Translate.DEFAULT_TENANT): Promise<void> {
         this.MS.DataStore.addToDataStore('AADTenant', azureActiveDirectoryTenant, DataStoreType.Public);
-        window.location.href = await this.MS.HttpService.getExecuteResponseAsync('Microsoft-GetAzureAuthUri', 'value', { oauthType: openAuthorizationType });
+        window.location.href = await this.MS.HttpService.getExecuteResponseAsync('Microsoft-GetAzureAuthUri', 'value', {
+            oauthType: openAuthorizationType,
+            currentPage: this.MS.UtilityService.getItem('Current Page')
+        });
     }
 
     async connectToAzureSPN(): Promise<void> {

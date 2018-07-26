@@ -517,7 +517,7 @@
     INIT_IOT_CDE_SELECT_STORAGE_TITLE: `Connect to your Azure Blob Storage Account`,
     INIT_IOT_CDE_SELECT_STORAGE_SUBTITLE: `Select the Azure Blob Storage account and container that match the Storage account and container used by Continuous Data Export in IoT Central.`,
     INIT_IOT_CDE_SELECT_STORAGE_SUBTITLE2: `To learn how to set up Continuous Data Export in IoT Central, click `,
-    INIT_IOT_CDE_SETUP_DOC_LINK: `https://www.microsoft.com`,
+    INIT_IOT_CDE_SETUP_DOC_LINK: `https://aka.ms/iotcentraldocscontinuousdataexport`,
     INIT_IOT_CDE_SUBTITLE: `Welcome to the Azure IoT Central Analytics solution template. You will be guided through the setup of the data pipe transforming and loading your IoT data into a Power BI desktop file.`,
     INIT_IOT_CDE_SUCCEEDED: `Now we have successfully deployed all components.`,
     INIT_IOT_CDE_TITLE: `Azure IoT Central Analytics`,

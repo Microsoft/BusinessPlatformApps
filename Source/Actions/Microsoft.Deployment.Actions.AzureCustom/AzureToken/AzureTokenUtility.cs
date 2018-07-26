@@ -128,7 +128,7 @@ namespace Microsoft.Deployment.Actions.AzureCustom.AzureToken
             return new AzureTokenRequestMeta(resource, clientId);
         }
 
-        public static string GetAzureAuthUri(string oauthType, string redirect, string authBase)
+        public static string GetAzureAuthUri(string oauthType, string redirect, string authBase, string state = "")
         {
             var meta = GetMetaFromOAuthType(oauthType);
 
@@ -138,7 +138,8 @@ namespace Microsoft.Deployment.Actions.AzureCustom.AzureToken
                 { "prompt", "consent" },
                 { "response_type", "code" },
                 { "redirect_uri", Uri.EscapeDataString(redirect) },
-                { "resource", Uri.EscapeDataString(meta.Resource) }
+                { "resource", Uri.EscapeDataString(meta.Resource) },
+                { "state", Uri.EscapeDataString(state) }
             };
 
             StringBuilder builder = new StringBuilder();

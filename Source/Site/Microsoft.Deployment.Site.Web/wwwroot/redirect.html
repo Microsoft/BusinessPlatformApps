@@ -16,6 +16,15 @@
 
         window.sessionStorage.setItem('queryUrl', JSON.stringify(window.location.href));
 
+        if (!pageToRedirect) {
+            var id = 'state';
+            var regex = new RegExp('[?&]' + id.replace(/[\[\]]/g, '\\$&') + '(=([^&#]*)|&|#|$)');
+            var results = regex.exec(window.location.href);
+            pageToRedirect = (!results || !results[2])
+                ? 'https://powerbi.com'
+                : decodeURIComponent(results[2].replace(/\+/g, ' '));
+        }
+
         window.location.href = pageToRedirect;
     </script>
 </body>
