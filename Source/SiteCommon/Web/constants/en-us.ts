@@ -101,6 +101,8 @@
     BYOE_SUBTITLE: `Entities are collections of related words organized into categories. The template checks whether an entity is mentioned inside each article. You can then click on an entity in the report to cross filter the data. As part of the setup, you can define your own entities which will show up in the report. By default, we start you out with the following entities: Organizations, Locations, and People. As an example, if you are creating a movie themed report you could add Actors and Composers to the default list:`,
     BYOE_TITLE: `Bring Your Own Entities`,
     CC_PROGRESS_SUBTITLE: `This might take a while. Please don't close the browser until all the steps are completed. The setup could take 10-15 minutes.`,
+    CDSA_GET_PBIX_PATH_FAILED:`Failed to get pbix file path.`,
+    CDSA_PROGRESS_DEPLOY_SUCCESS: `Deployment successful.`,
     CDSA_STORAGE_TITLE: `Use your existing cloud storage account?`,
     CDSA_STORAGE_SUBTITLE_1: `We found an existing storage account associated with your data source. Would you like us to use the same storage account?`,
     CDSA_STORAGE_SUBTITLE_2: `We will copy data to your Azure storage account, so you can use all Azure services and tools with this data. See how you can`,

@@ -23,11 +23,11 @@
       },
       {
         "displayname": "Deploy",
-        "filename": "$save('CunaInsights.pbix')",
+        "filename": "$save('CunaInsights.pbix|CunaInsights2.pbix')",
         "redirectInSameTab": true,
         "showDownloadButton": false,
         "showBackButton": false,
-        "name": "$SiteCommon$/pages-gallery/cc-progress.html",
+        "name": "$SiteCommon$/pages-gallery/cdsa-progress.html",
         "uniqueId": "$save(this.MS.UtilityService.getUniqueId(8))"
       }
     ],

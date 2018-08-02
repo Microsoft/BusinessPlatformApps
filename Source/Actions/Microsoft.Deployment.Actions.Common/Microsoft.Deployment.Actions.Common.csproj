@@ -124,6 +124,7 @@
     <Compile Include="PBI\PublishPBIReportCDSA.cs" />
     <Compile Include="PBI\PublishPBIReport.cs" />
     <Compile Include="PBI\UpdatePBIParameters.cs" />
+    <Compile Include="PBI\GetPbixPath.cs" />
     <Compile Include="PBI\WranglePBISSAS.cs" />
     <Compile Include="PBI\WranglePBI.cs" />
     <Compile Include="PowerBiLogin.cs" />
