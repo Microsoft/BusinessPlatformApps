@@ -45,6 +45,16 @@ namespace Microsoft.Deployment.Site.Service
             Constants.SocialGistProvisionKeyUserName = ConfigurationManager.ConnectionStrings["SocialGistRedditUserName"].ToString();
             Constants.SocialGistProvisionKeyPassphrase = ConfigurationManager.ConnectionStrings["SocialGistRedditPassphrase"].ToString();
 
+            //Cuna settings
+            Constants.CunaTokenUrl = ConfigurationManager.ConnectionStrings["CunaTokenUrl"].ToString();
+            Constants.CunaApiUrl = ConfigurationManager.ConnectionStrings["CunaApiUrl"].ToString();
+            Constants.CunaApiAadInstance = ConfigurationManager.ConnectionStrings["CunaApiAadInstance"].ToString();
+            Constants.CunaApiAadTenantId = ConfigurationManager.ConnectionStrings["CunaApiAadTenantId"].ToString();
+            Constants.CunaApiAadClientId = ConfigurationManager.ConnectionStrings["CunaApiAadClientId"].ToString();
+            Constants.CunaApiAadResourceId = ConfigurationManager.ConnectionStrings["CunaApiAadResourceId"].ToString();
+            Constants.CunaApiAadSecret = ConfigurationManager.ConnectionStrings["CunaApiAadSecret"].ToString();
+            Constants.CunaTokenValidateCertificate = ConfigurationManager.ConnectionStrings["CunaTokenValidateCertificate"].ToString();
+
             var appXmlType = config.Formatters.XmlFormatter.SupportedMediaTypes.FirstOrDefault(t => t.MediaType == "application/xml");
             config.Formatters.XmlFormatter.SupportedMediaTypes.Remove(appXmlType);
             //config.Services.Add(typeof(IExceptionLogger), new AiExceptionLogger());

@@ -1,0 +1,32 @@
+﻿<template>
+    <require from="../templates/bpst-link.html"></require>
+
+    <div class="st-float-clear">
+        <h1 class="st-title">${MS.Translate.AX_ENTITY_DATASOURCE_TITLE}</h1>
+        <p class="st-subtitle">${MS.Translate.AX_ENTITY_DATASOURCE_SUBTITLE}</p>
+    </div>
+
+    <div class="st-text smallFontSize">
+        <p>${viewmodel.MS.Translate.AX_ENTITYSTORE_SUBTITLE}</p>
+    </div>
+
+    <!-- AX Entity Data -->
+    <div class="st-float-clear" repeat.for="measurement of measurements">
+        <br />
+        <input type="checkbox" value.bind="measurement.value" class="st-checkbox"
+               checked.bind="measurement.selected"
+               change.delegate="$parent.measurementSelected(measurement)">
+        <label class="st-checkbox-title">
+            ${measurement.title}
+            <br />
+            <label class="st-checkbox-subtitle">${measurement.subtitle}</label>
+        </label>
+    </div>
+
+    <div class="st-text smallFontSize">
+        <p>
+            ${viewmodel.MS.Translate.AX_DATAMOVEMENT_SUBTITLE} ${viewmodel.MS.Translate.AX_DATAMOVEMENT_AGREEMENT_1} <a href="${MS.Translate.NAVBAR_TERMS_USE_LINK}">${MS.Translate.AX_DATAMOVEMENT_AGREEMENT_2}</a> ${viewmodel.MS.Translate.AX_DATAMOVEMENT_AGREEMENT_3}
+        </p>
+    </div>
+
+</template>

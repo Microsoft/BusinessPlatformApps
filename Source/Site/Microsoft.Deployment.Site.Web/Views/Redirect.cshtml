@@ -1,0 +1,37 @@
+﻿@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+</head>
+<body>
+    <script>
+        @{
+            var authCode = @ViewData["samlAuthCode"];
+            string authCodeString = (authCode == null) ? null : authCode.ToString();
+        }
+        window.sessionStorage.setItem('samlAuthCode', JSON.stringify('@authCodeString'));
+        var templateName = JSON.parse(window.sessionStorage.getItem('Template Name'));
+        var route = JSON.parse(window.sessionStorage.getItem('Current Route'));
+        var pageToRedirect = JSON.parse(window.sessionStorage.getItem('Current Page'));
+
+        if (window.sessionStorage.getItem('queryUrl')) {
+            window.sessionStorage.removeItem('queryUrl');
+        }
+
+        window.sessionStorage.setItem('queryUrl', JSON.stringify(window.location.href));
+
+        var code = JSON.parse(window.sessionStorage.getItem('samlAuthCode'));
+        console.log('Code : ' + code);
+        console.log('PageToRedirect : ' + pageToRedirect);
+
+        window.location.href = pageToRedirect;
+    </script>
+</body>
+</html>

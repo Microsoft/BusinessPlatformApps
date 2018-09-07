@@ -1,22 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.Composition;
-using System.Linq;
-using System.Net.Http;
-using System.Net.Http.Headers;
-using System.Threading.Tasks;
-
-using Hyak.Common.Internals;
+﻿using Microsoft.Deployment.Common.ActionModel;
+using Microsoft.Deployment.Common.Controller;
+using Microsoft.Deployment.Common.Helpers;
 using Microsoft.Xrm.Sdk.Messages;
 using Microsoft.Xrm.Sdk.Metadata;
 using Microsoft.Xrm.Sdk.WebServiceClient;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 
-using Microsoft.Deployment.Common.ActionModel;
-using Microsoft.Deployment.Common.Controller;
-using Microsoft.Deployment.Common.Helpers;
-using System.Threading;
+using Newtonsoft.Json;
+
+using System;
+using System.Collections.Generic;
+using System.ComponentModel.Composition;
+using System.Net;
+using System.Threading.Tasks;
 
 namespace Microsoft.Deployment.Common.Actions.MsCrm
 {
@@ -27,9 +22,12 @@ namespace Microsoft.Deployment.Common.Actions.MsCrm
 
         public override async Task<ActionResponse> ExecuteActionAsync(ActionRequest request)
         {
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
+            ServicePointManager.Expect100Continue = false;
+            ServicePointManager.CheckCertificateRevocationList = true;
+
             string refreshToken = request.DataStore.GetJson("MsCrmToken")["refresh_token"].ToString();
             string organizationUrl = request.DataStore.GetValue("OrganizationUrl");
-            //string[] entities = request.DataStore.GetValue("Entities").Split(new[] { ',', ' ', '\t' }, StringSplitOptions.RemoveEmptyEntries);
             Dictionary<string, string> entities = JsonConvert.DeserializeObject<Dictionary<string, string>>(request.DataStore.GetValue("Entities"));
 
             var crmToken = CrmTokenUtility.RetrieveCrmOnlineToken(refreshToken, request.Info.WebsiteRootUrl, request.DataStore, organizationUrl);

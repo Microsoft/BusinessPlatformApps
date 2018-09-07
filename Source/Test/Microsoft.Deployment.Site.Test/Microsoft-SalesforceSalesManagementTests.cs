@@ -1,17 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using Microsoft.Deployment.Site.Test.TestHelpers;
+﻿using Microsoft.Deployment.Site.Test.TestHelpers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
-using OpenQA.Selenium.PhantomJS;
 using OpenQA.Selenium.Remote;
-using OpenQA.Selenium.Support.UI;
+using System;
+using System.Linq;
+using System.Threading;
 
 namespace Microsoft.Deployment.Site.Web.Tests
 {

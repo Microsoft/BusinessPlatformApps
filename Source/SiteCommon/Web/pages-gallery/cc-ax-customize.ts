@@ -47,7 +47,7 @@ export class Customize extends ViewModelBase {
                 this.MS.DataStore.addToDataStore('AxInstanceName', this.axBaseUrl, DataStoreType.Public);
                 // TODO: Temporary workaround to make use of specific tenant
                 //await this.connectToAzure(this.oauthType, this.isConnectionMicrosoft() ? this.azureDirectory : this.MS.Translate.DEFAULT_TENANT);
-                await this.connectToAzure(this.oauthType, 'maridynamics365.onmicrosoft.com');
+                await this.connectToAzure(this.oauthType, 'contosoax7.onmicrosoft.com');
             } else {
                 this.MS.ErrorService.message = 'Validation failed. The url address ' + this.axBaseUrl + ' is not valid.';
             }

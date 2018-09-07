@@ -223,6 +223,69 @@ namespace Microsoft.Deployment.Common.ErrorResources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Could not fetch information from Cuna API..
+        /// </summary>
+        public static string CunaApiCallFailure {
+            get {
+                return ResourceManager.GetString("CunaApiCallFailure", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cuna API returned no reponse..
+        /// </summary>
+        public static string CunaApiNoResponse {
+            get {
+                return ResourceManager.GetString("CunaApiNoResponse", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Failed to process response from Cuna.
+        /// </summary>
+        public static string CunaApiResponseProcessingFailed {
+            get {
+                return ResourceManager.GetString("CunaApiResponseProcessingFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Failed to validate the authentication token.
+        /// </summary>
+        public static string CunaAuthTokenValidationFailed {
+            get {
+                return ResourceManager.GetString("CunaAuthTokenValidationFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Failed to get Cuna API access token.
+        /// </summary>
+        public static string CunaGetApiAccessTokenFailed {
+            get {
+                return ResourceManager.GetString("CunaGetApiAccessTokenFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Invalid request.
+        /// </summary>
+        public static string CunaInvalidRequest {
+            get {
+                return ResourceManager.GetString("CunaInvalidRequest", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to An error occured while creating datapool reference..
+        /// </summary>
+        public static string DatapoolCreateError {
+            get {
+                return ResourceManager.GetString("DatapoolCreateError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Please contact us using the provided email link.
         /// </summary>
         public static string DefaultAdditionalDetailsMessage {

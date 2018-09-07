@@ -4,9 +4,10 @@
         {
           "architectureDiagram": "dist/Apps/Microsoft/Released/Microsoft-FinanceInsightsCreditAndCollections/Web/Images/creditAndCollectionsArchDiagram.png",
           "displayname": "Getting Started",
-          "list1Title": "To set up Finance Insights you will need:",
+          "list1Title": "To set up BYOD v2 you will need:",
           "list1": [
             "$translate(INIT_GETTING_STARTED_D365_FINANCE_OPERATIONS)",
+            "$translate(INIT_GETTING_STARTED_AZURE_DATALAKE_STORAGE)",
             "$translate(INIT_GETTING_STARTED_POWERBI_DESKTOP)",
             "$translate(INIT_GETTING_STARTED_POWERBI_PRO)"
           ],
@@ -23,8 +24,17 @@
           "name": "$SiteCommon$/pages-gallery/cc-ax-customize.html"
         },
         {
+          "displayname": "Storage account",
+          "name": "$SiteCommon$/pages-gallery/cc-storage-details.html",
+          "skip": "$run(this.MS.DataStore.getValue('StorageAccountName') !== null && this.MS.DataStore.getValue('StorageAccountKey') !== null && this.MS.DataStore.getValue('StorageAccountName') !== '' && this.MS.DataStore.getValue('StorageAccountKey') !== '')"
+        },
+        {
           "displayname": "Your Storage account",
           "name": "$SiteCommon$/pages-gallery/cc-cdsa-storage.html"
+        },
+        {
+          "displayname": "Choose Data",
+          "name": "$SiteCommon$/pages-gallery/cc-ax-entitydata.html"
         },
         {
           "displayname": "Connect to Power BI",

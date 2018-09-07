@@ -28,7 +28,6 @@ namespace Microsoft.Deployment.Actions.Custom.Ax
             using (HttpClient client = new HttpClient())
             {
                 client.BaseAddress = new Uri(instance);
-                ;
                 client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", axToken.ToString());
 
                 var response = await client.GetAsync($"data/CDSAIntegrationEntities");
@@ -38,34 +37,27 @@ namespace Microsoft.Deployment.Actions.Custom.Ax
                     return new ActionResponse(ActionStatus.Failure, JsonUtility.GetJsonObjectFromJsonString(response.Content.ReadAsStringAsync().Result), null, "AxWrongPlatform", response.Content.ReadAsStringAsync().Result);
                 }
 
-                if(!populateCDSAConfiguration(request, response.Content.ReadAsStringAsync().Result))
-                {
-                    return new ActionResponse(ActionStatus.Failure, JsonUtility.GetJsonObjectFromJsonString(response.Content.ReadAsStringAsync().Result), null, "AxWrongPlatform", response.Content.ReadAsStringAsync().Result);
-                }
+                populateCDSAConfiguration(request, response.Content.ReadAsStringAsync().Result);
             }
 
             return new ActionResponse(ActionStatus.Success);
         }
 
-        private bool populateCDSAConfiguration(ActionRequest request, string response)
+        private void populateCDSAConfiguration(ActionRequest request, string response)
         {
             if (JsonUtility.GetJObjectFromJsonString(response).SelectToken("value") != null && JsonUtility.GetJObjectFromJsonString(response).SelectToken("value").Count() > 0)
             {
                 var cdsaConfiguration = JsonUtility.Deserialize<Dictionary<string, string>>(JsonUtility.GetJObjectFromJsonString(response).SelectToken("value")[0]);
                 string storageAccountName, storageAccountKey, azureSubscriptionId, azureResourceGroupName, keyVaultName, keyVaultSecretName;
 
-                if (!cdsaConfiguration.TryGetValue("StorageAccountName", out storageAccountName) || !cdsaConfiguration.TryGetValue("StorageAccountKey", out storageAccountKey)
-                    || !cdsaConfiguration.TryGetValue("AzureSubscriptionId", out azureSubscriptionId) || !cdsaConfiguration.TryGetValue("AzureResourceGroupName", out azureResourceGroupName)
-                    || !cdsaConfiguration.TryGetValue("KeyVaultName", out keyVaultName) || !cdsaConfiguration.TryGetValue("KeyVaultSecretName", out keyVaultSecretName))
-                {
-                    return false;
-                }
+                storageAccountName = storageAccountKey = azureSubscriptionId = azureResourceGroupName = keyVaultName = keyVaultSecretName = null;
 
-                if(string.IsNullOrEmpty(storageAccountName) || string.IsNullOrEmpty(storageAccountKey) || string.IsNullOrEmpty(azureSubscriptionId) 
-                    || string.IsNullOrEmpty(azureResourceGroupName) || string.IsNullOrEmpty(keyVaultName) || string.IsNullOrEmpty(keyVaultSecretName))
-                {
-                    return false;
-                }
+                cdsaConfiguration.TryGetValue("StorageAccountName", out storageAccountName);
+                cdsaConfiguration.TryGetValue("StorageAccountKey", out storageAccountKey);
+                cdsaConfiguration.TryGetValue("AzureSubscriptionId", out azureSubscriptionId);
+                cdsaConfiguration.TryGetValue("AzureResourceGroupName", out azureResourceGroupName);
+                cdsaConfiguration.TryGetValue("KeyVaultName", out keyVaultName);
+                cdsaConfiguration.TryGetValue("KeyVaultSecretName", out keyVaultSecretName);
 
                 request.DataStore.AddToDataStore("StorageAccountName", storageAccountName, DataStoreType.Private);
                 request.DataStore.AddToDataStore("StorageAccountKey", storageAccountKey, DataStoreType.Private);
@@ -73,9 +65,7 @@ namespace Microsoft.Deployment.Actions.Custom.Ax
                 request.DataStore.AddToDataStore("KeyVaultResourceGroupName", azureResourceGroupName, DataStoreType.Private);
                 request.DataStore.AddToDataStore("KeyVaultName", keyVaultName, DataStoreType.Private);
                 request.DataStore.AddToDataStore("KeyVaultSecretPath", keyVaultSecretName, DataStoreType.Private);
-                return true;
             }
-            return false;
         }
     }
 }

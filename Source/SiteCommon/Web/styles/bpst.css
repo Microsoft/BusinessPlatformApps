@@ -774,6 +774,27 @@ ul {
     opacity: 0.6;
 }
 
+.st-checkbox {
+    float: left;
+    height: 25px;
+    margin-right: 20px;
+    width: 25px;
+}
+
+.st-checkbox-title {
+    display: table-cell;
+    font-size: 15px;
+    font-weight: bold;
+    margin-top: 10px;
+    vertical-align: top;
+}
+
+.st-checkbox-subtitle {
+    font-size: 14px;
+    font-weight: normal;
+    vertical-align: top;
+}
+
 /********************************************************************************************
 * Spinner
 ********************************************************************************************/

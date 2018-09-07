@@ -28,7 +28,7 @@ namespace Microsoft.Deployment.Actions.Custom.Ax
 
             using (HttpClient client = new HttpClient())
             {
-                client.BaseAddress = new Uri(request.DataStore.GetValue("PBIClusterUri"));
+                client.BaseAddress = new Uri(Constants.PowerBiApiUrl);
 
                 client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", pbiToken.ToString());
 
@@ -47,7 +47,7 @@ namespace Microsoft.Deployment.Actions.Custom.Ax
                     request.DataStore.AddToDataStore("PBIDatapoolId", JsonUtility.GetJObjectProperty(JsonUtility.GetJsonObjectFromJsonString(response.Content.ReadAsStringAsync().Result), "id"), DataStoreType.Public);
                     return new ActionResponse(ActionStatus.Success);
                 }
-                return new ActionResponse(ActionStatus.Failure, JsonUtility.GetJsonObjectFromJsonString(response.Content.ReadAsStringAsync().Result), null, "AxWrongPlatform", response.Content.ReadAsStringAsync().Result);
+                return new ActionResponse(ActionStatus.Failure, JsonUtility.GetJsonObjectFromJsonString(response.Content.ReadAsStringAsync().Result), null, "DatapoolCreateError", response.StatusCode.ToString());
             }
         }
     }

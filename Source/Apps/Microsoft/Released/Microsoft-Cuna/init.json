@@ -1,0 +1,49 @@
+{
+  "Install": {
+    "Pages": [
+      {
+        "architectureDiagram": "dist/Apps/Microsoft/Released/Microsoft-Cuna/Web/Images/cuna-landing.png",
+        "displayname": "Getting Started",
+        "list2": [
+          "$translate(CUNA_LANDING_OVERVIEW)",
+          "$translate(CUNA_LANDING_DESCRIPTION)"
+        ],
+        "name": "$SiteCommon$/pages-gallery/getting-started.html",
+        "subtitle": "$translate(CUNA_LANDING_SUBTITLE)",
+        "templateName": "$translate(CUNA_LANDING_TITLE)"
+      },
+      {
+        "displayname": "Connect to Cuna",
+        "name": "cuna-login.html"
+      },
+      {
+        "displayname": "Connect to Power BI",
+        "name": "$SiteCommon$/pages-gallery/pbi-customize.html"
+      },
+      {
+        "displayname": "Deploy",
+        "filename": "$save('CunaInsights.pbix')",
+        "name": "$SiteCommon$/pages-gallery/cc-progress.html",
+        "uniqueId": "$save(this.MS.UtilityService.getUniqueId(8))"
+      }
+    ],
+
+    "Actions": [
+      {
+        "DeploymentName": "CunaAPIAccessToken",
+        "displayname": "$translate(CUNA_GETTING_ACCESS_TOKEN)",
+        "name": "Microsoft-GetCunaApiAccessToken"
+      },
+      {
+        "DeploymentName": "BYOSDetails",
+        "displayname": "$translate(CUNA_FETCHING_STORAGE_DETAILS)",
+        "name": "Microsoft-GetCunaByosDetails"
+      },
+      {
+        "DeploymentName": "CreatePowerBIDatapoolReference",
+        "displayname": "$translate(POWER_BI_DATAPOOL_REFERENCE)",
+        "name": "Microsoft-CreatePBIDatapoolReference"
+      }
+    ]
+  }
+}

@@ -1,0 +1,66 @@
+﻿<template>
+    <require from="../templates/bpst-link.html"></require>
+
+    <div class="st-float-clear">
+        <h1 class="st-title">${MS.Translate.STORAGE_DETAILS_TITLE}</h1>
+        <p class="st-subtitle">${MS.Translate.STORAGE_DETAILS_SUBTITLE_1} <a href="${MS.Translate.STORAGE_DETAILS_LINK}">${MS.Translate.STORAGE_DETAILS_SUBTITLE_1_LINK}</a></p>
+        <p class="st-subtitle">${MS.Translate.CDSA_STORAGE_SUBTITLE_2} <a href="${MS.Translate.STORAGE_ACCOUNT_LINK}">${MS.Translate.CDSA_STORAGE_SUBTITLE_2_LINK}</a></p>
+        <p class="st-subtitle">${MS.Translate.CDSA_STORAGE_SUBTITLE_3} <a href="${MS.Translate.STORAGE_ACCOUNT_COST_LINK}">${MS.Translate.CDSA_STORAGE_SUBTITLE_3_LINK}</a></p>
+    </div>
+
+    <div if.bind="isActivated && !isValidated && !showPricingConfirmation">
+        <p class="st-subtitle">${MS.Translate.AZURE_LOGIN_DONT_HAVE}</p>
+        <p class="st-text">
+            <bpst-link a-description="${MS.Translate.AZURE_LOGIN_GET_STARTED}" a-link="${MS.Translate.AZURE_LOGIN_LINK}" a-link-text="${MS.Translate.AZURE_LOGIN_LINK_DESCRIPTION}"></bpst-link>
+        </p>
+
+        <p class="st-subtitle">${MS.Translate.AZURE_LOGIN_HAVE}</p>
+        <p class="st-text">${MS.Translate.AZURE_LOGIN_CONNECTION}</p>
+        <div class="st-float">
+            <select class="btn btn-default dropdown-toggle st-input" disabled.bind="MS.HttpService.isServiceBusy" value.bind="connectionType">
+                <option value.bind="azureConnection.Organizational">${MS.Translate.AZURE_LOGIN_ORGANIZATIONAL}</option>
+                <option value.bind="azureConnection.Microsoft">${MS.Translate.AZURE_LOGIN_MICROSOFT}</option>
+            </select>
+        </div>
+
+        <div class="st-float" if.bind="connectionType == azureConnection.Microsoft">
+            <p class="st-text">${MS.Translate.AZURE_LOGIN_DIRECTORY}</p>
+            <input class="st-input" placeholder="${MS.Translate.AZURE_LOGIN_DIRECTORY_ADDRESS}" type="text" change.delegate="onInvalidate()" disabled.bind="MS.HttpService.isServiceBusy" value.bind="azureDirectory" />
+            <p class="st-text">
+                <bpst-link a-description="${MS.Translate.AZURE_LOGIN_DIRECTORY_TEXT}" a-link="${MS.Translate.AZURE_LOGIN_DIRECTORY_LINK}" a-link-text="${MS.Translate.AZURE_LOGIN_DIRECTORY_DESCRIPTION}"></bpst-link>
+            </p>
+        </div>
+
+        <div class="st-float">
+            <button class="primary" click.trigger="connect()" disabled.bind="MS.HttpService.isServiceBusy">${MS.Translate.AZURE_LOGIN_CONNECT}</button>
+        </div>
+    </div>
+
+    <div class="st-float" if.bind="subscriptionsList && subscriptionsList.length > 0">
+        <p class="st-text">${MS.Translate.AZURE_LOGIN_SUBSCRIPTION}</p>
+        <select class="btn btn-default dropdown-toggle st-input" click.trigger="changeSubscription()" disabled.bind="MS.HttpService.isServiceBusy" if.bind="isActivated && showPricingConfirmation" value.bind="selectedSubscriptionId">
+            <option repeat.for="item of subscriptionsList" value.bind="item.SubscriptionId">${item.DisplayName}</option>
+        </select>
+    </div>
+
+    <div class="st-float" if.bind="!MS.HttpService.isServiceBusy && showPricingConfirmation">
+        <p class="st-float st-text" click.trigger="showAdvanced = !showAdvanced">
+            <span class="glyphicon pbi-glyph-circlering glyph-small st-toggle" if.bind="showAdvanced"></span>
+            <span class="st-toggle-collapse" if.bind="showAdvanced">-</span>
+            <span class="glyphicon pbi-glyph-addcircle glyph-small st-toggle" if.bind="!showAdvanced"></span>
+            <span>${MS.Translate.COMMON_ADVANCED_OPTIONAL}</span>
+        </p>
+        <div class="st-float" if.bind="showAdvanced">
+            <p class="st-text">${MS.Translate.AZURE_LOGIN_RESOURCE_GROUP}</p>
+            <input class="st-input" type="text" disabled.bind="MS.HttpService.isServiceBusy" value.bind="selectedResourceGroup" />
+
+            <div if.bind="showLocations && azureLocations && azureLocations.length > 0">
+                <p class="st-text">${MS.Translate.RESOURCE_GROUP_LOCATION}</p>
+                <select class="btn btn-default dropdown-toggle st-input" click.trigger="changeLocation()" disabled.bind="MS.HttpService.isServiceBusy" value.bind="selectedLocationName">
+                    <option repeat.for="azureLocation of azureLocations" value.bind="azureLocation.Name">${azureLocation.DisplayName}</option>
+                </select>
+            </div>
+        </div>
+    </div>
+
+</template>

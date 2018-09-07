@@ -24,6 +24,7 @@ namespace Microsoft.Deployment.Actions.Custom.Ax
             var axToken = request.DataStore.GetJson("AxToken", "access_token").ToString();
             string axInstance = request.DataStore.GetValue("AxInstanceName");
             string axInstanceAction = request.DataStore.GetValue("AxInstanceEntityAction");
+            string selectedMeasurements = request.DataStore.GetValue("SelectedMeasurements");
 
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls11 | SecurityProtocolType.Tls12;
 
@@ -34,7 +35,7 @@ namespace Microsoft.Deployment.Actions.Custom.Ax
                 client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", axToken.ToString());
 
                 dynamic payload = new ExpandoObject();
-                payload.measurementName = Constants.CustCollectionsBIMeasurements;
+                payload.measurementName = selectedMeasurements;
 
                 var response = await client.PostAsync(axInstance.Trim() + axInstanceAction, new StringContent(JsonConvert.SerializeObject(payload), Encoding.UTF8, "application/json"));
 

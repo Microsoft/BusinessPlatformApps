@@ -327,4 +327,25 @@
   <data name="AxAuthorizationError" xml:space="preserve">
     <value>Your account does not have Administrator privileges for this instance of Dynamics 365</value>
   </data>
+  <data name="DatapoolCreateError" xml:space="preserve">
+    <value>An error occured while creating datapool reference.</value>
+  </data>
+  <data name="CunaApiNoResponse" xml:space="preserve">
+    <value>Cuna API returned no reponse.</value>
+  </data>
+  <data name="CunaApiCallFailure" xml:space="preserve">
+    <value>Could not fetch information from Cuna API.</value>
+  </data>
+  <data name="CunaApiResponseProcessingFailed" xml:space="preserve">
+    <value>Failed to process response from Cuna</value>
+  </data>
+  <data name="CunaAuthTokenValidationFailed" xml:space="preserve">
+    <value>Failed to validate the authentication token</value>
+  </data>
+  <data name="CunaGetApiAccessTokenFailed" xml:space="preserve">
+    <value>Failed to get Cuna API access token</value>
+  </data>
+  <data name="CunaInvalidRequest" xml:space="preserve">
+    <value>Invalid request</value>
+  </data>
 </root>

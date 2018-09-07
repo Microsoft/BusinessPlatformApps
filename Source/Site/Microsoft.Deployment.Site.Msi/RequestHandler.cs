@@ -172,5 +172,15 @@ namespace Installer
             request.Url = newUrl;
             browserControl.Load(newUrl);
         }
+
+        public bool CanGetCookies(IWebBrowser browserControl, IBrowser browser, IFrame frame, IRequest request)
+        {
+            return false;
+        }
+
+        public bool CanSetCookie(IWebBrowser browserControl, IBrowser browser, IFrame frame, IRequest request, Cookie cookie)
+        {
+            return false;
+        }
     }
 }

@@ -35,6 +35,11 @@ export class UtilityService {
         window.location.href = await this.MS.HttpService.getExecuteResponseAsync('Microsoft-GetFacebookAuthUri');
     }
 
+    async connectToCuna(): Promise<void> {
+        let returnValue = await this.MS.HttpService.getExecuteResponseAsync('Microsoft-GetCunaAuthUri');
+        window.location.href = returnValue;
+    }
+
     extractDomain(username: string): string {
         let usernameSplit: string[] = username.split('\\');
         return usernameSplit[0];

@@ -230,7 +230,7 @@ The second report dives deeper into events and shows a historical view of errors
 
 ## Estimated costs
 
-Here is an estimate of the Azure costs (Azure Function, Data Factory, Azure SQL) involved:
+Here is an estimate of the Azure costs (Azure Function, Data Factory, Azure SQL) involved. All prices are in USD. Keep in mind that prices vary by region, so you should always look up the latest prices of the individual services to get the actual prices.
 
 The following defaults are set for you in the template (you can modify any of these after things get set up):
 
