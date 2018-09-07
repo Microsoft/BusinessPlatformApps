@@ -252,6 +252,7 @@
     <Compile Include="Common\GetEmail.cs" />
     <Compile Include="Common\VerifyConnectionToLogicApp.cs" />
     <Compile Include="IoTContinuousDataExport\DeployIoTCDEDataFactory.cs" />
+    <Compile Include="IoTContinuousDataExport\TriggerFunctionApp.cs" />
     <Compile Include="IoTContinuousDataExport\DeployIoTCDEFunctionCode.cs" />
     <Compile Include="IoTContinuousDataExport\DeployIoTCDEAzureFunction.cs" />
     <Compile Include="EventHub\GetEventHubKeys.cs" />
