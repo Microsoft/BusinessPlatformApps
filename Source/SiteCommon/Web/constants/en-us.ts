@@ -424,6 +424,7 @@
     INIT_ACTION_START_REDDIT_PIPELINE: `Starting Reddit Data Sync`,
     INIT_ACTION_STARTING_D365_PROFILE: `Starting Dynamics 365 Profile`,
     INIT_ACTION_STARTING_INFORMATICA_TASK: `Starting Informatica Task`,
+    INIT_ACTION_TRIGGER_FUNCTION_TORUN: `Triggering Azure Function code to run`,
     INIT_ACTION_UPDATING_APIM_POLICY: `Updating API Management Policy`,
     INIT_ACTION_UPDATING_COGNITIVE_SERVICE_CONNECTOR: `Updating connector`,
     INIT_ACTION_UPDATING_LOGIC_APP_CONNECTOR: `Updating Logic App connector`,

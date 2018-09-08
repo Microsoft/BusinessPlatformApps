@@ -114,7 +114,7 @@
       },
       {
         "baseFunctionFolder": "service/data",
-        "displayname": "$translate(INIT_ACTION_DEPLOYING_FUNCTION_CODE)",
+        "displayname": "$translate(INIT_ACTION_TRIGGER_FUNCTION_TORUN)",
         "name": "Microsoft-TriggerFunctionApp"
       }
     ]
