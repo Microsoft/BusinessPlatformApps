@@ -52,9 +52,9 @@ public static async Task Run(CloudBlockBlob myBlob, TraceWriter log)
                         var deviceId = record.GetField<string>("id");
 
                         var connectionDeviceId = string.Empty;
-                        if (fields.Any(field => field.Name == "connectionDeviceId"))
+                        if (fields.Any(field => field.Name == "deviceId"))
                         {
-                            connectionDeviceId = record.GetField<string>("connectionDeviceId");
+                            connectionDeviceId = record.GetField<string>("deviceId");
                         }
 
                         var deviceName = record.GetField<string>("name");
