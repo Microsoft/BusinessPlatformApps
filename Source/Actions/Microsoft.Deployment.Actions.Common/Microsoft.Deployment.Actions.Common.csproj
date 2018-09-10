@@ -117,12 +117,14 @@
     <Compile Include="GetMsiDownloadLink.cs" />
     <Compile Include="InsertInitialCounts.cs" />
     <Compile Include="PBI\CreatePBIDatapoolReference.cs" />
+    <Compile Include="PBI\CreatePBIWorkspace.cs" />
     <Compile Include="PBI\GetPBIClusterUri.cs" />
     <Compile Include="PBI\GetPBIWorkspacesCDSA.cs" />
     <Compile Include="PBI\GetPBIWorkspaces.cs" />
     <Compile Include="PBI\PublishPBIReportCDSA.cs" />
     <Compile Include="PBI\PublishPBIReport.cs" />
     <Compile Include="PBI\UpdatePBIParameters.cs" />
+    <Compile Include="PBI\GetPbixPath.cs" />
     <Compile Include="PBI\WranglePBISSAS.cs" />
     <Compile Include="PBI\WranglePBI.cs" />
     <Compile Include="PowerBiLogin.cs" />

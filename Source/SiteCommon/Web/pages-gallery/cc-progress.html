@@ -2,20 +2,20 @@
     <require from="../templates/bpst-link.html"></require>
 
     <h1 class="st-title">${MS.Translate.PROGRESS_TITLE}</h1>
-    <p class="st-subtitle" if.bind="!publishReportLink">${MS.Translate.PROGRESS_SUBTITLE}</p>
+    <p class="st-subtitle" if.bind="!publishReportLink">${MS.Translate.CC_PROGRESS_SUBTITLE}</p>
     <p class="st-subtitle" if.bind="publishReportLink">${MS.Translate.PROGRESS_REPORT_DEPLOYED}</p>
 
     <!-- PBIX Download -->
     <div class="st-float" if.bind="MS.DeploymentService.isFinished && !MS.DeploymentService.hasError && !isUninstall">
         <p class="st-privacy smallFontSize" if.bind="isPbixReady">
-            <a class="st-button-left" href.bind="pbixDownloadLink" target="${MS.HttpService.isOnPremise ? '_self' : '_blank'}">
+            <a class="st-button-left" if.bind="showDownloadButton" href.bind="pbixDownloadLink" target="${MS.HttpService.isOnPremise ? '_self' : '_blank'}">
                 <button class="primary">${MS.Translate.PROGRESS_DOWNLOAD_PBIX}</button>
             </a>
             <button class="primary" click.trigger="publishReport()" disabled.bind="MS.HttpService.isServiceBusy" if.bind="showPublishReport">${MS.Translate.PROGRESS_PUBLISH_PBIX}</button>
-            <a href.bind="publishReportLink" if.bind="publishReportLink" target="${MS.HttpService.isOnPremise ? '_self' : '_blank'}">
+            <a href.bind="publishReportLink" if.bind="publishReportLink" target="${MS.HttpService.isOnPremise || redirectInSameTab ? '_self' : '_blank'}">
                 <button class="primary">${MS.Translate.PROGRESS_VIEW_PBIX}</button>
             </a>
-            <bpst-link class="st-float" a-description="${downloadPbiText}" a-link="https://powerbi.microsoft.com/en-us/downloads/" a-link-text="${MS.Translate.COMMON_HERE}"></bpst-link>
+            <bpst-link class="st-float" if.bind="showDownloadButton" a-description="${downloadPbiText}" a-link="https://powerbi.microsoft.com/en-us/downloads/" a-link-text="${MS.Translate.COMMON_HERE}"></bpst-link>
         </p>
         <div class="smallFontSize" if.bind="!isPbixReady">
             <span class="st-loader st-loader-tiny st-loader-pbi"></span>

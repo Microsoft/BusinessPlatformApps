@@ -28,8 +28,6 @@
         window.sessionStorage.setItem('queryUrl', JSON.stringify(window.location.href));
 
         var code = JSON.parse(window.sessionStorage.getItem('samlAuthCode'));
-        console.log('Code : ' + code);
-        console.log('PageToRedirect : ' + pageToRedirect);
 
         window.location.href = pageToRedirect;
     </script>

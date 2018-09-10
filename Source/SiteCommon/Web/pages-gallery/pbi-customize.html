@@ -6,6 +6,10 @@
         <button class="primary" click.trigger="connect()" disabled.bind="MS.HttpService.isServiceBusy">${MS.Translate.POWER_BI_LOGIN_CONNECT}</button>
     </div>
 
+    <div class="st-float-clear" if.bind="creatingWorkspace">
+        <p class="st-text">${MS.Translate.POWER_BI_CREATING_WORKSPACE}</p>
+    </div>
+
     <div class="st-float-clear" if.bind="pbiWorkspaces && pbiWorkspaces.length > 0">
         <p class="st-text">${MS.Translate.POWER_BI_INSTANCES}</p>
         <select class="btn btn-default dropdown-toggle st-input" disabled.bind="MS.HttpService.isServiceBusy" value.bind="selectedPBIWorkspaceId">

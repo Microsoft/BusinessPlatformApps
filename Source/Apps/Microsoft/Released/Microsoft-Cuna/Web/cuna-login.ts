@@ -5,15 +5,13 @@ import { ViewModelBase } from '../../../../../SiteCommon/Web/services/view-model
 
 export class CunaLogin extends ViewModelBase {
 
-    public isValidated: boolean = false;
-
     public async onClickLogin(): Promise<void> {
         await this.MS.UtilityService.connectToCuna();
     }
 
     async onLoaded(): Promise<void> {
         super.onLoaded();
-
+        
         if (await this.validateCunaToken()) {
             this.setValidated();
         }

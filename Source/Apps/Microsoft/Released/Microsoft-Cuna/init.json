@@ -18,12 +18,16 @@
       },
       {
         "displayname": "Connect to Power BI",
-        "name": "$SiteCommon$/pages-gallery/pbi-customize.html"
+        "name": "$SiteCommon$/pages-gallery/pbi-customize.html",
+        "createWorkspaceIfEmpty":  true
       },
       {
         "displayname": "Deploy",
-        "filename": "$save('CunaInsights.pbix')",
-        "name": "$SiteCommon$/pages-gallery/cc-progress.html",
+        "filename": "$save('CunaInsights.pbix|CunaInsights2.pbix')",
+        "redirectInSameTab": true,
+        "showDownloadButton": false,
+        "showBackButton": false,
+        "name": "$SiteCommon$/pages-gallery/cdsa-progress.html",
         "uniqueId": "$save(this.MS.UtilityService.getUniqueId(8))"
       }
     ],
