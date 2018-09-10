@@ -38,7 +38,7 @@ BEGIN
 				M.booleanValue
 			FROM stage.Measurements AS M WITH(NOLOCK)
 			INNER JOIN CHANGETABLE(CHANGES stage.Measurements, @PreviousChangeTrackingVersion) AS CT ON CT.id = M.id
-			LEFT OUTER JOIN analytics.Devices AS D WITH(NOLOCK) ON D.deviceId = M.deviceId
+			LEFT OUTER JOIN analytics.Devices AS D WITH(NOLOCK) ON D.connectionDeviceId = M.deviceId
 			WHERE [CT].[SYS_CHANGE_VERSION] <= @CurrentChangeTrackingVersion;
 
 			UPDATE ChangeTracking
