@@ -9,14 +9,14 @@ export class ProgressViewModel extends ViewModelBase {
     finishedActionName: string = '';
     hasPowerApp: boolean = false;
     isDataPullDone: boolean = false;
-    isPbixReady: boolean = false;
     isPowerAppReady: boolean = false;
     isUninstall: boolean = false;
     oauthType: string = 'powerbi';
-    pbixDownloadLink: string = '';
+    pbixDownloadLinks: string[] = [];
     powerAppDownloadLink: string = '';
     powerAppFileName: string = '';
-    publishReportLink: string = '';
+    publishReportLinks: any[] = [];
+    publishReportSucceeded: boolean = false;
     recordCounts: any[] = [];
     redirectInSameTab: boolean = false;
     selectedPBIWorkspaceId: string = '';
@@ -32,23 +32,32 @@ export class ProgressViewModel extends ViewModelBase {
     async executeActions(): Promise<void> {
         if (await this.MS.DeploymentService.executeActions() && !this.isUninstall) {
             this.MS.DeploymentService.isFinished = true;
-            await this.wrangle();
+            await this.getPbixPath();
 
-            let response: string = await this.MS.HttpService.getResponseAsync('Microsoft-PublishPBIReportCDSA', {
-                PBIWorkspaceId: this.selectedPBIWorkspaceId,
-                PBIXLocation: this.pbixDownloadLink
-            });
+            if (this.pbixDownloadLinks.length > 1)
+                this.redirectInSameTab = false;
 
-            await this.MS.HttpService.getResponseAsync('Microsoft-UpdatePBIParameters');
+            let index: number = 1;
+            for (let pbixDownloadLink of this.pbixDownloadLinks) {
+                let response: string = await this.MS.HttpService.getResponseAsync('Microsoft-PublishPBIReportCDSA', {
+                    PBIWorkspaceId: this.selectedPBIWorkspaceId,
+                    PBIXLocation: pbixDownloadLink
+                });
 
-            this.publishReportLink = response;
+                await this.MS.HttpService.getResponseAsync('Microsoft-UpdatePBIParameters');   
+                this.publishReportLinks.push({ 'url': response, 'index': index });
+                index++;
+            }
+
+            this.publishReportSucceeded = true;
+            this.showPublishReport = true;
+
             if (!this.showBackButton)
                 this.showBackButtonOnFinalPage = false;
         }
     }
 
     async onLoaded(): Promise<void> {
-        this.publishReportLink = '';
         this.MS.DeploymentService.isFinished = false;
 
         let isDataStoreValid: boolean = true;
@@ -64,30 +73,17 @@ export class ProgressViewModel extends ViewModelBase {
             this.executeActions();
         }
     }
-
-    async publishReport(): Promise<void> {
-        this.MS.UtilityService.connectToAzure(this.oauthType);
-    }
-
-    async wrangle(): Promise<void> {
+    
+    async getPbixPath(): Promise<void> {
         let response: ActionResponse = null;
 
-        response = await this.MS.HttpService.executeAsync('Microsoft-WranglePBI', { FileName: this.filename });
+        response = await this.MS.HttpService.executeAsync('Microsoft-GetPbixPath', { FileName: this.filename });
         
         if (response.IsSuccess) {
-            this.pbixDownloadLink = response.Body.value;
-            this.isPbixReady = true;
+            this.pbixDownloadLinks = JSON.parse(response.Body.Value);
         }
-
-        if (this.hasPowerApp) {
-            let powerAppUri: string = this.MS.DataStore.getValue('PowerAppUri');
-
-            if (powerAppUri) {
-                this.isPowerAppReady = true;
-                this.powerAppDownloadLink = powerAppUri;
-            } else {
-                this.hasPowerApp = false;
-            }
+        else {
+            this.MS.ErrorService.set(this.MS.Translate.CDSA_GET_PBIX_PATH_FAILED);
         }
     }
 }

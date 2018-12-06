@@ -19,7 +19,7 @@ namespace Microsoft.Deployment.Actions.Custom.Ax
     [Export(typeof(IAction))]
     public class CreatePBIDatapoolReference : BaseAction
     {
-        private const string PBI_CREATE_DATAPOOL = "v1.0/myorg/groups/{0}/datapools/createReference";
+        private const string PBI_CREATE_DATAPOOL = "v1.0/myorg/groups/{0}/dataflows/createReference";
 
         public override async Task<ActionResponse> ExecuteActionAsync(ActionRequest request)
         {

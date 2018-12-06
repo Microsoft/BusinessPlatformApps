@@ -11092,7 +11092,7 @@ namespace Microsoft.Bpst.App.Msi.SalesforceSOAP {
         
         private string labelField;
         
-        private ListViewRecordColumn[][] recordsField;
+        private ListViewRecordColumn[] recordsField;
         
         private int sizeField;
         
@@ -11159,7 +11159,7 @@ namespace Microsoft.Bpst.App.Msi.SalesforceSOAP {
         /// <remarks/>
         [System.Xml.Serialization.XmlArrayAttribute(Order=5)]
         [System.Xml.Serialization.XmlArrayItemAttribute("columns", typeof(ListViewRecordColumn), IsNullable=false)]
-        public ListViewRecordColumn[][] records {
+        public ListViewRecordColumn[] records {
             get {
                 return this.recordsField;
             }

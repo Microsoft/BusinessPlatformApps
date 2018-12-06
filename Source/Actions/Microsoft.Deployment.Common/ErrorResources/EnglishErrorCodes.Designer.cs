@@ -502,6 +502,15 @@ namespace Microsoft.Deployment.Common.ErrorResources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Failed to create Power BI workspace..
+        /// </summary>
+        public static string PBIWorkspaceCreateFailed {
+            get {
+                return ResourceManager.GetString("PBIWorkspaceCreateFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to No PowerApp environments were found for this Azure account.
         /// </summary>
         public static string PowerAppNoEnvironment {

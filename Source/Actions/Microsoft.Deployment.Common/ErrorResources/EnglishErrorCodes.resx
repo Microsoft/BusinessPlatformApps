@@ -348,4 +348,7 @@
   <data name="CunaInvalidRequest" xml:space="preserve">
     <value>Invalid request</value>
   </data>
+  <data name="PBIWorkspaceCreateFailed" xml:space="preserve">
+    <value>Failed to create Power BI workspace.</value>
+  </data>
 </root>

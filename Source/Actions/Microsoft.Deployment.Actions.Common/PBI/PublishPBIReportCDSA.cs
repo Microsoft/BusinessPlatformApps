@@ -18,8 +18,8 @@ namespace Microsoft.Deployment.Actions.Common.PBI
         private const int MAXIMUM_IMPORT_STATUS_ATTEMPTS = 92;
         private const int WAIT_IMPORT_STATUS = 5;
 
-        private const string PBI_IMPORT_STATUS_URI = "beta/myorg/{0}imports/{1}";
-        private const string PBI_IMPORT_URI = "beta/myorg/{0}imports/?datasetDisplayName={1}&nameConflict=Abort";
+        private const string PBI_IMPORT_STATUS_URI = "v1.0/myorg/{0}imports/{1}";
+        private const string PBI_IMPORT_URI = "v1.0/myorg/{0}imports/?datasetDisplayName={1}&nameConflict=Abort";
 
         public override async Task<ActionResponse> ExecuteActionAsync(ActionRequest request)
         {

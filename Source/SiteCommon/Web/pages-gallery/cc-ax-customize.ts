@@ -45,23 +45,14 @@ export class Customize extends ViewModelBase {
             }
             if (this.urlRegex.test(this.axBaseUrl)) {
                 this.MS.DataStore.addToDataStore('AxInstanceName', this.axBaseUrl, DataStoreType.Public);
-                // TODO: Temporary workaround to make use of specific tenant
-                //await this.connectToAzure(this.oauthType, this.isConnectionMicrosoft() ? this.azureDirectory : this.MS.Translate.DEFAULT_TENANT);
-                await this.connectToAzure(this.oauthType, 'contosoax7.onmicrosoft.com');
+                // TODO: Temporary workaround to make use of specific tenant                
+                this.azureDirectory = 'contosoax7.onmicrosoft.com';
+                this.MS.UtilityService.connectToAzure(this.oauthType, this.azureDirectory);
             } else {
                 this.MS.ErrorService.message = 'Validation failed. The url address ' + this.axBaseUrl + ' is not valid.';
             }
         }     
     }
-
-    async connectToAzure(openAuthorizationType: string, azureActiveDirectoryTenant: string = this.MS.Translate.DEFAULT_TENANT): Promise<void> {
-        this.MS.DataStore.addToDataStore('AADTenant', azureActiveDirectoryTenant, DataStoreType.Public);
-        window.location.href = await this.MS.HttpService.getExecuteResponseAsync('Microsoft-GetAzureAuthUri', 'value', { oauthType: openAuthorizationType });
-    }
-
-    isConnectionMicrosoft(): boolean {
-        return this.connectionType.toString() === AzureConnection.Microsoft.toString();
-    }   
 
     async getToken(openAuthorizationType: string, callback: () => Promise<void>): Promise<void> {
         let queryParam: any = this.MS.UtilityService.getItem('queryUrl');

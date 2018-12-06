@@ -18,6 +18,7 @@ export class ViewModelBase {
     onNext: any[] = [];
     onValidateActions: any[] = [];
     openAuthorizationType: OpenAuthorizationType = new OpenAuthorizationType();
+    showBackButtonOnFinalPage: boolean = true;
     showValidation: boolean = false;
     showValidationDetails: boolean = false;
     textNext: string = 'Next';

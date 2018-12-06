@@ -9,6 +9,8 @@ export class Customize extends ViewModelBase {
     selectedPBIWorkspaceId: string = '';
     authToken: any = {};
     azureDirectory: string = '';
+    createWorkspaceIfEmpty: boolean = false;
+    creatingWorkspace: boolean = false;
     connectionType: AzureConnection = AzureConnection.Organizational;
     oauthType: string = 'powerbi';
 
@@ -42,7 +44,20 @@ export class Customize extends ViewModelBase {
             this.pbiWorkspaces = await this.MS.HttpService.getResponseAsync('Microsoft-GetPBIWorkspacesCDSA');
 
             if (this.pbiWorkspaces.length == 0) {
-                this.MS.ErrorService.set(this.MS.Translate.POWER_BI_APP_WORKSPACE);
+                if (this.createWorkspaceIfEmpty) {
+                    this.creatingWorkspace = true;
+                    this.MS.DataStore.addToDataStore('pbiWorkspaceName', this.getWorkspaceName(), DataStoreType.Private);
+                    let response = await this.MS.HttpService.getResponseAsync('Microsoft-CreatePBIWorkspace');
+                    this.pbiWorkspaces.push(response);
+                    this.creatingWorkspace = false;
+
+                    if (this.pbiWorkspaces.length == 0) {
+                        this.MS.ErrorService.set(this.MS.Translate.POWER_BI_CREATING_WORKSPACE_FAILED);
+                    }
+                }
+                else {
+                    this.MS.ErrorService.set(this.MS.Translate.POWER_BI_APP_WORKSPACE);
+                }
             }
         }
     }
@@ -66,5 +81,9 @@ export class Customize extends ViewModelBase {
     async onNavigatingNext(): Promise<boolean> {
         this.MS.DataStore.addToDataStore('PBIWorkspaceId', this.selectedPBIWorkspaceId, DataStoreType.Public);        
         return true;
+    }
+
+    getWorkspaceName(): string {
+        return 'Cuna Insights ' + (Math.floor(Math.random() * 1000000)).toString();
     }
 }

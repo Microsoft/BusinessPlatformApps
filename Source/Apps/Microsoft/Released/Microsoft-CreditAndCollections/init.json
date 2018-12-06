@@ -53,23 +53,6 @@
                 "useDefaultValidateButton": true
             },
             {
-                "name": "$SiteCommon$/pages-gallery/choose-analysis-server.html",
-                "displayname": "AAS",
-                "showDescription": true,
-                "ssasEnabled": "true"
-            },
-            {
-                "displayname": "Login to Analysis Services",
-                "name": "$SiteCommon$/pages-gallery/as-login.html",
-                "oauthType": "as",
-                "skip": "$run(this.MS.DataStore.getValue('ssasDisabled') === 'true' ? 'true' : 'false')"
-            },
-            {
-                "name": "$SiteCommon$/pages-gallery/ssas.html",
-                "displayname": "AAS Login",
-                "skip": "$run(this.MS.DataStore.getValue('ssasDisabled') === 'true' ? 'true' : 'false')"
-            },
-            {
                 "displayname": "Summary",
                 "name": "$SiteCommon$/pages-gallery/summary.html",
                 "values": {
@@ -120,28 +103,6 @@
                 "SqlSubGroup": "StandardConfiguration"
             },
             {
-                "displayname": "$translate(INIT_ACTION_DEPLOYING_DATABASE_CONFIGURATION)",
-                "name": "Microsoft-SetConfigValueInSql",
-                "skip": "$run(this.MS.DataStore.getValue('ssasDisabled') === 'true' ? 'true': 'false')",
-                "SqlConfigTable": "[cc].[configuration]",
-                "SqlEntryName": "FunctionName",
-                "SqlEntryValue": "$run('asscheduler' + this.MS.DataStore.getValue('uniqueId'))",
-                "SqlGroup": "SolutionTemplate",
-                "SqlServerIndex": "0",
-                "SqlSubGroup": "SSAS"
-            },
-            {
-                "displayname": "$translate(INIT_ACTION_DEPLOYING_DATABASE_CONFIGURATION)",
-                "name": "Microsoft-SetConfigValueInSql",
-                "skip": "$run(this.MS.DataStore.getAllValues('azureSqlDisabled')[0] === 'true' || this.MS.DataStore.getValue('ssasDisabled') === 'true' ? 'true': 'false')",
-                "SqlConfigTable": "[cc].[configuration]",
-                "SqlEntryName": "FunctionName",
-                "SqlEntryValue": "$run('asscheduler' + this.MS.DataStore.getValue('uniqueId'))",
-                "SqlGroup": "SolutionTemplate",
-                "SqlServerIndex": "0",
-                "SqlSubGroup": "SSAS"
-            },
-            {
                 "displayname": "$translate(NOTIFIER_CONFIGURE_NOTIFIER_APP)",
                 "name": "Microsoft-SetConfigValueInSql",
                 "skip": "$run(!this.MS.DataStore.getValue('SendCompletionNotification'))",
@@ -179,60 +140,6 @@
                 "displayname": "$translate(NOTIFIER_CONFIGURE_NOTIFIER_APP)",
                 "name": "Microsoft-ConfigureNotifier",
                 "SqlConfigTable": "[cc].[configuration]"
-            },
-            {
-                "ASDatabase": "CreditCollections",
-                "displayname": "$translate(INIT_ACTION_DEPLOYING_AS_MODEL)",
-                "name": "Microsoft-DeployAzureASModel",
-                "skip": "$run(this.MS.DataStore.getValue('ssasDisabled') === 'true' ? 'true': 'false')",
-                "SqlConnectionString": "$dsall(SqlConnectionString)[0]",
-                "xmlaFilePath": "Service/AzureAS/CreditAndCollections.xmla"
-            },
-            {
-                "DeploymentName": "ASFunction",
-                "displayname": "$translate(INIT_ACTION_DEPLOYING_AS_SCHEDULER)",
-                "FunctionName": "$save('asscheduler' + this.MS.DataStore.getValue('uniqueId'))",
-                "name": "Microsoft-DeployAzureFunction",
-                "RepoUrl": "https://github.com/MohaaliMicrosoft/AnalysisServicesRefresh",
-                "skip": "$run(this.MS.DataStore.getValue('ssasDisabled') === 'true' ? 'true': 'false')",
-                "sku": "Standard"
-            },
-            {
-                "DeploymentName": "ASFunction",
-                "displayname": "$translate(INIT_ACTION_WAITING_AS_SCHEDULER)",
-                "name": "Microsoft-WaitForArmDeploymentStatus",
-                "skip": "$run(this.MS.DataStore.getValue('ssasDisabled') === 'true' ? 'true': 'false')"
-            },
-            {
-                "displayname": "Create Service Principal",
-                "name": "Microsoft-CreateSpn",
-                "skip": "$run(this.MS.DataStore.getValue('ssasDisabled') === 'true' ? 'true': 'false')"
-            },
-            {
-                "displayname": "Assign Service Principal Permission",
-                "name": "Microsoft-AssignPermissionsForUser",
-                "skip": "$run(this.MS.DataStore.getValue('ssasDisabled') === 'true' ? 'true': 'false')",
-                "UserToAdd": "$ds(SPNUser)",
-                "ASDatabase": "CreditCollections"
-            },
-            {
-                "AppSettingKeys": {
-                    "appId": "$ds(SPNAppId)",
-                    "appKey": "$ds(SPNKey)",
-                    "username": "$ds(SPNUser)",
-                    "tenantId": "$ds(SPNTenantId)",
-                    "asServer": "$ds(ASServerUrl)",
-
-                    "connStringSql": "$dsall(SqlConnectionString)[0]",
-                    "schema": "[cc]",
-                    "databaseAS": "CreditCollections",
-                    "functionName": "$run('asscheduler' + this.MS.DataStore.getValue('uniqueId'))"
-                },
-
-                "DeploymentName": "ASFunction",
-                "displayname": "$translate(INIT_ACTION_SETTING_UP_AS_SCHEDULER)",
-                "name": "Microsoft-DeployAzureFunctionConnectionStrings",
-                "skip": "$run(this.MS.DataStore.getValue('ssasDisabled') === 'true' ? 'true': 'false')"
             },
             {
                 "displayname": "$translate(INIT_ACTION_WAITING_DATA)",

@@ -61,7 +61,6 @@
                 "uniqueId": "$save(this.MS.UtilityService.getUniqueId(10))"
             }
         ],
-
         "Actions": [
             {
                 "CognitiveServiceName": "TextCognitiveService",

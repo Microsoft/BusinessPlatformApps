@@ -5,7 +5,7 @@
     <div>
         <div class="st-float">
             <button class="primary" click.trigger="onClickLogin()"
-                    disabled.bind="MS.HttpService.isServiceBusy">
+                    disabled.bind="MS.HttpService.isServiceBusy || isValidated">
                 ${MS.Translate.CUNA_LOGIN_LOGIN}
             </button>
         </div>

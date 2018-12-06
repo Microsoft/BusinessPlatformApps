@@ -1,0 +1,18 @@
+﻿<template>
+    <require from="../templates/bpst-link.html"></require>
+
+    <h1 class="st-title">${MS.Translate.PROGRESS_TITLE}</h1>
+    <p class="st-subtitle" if.bind="!publishReportSucceeded">${MS.Translate.CC_PROGRESS_SUBTITLE}</p>
+    <p class="st-subtitle" if.bind="publishReportSucceeded">${MS.Translate.CDSA_PROGRESS_DEPLOY_SUCCESS}</p>
+
+    <div class="st-float" 
+         if.bind="MS.DeploymentService.isFinished && !MS.DeploymentService.hasError && !isUninstall">
+        <p class="st-privacy smallFontSize" if.bind="publishReportSucceeded" 
+           repeat.for="publishReportLink of publishReportLinks">
+            <a href.bind="publishReportLink.url" if.bind="publishReportLink.url" 
+               target="${MS.HttpService.isOnPremise || redirectInSameTab ? '_self' : '_blank'}">
+                <button class="primary">${MS.Translate.PROGRESS_VIEW_PBIX + ' [' +  publishReportLink.index + ']'}</button>
+            </a>
+        </p>
+    </div>
+</template>
