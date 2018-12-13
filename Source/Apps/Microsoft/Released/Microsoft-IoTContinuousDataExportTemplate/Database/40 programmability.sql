@@ -19,10 +19,11 @@ BEGIN
 
 		BEGIN TRANSACTION
 
-			INSERT INTO analytics.Measurements (messageId, deviceId, deviceTemplate, measurementDefinition, timestamp, numericValue, stringValue, booleanValue)
+			INSERT INTO analytics.Measurements (messageId, deviceId, connectionDeviceId, deviceTemplate, measurementDefinition, timestamp, numericValue, stringValue, booleanValue)
 			SELECT
 				M.messageId,
 				M.deviceId,
+				D.connectionDeviceId,
 				D.deviceTemplate,
 				(
 					CASE
@@ -37,7 +38,7 @@ BEGIN
 				M.booleanValue
 			FROM stage.Measurements AS M WITH(NOLOCK)
 			INNER JOIN CHANGETABLE(CHANGES stage.Measurements, @PreviousChangeTrackingVersion) AS CT ON CT.id = M.id
-			LEFT OUTER JOIN analytics.Devices AS D WITH(NOLOCK) ON D.deviceId = M.deviceId
+			LEFT OUTER JOIN analytics.Devices AS D WITH(NOLOCK) ON D.connectionDeviceId = M.deviceId
 			WHERE [CT].[SYS_CHANGE_VERSION] <= @CurrentChangeTrackingVersion;
 
 			UPDATE ChangeTracking
@@ -122,17 +123,18 @@ BEGIN
 
 	MERGE [analytics].[Devices]
     USING (
-		SELECT deviceId, deviceTemplate, name, simulated, [timestamp] FROM @tableType 
+		SELECT deviceId, connectionDeviceId, deviceTemplate, name, simulated, [timestamp] FROM @tableType 
 	) AS changes ON changes.deviceId = [analytics].[Devices].deviceId 
 	WHEN MATCHED AND changes.[timestamp] > [analytics].[Devices].[timestamp] THEN
 		UPDATE SET
+			[analytics].[Devices].connectionDeviceId = changes.connectionDeviceId,
 			[analytics].[Devices].deviceTemplate = changes.deviceTemplate,
 			[analytics].[Devices].[name] = changes.[name],
 			[analytics].[Devices].simulated = changes.simulated,
 			[analytics].[Devices].[timestamp] = changes.[timestamp]
 	WHEN NOT MATCHED THEN
-		INSERT (deviceId, deviceTemplate, [name], simulated, [timestamp])
-		VALUES(changes.deviceId, changes.deviceTemplate, changes.[name], changes.simulated, changes.[timestamp]);
+		INSERT (deviceId, connectionDeviceId, deviceTemplate, [name], simulated, [timestamp])
+		VALUES(changes.deviceId, changes.connectionDeviceId, changes.deviceTemplate, changes.[name], changes.simulated, changes.[timestamp]);
 
 END
 GO

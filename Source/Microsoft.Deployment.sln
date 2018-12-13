@@ -7,8 +7,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Actions", "Actions", "{3EBA
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Site", "Site", "{D0A7D024-9346-46B7-9626-562611A43142}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{B4804C9F-2092-4822-BD42-367C4A41AC13}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Microsoft.Deployment.Common", "Actions\Microsoft.Deployment.Common\Microsoft.Deployment.Common.csproj", "{38282763-A8DE-485E-A5EB-E5E969F4385B}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Microsoft.Deployment.Actions.SQL", "Actions\Microsoft.Deployment.Actions.SQL\Microsoft.Deployment.Actions.SQL.csproj", "{E8162254-3B16-4509-BDB8-994A024BDF92}"
@@ -55,8 +53,6 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Microsoft.Deployment.Site.Service", "Site\Microsoft.Deployment.Site.Service\Microsoft.Deployment.Site.Service.csproj", "{398721F5-390C-434D-94DA-6AC281CC7318}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.Deployment.Site.Web", "Site\Microsoft.Deployment.Site.Web\Microsoft.Deployment.Site.Web.csproj", "{B28BB976-B0FF-44CD-B042-125A3EA4545C}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Microsoft.Deployment.Common.Test", "Test\Microsoft.Deployment.Common.Test\Microsoft.Deployment.Common.Test.csproj", "{ADC0E545-4162-4659-8E03-8EC30E714C3F}"
 EndProject
 Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "Apps", "Apps\", "{46648F0F-114B-4CFB-8239-DBF09392237F}"
 	ProjectSection(WebsiteProperties) = preProject
@@ -105,10 +101,6 @@ Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "SiteCommon", "SiteCommon\",
 	ProjectSection(ProjectDependencies) = postProject
 		{B28BB976-B0FF-44CD-B042-125A3EA4545C} = {B28BB976-B0FF-44CD-B042-125A3EA4545C}
 	EndProjectSection
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Microsoft.Deployment.Tests.Actions", "Test\Microsoft.Deployment.Tests.Actions\Microsoft.Deployment.Tests.Actions.csproj", "{535200ED-F603-4706-9905-33CD1E40729A}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Microsoft.Deployment.Site.Test", "Test\Microsoft.Deployment.Site.Test\Microsoft.Deployment.Site.Test.csproj", "{42C76457-AD8D-49BC-B512-B803F22AF80B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -206,14 +198,6 @@ Global
 		{B28BB976-B0FF-44CD-B042-125A3EA4545C}.Release|Any CPU.Build.0 = Release|Any CPU
 		{B28BB976-B0FF-44CD-B042-125A3EA4545C}.Release|x64.ActiveCfg = Release|Any CPU
 		{B28BB976-B0FF-44CD-B042-125A3EA4545C}.Release|x64.Build.0 = Release|Any CPU
-		{ADC0E545-4162-4659-8E03-8EC30E714C3F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{ADC0E545-4162-4659-8E03-8EC30E714C3F}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{ADC0E545-4162-4659-8E03-8EC30E714C3F}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{ADC0E545-4162-4659-8E03-8EC30E714C3F}.Debug|x64.Build.0 = Debug|Any CPU
-		{ADC0E545-4162-4659-8E03-8EC30E714C3F}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{ADC0E545-4162-4659-8E03-8EC30E714C3F}.Release|Any CPU.Build.0 = Release|Any CPU
-		{ADC0E545-4162-4659-8E03-8EC30E714C3F}.Release|x64.ActiveCfg = Release|Any CPU
-		{ADC0E545-4162-4659-8E03-8EC30E714C3F}.Release|x64.Build.0 = Release|Any CPU
 		{46648F0F-114B-4CFB-8239-DBF09392237F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{46648F0F-114B-4CFB-8239-DBF09392237F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{46648F0F-114B-4CFB-8239-DBF09392237F}.Debug|x64.ActiveCfg = Debug|Any CPU
@@ -230,22 +214,6 @@ Global
 		{FEC8E72F-A9F7-4727-A6B0-F056E7AF40DE}.Release|Any CPU.Build.0 = Debug|Any CPU
 		{FEC8E72F-A9F7-4727-A6B0-F056E7AF40DE}.Release|x64.ActiveCfg = Debug|Any CPU
 		{FEC8E72F-A9F7-4727-A6B0-F056E7AF40DE}.Release|x64.Build.0 = Debug|Any CPU
-		{535200ED-F603-4706-9905-33CD1E40729A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{535200ED-F603-4706-9905-33CD1E40729A}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{535200ED-F603-4706-9905-33CD1E40729A}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{535200ED-F603-4706-9905-33CD1E40729A}.Debug|x64.Build.0 = Debug|Any CPU
-		{535200ED-F603-4706-9905-33CD1E40729A}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{535200ED-F603-4706-9905-33CD1E40729A}.Release|Any CPU.Build.0 = Release|Any CPU
-		{535200ED-F603-4706-9905-33CD1E40729A}.Release|x64.ActiveCfg = Release|Any CPU
-		{535200ED-F603-4706-9905-33CD1E40729A}.Release|x64.Build.0 = Release|Any CPU
-		{42C76457-AD8D-49BC-B512-B803F22AF80B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{42C76457-AD8D-49BC-B512-B803F22AF80B}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{42C76457-AD8D-49BC-B512-B803F22AF80B}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{42C76457-AD8D-49BC-B512-B803F22AF80B}.Debug|x64.Build.0 = Debug|Any CPU
-		{42C76457-AD8D-49BC-B512-B803F22AF80B}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{42C76457-AD8D-49BC-B512-B803F22AF80B}.Release|Any CPU.Build.0 = Release|Any CPU
-		{42C76457-AD8D-49BC-B512-B803F22AF80B}.Release|x64.ActiveCfg = Release|Any CPU
-		{42C76457-AD8D-49BC-B512-B803F22AF80B}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -262,9 +230,6 @@ Global
 		{55BCDD2B-279C-4C91-8ECF-E46282A6E2B0} = {D0A7D024-9346-46B7-9626-562611A43142}
 		{398721F5-390C-434D-94DA-6AC281CC7318} = {D0A7D024-9346-46B7-9626-562611A43142}
 		{B28BB976-B0FF-44CD-B042-125A3EA4545C} = {D0A7D024-9346-46B7-9626-562611A43142}
-		{ADC0E545-4162-4659-8E03-8EC30E714C3F} = {B4804C9F-2092-4822-BD42-367C4A41AC13}
-		{535200ED-F603-4706-9905-33CD1E40729A} = {B4804C9F-2092-4822-BD42-367C4A41AC13}
-		{42C76457-AD8D-49BC-B512-B803F22AF80B} = {B4804C9F-2092-4822-BD42-367C4A41AC13}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {7C8FDD12-1021-489C-A1BF-DFB6C9C2B088}

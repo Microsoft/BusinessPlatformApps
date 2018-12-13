@@ -27,9 +27,10 @@ public static async Task Run(CloudBlockBlob myBlob, TraceWriter log, ExecutionCo
 
     await myBlob.FetchAttributesAsync();
     var timestamp = myBlob.Properties.LastModified.Value;
-    if (DateTime.UtcNow.Subtract(timestamp.UtcDateTime) > TimeSpan.FromHours(1))
+    int.TryParse(ConfigurationManager.AppSettings["SQL_CONNECTIONSTRING"], out int historyDataHours);
+    if (historyDataHours > 0 && DateTime.UtcNow.Subtract(timestamp.UtcDateTime) > TimeSpan.FromHours(historyDataHours))
     {
-        log.Info($"{DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ss.fff")} - Blob timestamp: {timestamp} older than 1 hour, ignored");
+        log.Info($"{DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ss.fff")} - Blob timestamp: {timestamp} older than {historyDataHours} hour, ignored");
         return;
     }
 

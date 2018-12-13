@@ -48,7 +48,7 @@ namespace Microsoft.Deployment.Actions.AzureCustom.AzureToken
 
             string oauthType = (request.DataStore.GetValue("oauthType") ?? string.Empty).ToLowerInvariant();
 
-            string currentPage = request.DataStore.GetValue("currentPage");
+            string currentPage = request.DataStore.GetValue("currentPage") ?? string.Empty;
 
             switch (oauthType)
             {

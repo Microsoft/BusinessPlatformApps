@@ -1,6 +1,6 @@
 ﻿<template bindable="router, viewmodel">
     <div class="st-nav">
-        <ul class="st-tabs">
+        <ul class="st-tabs" if.bind="router.pages && router.pages.length > 1">
             <li repeat.for="tab of router.pages">
                 <div class="st-tab ${tab.isActive ? 'st-tab-active' : ''} ${tab.isComplete ? 'st-tab-complete' : ''}">
                     <span class="glyphicon glyph-small pbi-glyph-circlering st-icon"></span>

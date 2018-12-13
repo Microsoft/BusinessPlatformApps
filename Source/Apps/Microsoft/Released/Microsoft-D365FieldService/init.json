@@ -73,24 +73,6 @@
                 "checkSqlVersion": true
             },
             {
-                "name": "$SiteCommon$/pages-gallery/choose-analysis-server.html",
-                "displayname": "AAS",
-                "showDescription": true,
-
-                "ssasEnabled": "true"
-            },
-            {
-                "displayname": "Login to Analysis Services",
-                "name": "$SiteCommon$/pages-gallery/as-login.html",
-                "oauthType": "as",
-                "skip": "$run(this.MS.DataStore.getValue('ssasDisabled'))"
-            },
-            {
-                "name": "$SiteCommon$/pages-gallery/ssas.html",
-                "displayname": "AAS Login",
-                "skip": "$run(this.MS.DataStore.getValue('ssasDisabled'))"
-            },
-            {
                 "displayname": "Summary",
                 "name": "$SiteCommon$/pages-gallery/summary.html",
                 "values": {
@@ -135,71 +117,6 @@
                 "name": "Microsoft-SetConfigValueInSql",
                 "SqlServerIndex": "0",
                 "SqlConfigTable": "[fso].[configuration]"
-            },
-            {
-                "displayname": "$translate(INIT_ACTION_DEPLOYING_DATABASE_CONFIGURATION)",
-                "name": "Microsoft-SetConfigValueInSql",
-                "skip": "$run(this.MS.DataStore.getValue('ssasDisabled') )",
-                "SqlConfigTable": "[fso].[configuration]",
-                "SqlEntryName": "FunctionName",
-                "SqlEntryValue": "$run('asscheduler' + this.MS.DataStore.getValue('uniqueId'))",
-                "SqlGroup": "SolutionTemplate",
-                "SqlServerIndex": "0",
-                "SqlSubGroup": "SSAS"
-            },
-            {
-                "ASDatabase": "FieldService",
-                "displayname": "$translate(INIT_ACTION_DEPLOYING_AS_MODEL)",
-                "name": "Microsoft-DeployAzureASModel",
-                "skip": "$run( this.MS.DataStore.getValue('ssasDisabled') )",
-                "SqlConnectionString": "$dsall(SqlConnectionString)[0]",
-                "xmlaFilePath": "Service/AzureAS/FieldService.xmla"
-            },
-            {
-                "DeploymentName": "ASFunction",
-                "displayname": "$translate(INIT_ACTION_DEPLOYING_AS_SCHEDULER)",
-                "FunctionName": "$save('asscheduler' + this.MS.DataStore.getValue('uniqueId'))",
-                "name": "Microsoft-DeployAzureFunction",
-                "RepoUrl": "https://github.com/MohaaliMicrosoft/AnalysisServicesRefresh",
-                "skip": "$run( this.MS.DataStore.getValue('ssasDisabled') )",
-                "sku": "Standard"
-            },
-            {
-                "DeploymentName": "ASFunction",
-                "displayname": "$translate(INIT_ACTION_WAITING_AS_SCHEDULER)",
-                "name": "Microsoft-WaitForArmDeploymentStatus",
-                "skip": "$run( this.MS.DataStore.getValue('ssasDisabled') )"
-            },
-            {
-                "displayname": "Create Service Principal",
-                "name": "Microsoft-CreateSpn",
-                "skip": "$run(this.MS.DataStore.getValue('ssasDisabled') )"
-            },
-            {
-                "displayname": "Assign Service Principal Permission",
-                "name": "Microsoft-AssignPermissionsForUser",
-                "skip": "$run( this.MS.DataStore.getValue('ssasDisabled') )",
-                "UserToAdd": "$ds(SPNUser)",
-                "ASDatabase": "FieldService"
-            },
-            {
-                "AppSettingKeys": {
-                    "appId": "$ds(SPNAppId)",
-                    "appKey": "$ds(SPNKey)",
-                    "username": "$ds(SPNUser)",
-                    "tenantId": "$ds(SPNTenantId)",
-                    "asServer": "$ds(ASServerUrl)",
-
-                    "connStringSql": "$dsall(SqlConnectionString)[0]",
-                    "schema": "[fso]",
-                    "databaseAS": "FieldService",
-                    "functionName": "$run('asscheduler' + this.MS.DataStore.getValue('uniqueId'))"
-                },
-
-                "DeploymentName": "ASFunction",
-                "displayname": "$translate(INIT_ACTION_SETTING_UP_AS_SCHEDULER)",
-                "name": "Microsoft-DeployAzureFunctionConnectionStrings",
-                "skip": "$run(this.MS.DataStore.getValue('ssasDisabled') )"
             },
             {
                 "displayname": "$translate(INIT_ACTION_CONFIGURING_KEY_VAULT)",

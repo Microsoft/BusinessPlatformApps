@@ -51,24 +51,6 @@
                 "title": "$translate(INIT_SQL_TITLE)"
             },
             {
-                "name": "$SiteCommon$/pages-gallery/choose-analysis-server.html",
-                "displayname": "AAS",
-                "showDescription": true
-
-                //"ssasEnabled": "true"
-            },
-            {
-                "displayname": "Login to Analysis Services",
-                "name": "$SiteCommon$/pages-gallery/as-login.html",
-                "oauthType": "as",
-                "skip": "$run(this.MS.DataStore.getValue('ssasDisabled'))"
-            },
-            {
-                "name": "$SiteCommon$/pages-gallery/ssas.html",
-                "displayname": "AAS Login",
-                "skip": "$run(this.MS.DataStore.getValue('ssasDisabled'))"
-            },
-            {
                 "displayCompletionNotification": false,
                 "displayname": "Summary",
                 "name": "$SiteCommon$/pages-gallery/summary.html",
@@ -103,80 +85,6 @@
                 "name": "Microsoft-DeploySQLScripts",
                 "SqlScriptsFolder": "Database"
             },
-            /// AS Deployment
-            {
-                "displayname": "$translate(INIT_ACTION_DEPLOYING_DATABASE_CONFIGURATION)",
-                "name": "Microsoft-SetConfigValueInSql",
-                "SqlServerIndex": "0",
-                "SqlConfigTable": "[pbist_apimgmt].[configuration]"
-            },
-            {
-                "displayname": "$translate(INIT_ACTION_DEPLOYING_DATABASE_CONFIGURATION)",
-                "name": "Microsoft-SetConfigValueInSql",
-                "skip": "$run(this.MS.DataStore.getValue('ssasDisabled') )",
-                "SqlConfigTable": "[pbist_apimgmt].[configuration]",
-                "SqlEntryName": "FunctionName",
-                "SqlEntryValue": "$run('asscheduler' + this.MS.DataStore.getValue('uniqueId'))",
-                "SqlGroup": "SolutionTemplate",
-                "SqlServerIndex": "0",
-                "SqlSubGroup": "SSAS"
-            },
-            {
-                "ASDatabase": "APIM",
-                "displayname": "$translate(INIT_ACTION_DEPLOYING_AS_MODEL)",
-                "name": "Microsoft-DeployAzureASModel",
-                "skip": "$run( this.MS.DataStore.getValue('ssasDisabled') )",
-                "SqlConnectionString": "$dsall(SqlConnectionString)[0]",
-                "xmlaFilePath": "Service/AzureAS/APIM.xmla"
-            },
-            {
-                "DeploymentName": "ASFunction",
-                "displayname": "$translate(INIT_ACTION_DEPLOYING_AS_SCHEDULER)",
-                "FunctionName": "$save('asscheduler' + this.MS.DataStore.getValue('uniqueId'))",
-                "name": "Microsoft-DeployAzureFunction",
-                "RepoUrl": "https://github.com/MohaaliMicrosoft/AnalysisServicesRefresh",
-                "skip": "$run( this.MS.DataStore.getValue('ssasDisabled') )",
-                "sku": "Standard"
-            },
-            {
-                "DeploymentName": "ASFunction",
-                "displayname": "$translate(INIT_ACTION_WAITING_AS_SCHEDULER)",
-                "name": "Microsoft-WaitForArmDeploymentStatus",
-                "skip": "$run( this.MS.DataStore.getValue('ssasDisabled') )"
-            },
-            {
-                "displayname": "Create Service Principal",
-                "name": "Microsoft-CreateSpn",
-                "skip": "$run(this.MS.DataStore.getValue('ssasDisabled') )"
-            },
-            {
-                "displayname": "Assign Service Principal Permission",
-                "name": "Microsoft-AssignPermissionsForUser",
-                "skip": "$run( this.MS.DataStore.getValue('ssasDisabled') )",
-                "UserToAdd": "$ds(SPNUser)",
-                "ASDatabase": "APIM"
-            },
-            {
-                "AppSettingKeys": {
-                    "appId": "$ds(SPNAppId)",
-                    "appKey": "$ds(SPNKey)",
-                    "username": "$ds(SPNUser)",
-                    "tenantId": "$ds(SPNTenantId)",
-                    "asServer": "$ds(ASServerUrl)",
-
-                    "connStringSql": "$dsall(SqlConnectionString)[0]",
-                    "schema": "[pbist_apimgmt]",
-                    "databaseAS": "APIM",
-                    "functionName": "$run('asscheduler' + this.MS.DataStore.getValue('uniqueId'))"
-                },
-
-                "DeploymentName": "ASFunction",
-                "displayname": "$translate(INIT_ACTION_SETTING_UP_AS_SCHEDULER)",
-                "name": "Microsoft-DeployAzureFunctionConnectionStrings",
-                "skip": "$run(this.MS.DataStore.getValue('ssasDisabled') )"
-            },
-
-            /// Finish AS Deployment
             {
                 "AzureArmFile": "Service/ARM/EventHub.json",
                 "AzureArmParametersUnique": {

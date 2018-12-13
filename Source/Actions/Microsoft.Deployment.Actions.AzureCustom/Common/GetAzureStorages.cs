@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Linq;
 using System.Net.Http;
@@ -43,7 +44,11 @@ namespace Microsoft.Deployment.Actions.AzureCustom.Common
                     var storageAccountName = item["name"].ToString();
 
                     var connectionString = await this.GetStorageAccountConnectionStringAsync(azureToken, idSubscription, storageAccountName, storageAccountId);
-                    var containers = await this.GetContainersAsync(connectionString);
+                    var containers = default(JArray);
+                    if (!string.IsNullOrWhiteSpace(connectionString))
+                    {
+                        containers = await this.GetContainersAsync(connectionString);
+                    }
 
                     return new JObject
                     {
@@ -54,10 +59,17 @@ namespace Microsoft.Deployment.Actions.AzureCustom.Common
                     };
                 }).ToArray();
 
-                await Task.WhenAll(tasks);
-                foreach (var task in tasks)
+                try
                 {
-                    array.Add(task.Result);
+                    await Task.WhenAll(tasks);
+                    foreach (var task in tasks)
+                    {
+                        array.Add(task.Result);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    return new ActionResponse(ActionStatus.Failure, ex.Message, null, DefaultErrorCodes.DefaultErrorCode, "GetAzureStorages");
                 }
 
                 request.Logger.LogEvent("GetAzureStorages-result", new Dictionary<string, string>() { { "Storages", array.ToString() } });
@@ -69,8 +81,6 @@ namespace Microsoft.Deployment.Actions.AzureCustom.Common
             var error = await response.Content.ReadAsStringAsync();
             return new ActionResponse(ActionStatus.Failure, error, null, DefaultErrorCodes.DefaultErrorCode, "GetAzureStorages");
         }
-
-
 
         private async Task<string> GetStorageAccountConnectionStringAsync(string azureToken, string subscriptionId, string storageAccountName, string storageAccountId)
         {
@@ -87,7 +97,8 @@ namespace Microsoft.Deployment.Actions.AzureCustom.Common
                 return $"DefaultEndpointsProtocol=https;AccountName={storageAccountName};AccountKey={key};EndpointSuffix=core.windows.net";
             }
 
-            return string.Empty;
+            var responseMessage = await response.Content.ReadAsStringAsync();
+            throw new Exception(responseMessage);
         }
 
         private async Task<JArray> GetContainersAsync(string storageAccountConnectionString)
@@ -96,9 +107,7 @@ namespace Microsoft.Deployment.Actions.AzureCustom.Common
 
             // Create a blob client for interacting with the blob service.
             CloudBlobClient blobClient = storageAccount.CreateCloudBlobClient();
-
             BlobContinuationToken continuationToken = null;
-
             var array = new JArray();
             do
             {

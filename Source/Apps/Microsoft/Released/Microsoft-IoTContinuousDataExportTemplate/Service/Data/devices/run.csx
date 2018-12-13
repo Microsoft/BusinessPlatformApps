@@ -48,7 +48,15 @@ public static async Task Run(CloudBlockBlob myBlob, TraceWriter log)
                 {
                     try
                     {
+                        var fields = record.Schema.Fields;
                         var deviceId = record.GetField<string>("id");
+
+                        var connectionDeviceId = deviceId;
+                        if (fields.Any(field => field.Name == "deviceId"))
+                        {
+                            connectionDeviceId = record.GetField<string>("deviceId");
+                        }
+
                         var deviceName = record.GetField<string>("name");
                         var simulated = record.GetField<bool>("simulated");
 
@@ -66,6 +74,7 @@ public static async Task Run(CloudBlockBlob myBlob, TraceWriter log)
                         devices.Add(new Device()
                         {
                             DeviceId = deviceId,
+                            ConnectionDeviceId = connectionDeviceId,
                             DeviceName = deviceName,
                             Simulated = simulated,
                             DeviceTemplateId = templateId,
@@ -95,6 +104,7 @@ public static async Task Run(CloudBlockBlob myBlob, TraceWriter log)
     {
         var deviceRow = devicesTable.NewRow();
         deviceRow["deviceId"] = device.DeviceId;
+        deviceRow["connectionDeviceId"] = device.ConnectionDeviceId;
         deviceRow["deviceTemplate"] = $"{device.DeviceTemplateId}/{device.DeviceTemplateVersion}";
         deviceRow["name"] = device.DeviceName;
         deviceRow["simulated"] = device.Simulated;
@@ -194,6 +204,7 @@ private static DataTable CreateDevicesTable()
 {
     var table = new DataTable("Devices");
     table.Columns.Add(new DataColumn("deviceId", typeof(string)) { MaxLength = 200 });
+    table.Columns.Add(new DataColumn("connectionDeviceId", typeof(string)) { MaxLength = 200 });
     table.Columns.Add(new DataColumn("deviceTemplate", typeof(string)) { MaxLength = 101 });
     table.Columns.Add(new DataColumn("name", typeof(string)) { MaxLength = 200 });
     table.Columns.Add(new DataColumn("simulated", typeof(bool)));
@@ -220,6 +231,8 @@ private static DataTable CreatePropertiesTable()
 private struct Device
 {
     public string DeviceId { get; set; }
+
+    public string ConnectionDeviceId { get; set; }
 
     public string DeviceName { get; set; }
 

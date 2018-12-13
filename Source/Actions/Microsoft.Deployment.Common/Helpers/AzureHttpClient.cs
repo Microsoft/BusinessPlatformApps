@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.IO;
+using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
@@ -117,7 +118,7 @@ namespace Microsoft.Deployment.Common.Helpers
 
         public async Task<HttpResponseMessage> ExecuteWithSubscriptionAndResourceGroupAsync(HttpMethod method, string relativeUrl, string apiVersion, string body)
         {
-            
+
             string requestUri = Constants.AzureManagementApi + $"subscriptions/{this.Subscription}/resourceGroups/{this.ResourceGroup}/{relativeUrl}?api-version={apiVersion}";
 
             return await this.ExecuteGenericRequestWithHeaderAsync(method, requestUri, body);
@@ -170,6 +171,7 @@ namespace Microsoft.Deployment.Common.Helpers
                 client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
                 client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("text/javascript"));
 
+                SecurityHelper.SetTls12();
                 return await client.SendAsync(message);
             }
         }

@@ -28,7 +28,6 @@ namespace Microsoft.Deployment.Actions.AzureCustom.AzureML
                 WorkspaceId = workspaceId
             };
 
-
             var workspace = azuremlClient.GetWorkspaceFromAmlRP(workspaceSettings);
          
             if (workspace == null)

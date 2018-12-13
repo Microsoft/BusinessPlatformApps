@@ -51,14 +51,14 @@
 
         <div class="st-float" if.bind="msCrmOrganizations && msCrmOrganizations.length > 0">
             <p class="st-text">${MS.Translate.MSCRM_LOGIN_ORGANIZATION}</p>
-            <select class="btn btn-default dropdown-toggle st-input" disabled.bind="MS.HttpService.isServiceBusy" value.bind="msCrmOrganizationId">
+            <select class="btn btn-default dropdown-toggle st-input" change.delegate="onLoaded()" disabled.bind="MS.HttpService.isServiceBusy" value.bind="msCrmOrganizationId">
                 <option repeat.for="msCrmOrganization of msCrmOrganizations" value.bind="msCrmOrganization.organizationId">${msCrmOrganization.organizationName}</option>
             </select>
         </div>
 
         <div class="st-float" if.bind="subscriptionsList && subscriptionsList.length > 0">
             <p class="st-text">${MS.Translate.AZURE_LOGIN_SUBSCRIPTION}</p>
-            <select class="btn btn-default dropdown-toggle st-input" disabled.bind="MS.HttpService.isServiceBusy" if.bind="isActivated && showPricingConfirmation" value.bind="selectedSubscriptionId">
+            <select class="btn btn-default dropdown-toggle st-input" change.delegate="onLoaded()" disabled.bind="MS.HttpService.isServiceBusy" if.bind="isActivated && showPricingConfirmation" value.bind="selectedSubscriptionId">
                 <option repeat.for="item of subscriptionsList" value.bind="item.SubscriptionId">${item.DisplayName}</option>
             </select>
         </div>

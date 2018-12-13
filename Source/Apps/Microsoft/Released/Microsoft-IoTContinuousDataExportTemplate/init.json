@@ -111,6 +111,11 @@
         "AzureArmFile": "Service/ARM/datafactory.json",
         "displayname": "$translate(INIT_ACTION_CREATING_DATA_FACTORY)",
         "name": "Microsoft-DeployIoTCDEDataFactory"
+      },
+      {
+        "baseFunctionFolder": "service/data",
+        "displayname": "$translate(INIT_ACTION_TRIGGER_FUNCTION_TORUN)",
+        "name": "Microsoft-TriggerFunctionApp"
       }
     ]
   }

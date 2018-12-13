@@ -1,7 +1,7 @@
 ﻿namespace Microsoft.Deployment.Common.Actions.MsCrm.Model
 {
     using System;
-
+    using System.Collections.Generic;
     using Newtonsoft.Json;
     using Newtonsoft.Json.Converters;
 
@@ -17,12 +17,17 @@
     {
         public string Type;
         [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
-        public object Settings;
+        public IDictionary<string, object> Settings;
         public MsCrmStatus Status;
 
         // This is used by retrieve entities
         public string LogicalName;
         public string DisplayName;
+
+        public MsCrmEntity()
+        {
+            Settings = new Dictionary<string, object>();
+        }
     }
 
     public class MsCrmStatus

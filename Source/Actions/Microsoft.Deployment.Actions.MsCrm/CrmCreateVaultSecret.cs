@@ -1,5 +1,20 @@
 ﻿namespace Microsoft.Deployment.Common.Actions.MsCrm
 {
+    using Azure.KeyVault.Models;
+    using Azure.Management.KeyVault.Models;
+    using Azure.Management.Resources;
+
+    using Microsoft.Azure;
+    using Microsoft.Azure.ActiveDirectory.GraphClient;
+    using Microsoft.Azure.KeyVault;
+    using Microsoft.Azure.Management.KeyVault;
+    using Microsoft.Deployment.Common.ActionModel;
+    using Microsoft.Deployment.Common.Actions;
+    using Microsoft.Deployment.Common.Enums;
+    using Microsoft.Deployment.Common.Helpers;
+
+    using Rest;
+
     using System;
     using System.Collections.Generic;
     using System.ComponentModel.Composition;
@@ -8,20 +23,6 @@
     using System.Net.Http.Headers;
     using System.Threading;
     using System.Threading.Tasks;
-
-    using Azure.KeyVault.Models;
-    using Azure.Management.KeyVault.Models;
-    using Azure.Management.Resources;
-    using Microsoft.Azure;
-    using Microsoft.Azure.ActiveDirectory.GraphClient;
-    using Microsoft.Azure.KeyVault;
-    using Microsoft.Azure.Management.KeyVault;
-    using Rest;
-
-    using Microsoft.Deployment.Common.ActionModel;
-    using Microsoft.Deployment.Common.Actions;
-    using Microsoft.Deployment.Common.Helpers;
-    using Microsoft.Deployment.Common.Enums;
 
     [Export(typeof(IAction))]
     public class CrmCreateVaultSecret : BaseAction

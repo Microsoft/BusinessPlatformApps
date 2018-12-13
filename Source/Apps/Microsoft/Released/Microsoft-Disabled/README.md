@@ -1,0 +1,1 @@
+Placeholder for disabled Power BI solution templates.

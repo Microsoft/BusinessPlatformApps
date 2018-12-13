@@ -23,49 +23,56 @@ namespace Microsoft.Deployment.Actions.AzureCustom.PowerApp
             string environmentId = request.DataStore.GetValue("PowerAppEnvironment");
             string sqlConnectionId = request.DataStore.GetValue("PowerAppSqlConnectionId");
 
-            if (environmentId != null && sqlConnectionId != null)
+            try
             {
-                ActionResponse wrangledFile = await RequestUtility.CallAction(request, "Microsoft-WranglePowerApp");
-
-                if (wrangledFile.IsSuccess && wrangledFile.Body != null)
+                if (environmentId != null && sqlConnectionId != null)
                 {
-                    string path = wrangledFile.Body.ToString();
+                    ActionResponse wrangledFile = await RequestUtility.CallAction(request, "Microsoft-WranglePowerApp");
 
-                    AzureHttpClient ahc = new AzureHttpClient(azureToken);
-
-                    PowerAppResourceStorage resourceStorage = await ahc.Request<PowerAppResourceStorage>(HttpMethod.Post,
-                        string.Format(PowerAppUtility.URL_POWERAPPS_GENERATE_RESOURCE_STORAGE, JsonUtility.GetWebToken(azureToken, "oid")),
-                        JsonUtility.Serialize<PowerAppEnvironmentWrapper>(new PowerAppEnvironmentWrapper(environmentId)));
-
-                    if (!string.IsNullOrEmpty(path) && resourceStorage != null && !string.IsNullOrEmpty(resourceStorage.SharedAccessSignature))
+                    if (wrangledFile.IsSuccess && wrangledFile.Body != null)
                     {
-                        string uri = resourceStorage.SharedAccessSignature.Replace("?", "/document.msapp?");
+                        string path = wrangledFile.Body.ToString();
 
-                        CloudBlockBlob blob = new CloudBlockBlob(new Uri(uri));
+                        AzureHttpClient ahc = new AzureHttpClient(azureToken);
 
-                        using (WebClient wc = new WebClient())
+                        PowerAppResourceStorage resourceStorage = await ahc.Request<PowerAppResourceStorage>(HttpMethod.Post,
+                            string.Format(PowerAppUtility.URL_POWERAPPS_GENERATE_RESOURCE_STORAGE, JsonUtility.GetWebToken(azureToken, "oid")),
+                            JsonUtility.Serialize<PowerAppEnvironmentWrapper>(new PowerAppEnvironmentWrapper(environmentId)));
+
+                        if (!string.IsNullOrEmpty(path) && resourceStorage != null && !string.IsNullOrEmpty(resourceStorage.SharedAccessSignature))
                         {
-                            byte[] file = wc.DownloadData(path);
+                            string uri = resourceStorage.SharedAccessSignature.Replace("?", "/document.msapp?");
 
-                            await blob.UploadFromStreamAsync(new MemoryStream(file));
+                            CloudBlockBlob blob = new CloudBlockBlob(new Uri(uri));
 
-                            PowerAppMetadata metadata = await ahc.Request<PowerAppMetadata>(HttpMethod.Post, PowerAppUtility.URL_POWERAPPS_PUBLISH_APP,
-                                JsonUtility.Serialize<PowerAppPublish>(new PowerAppPublish(uri, $"TwitterTemplate{RandomGenerator.GetDateStamp()}", environmentId, sqlConnectionId)));
-
-                            if (metadata != null)
+                            using (WebClient wc = new WebClient())
                             {
-                                if (await ahc.IsSuccess(HttpMethod.Post, string.Format(PowerAppUtility.URL_POWERAPPS_SQL_CONNECTION_UPDATE, sqlConnectionId, environmentId),
-                                    JsonUtility.Serialize<PowerAppSqlConnectionUpdate>(new PowerAppSqlConnectionUpdate(metadata.Name))))
+                                byte[] file = wc.DownloadData(path);
+
+                                await blob.UploadFromStreamAsync(new MemoryStream(file));
+
+                                PowerAppMetadata metadata = await ahc.Request<PowerAppMetadata>(HttpMethod.Post, PowerAppUtility.URL_POWERAPPS_PUBLISH_APP,
+                                    JsonUtility.Serialize<PowerAppPublish>(new PowerAppPublish(uri, $"TwitterTemplate{RandomGenerator.GetDateStamp()}", environmentId, sqlConnectionId)));
+
+                                if (metadata != null)
                                 {
-                                    if (await ahc.IsSuccess(HttpMethod.Post, string.Format(PowerAppUtility.URL_POWERAPPS_RECORD_SCOPES_CONSENT, metadata.Name), JsonUtility.Serialize<PowerAppConsents>(new PowerAppConsents(sqlConnectionId))))
+                                    if (await ahc.IsSuccess(HttpMethod.Post, string.Format(PowerAppUtility.URL_POWERAPPS_SQL_CONNECTION_UPDATE, sqlConnectionId, environmentId),
+                                        JsonUtility.Serialize<PowerAppSqlConnectionUpdate>(new PowerAppSqlConnectionUpdate(metadata.Name))))
                                     {
-                                        request.DataStore.AddToDataStore("PowerAppUri", string.Format(PowerAppUtility.URL_POWERAPPS_WEB, metadata.Name));
+                                        if (await ahc.IsSuccess(HttpMethod.Post, string.Format(PowerAppUtility.URL_POWERAPPS_RECORD_SCOPES_CONSENT, metadata.Name), JsonUtility.Serialize<PowerAppConsents>(new PowerAppConsents(sqlConnectionId))))
+                                        {
+                                            request.DataStore.AddToDataStore("PowerAppUri", string.Format(PowerAppUtility.URL_POWERAPPS_WEB, metadata.Name));
+                                        }
                                     }
                                 }
                             }
                         }
                     }
                 }
+            }
+            catch
+            {
+                PowerAppUtility.SkipPowerApp(request.DataStore);
             }
 
             return new ActionResponse(ActionStatus.Success);

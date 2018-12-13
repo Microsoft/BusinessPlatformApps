@@ -6,7 +6,7 @@ namespace Installer
 {
     public class RequestHandler : IRequestHandler
     {
-        bool IRequestHandler.OnBeforeBrowse(IWebBrowser browserControl, IBrowser browser, IFrame frame, IRequest request, bool isRedirect)
+        public bool OnBeforeBrowse(IWebBrowser chromiumWebBrowser, IBrowser browser, IFrame frame, IRequest request, bool userGesture, bool isRedirect)
         {
             return false;
         }
@@ -171,6 +171,16 @@ namespace Installer
         {
             request.Url = newUrl;
             browserControl.Load(newUrl);
+        }
+
+        public bool CanGetCookies(IWebBrowser browserControl, IBrowser browser, IFrame frame, IRequest request)
+        {
+            return false;
+        }
+
+        public bool CanSetCookie(IWebBrowser browserControl, IBrowser browser, IFrame frame, IRequest request, Cookie cookie)
+        {
+            return false;
         }
     }
 }

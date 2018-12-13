@@ -7,6 +7,7 @@ SET QUOTED_IDENTIFIER       ON;
 
 CREATE TABLE [analytics].[Devices](
 	[deviceId] [nvarchar](200) NOT NULL,
+	[connectionDeviceId] [nvarchar](200) NULL,
 	[deviceTemplate] [nvarchar](101) NOT NULL,
 	[name] [nvarchar](200) NOT NULL,
 	[simulated] [bit] NOT NULL,
@@ -24,6 +25,7 @@ WITH (TRACK_COLUMNS_UPDATED = OFF);
 CREATE TYPE dbo.DevicesTableType AS TABLE
 (
 	[deviceId] [nvarchar](200) NOT NULL,
+	[connectionDeviceId] [nvarchar](200) NULL,
 	[deviceTemplate] [nvarchar](101) NOT NULL,
 	[name] [nvarchar](200) NOT NULL,
 	[simulated] [bit] NOT NULL,
@@ -71,6 +73,7 @@ BEGIN
 		[id] [int] IDENTITY(1,1) NOT NULL,
 		[messageId] UNIQUEIDENTIFIER NOT NULL,
 		[deviceId] [nvarchar](200) NOT NULL,
+		[connectionDeviceId] [nvarchar](200) NULL,
 		[deviceTemplate] [nvarchar](101) NULL,
 		[measurementDefinition] [nvarchar](357) NULL,
 		[timestamp] [datetime] NOT NULL,
@@ -88,6 +91,7 @@ BEGIN
 		[id] [int] IDENTITY(1,1) NOT NULL,
 		[messageId] UNIQUEIDENTIFIER NOT NULL,
 		[deviceId] [nvarchar](200) NOT NULL,
+		[connectionDeviceId] [nvarchar](200) NULL,
 		[deviceTemplate] [nvarchar](101) NULL,
 		[measurementDefinition] [nvarchar](357) NULL,
 		[timestamp] [datetime] NOT NULL,
@@ -289,4 +293,3 @@ CREATE TYPE dbo.MessagesTableType AS TABLE
 		[id] ASC
 	)
 );
-
