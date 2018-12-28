@@ -89,14 +89,18 @@ SELECT
     arrayElement.ArrayValue.category as operationCategory,
     arrayElement.ArrayValue.Properties.operationId,
     arrayElement.ArrayValue.operationName,
-    CASE WHEN CHARINDEX('/', SUBSTRING(arrayElement.ArrayValue.resourceId, 68, 1000)) = 0   
-     THEN SUBSTRING(arrayElement.ArrayValue.resourceId, 68, 1000)  
-     ELSE SUBSTRING(arrayElement.ArrayValue.resourceId, 68, CHARINDEX('/', SUBSTRING(arrayElement.ArrayValue.resourceId, 68, 1000))-1)  
+    CASE WHEN CHARINDEX('/RESOURCEGROUPS', arrayElement.ArrayValue.resourceId) = 0
+     THEN null
+    WHEN CHARINDEX('/', SUBSTRING(arrayElement.ArrayValue.resourceId, 68, 1000)) = 0 
+     THEN SUBSTRING(arrayElement.ArrayValue.resourceId, 68, 1000) 
+     ELSE SUBSTRING(arrayElement.ArrayValue.resourceId, 68, CHARINDEX('/', SUBSTRING(arrayElement.ArrayValue.resourceId, 68, 1000))-1) 
     END as resourceGroup,
     arrayElement.ArrayValue.resourceId,
     CASE WHEN CHARINDEX('/PROVIDERS', arrayElement.ArrayValue.resourceId) = 0
-      THEN null
-      ELSE SUBSTRING(arrayElement.ArrayValue.resourceId, CHARINDEX('/PROVIDERS', arrayElement.ArrayValue.resourceId) + 11, CHARINDEX('/', SUBSTRING(arrayElement.ArrayValue.resourceId, CHARINDEX('/PROVIDERS', arrayElement.ArrayValue.resourceId) + 11, 1000)) - 1)
+     THEN null
+    WHEN CHARINDEX('/', SUBSTRING(arrayElement.ArrayValue.resourceId, CHARINDEX('/PROVIDERS', arrayElement.ArrayValue.resourceId) + 11, 1000)) = 0
+     THEN SUBSTRING(arrayElement.ArrayValue.resourceId, CHARINDEX('/PROVIDERS', arrayElement.ArrayValue.resourceId) + 11, 1000)
+     ELSE SUBSTRING(arrayElement.ArrayValue.resourceId,CHARINDEX('/PROVIDERS', arrayElement.ArrayValue.resourceId) + 11,CHARINDEX('/', SUBSTRING(arrayElement.ArrayValue.resourceId, CHARINDEX('/PROVIDERS', arrayElement.ArrayValue.resourceId) + 11, 1000)) - 1)
     END as resourceProvider,
     CASE WHEN arrayElement.ArrayValue.resultType = 'Start'
         THEN 'Started'
