@@ -15,8 +15,30 @@ namespace Microsoft.Deployment.Common.Controller
     {
         private HashSet<string> disabledApps = new HashSet<string>()
         {
+            "BlueMargin-VSTS",
+            "EdFi",
+            "FBI-Quickbooks",
+            "iTalent-SocialAnalyticsByLithium",
+            "Microsoft-AcademicTemplate",
+            "Microsoft-ActivityLogTemplate",
+            "Microsoft-APIManagementTemplate",
+            "Microsoft-CreditAndCollections",
+            "Microsoft-CRMSalesManagement",
+            "Microsoft-Cuna",
+            "Microsoft-D365CustomerService",
+            "Microsoft-D365FieldService",
             "Microsoft-FacebookPageAnalytics",
             "Microsoft-FacebookTemplate",
+            "Microsoft-FinanceInsightsCreditAndCollections",
+            "Microsoft-NewsTemplate",
+            "Microsoft-O365UsageAnalytics-Removed",
+            "Microsoft-PSA",
+            "Microsoft-RedditTemplate",
+            "Microsoft-SalesforceSalesManagement",
+            "Microsoft-SCCM2",
+            "Microsoft-SCCMTemplate",
+            "Microsoft-TwitterTemplate",
+            "NealAnalytics-PbiUsageMetrics",
             "Simplement-SAP-ARTemplate"
         };
 
