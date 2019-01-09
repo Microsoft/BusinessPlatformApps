@@ -2,10 +2,6 @@
 
 This repository contains the resources and tools required for contributing to the Business Platform Solution Template (BPST) Framework. The BPST Framework is the driving mechanism behind Power BI solution templates.
 
-All publicly available solution templates for Power BI can be accessed here:
-
-https://powerbi.microsoft.com/en-us/solution-templates/
-
 If you have any questions about building your own solution template, you can find ways to contact us at the link above. There is also a direct Contact Us link available at the bottom right area of any solution template.
 
 ## Preparing your Development Environment
@@ -24,7 +20,7 @@ While installing Visual Studio 2017, the following features are required:
     * Node.js development
     * Data storage and processing
 3. Other Toolsets
-    * .NET Core cross-platform development
+    * .NET Core 1.0 cross-platform development
     * Gulp
 4. GitHub Extension for Visual Studio (found under Individual components > Uncategorized)
 
