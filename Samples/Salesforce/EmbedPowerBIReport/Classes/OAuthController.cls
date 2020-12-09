@@ -123,8 +123,8 @@ public virtual class OAuthController {
     * @return The oauth result
     */
     public PageReference refreshAccessToken(PageReference location){
-        Cookie accessToken = new Cookie('pbi_AccessToken', '',null,0,false);
-        Cookie expiresOn = new Cookie('pbi_ExpiresOn','',null,0,false);
+        Cookie accessToken = New Cookie('pbi_AccessToken', '',null,0,true /*isSecure*/,'None' /*SameSite*/);
+        Cookie expiresOn = New Cookie('pbi_ExpiresOn','',null,0,true /*isSecure*/,'None' /*SameSite*/);
             
         ApexPages.currentPage().setCookies(new Cookie[]{accessToken,expiresOn}); 
             
@@ -156,9 +156,9 @@ public virtual class OAuthController {
 
         OAuthResult result = (OAuthResult)(JSON.deserialize(res.getBody(), OAuthResult.class));
         
-        Cookie refreshTokenCookie = new Cookie('pbi_RefreshToken', result.refresh_token,null,-1,false);        
-        accessToken = new Cookie('pbi_AccessToken', result.access_token,null,-1,false);
-        expiresOn = new Cookie('pbi_ExpiresOn',result.expires_on,null,-1,false);
+        Cookie refreshTokenCookie = New Cookie('pbi_RefreshToken', result.refresh_token,null,-1,true /*isSecure*/,'None' /*SameSite*/);        
+        accessToken = New Cookie('pbi_AccessToken', result.access_token,null,-1,true /*isSecure*/,'None' /*SameSite*/);
+        expiresOn = New Cookie('pbi_ExpiresOn',result.expires_on,null,-1,true /*isSecure*/,'None' /*SameSite*/);
         
         ApexPages.currentPage().setCookies(new Cookie[]{accessToken,refreshTokenCookie,expiresOn});   
             
@@ -238,9 +238,9 @@ public virtual class OAuthController {
             OAuthResult result = validateCode(code, this.getPageUrl());
                                    
             //Store accesstoken in cookie
-            Cookie accessToken = new Cookie('pbi_AccessToken', result.access_token,null,-1,false);
-            Cookie refreshToken = new Cookie('pbi_RefreshToken', result.refresh_token,null,-1,false);
-            Cookie expiresOn = new Cookie('pbi_ExpiresOn',result.expires_on,null,-1,false);
+            Cookie accessToken = New Cookie('pbi_AccessToken', result.access_token,null,-1,true /*isSecure*/,'None' /*SameSite*/);
+            Cookie refreshToken = New Cookie('pbi_RefreshToken', result.refresh_token,null,-1,true /*isSecure*/,'None' /*SameSite*/);
+            Cookie expiresOn = New Cookie('pbi_ExpiresOn',result.expires_on,null,-1,true /*isSecure*/,'None' /*SameSite*/);
             
             ApexPages.currentPage().setCookies(new Cookie[]{accessToken,refreshToken,expiresOn}); 
 

@@ -125,7 +125,7 @@ public virtual class OAuthController {
         app.Token_Expires_On__c = null;
         update app;
             
-		Cookie accessToken = new Cookie('pbi_AccessToken', '',null,0,false);
+		Cookie accessToken = new Cookie('pbi_AccessToken', '',null,0,true /*isSecure*/,'None' /*SameSite*/);
         ApexPages.currentPage().setCookies(new Cookie[]{accessToken});
             
         String client_id = OAuthApp_pbi__c.getValues(this.application_name).Client_Id__c;
@@ -161,8 +161,8 @@ public virtual class OAuthController {
         
         OAuthResult result = (OAuthResult)(JSON.deserialize(res.getBody(), OAuthResult.class));
         
-        accessToken = new Cookie('pbi_AccessToken', result.access_token,null,-1,false);
-        Cookie refreshTokenCookie = new Cookie('pbi_RefreshToken', result.refresh_token,null,-1,false);
+        accessToken = new Cookie('pbi_AccessToken', result.access_token,null,-1,true /*isSecure*/,'None' /*SameSite*/);
+        Cookie refreshTokenCookie = new Cookie('pbi_RefreshToken', result.refresh_token,null,-1,true /*isSecure*/,'None' /*SameSite*/);
 
         ApexPages.currentPage().setCookies(new Cookie[]{accessToken,refreshTokenCookie});   
         
@@ -249,8 +249,8 @@ public virtual class OAuthController {
             OAuthResult result = validateCode(code, this.getPageUrl());
                                    
             //Store accesstoken in cookie
-            Cookie accessToken = new Cookie('pbi_AccessToken', result.access_token,null,-1,false);
-            Cookie refreshToken = new Cookie('pbi_RefreshToken', result.refresh_token,null,-1,false);
+            Cookie accessToken = new Cookie('pbi_AccessToken', result.access_token,null,-1,true /*isSecure*/,'None' /*SameSite*/);
+            Cookie refreshToken = new Cookie('pbi_RefreshToken', result.refresh_token,null,-1,true /*isSecure*/,'None' /*SameSite*/);
  
             ApexPages.currentPage().setCookies(new Cookie[]{accessToken,refreshToken}); 
             
