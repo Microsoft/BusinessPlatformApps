@@ -25,6 +25,7 @@ let refreshToken = '{!PBIrefresh_token}';
 let expires_on = '{!PBIexpires_on}';
 let validateResult = '{!validateResult}';
 let selectedReport = 'YOURREPORTID'; 
+let selectedWorkspace = 'YOURWORKSPACEID';
 
 window.onload = function() {
 
@@ -55,6 +56,8 @@ var embedConfiguration = {
     type: 'report',
     
     id: selectedReport,
+    
+    groupId: selectedWorkspace,
 
     embedUrl: 'https://app.powerbi.com/reportEmbed',
 
